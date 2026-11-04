@@ -5,6 +5,7 @@ import random
 import string
 from types import SimpleNamespace
 
+import pytest
 from sqlalchemy import func, select, update
 
 from app.core import credits, realtime
@@ -15,7 +16,14 @@ from app.core.live_service import on_presence
 from app.db.session import session_maker
 from app.models.models import Block, CreditTransaction, Entitlement, LiveInvite, LiveSearch, Match, Profile, User
 
-from tests.helpers import login, seed_member, uid
+from tests.helpers import age_all_members, login, seed_member, uid
+
+
+@pytest.fixture(autouse=True)
+async def _isolate_online_members():
+    """Chaque test part sans autre membre « en ligne » : les candidats des exécutions précédentes (même code d'origine tiré au hasard)
+    recevaient l'invitation et faussaient le décompte (échec intermittent « 5 == 3 »)."""
+    await age_all_members()
 
 
 async def run(stmt):

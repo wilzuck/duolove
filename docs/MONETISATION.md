@@ -118,3 +118,8 @@ KKiaPay (clés bac à sable puis production, à valider — voir DEPLOYMENT.md) 
 - Pas de détection d'abus par adresse IP ou appareil (seuls les garde-fous ci-dessus : e-mail vérifié, profil complet, plafond).
 - Les valeurs de récompense (5/2/20) ne sont pas encore modifiables depuis l'administration.
 - Pas de remise sur les abonnements déjà payés ni de cumul de plusieurs codes sur un même paiement.
+
+## 10. Photos dans les messages
+- **Règle** : l'envoi d'une photo dans une conversation est réservé aux formules qui l'incluent (**Premium et VIP** par défaut, pas le Gratuit). Écrire et **recevoir** des photos reste gratuit.
+- **Réglage** : fonctionnalité de formule `chat_images_enabled`, modifiable dans `/admin/plans` (comme les autres). Les formules déjà enregistrées reçoivent la valeur par défaut au démarrage, sans écraser les réglages de l'administrateur.
+- **Application** : côté serveur uniquement (`POST /conversations/:id/images` → 403 `PLAN_REQUIRED`) ; le flag `chat_images` (coupure d'urgence, 503) s'applique avant. Côté interface, le bouton affiche un cadenas et ouvre l'invitation à s'abonner.

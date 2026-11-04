@@ -217,7 +217,8 @@
       "noAds": "Sans publicité",
       "liveMatch": "Menu Match en direct (illimité)",
       "liveMatchTrials": "Menu Match : {n} essais gratuits",
-      "matchTokensMonthly": "{n} jetons Match par mois"
+      "matchTokensMonthly": "{n} jetons Match par mois",
+      "chatImages": "Envoi de photos dans les messages"
     }
   },
   "about": {
@@ -770,7 +771,13 @@
     "emojis": "Émojis",
     "attach": "Envoyer une image",
     "compose": "Écrire un message…",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "enterSends": "Envoyer avec la touche Entrée",
+    "scamWarning": "Ne versez jamais d’argent et ne donnez ni numéro, ni code, ni coordonnées bancaires à quelqu’un que vous ne connaissez pas. Signalez toute demande suspecte via le menu ⋮.",
+    "attachLocked": "Envoyer une photo (réservé aux abonnés)",
+    "imagePlanTitle": "Photos réservées aux abonnés",
+    "imagePlanText": "L’envoi de photos dans les messages est inclus dans les formules Premium et VIP. Vous pouvez continuer à écrire gratuitement et à recevoir des photos.",
+    "seePlans": "Voir les formules"
   },
   "profile": {
     "completeness": "Complétude du profil",
@@ -1464,7 +1471,16 @@
     "passAria": "Passer {name}",
     "likeDone": "Like envoyé. Si cette personne vous aime aussi, c’est un match.",
     "matchDone": "C’est un match ! Vous pouvez discuter gratuitement.",
-    "passDone": "Cette personne a été retirée de vos propositions."
+    "passDone": "Cette personne a été retirée de vos propositions.",
+    "guideTitle": "Quelqu’un a accepté ! Il vous faut {n} jeton pour lui parler",
+    "guideIntro": "Un jeton Match ouvre une conversation avec une personne qui a accepté votre recherche. Vous n’en avez pas pour l’instant. Voici quoi faire :",
+    "guideStep1": "Obtenez au moins 1 jeton :",
+    "guideProfile": "Compléter mon profil ({n} jetons offerts)",
+    "guidePromo": "J’ai un code promo",
+    "guideStep2": "Revenez sur cette page : le bouton « Discuter ({n} jeton) » apparaît sur la carte de la personne.",
+    "guideStep3": "Sans jeton, vous pouvez déjà cliquer sur « J’aime » : si la personne vous aime aussi, c’est un match et la conversation s’ouvre gratuitement. « Passer » la retire de vos propositions.",
+    "guideAvailability": "Chaque personne reste disponible jusqu’à l’heure indiquée sur sa carte (2 heures après sa réponse, ou la fin de votre recherche).",
+    "availableUntil": "Disponible jusqu’à {time}"
   },
   "promo": {
     "title": "Code promo",

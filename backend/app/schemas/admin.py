@@ -93,6 +93,7 @@ class PlanFeatures(BaseModel):
     live_match_enabled: bool = Field(False, strict=True)
     live_match_trials: int = Field(2, strict=True, ge=0, le=20)
     match_tokens_monthly: int = Field(0, strict=True, ge=0, le=500)
+    chat_images_enabled: bool = Field(False, strict=True)
 
 
 class PriceIn(BaseModel):

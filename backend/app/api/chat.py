@@ -5,8 +5,9 @@ from pydantic import BaseModel, field_validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import chat_service as chat
+from app.core import entitlements
 from app.core.auth import AuthUser, verified_user
-from app.core.errors import AppError, bad_request
+from app.core.errors import AppError, bad_request, forbidden
 from app.core.flags import require_flag
 from app.db.session import get_db
 
@@ -55,6 +56,9 @@ async def send(conversation_id: str, body: MessageIn, u: AuthUser = Depends(veri
 
 @router.post("/conversations/{conversation_id}/images", status_code=201, dependencies=[require_flag("chat_images")])
 async def image(conversation_id: str, file: UploadFile | None = File(None), u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    # Photos dans les messages : réservées aux formules qui l'incluent (fonctionnalité `chat_images_enabled`, réglable en administration).
+    if not (await entitlements.get(db, u.id))["limits"]["chatImages"]:
+        raise forbidden("PLAN_REQUIRED", "L’envoi de photos est réservé aux abonnés Premium et VIP")
     if file is None:
         raise bad_request("FILE_REQUIRED")
     data = await file.read(MAX_IMAGE + 1)

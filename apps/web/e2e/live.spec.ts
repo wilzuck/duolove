@@ -81,3 +81,51 @@ test.describe.serial('Match en direct', () => {
     await expect(page.getByRole('link', { name: 'Ouvrir la conversation' })).toBeVisible();
   });
 });
+
+// Un membre sans jeton dont la recherche reçoit une acceptation : le guide explique quoi faire.
+test.describe.serial('Match en direct : guide sans jeton', () => {
+  const city = `Ville${uid()}`;
+  const bea = persona('Bea', 'Femme', city);
+  const zed = persona('Zed', 'Homme', city);
+  const height = randomHeight();
+  let beaPage: Awaited<ReturnType<typeof newMember>>;
+  let zedPage: Awaited<ReturnType<typeof newMember>>;
+
+  test.beforeAll(async ({ browser }) => { beaPage = await newMember(browser); zedPage = await newMember(browser); });
+  test.afterAll(async () => { await beaPage.ctx.close(); await zedPage.ctx.close(); });
+
+  test('Zed accepte la recherche de Bea, qui n’a aucun jeton', async ({ request }) => {
+    for (const [m, p] of [[beaPage, bea], [zedPage, zed]] as const) {
+      await signUp(m.page, request, p);
+      await completeOnboarding(m.page, p);
+    }
+    await api(zedPage.page, 'patch', '/api/profiles/me', { heightCm: height });
+    await api(beaPage.page, 'post', '/api/live/searches', { seeking: 'MEN', ageMin: 18, ageMax: 60, heightMin: height, heightMax: height });
+    const inv = (await (await zedPage.page.request.get('/api/live/invites')).json()) as { items: { inviteId: string }[] };
+    await api(zedPage.page, 'post', `/api/live/invites/${inv.items[0]!.inviteId}/accept`, {});
+  });
+
+  test('Bea voit un guide clair : obtenir un jeton, ou aimer gratuitement (accessible)', async () => {
+    const { page } = beaPage;
+    await page.goto('/match');
+    await expect(page.getByText(/Zed, \d+/)).toBeVisible();
+    const guide = page.getByRole('region', { name: /Il vous faut 1 jeton pour lui parler/ });
+    await expect(guide).toBeVisible();
+    await expect(guide.getByRole('link', { name: 'Acheter des jetons' })).toHaveAttribute('href', '/shop');
+    await expect(guide.getByRole('link', { name: /Compléter mon profil \(3 jetons offerts\)/ })).toHaveAttribute('href', '/profile');
+    await expect(guide.getByRole('link', { name: 'J’ai un code promo' })).toBeVisible();
+    await expect(guide.getByText(/« J’aime »/)).toBeVisible();
+    await expect(page.getByText(/Disponible jusqu’à \d{2}:\d{2}/)).toBeVisible();
+    const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(axe.violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help}`)).toEqual([]);
+  });
+
+  test('Une fois un jeton obtenu, le guide disparaît et « Discuter » apparaît', async () => {
+    const { page } = beaPage;
+    const co = (await api(page, 'post', '/api/checkout', { type: 'product', code: 'TOKENS_5' })) as { providerRef: string };
+    await api(page, 'post', `/api/payments/mock/${co.providerRef}/complete`, { outcome: 'success' });
+    await page.goto('/match');
+    await expect(page.getByRole('button', { name: /Discuter \(1 jeton\)/ })).toBeVisible();
+    await expect(page.getByRole('region', { name: /Il vous faut 1 jeton/ })).toHaveCount(0);
+  });
+});

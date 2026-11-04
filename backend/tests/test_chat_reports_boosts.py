@@ -8,7 +8,7 @@ from app.core.realtime import emitted
 from app.db.session import session_maker
 from app.models.models import Boost, Conversation, FeatureFlag, Match, Profile, Report
 
-from tests.helpers import jpeg, login, seed_member, uid
+from tests.helpers import jpeg, login, make_premium, seed_member, uid
 
 
 async def scalar(stmt):
@@ -108,6 +108,11 @@ async def test_block_closes_conversation_and_report(app, db):
 async def test_chat_image_and_flag(app, db):
     a, b, conv = await pair(app, db)
     chat_service.reset_send_log()
+    # Sans abonnement : pas de photo dans les messages (le texte reste gratuit).
+    free = await a.agent.post(f"/api/conversations/{conv}/images", files={"file": ("p.jpg", jpeg(), "image/jpeg")})
+    assert free.status_code == 403 and free.json()["error"]["code"] == "PLAN_REQUIRED"
+    assert (await a.agent.post(f"/api/conversations/{conv}/messages", json={"body": "texte gratuit"})).status_code == 201
+    await make_premium(a.id)
     r = await a.agent.post(f"/api/conversations/{conv}/images", files={"file": ("p.jpg", jpeg(), "image/jpeg")})
     assert r.status_code == 201
     att = r.json()["attachments"][0]

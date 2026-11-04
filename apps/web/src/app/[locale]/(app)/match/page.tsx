@@ -64,7 +64,7 @@ function CriteriaForm({ value, onChange }: { value: Draft; onChange: (d: Draft) 
   );
 }
 
-function PersonCard({ c, locale, children }: { c: ProfileCardT; locale: string; children: React.ReactNode }) {
+function PersonCard({ c, locale, until, children }: { c: ProfileCardT; locale: string; until?: string; children: React.ReactNode }) {
   const t = useTranslations();
   return (
     <Card className="flex flex-wrap items-center gap-4 p-4">
@@ -73,8 +73,33 @@ function PersonCard({ c, locale, children }: { c: ProfileCardT; locale: string; 
         <p className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <BadgeCheck className="size-4 text-sky-500" aria-label={t('profile.verified')} />}</p>
         <p className="text-sm text-muted">{c.city}, {countryName(c.country, locale)}</p>
         {c.bio && <p className="mt-1 line-clamp-2 text-sm">{c.bio}</p>}
+        {until && <p className="mt-1 flex items-center gap-1 text-xs text-muted"><Clock className="size-3.5" aria-hidden />{t('live.availableUntil', { time: formatTime(until, locale) })}</p>}
       </div>
       <div className="flex shrink-0 flex-wrap gap-2">{children}</div>
+    </Card>
+  );
+}
+
+/** Guide affiché quand quelqu'un a accepté mais que le membre n'a pas de jeton : que faire, dans l'ordre, et les alternatives gratuites. */
+function TokenGuide({ tokensPerChat, giftTokens, completeness }: { tokensPerChat: number; giftTokens: number; completeness: number }) {
+  const t = useTranslations();
+  return (
+    <Card className="space-y-3 border-brand/30 bg-soft p-5" role="region" aria-labelledby="guide">
+      <h3 id="guide" className="flex items-center gap-2 font-bold"><Coins className="size-5 text-brand-ink" aria-hidden />{t('live.guideTitle', { n: tokensPerChat })}</h3>
+      <p className="text-sm">{t('live.guideIntro')}</p>
+      <ol className="list-decimal space-y-3 pl-5 text-sm marker:font-bold">
+        <li>
+          <p className="font-semibold">{t('live.guideStep1')}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Link href="/shop"><Button size="sm"><Coins className="size-4" aria-hidden />{t('live.buyTokens')}</Button></Link>
+            {completeness < 100 && <Link href="/profile"><Button size="sm" variant="outline"><Sparkles className="size-4" aria-hidden />{t('live.guideProfile', { n: giftTokens })}</Button></Link>}
+            <Link href="/shop"><Button size="sm" variant="ghost">{t('live.guidePromo')}</Button></Link>
+          </div>
+        </li>
+        <li>{t('live.guideStep2', { n: tokensPerChat })}</li>
+        <li>{t('live.guideStep3')}</li>
+      </ol>
+      <p className="text-xs text-muted">{t('live.guideAvailability')}</p>
     </Card>
   );
 }
@@ -197,8 +222,9 @@ export default function MatchPage() {
           ) : (
             <>
               <p className="text-sm text-muted">{t('live.choicesLeft', { n: search.choicesLeft, max: live.rules.maxChoices })}</p>
+              {!hasTokens && live.accepted.some((a) => !a.conversationId) && <TokenGuide tokensPerChat={live.rules.tokensPerChat} giftTokens={live.gift.tokens} completeness={live.gift.completeness} />}
               {live.accepted.map((c) => (
-                <PersonCard key={c.inviteId} c={c} locale={locale}>
+                <PersonCard key={c.inviteId} c={c} locale={locale} until={c.conversationId ? undefined : c.expiresAt}>
                   {!c.conversationId && (
                     <>
                       <Button size="sm" variant="ghost" aria-label={t('live.passAria', { name: c.displayName })} onClick={() => react.mutate({ id: c.inviteId, action: 'pass' })} disabled={react.isPending || c.liked}>

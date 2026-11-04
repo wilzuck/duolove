@@ -52,6 +52,26 @@ test.describe.serial('parcours DuoMatch', () => {
     await a.getByLabel('Écrire un message…').fill('Bonjour Koffi ! Enchantée.');
     await a.getByRole('button', { name: 'Envoyer', exact: true }).click();
     await expect(k.getByRole('log').getByText('Bonjour Koffi ! Enchantée.')).toBeVisible();
+
+    // Mise en garde anti-escroquerie visible sous le champ de saisie.
+    await expect(k.getByText(/Ne versez jamais d’argent/)).toBeVisible();
+    // « Envoyer avec Entrée » : coché par défaut ; décoché, Entrée ajoute une ligne au lieu d'envoyer.
+    const compose = k.getByLabel('Écrire un message…');
+    const enter = k.getByLabel('Envoyer avec la touche Entrée');
+    await expect(enter).toBeChecked();
+    await enter.uncheck();
+    await compose.fill('Deux lignes');
+    await compose.press('Enter');
+    await expect(k.getByRole('log').getByText('Deux lignes')).toHaveCount(0);
+    await compose.press('Control+Enter'); // Ctrl/⌘+Entrée envoie toujours
+    await expect(k.getByRole('log').getByText(/Deux lignes/)).toBeVisible();
+    await enter.check();
+    // Sans abonnement : pas d'envoi de photo, l'invitation à s'abonner s'affiche (et le texte reste gratuit).
+    await k.getByRole('button', { name: 'Envoyer une photo (réservé aux abonnés)' }).click();
+    const dlg = k.getByRole('dialog', { name: 'Photos réservées aux abonnés' });
+    await expect(dlg).toBeVisible();
+    await expect(dlg.getByRole('link', { name: 'Voir les formules' })).toBeVisible();
+    await dlg.getByRole('button', { name: 'Fermer' }).first().click();
   });
 
   test('9 · Aya bloque Koffi : la conversation disparaît des deux côtés', async () => {

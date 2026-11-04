@@ -217,7 +217,8 @@
       "noAds": "Ad-free",
       "liveMatch": "Live Match menu (unlimited)",
       "liveMatchTrials": "Live Match: {n} free tries",
-      "matchTokensMonthly": "{n} Match tokens per month"
+      "matchTokensMonthly": "{n} Match tokens per month",
+      "chatImages": "Send photos in messages"
     }
   },
   "about": {
@@ -770,7 +771,13 @@
     "emojis": "Emojis",
     "attach": "Send an image",
     "compose": "Write a message…",
-    "send": "Send"
+    "send": "Send",
+    "enterSends": "Send with the Enter key",
+    "scamWarning": "Never send money or share a number, code or bank details with someone you don’t know. Report any suspicious request from the ⋮ menu.",
+    "attachLocked": "Send a photo (subscribers only)",
+    "imagePlanTitle": "Photos are for subscribers",
+    "imagePlanText": "Sending photos in messages is included in the Premium and VIP plans. You can still write for free and receive photos.",
+    "seePlans": "See plans"
   },
   "profile": {
     "completeness": "Profile completeness",
@@ -1464,7 +1471,16 @@
     "passAria": "Pass on {name}",
     "likeDone": "Like sent. If they like you back, it’s a match.",
     "matchDone": "It’s a match! You can chat for free.",
-    "passDone": "This person was removed from your suggestions."
+    "passDone": "This person was removed from your suggestions.",
+    "guideTitle": "Someone accepted! You need {n} token to talk to them",
+    "guideIntro": "A Match token opens a conversation with someone who accepted your search. You have none right now. Here is what to do:",
+    "guideStep1": "Get at least 1 token:",
+    "guideProfile": "Complete my profile ({n} free tokens)",
+    "guidePromo": "I have a promo code",
+    "guideStep2": "Come back to this page: the “Chat ({n} token)” button appears on the person’s card.",
+    "guideStep3": "Without a token you can already tap “Like”: if they like you back, it’s a match and the chat opens for free. “Pass” removes them from your suggestions.",
+    "guideAvailability": "Each person stays available until the time shown on their card (2 hours after they answered, or the end of your search).",
+    "availableUntil": "Available until {time}"
   },
   "promo": {
     "title": "Promo code",

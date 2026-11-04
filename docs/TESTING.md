@@ -48,7 +48,7 @@ Prérequis : PostgreSQL local, bases `duomatch` (dev) et `duomatch_test` (créer
 
 ## Tests de l'API Python (`backend/tests/`)
 
-111 tests pytest (PostgreSQL réel, `httpx` en ASGI, un client par membre simulé) : `test_flows` (inscription → match → messagerie → blocage → export/suppression), `test_scoring`, `test_live`, `test_referral`, `test_chat_reports_boosts`, `test_monetization`, `test_refunds`, `test_kkiapay`, `test_promo`, `test_flags`, `test_flags_enforcement`, `test_admin`, `test_login_options`, `test_live_react`, `test_health`, `test_contract` (les constantes Python et `packages/types` ne divergent pas). Pour isoler une exécution : `TEST_DATABASE_URL=postgresql://…/ma_base_test make -C backend test`. Les événements Socket.IO émis en test sont lus dans `app.core.realtime.emitted`.
+114 tests pytest (PostgreSQL réel, `httpx` en ASGI, un client par membre simulé) : `test_flows` (inscription → match → messagerie → blocage → export/suppression), `test_scoring`, `test_live`, `test_referral`, `test_chat_reports_boosts`, `test_monetization`, `test_refunds`, `test_kkiapay`, `test_promo`, `test_flags`, `test_flags_enforcement`, `test_admin`, `test_login_options`, `test_live_react`, `test_chat_images_plan`, `test_health`, `test_contract` (les constantes Python et `packages/types` ne divergent pas). Pour isoler une exécution : `TEST_DATABASE_URL=postgresql://…/ma_base_test make -C backend test`. Les événements Socket.IO émis en test sont lus dans `app.core.realtime.emitted`.
 
 Non couvert : le téléversement de selfie, la connexion Google, l'événement `typing`, le déclenchement de la présence par une vraie connexion socket (seul l'E2E `live` passe par un vrai socket).
 

@@ -60,3 +60,29 @@ async def login(app, email: str, password: str = PASSWORD) -> httpx.AsyncClient:
     if r.status_code != 200:
         raise AssertionError(f"login failed {r.status_code} {r.text}")
     return c
+
+
+async def make_premium(user_id: str, plan: str = "PREMIUM", days: int = 30) -> None:
+    """Donne une formule payante active (droits lus côté serveur : photos de chat, filtres, Match…)."""
+    from app.core import entitlements
+    from app.db.session import session_maker
+
+    async with session_maker()() as s:
+        await entitlements.set_(s, user_id, plan, utcnow() + datetime.timedelta(days=days))
+        await s.commit()
+
+
+async def age_all_members(minutes: int = 60) -> None:
+    """Repart d'un état propre pour le menu Match : tous les membres existants sont « hors ligne » (inactifs depuis `minutes`)
+    et les recherches encore actives des exécutions précédentes sont fermées. Sans cela, un candidat au code d'origine tiré au hasard
+    pouvait recevoir l'invitation d'une ancienne recherche (active 24 h) ou compter en ligne, et fausser les décomptes."""
+    from sqlalchemy import update
+
+    from app.db.session import session_maker
+    from app.models.models import LiveInvite, LiveSearch, User
+
+    async with session_maker()() as s:
+        await s.execute(update(User).values(lastActiveAt=utcnow() - datetime.timedelta(minutes=minutes)))
+        await s.execute(update(LiveInvite).where(LiveInvite.status == "PENDING").values(status="EXPIRED"))
+        await s.execute(update(LiveSearch).where(LiveSearch.status == "ACTIVE").values(status="CLOSED"))
+        await s.commit()

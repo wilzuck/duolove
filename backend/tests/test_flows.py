@@ -10,7 +10,7 @@ from sqlalchemy import func, select, update
 from app.core import mail
 from app.core.ids import utcnow
 from app.models.models import Invoice, Match, Notification, Payment, Preference, Profile, Swipe, User
-from tests.helpers import PASSWORD, jpeg, login, new_agent, seed_member, uid
+from tests.helpers import PASSWORD, jpeg, login, make_premium, new_agent, seed_member, uid
 
 CITY = f"Ville-{uid()}"
 
@@ -248,6 +248,7 @@ async def test_messaging(app, db):
 
     from urllib.parse import urlparse
 
+    await make_premium(w["id"])
     img = await aw.post(f"/api/conversations/{conv}/images", files={"file": ("p.jpg", jpeg(), "image/jpeg")})
     assert img.status_code == 201
     path = urlparse(img.json()["attachments"][0]["url"]).path
@@ -383,8 +384,14 @@ async def test_rbac_moderation_and_flags(http, app, db):
     assert (await aa.get("/api/admin/overview")).status_code == 200
 
     assert (await ar.post("/api/reports", json={"targetId": user["id"], "reason": "SCAM", "details": "Demande de l’argent"})).status_code == 201
-    reports = (await am.get("/api/admin/reports")).json()
-    rep = next(r for r in reports["items"] if r["target"]["id"] == user["id"])
+    # La file de modération est triée du plus ancien au plus récent et paginée : la base de test garde les signalements des
+    # exécutions précédentes, le nouveau n'est donc pas forcément sur la première page.
+    rep, cursor = None, None
+    while rep is None:
+        page = (await am.get("/api/admin/reports", params={"cursor": cursor} if cursor else None)).json()
+        rep = next((r for r in page["items"] if r["target"]["id"] == user["id"]), None)
+        cursor = page.get("nextCursor")
+        assert rep or cursor, "signalement introuvable dans la file"
 
     assert (await am.get(f"/api/admin/users/{user['id']}")).json()["email"] is None  # le modérateur ne voit pas l'e-mail
     assert (await aa.get(f"/api/admin/users/{user['id']}")).json()["email"] == user["email"]

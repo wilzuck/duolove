@@ -25,6 +25,7 @@ function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) =>
   if (f.rewind_enabled) out.push(t('plans.feat.rewind'));
   if (f.boosts_monthly > 0) out.push(t('plans.feat.boostsMonthly', { n: f.boosts_monthly }));
   if (f.incognito_mode) out.push(t('plans.feat.incognito'));
+  if (f.chat_images_enabled) out.push(t('plans.feat.chatImages'));
   if (f.live_match_enabled) out.push(t('plans.feat.liveMatch'));
   else if (f.live_match_trials > 0) out.push(t('plans.feat.liveMatchTrials', { n: f.live_match_trials }));
   if (f.match_tokens_monthly > 0) out.push(t('plans.feat.matchTokensMonthly', { n: f.match_tokens_monthly }));

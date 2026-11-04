@@ -2,7 +2,7 @@
 from sqlalchemy import func, select
 
 from app.models.models import LiveInvite, Match, Notification, Swipe
-from tests.test_live import buy_tokens, candidate, code, criteria, invite_id, run, scalar, seeker, tokens
+from tests.test_live import _isolate_online_members, buy_tokens, candidate, code, criteria, invite_id, run, scalar, seeker, tokens
 
 
 async def accepted_setup(app, db, n=3):
