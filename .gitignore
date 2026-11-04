@@ -1,0 +1,24 @@
+node_modules
+.next
+dist
+.turbo
+coverage
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+!.env.example
+uploads*
+playwright-report
+test-results
+.DS_Store
+
+# Identifiants de développement : ne JAMAIS commiter
+.dev-credentials.md
+
+# Client Prisma généré (reconstruit par `prisma generate` au build)
+apps/api/src/generated
+
+# Réglages locaux de l’assistant
+.claude/settings.local.json
+.claude/worktrees

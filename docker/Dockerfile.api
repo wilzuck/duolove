@@ -1,0 +1,20 @@
+# syntax=docker/dockerfile:1
+# API NestJS. Build depuis la RACINE du dépôt : docker build -f docker/Dockerfile.api -t duomatch-api .
+FROM node:22-slim AS base
+ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH
+RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+
+FROM base AS build
+COPY . .
+RUN pnpm install --frozen-lockfile
+RUN pnpm --filter @duomatch/types build && pnpm --filter @duomatch/api build
+
+FROM base AS run
+ENV NODE_ENV=production
+COPY --from=build /app /app
+WORKDIR /app/apps/api
+EXPOSE 4000
+# Les migrations sont appliquées par le service « migrate » (docker-compose) ou : pnpm --filter @duomatch/api db:deploy
+USER node
+CMD ["node", "dist/main.js"]

@@ -1,0 +1,56 @@
+/* Design tokens DuoMatch — partagés avec apps/web (importé depuis globals.css). */
+:root {
+  --brand: #e91e63;
+  --brand-2: #ff6b81;
+  /* Variantes AA : texte/fond plein sous texte blanc (≥ 4,5:1). #E91E63 reste réservé au décor et aux grands éléments. */
+  --brand-strong: #d81b60;
+  --brand-strong-2: #c2185b;
+  --brand-ink: #c2185b;
+  --soft: #fff0f5;
+  --bg: #ffffff;
+  --card: #ffffff;
+  --fg: #22212b;
+  --muted: #6b6a76;
+  --line: #eee7eb;
+  --navy: #22212b;
+  --success: #22c55e;
+  --success-ink: #166534;
+  --danger: #ef4444;
+  --danger-strong: #dc2626;
+  --danger-ink: #b91c1c;
+  --gold: #f5b301;
+  --gold-ink: #8a6400;
+  --shadow-soft: 0 6px 24px -10px rgb(233 30 99 / .25);
+  --shadow-pop: 0 24px 60px -20px rgb(34 33 43 / .45);
+}
+
+[data-theme='dark'] {
+  --bg: #14121a;
+  --card: #1d1a25;
+  --fg: #f4f1f6;
+  --muted: #a9a4b3;
+  --line: #2c2836;
+  --soft: #2a1a24;
+  --brand-ink: #ff8fae;
+  --navy: #3a3647;
+  --success-ink: #4ade80;
+  --danger-ink: #fca5a5;
+  --gold-ink: #fcd34d;
+  --shadow-soft: 0 6px 24px -10px rgb(0 0 0 / .6);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #14121a;
+    --card: #1d1a25;
+    --fg: #f4f1f6;
+    --muted: #a9a4b3;
+    --line: #2c2836;
+    --soft: #2a1a24;
+    --brand-ink: #ff8fae;
+    --navy: #3a3647;
+    --success-ink: #4ade80;
+    --danger-ink: #fca5a5;
+    --gold-ink: #fcd34d;
+    --shadow-soft: 0 6px 24px -10px rgb(0 0 0 / .6);
+  }
+}

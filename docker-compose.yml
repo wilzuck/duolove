@@ -1,0 +1,47 @@
+# Environnement complet local : PostgreSQL + Mailpit (SMTP de test) + migrations + API + web.
+# NON TESTÉ dans l'environnement de développement initial (Docker indisponible) : à valider au premier lancement.
+# Usage : cp .env.example .env  # puis ajuster ; docker compose up --build
+services:
+  postgres:
+    image: postgres:17
+    environment: { POSTGRES_USER: duomatch, POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-duomatch-dev}, POSTGRES_DB: duomatch }
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U duomatch"], interval: 5s, timeout: 3s, retries: 10 }
+    ports: ["5432:5432"]
+
+  mailpit: # boîte mail de test : http://localhost:8025
+    image: axllent/mailpit
+    ports: ["1025:1025", "8025:8025"]
+
+  migrate: # applique les migrations puis s'arrête (exécution contrôlée, jamais au démarrage de l'API)
+    build: { context: ., dockerfile: docker/Dockerfile.api }
+    working_dir: /app/apps/api
+    command: ["pnpm", "exec", "prisma", "migrate", "deploy"]
+    environment: &dbenv { DATABASE_URL: "postgresql://duomatch:${POSTGRES_PASSWORD:-duomatch-dev}@postgres:5432/duomatch?schema=public" }
+    depends_on: { postgres: { condition: service_healthy } }
+    restart: "no"
+
+  api:
+    build: { context: ., dockerfile: docker/Dockerfile.api }
+    environment:
+      <<: *dbenv
+      NODE_ENV: ${NODE_ENV:-development}
+      APP_URL: http://localhost:3000
+      API_URL: http://localhost:4000
+      SMTP_URL: smtp://mailpit:1025
+      UPLOAD_DIR: /data/uploads
+      PAYMENT_WEBHOOK_SECRET: ${PAYMENT_WEBHOOK_SECRET:-dev-only-webhook-secret-change-me}
+      IP_HASH_SALT: ${IP_HASH_SALT:-dev-only-ip-salt}
+    volumes: [uploads:/data/uploads]
+    depends_on: { migrate: { condition: service_completed_successfully } }
+    ports: ["4000:4000"]
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+      args: { API_URL: "http://api:4000", NEXT_PUBLIC_API_URL: "http://localhost:4000", NEXT_PUBLIC_SITE_URL: "http://localhost:3000" }
+    depends_on: [api]
+    ports: ["3000:3000"]
+
+volumes: { pgdata: {}, uploads: {} }

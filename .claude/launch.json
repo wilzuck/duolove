@@ -1,0 +1,25 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "duomatch-api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "@duomatch/api",
+        "start"
+      ],
+      "port": 4000
+    },
+    {
+      "name": "duomatch-web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "@duomatch/web",
+        "dev"
+      ],
+      "port": 3000
+    }
+  ]
+}

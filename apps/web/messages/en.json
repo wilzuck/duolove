@@ -1,0 +1,1400 @@
+{
+  "meta": {
+    "title": "DuoMatch — Two hearts, one beautiful story",
+    "description": "DuoMatch, the dating platform for serious adults: verified profiles, smart matching, private and secure messaging.",
+    "tagline": "Two hearts, one beautiful story."
+  },
+  "common": {
+    "loading": "Loading…",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "next": "Continue",
+    "choose": "Choose…",
+    "soon": "Soon",
+    "language": "Language",
+    "pickDate": "Pick a date",
+    "clearDate": "Clear date",
+    "notifications": "Notifications",
+    "skipToContent": "Skip to content",
+    "themeLight": "Switch to light mode",
+    "themeDark": "Switch to dark mode",
+    "notFoundTitle": "Page not found",
+    "notFoundText": "This page doesn’t exist or has moved.",
+    "backHome": "Back to home"
+  },
+  "nav": {
+    "home": "DuoMatch home",
+    "main": "Main navigation",
+    "menu": "Open menu",
+    "how": "How it works",
+    "pricing": "Pricing",
+    "about": "About",
+    "blog": "Blog",
+    "help": "Help center",
+    "contact": "Contact",
+    "login": "Log in",
+    "register": "Create my account"
+  },
+  "footer": {
+    "product": "Product",
+    "company": "DuoMatch",
+    "legal": "Legal",
+    "adults": "For adults only (18 and over).",
+    "rights": "All rights reserved."
+  },
+  "home": {
+    "eyebrow": "Serious dating, with confidence",
+    "title": "Two hearts, one beautiful story.",
+    "subtitle": "DuoMatch helps you meet compatible people: same intentions, same values, same city or close. Simple, elegant and secure.",
+    "ctaRegister": "Create my account",
+    "ctaLogin": "Log in",
+    "heroMatch": "It’s a match!",
+    "trust": {
+      "adults": "18 and over only",
+      "verified": "“Verified profile” badge",
+      "private": "Private messaging"
+    },
+    "benefitsTitle": "Everything for a meeting that matters",
+    "howTitle": "How it works",
+    "plansTitle": "Simple, transparent plans",
+    "plansSubtitle": "Start for free. Upgrade to Premium or VIP whenever you like, no commitment.",
+    "faqTitle": "Frequently asked questions",
+    "finalTitle": "Ready to meet someone great?",
+    "finalText": "Create your profile in a few minutes. Signing up is free.",
+    "benefits": {
+      "matching": {
+        "title": "Smart matching",
+        "text": "A compatibility score based on your intentions, interests, city and languages — never on your looks."
+      },
+      "verified": {
+        "title": "Verified profiles",
+        "text": "The badge is only granted after a real check by our team."
+      },
+      "chat": {
+        "title": "Private messaging",
+        "text": "Chat in real time after a match: text, photos and emojis, with clear anti-spam rules."
+      },
+      "safety": {
+        "title": "Safety and privacy",
+        "text": "Blurred location, one-tap block and report, human moderation and romance-scam prevention."
+      },
+      "mobile": {
+        "title": "Built for mobile",
+        "text": "Swipe right to like, left to pass. Fast, smooth, one-handed."
+      },
+      "momo": {
+        "title": "Local payment",
+        "text": "A payment experience designed for francophone Africa, with Mobile Money integration in preparation."
+      }
+    }
+  },
+  "how": {
+    "title": "How DuoMatch works",
+    "subtitle": "From signing up to your first conversation, in six simple steps.",
+    "safetyTitle": "Stay vigilant",
+    "safetyText": "Never send money to someone you haven’t met and never share your banking details. Report anything suspicious: our team steps in.",
+    "steps": {
+      "signup": {
+        "title": "Sign up",
+        "text": "Create your account with your email or Google, then confirm your address and that you’re an adult."
+      },
+      "profile": {
+        "title": "Profile and photos",
+        "text": "Tell your story, pick your interests and add your best photos."
+      },
+      "discover": {
+        "title": "Discovery",
+        "text": "Browse compatible profiles, ranked using criteria you control."
+      },
+      "like": {
+        "title": "Mutual likes",
+        "text": "Like the people you fancy. When the interest is mutual, the connection is made."
+      },
+      "match": {
+        "title": "Match",
+        "text": "A match appears when two people like each other. You’re both notified."
+      },
+      "chat": {
+        "title": "Messaging",
+        "text": "Chat privately, in real time. Block or report at any time."
+      },
+      "premium": {
+        "title": "Premium / VIP (optional)",
+        "text": "More likes, see who liked you, advanced filters, visibility boosts and incognito mode."
+      }
+    }
+  },
+  "faq": {
+    "age": {
+      "q": "Who can sign up?",
+      "a": "Only people aged 18 and over. Your date of birth is checked at sign-up."
+    },
+    "free": {
+      "q": "Is DuoMatch free?",
+      "a": "Yes: profile, discovery, matches and post-match messaging are free, with a daily like limit. Premium and VIP unlock more features."
+    },
+    "safety": {
+      "q": "How are you protected?",
+      "a": "Your exact location is never shown, you can block and report in one tap, and a moderation team reviews reports."
+    },
+    "payment": {
+      "q": "How can I pay?",
+      "a": "Payment is secure and every subscription is activated only after the payment provider confirms it."
+    },
+    "delete": {
+      "q": "Can I delete my account?",
+      "a": "Yes, at any time from Settings → Privacy. You can also export your data."
+    },
+    "verify": {
+      "q": "What does the verified badge mean?",
+      "a": "A moderator compared a selfie sent by the person to their photos. The badge is never granted automatically."
+    }
+  },
+  "plans": {
+    "FREE": {
+      "name": "Free",
+      "tagline": "To discover DuoMatch"
+    },
+    "PREMIUM": {
+      "name": "Premium",
+      "tagline": "More likes, more choice"
+    },
+    "VIP": {
+      "name": "VIP",
+      "tagline": "The complete experience"
+    },
+    "popular": "Most popular",
+    "current": "Current plan",
+    "free": "Free",
+    "perMonth": "/ month",
+    "included": "Included",
+    "ctaFree": "Start for free",
+    "ctaPaid": "Create my account",
+    "note": "Indicative launch prices, monthly subscription with no commitment, cancel anytime.",
+    "f": {
+      "signup": "Sign-up and full profile",
+      "discover": "Profile discovery",
+      "likesFree": "{likes} likes per day",
+      "matches": "Unlimited matches",
+      "chat": "Messaging after a match",
+      "basicFilters": "Basic filters (age, country, city, intent)",
+      "likesPremium": "{likes} likes per day",
+      "superLikes3": "3 Super Likes per day",
+      "seeLikers": "See who liked you",
+      "advancedFilters": "Advanced filters (distance, languages, interests, verified, activity)",
+      "rewind": "Take back your last pass",
+      "allPremium": "All Premium benefits",
+      "likesVip": "Near-unlimited likes",
+      "superLikes10": "10 Super Likes per day",
+      "boosts": "4 visibility boosts per month",
+      "incognito": "Incognito mode"
+    },
+    "durationLabel": "Subscription length",
+    "months": "{n, plural, one {# month} other {# months}}",
+    "billedMonthly": "Billed monthly, no commitment",
+    "billedOnce": "{total} paid for {n} months",
+    "save": "You save {amount} (−{pct}%)",
+    "renewalNote": "Payment is one-off: the subscription does not renew automatically. Before it ends we notify you and you can extend in one click. Cancel anytime; your benefits last until the end of the paid period.",
+    "shopTitle": "Shop: boosts and Super Likes",
+    "shopText": "Buy one-off, no subscription needed. Your credits do not expire.",
+    "feat": {
+      "signup": "Sign-up and full profile",
+      "discover": "Profile discovery",
+      "matches": "Mutual matches",
+      "chat": "Free messaging after a match",
+      "safety": "Reporting, blocking and basic filters",
+      "allFree": "Everything included for free",
+      "likes": "{n} likes per day",
+      "likesUnlimited": "Unlimited likes (with anti-abuse limit)",
+      "superLikesWeekly": "{n} Super Likes per week",
+      "seeLikers": "See who liked you (full history)",
+      "advancedFilters": "Advanced filters",
+      "rewind": "Take back passed profiles",
+      "boostsMonthly": "{n} boosts per month",
+      "incognito": "Incognito mode",
+      "noAds": "Ad-free",
+      "liveMatch": "Live Match menu (unlimited)",
+      "liveMatchTrials": "Live Match: {n} free tries",
+      "matchTokensMonthly": "{n} Match tokens per month"
+    }
+  },
+  "about": {
+    "title": "About DuoMatch",
+    "lead": "A modern, elegant and respectful dating platform.",
+    "mission": "We’re building DuoMatch to make serious dating and beautiful stories easier between adults, in francophone Africa and beyond, in an environment where everyone feels safe.",
+    "valuesTitle": "Our commitments",
+    "values": {
+      "respect": {
+        "title": "Respect",
+        "text": "No harassment, no shocking content. Our community rules are enforced."
+      },
+      "safety": {
+        "title": "Safety",
+        "text": "Human moderation, blocking, reporting and action against fake profiles and scams."
+      },
+      "privacy": {
+        "title": "Privacy",
+        "text": "Blurred location, export and deletion of your data at any time."
+      },
+      "sincerity": {
+        "title": "Sincerity",
+        "text": "A verified badge is only earned after a real check. No fake testimonials."
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact us",
+    "lead": "A question, a problem, a suggestion? Write to us.",
+    "emailLabel": "Write to us at",
+    "sla": "We usually reply within 48 business hours.",
+    "cta": "Send an email",
+    "subject": "Question about DuoMatch",
+    "urgent": "For dangerous behavior, please use the “Report” button in the app instead: it is handled first."
+  },
+  "help": {
+    "title": "Help center",
+    "lead": "Answers to the most common questions.",
+    "more": "Can’t find your answer?",
+    "sections": {
+      "account": "Account",
+      "safety": "Safety",
+      "billing": "Subscriptions and payments",
+      "privacy": "Privacy"
+    },
+    "items": {
+      "verify": {
+        "q": "I didn’t receive the confirmation email",
+        "a": "Check your spam folder, then use “Resend” in the banner at the top of the app."
+      },
+      "password": {
+        "q": "I forgot my password",
+        "a": "On the login page, choose “Forgot password”: a link valid for one hour is emailed to you."
+      },
+      "sessions": {
+        "q": "How do I log out of another device?",
+        "a": "Settings → Security → Connected devices, then “Log out”."
+      },
+      "delete": {
+        "q": "How do I delete my account?",
+        "a": "Settings → Privacy → Delete my account. This is permanent."
+      },
+      "scam": {
+        "q": "How do I spot a romance scam?",
+        "a": "Beware of any request for money, a constant refusal to appear on video, or a very fast declaration of love. Report the profile."
+      },
+      "report": {
+        "q": "How do I report a profile?",
+        "a": "Open the profile or conversation, then “Report”. A moderator reviews every report."
+      },
+      "block": {
+        "q": "What happens if I block someone?",
+        "a": "You no longer see each other and the conversation is closed. You can unblock from settings."
+      },
+      "verified": {
+        "q": "How do I get the verified badge?",
+        "a": "Profile → Verification: send a selfie. A moderator compares it to your photos, then deletes the selfie."
+      },
+      "pay": {
+        "q": "Which payment methods?",
+        "a": "Payment goes through a secure provider; the available methods depend on your country."
+      },
+      "cancel": {
+        "q": "How do I cancel my subscription?",
+        "a": "Settings → Subscription → Cancel. You keep your benefits until the end of the paid period."
+      },
+      "invoice": {
+        "q": "Where are my invoices?",
+        "a": "Settings → Payments: every successful payment has an invoice."
+      },
+      "failed": {
+        "q": "My payment failed",
+        "a": "No benefit is activated until the payment is confirmed. Try again from the Premium page."
+      },
+      "location": {
+        "q": "Is my location visible?",
+        "a": "Never precisely: only a rounded distance may appear, and only if you share your location."
+      },
+      "export": {
+        "q": "Can I get my data back?",
+        "a": "Yes: Settings → Privacy → Export my data (JSON file)."
+      },
+      "visibility": {
+        "q": "How do I hide my profile?",
+        "a": "Settings → Privacy → turn off “Visible profile”. Incognito mode is reserved for VIP."
+      }
+    }
+  },
+  "blog": {
+    "title": "The DuoMatch blog",
+    "lead": "Tips for safe and successful dating.",
+    "read": "Read the article",
+    "posts": {
+      "avoid-romance-scams": {
+        "title": "5 habits to avoid romance scams",
+        "excerpt": "The warning signs to know before you trust.",
+        "intro": "Romance scams look alike. Here are the habits that protect you.",
+        "tips": [
+          "Never send money, even for an “emergency” or a “gift”.",
+          "Insist on a video call before getting attached: refusing is a warning sign.",
+          "Be wary of very fast declarations of love.",
+          "Never share your banking details or codes.",
+          "Report the profile at the first doubt: it protects others too."
+        ]
+      },
+      "first-message": {
+        "title": "Writing a great first message",
+        "excerpt": "How to start a natural, sincere conversation.",
+        "intro": "A good first message is simple, personal and open.",
+        "tips": [
+          "Read their profile and mention one specific detail.",
+          "Ask an open question instead of “hi”.",
+          "Be yourself: sincerity shows.",
+          "Keep it short: one or two sentences are enough.",
+          "Respect a lack of reply and don’t chase."
+        ]
+      },
+      "meet-safely": {
+        "title": "Meeting safely",
+        "excerpt": "The precautions to take before a first date.",
+        "intro": "A great first date starts with a few precautions.",
+        "tips": [
+          "Pick a public, busy place.",
+          "Tell a friend: place, time, the person’s name.",
+          "Arrive and leave on your own.",
+          "Keep an eye on your drink and belongings.",
+          "Trust your instinct: you can leave at any time."
+        ]
+      }
+    }
+  },
+  "legal": {
+    "draftTitle": "Draft version.",
+    "draftText": "This text is a working template to be reviewed and approved by a lawyer before launch.",
+    "updated": "Last updated: November 2026",
+    "terms": {
+      "title": "Terms of use",
+      "sections": [
+        {
+          "h": "1. Purpose",
+          "p": "DuoMatch is a matchmaking service between adults. These terms govern its use."
+        },
+        {
+          "h": "2. Access and minimum age",
+          "p": "The service is reserved for people aged at least 18. False age information leads to account deletion."
+        },
+        {
+          "h": "3. Account",
+          "p": "You are responsible for keeping your credentials confidential and your profile information accurate."
+        },
+        {
+          "h": "4. Prohibited behavior",
+          "p": "Harassment, impersonation, requests for money, unlawful or sexually explicit content, commercial solicitation."
+        },
+        {
+          "h": "5. Subscriptions",
+          "p": "Premium and VIP plans are monthly, with no commitment, and can be cancelled at any time. Benefits remain until the end of the paid period."
+        },
+        {
+          "h": "6. Moderation and sanctions",
+          "p": "DuoMatch may warn, suspend or remove an account that breaks the rules. An appeal procedure is available."
+        },
+        {
+          "h": "7. Liability",
+          "p": "DuoMatch connects members but does not guarantee their identity or intentions. Stay cautious when meeting."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "sections": [
+        {
+          "h": "Data collected",
+          "p": "Email, date of birth, gender, city, photos, bio, interests, interactions (likes, messages), payment data processed by the provider."
+        },
+        {
+          "h": "Purposes",
+          "p": "Provide the service, suggest compatible profiles, ensure safety and moderation, manage subscriptions."
+        },
+        {
+          "h": "Location",
+          "p": "Your exact location is never stored or shown: if you share it, it is rounded (about 11 km) before saving."
+        },
+        {
+          "h": "Photos",
+          "p": "Metadata (EXIF, GPS) is removed on upload. Verification selfies are deleted after a decision."
+        },
+        {
+          "h": "Your rights",
+          "p": "Access, correction, export (Settings → Privacy), account deletion, withdrawal of marketing consent at any time."
+        },
+        {
+          "h": "Retention",
+          "p": "Data is deleted or anonymized when you delete your account, subject to legal obligations (billing, security)."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Cookie policy",
+      "sections": [
+        {
+          "h": "Essential cookies",
+          "p": "A secure (httpOnly) session cookie keeps you signed in. It is essential for the service to work."
+        },
+        {
+          "h": "Preferences",
+          "p": "Your theme choice (light/dark) is stored locally in your browser."
+        },
+        {
+          "h": "Analytics and advertising",
+          "p": "No advertising tracker is used. Any future analytics tool will ask for your prior consent."
+        }
+      ]
+    },
+    "community": {
+      "title": "Community rules",
+      "sections": [
+        {
+          "h": "Be respectful",
+          "p": "Treat everyone with courtesy. Insults, discrimination and harassment are prohibited."
+        },
+        {
+          "h": "Be authentic",
+          "p": "Use your real photos and information. Fake profiles are removed."
+        },
+        {
+          "h": "No money",
+          "p": "Never ask for money or financial help. Report any such request."
+        },
+        {
+          "h": "Content",
+          "p": "No sexually explicit, violent or illegal content. Photos of minors are forbidden."
+        },
+        {
+          "h": "Reporting",
+          "p": "Report any behavior that breaks these rules; our team reviews every report."
+        }
+      ]
+    }
+  },
+  "auth": {
+    "loginTitle": "Welcome back!",
+    "loginSubtitle": "Log in to find your matches.",
+    "registerTitle": "Create my account",
+    "registerSubtitle": "Free, in under two minutes.",
+    "email": "Email address",
+    "password": "Password",
+    "newPassword": "New password",
+    "passwordHint": "At least 10 characters, with an uppercase letter, a lowercase letter and a digit.",
+    "forgot": "Forgot password?",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already a member?",
+    "displayName": "First name or nickname",
+    "birthDate": "Date of birth",
+    "birthHint": "You must be at least {age} years old.",
+    "gender": "Gender",
+    "country": "Country",
+    "city": "City",
+    "acceptTerms": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
+    "registered": "Your account is created! A confirmation email has just been sent to {email}: click the link to validate your account.",
+    "createAccount": "Create my account",
+    "google": "Continue with Google",
+    "or": "or",
+    "googleNeedsSignup": "New to DuoMatch? Create your account first to complete your profile.",
+    "googleComplete": "Google account recognized. Complete this information to finish signing up.",
+    "forgotTitle": "Forgot password",
+    "forgotSubtitle": "Enter your email: we’ll send you a reset link.",
+    "forgotSent": "If an account exists with this address, an email has just been sent.",
+    "sendLink": "Send link",
+    "backToLogin": "Back to login",
+    "resetTitle": "New password",
+    "resetCta": "Change my password",
+    "verifyTitle": "Email confirmation",
+    "verifyOk": "Your email address is confirmed. Welcome!",
+    "verifyBad": "This link is invalid or has expired. Request a new one from the app.",
+    "continue": "Continue"
+  },
+  "gender": {
+    "MAN": "Man",
+    "WOMAN": "Woman",
+    "NON_BINARY": "Non-binary",
+    "OTHER": "Other"
+  },
+  "intent": {
+    "SERIOUS": "Serious relationship",
+    "MARRIAGE": "Marriage",
+    "DATING": "Dating",
+    "FRIENDSHIP": "Friendship",
+    "UNSURE": "Not sure yet"
+  },
+  "intentHint": {
+    "SERIOUS": "A life partner, long term",
+    "MARRIAGE": "I want to get married",
+    "DATING": "Go out and see where it leads",
+    "FRIENDSHIP": "Meet people, no pressure",
+    "UNSURE": "I’m exploring"
+  },
+  "seeking": {
+    "MEN": "Men",
+    "WOMEN": "Women",
+    "EVERYONE": "Everyone"
+  },
+  "interest": {
+    "music": "Music",
+    "cinema": "Cinema",
+    "cooking": "Cooking",
+    "travel": "Travel",
+    "sport": "Sport",
+    "reading": "Reading",
+    "dance": "Dance",
+    "faith": "Faith",
+    "fashion": "Fashion",
+    "tech": "Tech",
+    "art": "Art",
+    "nature": "Nature",
+    "photography": "Photography",
+    "gaming": "Gaming",
+    "entrepreneurship": "Entrepreneurship",
+    "family": "Family"
+  },
+  "lang": {
+    "fr": "French",
+    "en": "English",
+    "fon": "Fon",
+    "yo": "Yoruba",
+    "ee": "Ewe",
+    "wo": "Wolof",
+    "ha": "Hausa",
+    "sw": "Swahili",
+    "ar": "Arabic",
+    "pt": "Portuguese"
+  },
+  "errors": {
+    "GENERIC": "Something went wrong. Please try again.",
+    "INTERNAL_ERROR": "The service is temporarily unavailable. Please try again shortly.",
+    "RATE_LIMITED": "Too many attempts. Please wait a moment.",
+    "UNAUTHORIZED": "Please log in.",
+    "INVALID_CREDENTIALS": "Incorrect email or password.",
+    "ACCOUNT_LOCKED": "Account temporarily locked after too many attempts. Try again in 15 minutes.",
+    "EMAIL_TAKEN": "This email address is already in use.",
+    "EMAIL_NOT_VERIFIED": "Please confirm your email address first.",
+    "INVALID_TOKEN": "Invalid or expired link.",
+    "ACCOUNT_SUSPENDED": "Your account is suspended.",
+    "PLAN_REQUIRED": "This feature requires a paid plan.",
+    "DAILY_LIMIT": "Daily limit reached.",
+    "PHOTO_REQUIRED": "Add at least one photo to continue.",
+    "PHOTO_LIMIT": "Maximum number of photos reached.",
+    "INVALID_IMAGE": "This image can’t be read.",
+    "UNSUPPORTED_IMAGE_FORMAT": "Accepted formats: JPEG, PNG, WebP.",
+    "FILE_REQUIRED": "No file received.",
+    "PAYLOAD_TOO_LARGE": "File too large.",
+    "NOTHING_TO_REWIND": "Nothing to take back.",
+    "CONVERSATION_CLOSED": "This conversation is closed.",
+    "NOT_FOUND": "Not found.",
+    "PROFILE_NOT_FOUND": "Profile not found.",
+    "VALIDATION_ERROR": "Some information is invalid.",
+    "invalidField": "Invalid value.",
+    "VERIFICATION_PENDING": "A verification request is already pending.",
+    "NO_BOOST_LEFT": "No boost left this month.",
+    "TRANSACTION_ALREADY_USED": "This transaction has already been used.",
+    "TRANSACTION_NOT_FOUND": "Transaction not found at the payment provider.",
+    "PROVIDER_UNAVAILABLE": "The payment provider is unreachable. Please try again shortly.",
+    "PAYMENT_NOT_FOUND": "Payment not found.",
+    "CSRF_ORIGIN": "Request refused.",
+    "FORBIDDEN": "Action not allowed.",
+    "PROFILE_INCOMPLETE": "Complete your profile to continue.",
+    "NO_ACTIVE_SUBSCRIPTION": "No active subscription.",
+    "INVALID_TARGET": "Action not possible on this profile.",
+    "APPEAL_ALREADY_SENT": "Appeal already sent.",
+    "password_too_short": "At least 10 characters.",
+    "password_lowercase": "Add a lowercase letter.",
+    "password_uppercase": "Add an uppercase letter.",
+    "password_digit": "Add a digit.",
+    "underage": "You must be 18 or older.",
+    "terms_required": "You must accept the terms.",
+    "age_range": "Maximum age must be above minimum.",
+    "NO_SUPER_LIKES": "Out of Super Likes: buy a pack or go Premium.",
+    "NO_CREDITS": "Not enough credits.",
+    "PRICE_NOT_AVAILABLE": "This length is not offered.",
+    "PRODUCT_NOT_FOUND": "Product not found.",
+    "FREE_PLAN_LOCKED": "The free plan cannot be paid or disabled.",
+    "REFUND_EXISTS": "A refund already exists for this payment.",
+    "NOT_REFUNDABLE": "This payment cannot be refunded.",
+    "REFUND_WINDOW_EXPIRED": "The refund request period has expired.",
+    "SELF_APPROVAL": "Another administrator must approve this request.",
+    "REFUND_NOT_PENDING": "This request has already been handled.",
+    "REFUND_NOT_FOUND": "Request not found.",
+    "CREDITS_CHANGED": "The balance changed during the operation: please try again.",
+    "NO_TOKENS": "Not enough tokens: buy a pack in the shop.",
+    "LIVE_COOLDOWN": "Please wait before relaunching a search.",
+    "INVITE_CLOSED": "This invitation is no longer available.",
+    "INVITE_NOT_FOUND": "Invitation not found.",
+    "CHOICES_EXHAUSTED": "You already opened the maximum number of chats for this search.",
+    "MATCH_CLOSED": "This person can no longer be reached.",
+    "PROMO_INVALID": "This code is not valid.",
+    "PROMO_ALREADY_USED": "You have already used this code.",
+    "PROMO_EXHAUSTED": "This code is no longer available.",
+    "PROMO_NOT_APPLICABLE": "This code does not apply here.",
+    "PROMO_CODE_EXISTS": "This code already exists.",
+    "invalid_promo": "Invalid code (3–32 letters, digits, - or _)."
+  },
+  "app": {
+    "nav": {
+      "discover": "Discover",
+      "likes": "Likes",
+      "messages": "Messages",
+      "profile": "Profile",
+      "settings": "Settings",
+      "notifications": "Notifications",
+      "admin": "Administration",
+      "shop": "Shop",
+      "match": "Match"
+    },
+    "upsellTitle": "Go Premium",
+    "upsellText": "More likes, see who likes you, advanced filters.",
+    "goPremium": "Go Premium",
+    "unread": "{count, plural, one {# unread notification} other {# unread notifications}}",
+    "verifyBanner": "A confirmation email was sent to {email}. Click the link inside to validate your account and be able to like and chat.",
+    "verifyResend": "Resend email",
+    "verifySent": "Confirmation email sent.",
+    "verifyDev": "(dev) open the latest email"
+  },
+  "suspended": {
+    "title": "Your account is suspended",
+    "reason": "Reason:",
+    "appealLabel": "Appeal this decision",
+    "appealCta": "Send my appeal",
+    "appeal": {
+      "NONE": "No appeal sent.",
+      "PENDING": "Your appeal is being reviewed by our team.",
+      "ACCEPTED": "Appeal accepted: refresh the page.",
+      "REJECTED": "Your appeal was reviewed and the decision stands."
+    }
+  },
+  "card": {
+    "verified": "Verified profile",
+    "compat": "{n}% match",
+    "distance": "{km} km away",
+    "prevPhoto": "Previous photo",
+    "nextPhoto": "Next photo"
+  },
+  "discover": {
+    "like": "LIKE",
+    "nope": "NOPE",
+    "info": "View full profile",
+    "filters": "Filters",
+    "actions": "Actions",
+    "pass": "Pass",
+    "likeBtn": "Like",
+    "superLike": "Super Like",
+    "rewind": "Take back last profile",
+    "likesLeft": "{n} likes left",
+    "emptyTitle": "No more profiles for now",
+    "emptyText": "Widen your criteria or come back later: new members join every day.",
+    "refresh": "Refresh",
+    "editFilters": "Edit my filters",
+    "limitTitle": "Like limit reached",
+    "limitText": "You’ve used all your likes for today. Come back tomorrow or go Premium for more.",
+    "planTitle": "Premium feature",
+    "planText": "This feature is part of the Premium and VIP plans.",
+    "noSuperTitle": "Out of Super Likes",
+    "noSuperText": "You’ve used your included Super Likes. Buy a pack or go Premium to get some every week.",
+    "buyPack": "Buy a pack"
+  },
+  "match": {
+    "title": "It’s a match!",
+    "text": "You and {name} like each other.",
+    "textGeneric": "You like each other.",
+    "chat": "Chat now",
+    "keep": "Keep swiping"
+  },
+  "likes": {
+    "title": "People who liked you",
+    "lockedTitle": "{count, plural, =0 {No one yet} one {# person liked you} other {# people liked you}}",
+    "lockedText": "Go Premium to see who liked you and reply directly.",
+    "emptyTitle": "No pending likes",
+    "emptyText": "Complete your profile and add photos to attract more attention.",
+    "view": "View {name}’s profile",
+    "superLike": "Super Like",
+    "heading": "Likes",
+    "tab": {
+      "received": "Liked you",
+      "sent": "You liked"
+    },
+    "sentEmptyTitle": "You haven’t liked anyone yet",
+    "sentEmptyText": "Browse profiles and like the ones you fancy: they will appear here.",
+    "chat": "Chat",
+    "pending": "Pending"
+  },
+  "chat": {
+    "title": "Messages",
+    "search": "Search conversations",
+    "newMatches": "New matches",
+    "empty": "No conversations yet. Like profiles to get matches!",
+    "noResults": "No results.",
+    "you": "You:",
+    "photo": "📷 Photo",
+    "deleted": "Message deleted",
+    "sayHello": "Say hello!",
+    "unread": "{count, plural, one {# unread message} other {# unread messages}}",
+    "pickTitle": "Your conversations",
+    "pickText": "Pick a conversation to start chatting.",
+    "typing": "typing…",
+    "typingDots": "…",
+    "viewProfile": "View profile",
+    "options": "Conversation options",
+    "unmatch": "Unmatch",
+    "unmatched": "Match removed.",
+    "history": "Conversation history",
+    "closed": "This conversation is no longer available.",
+    "older": "Older messages",
+    "firstMessage": "You matched with {name}. Send the first message!",
+    "imageAlt": "Sent image",
+    "read": "Read",
+    "sent": "Sent",
+    "deleteMessage": "Delete this message",
+    "emojis": "Emojis",
+    "attach": "Send an image",
+    "compose": "Write a message…",
+    "send": "Send"
+  },
+  "profile": {
+    "completeness": "Profile completeness",
+    "planTitle": "{plan} plan",
+    "planFreeText": "More likes, see who liked you, advanced filters, boosts…",
+    "planPaidText": "Thanks for your support! Manage your subscription here.",
+    "planManage": "Manage subscription",
+    "completenessTip": "Add a description, at least 3 interests and 3 photos to get more matches.",
+    "level": {
+      "INCOMPLETE": "Incomplete profile",
+      "IN_PROGRESS": "Profile in progress",
+      "COMPLETE": "Profile complete"
+    },
+    "photos": "My photos",
+    "about": "About me",
+    "interests": "Interests",
+    "interestsCount": "{n} of 10 selected (3 recommended)",
+    "bio": "Bio",
+    "bioHint": "{n} / 500 characters",
+    "bioPlaceholder": "Tell us about you, what you like, what you’re looking for…",
+    "occupation": "Occupation (optional)",
+    "intent": "What I’m looking for",
+    "languages": "Languages spoken",
+    "saved": "Profile saved.",
+    "verification": "Profile verification",
+    "verified": "Verified profile ✓",
+    "verifyPending": "Your request is being reviewed.",
+    "verifyText": "Send a selfie: a moderator compares it with your photos, then deletes it. The badge is never automatic.",
+    "verifyCta": "Send a selfie",
+    "verifySent": "Request sent. We’ll get back to you soon.",
+    "boost": "Visibility boost",
+    "boostText": "{n} boost(s) left this month. A boost lasts 1 hour.",
+    "boostActive": "Boost active: your profile is highlighted.",
+    "boostCta": "Boost my profile",
+    "boosted": "Boost activated for 1 hour!",
+    "boostShopText": "Highlight your profile with a boost (30 min, 2 h or 24 h)."
+  },
+  "profileView": {
+    "about": "About",
+    "unavailable": "This profile isn’t available",
+    "back": "Back to discovery"
+  },
+  "prefs": {
+    "title": "My dating preferences",
+    "seeking": "I’m looking for",
+    "ageRange": "Age range: {min} – {max}",
+    "ageMin": "Minimum age",
+    "ageMax": "Maximum age",
+    "country": "Country",
+    "anyCountry": "Any country",
+    "city": "City",
+    "cityHint": "Leave empty for all cities.",
+    "intents": "Intentions sought",
+    "advanced": "Advanced filters",
+    "distance": "Maximum distance (km)",
+    "distanceHint": "Requires sharing your approximate location (Settings → Privacy).",
+    "languages": "Languages",
+    "interests": "Interests",
+    "verifiedOnly": "Verified profiles only",
+    "activeRecently": "Recently active (7 days)"
+  },
+  "photos": {
+    "add": "Add a photo",
+    "main": "Main",
+    "alt": "Photo {n} of your profile",
+    "moveLeft": "Move left",
+    "moveRight": "Move right",
+    "makeMain": "Set as main photo",
+    "remove": "Delete photo",
+    "hint": "Up to {max} photos. JPEG, PNG or WebP. Metadata (including GPS location) is removed.",
+    "cropTitle": "Crop photo",
+    "zoom": "Zoom",
+    "cropDone": "Use this photo"
+  },
+  "onboarding": {
+    "progress": "Step {n} of {total}",
+    "finish": "Start discovering",
+    "about": {
+      "title": "Welcome {name}!",
+      "text": "Tell us about yourself so the right people find you."
+    },
+    "interests": {
+      "title": "Your interests",
+      "text": "Pick what you love: we use it to find what you have in common."
+    },
+    "photos": {
+      "title": "Your best photos",
+      "text": "At least one clear photo of you. Profiles with photos get far more likes."
+    },
+    "prefs": {
+      "title": "Who would you like to meet?",
+      "text": "You can change these any time."
+    }
+  },
+  "report": {
+    "cta": "Report",
+    "block": "Block",
+    "title": "Report this profile",
+    "intro": "Your report is confidential and reviewed by a moderator.",
+    "reason": "Reason",
+    "details": "Details (optional)",
+    "send": "Send report",
+    "sent": "Thank you, your report has been sent.",
+    "blocked": "{name} is blocked.",
+    "reasons": {
+      "FAKE_PROFILE": "Fake profile",
+      "SCAM": "Scam / request for money",
+      "HARASSMENT": "Harassment",
+      "INAPPROPRIATE_CONTENT": "Inappropriate content",
+      "UNDERAGE": "Underage person",
+      "SPAM": "Spam",
+      "OTHER": "Other"
+    }
+  },
+  "notifications": {
+    "readAll": "Mark all as read",
+    "empty": "No notifications",
+    "unread": "Unread",
+    "types": {
+      "LIKE": "Someone liked you.",
+      "MATCH": "It’s a match! Say hello.",
+      "MESSAGE": "You received a new message.",
+      "PROFILE_VERIFIED": "Your profile is verified.",
+      "SUBSCRIPTION_ACTIVATED": "Your {plan} subscription is active.",
+      "SUBSCRIPTION_EXPIRING": "Your subscription is about to end. Renew to keep your benefits.",
+      "SUBSCRIPTION_EXPIRING_FAILED": "Your payment didn’t go through. You can try again.",
+      "SECURITY_ALERT": "Security alert on your account ({event}).",
+      "SUBSCRIPTION_ACTIVATED_PURCHASE": "Your purchase “{product}” is confirmed.",
+      "REFUND_UPDATE_COMPLETED": "Your refund has been issued.",
+      "REFUND_UPDATE_REJECTED": "Your refund request was rejected.",
+      "REFUND_UPDATE_FAILED": "Your refund could not be completed: our team will contact you.",
+      "LIVE_INVITE": "Someone would like to meet you: reply in Match.",
+      "LIVE_ACCEPTED": "Someone accepted your Match invitation.",
+      "REFERRAL_REWARD": "A friend you referred completed their profile: Match tokens added."
+    }
+  },
+  "premium": {
+    "title": "Choose your plan",
+    "subtitle": "Unlock more likes, visibility and comfort. Cancel anytime.",
+    "renewsOn": "Renews on {date}",
+    "endsOn": "Ends on {date}",
+    "extend": "Extend by 30 days",
+    "choose": "Choose {plan}",
+    "resume": "Resume subscription",
+    "pending": "Payment is being processed. It will be confirmed once received: check Settings → Payments."
+  },
+  "checkout": {
+    "title": "Payment (simulation)",
+    "warning": "Test environment: no real money is charged. In production, this page is replaced by the payment provider.",
+    "pay": "Simulate a successful payment",
+    "fail": "Simulate a failure"
+  },
+  "settings": {
+    "tabs": {
+      "account": "Account",
+      "notifications": "Notifications",
+      "privacy": "Privacy",
+      "security": "Security",
+      "blocked": "Blocked accounts",
+      "subscription": "Subscription",
+      "payments": "Payments"
+    },
+    "account": {
+      "verified": "Confirmed",
+      "unverified": "Not confirmed",
+      "theme": "Dark theme",
+      "logout": "Log out"
+    },
+    "notif": {
+      "likes": "New likes",
+      "matches": "New matches",
+      "messages": "New messages",
+      "byEmail": "By email",
+      "inApp": "In the app",
+      "push": "Push notifications",
+      "pushText": "Notifications on your device, after your consent."
+    },
+    "privacy": {
+      "visible": "Visible profile",
+      "visibleText": "Turn off to stop appearing in discovery.",
+      "receipts": "Read receipts",
+      "receiptsText": "Lets others see that you read their messages.",
+      "incognito": "Incognito mode (VIP)",
+      "incognitoText": "Visible only to people you liked.",
+      "incognitoLocked": "Reserved for the VIP plan.",
+      "marketing": "Marketing communications",
+      "marketingText": "Receive our news and offers. Never required.",
+      "location": "Approximate location",
+      "locationText": "If you share your location, it is rounded to about 11 km before being saved. It is only used to compute approximate distances.",
+      "locationShare": "Share my location",
+      "locationClear": "Clear",
+      "locationSaved": "Approximate location saved.",
+      "locationDenied": "Location unavailable or denied.",
+      "locationCleared": "Location cleared.",
+      "export": "Export my data",
+      "exportText": "Download all your personal data as JSON.",
+      "exportCta": "Download",
+      "delete": "Delete my account",
+      "deleteText": "Your profile, photos and conversations will be erased or anonymized. This cannot be undone.",
+      "deleteCta": "Delete my account",
+      "deleteConfirmTitle": "Confirm deletion",
+      "deleteConfirmText": "Enter your password to confirm. Active subscriptions will be cancelled.",
+      "deleteFinal": "Delete permanently"
+    },
+    "security": {
+      "password": "Change password",
+      "current": "Current password",
+      "update": "Update",
+      "changed": "Password changed. Your other devices were logged out.",
+      "sessions": "Connected devices",
+      "sessionsText": "Log out of a device you don’t recognize.",
+      "thisDevice": "This device",
+      "lastUsed": "Last activity: {when}",
+      "revoke": "Log out",
+      "mobile": "Mobile",
+      "computer": "Computer",
+      "unknown": "Unknown device"
+    },
+    "blocked": {
+      "empty": "You haven’t blocked anyone",
+      "unblock": "Unblock"
+    },
+    "sub": {
+      "status": {
+        "FREE": "Free",
+        "PENDING": "Pending",
+        "ACTIVE": "Active",
+        "PAST_DUE": "Past due",
+        "CANCELED": "Cancelled",
+        "EXPIRED": "Expired"
+      },
+      "change": "Change plan",
+      "cancel": "Cancel subscription",
+      "cancelNote": "Cancellation takes effect at the end of the paid period: you keep your benefits until then."
+    },
+    "pay": {
+      "success": "Payment confirmed. Your subscription is active.",
+      "failed": "The payment failed. Nothing was charged and nothing was activated.",
+      "empty": "No payments yet",
+      "invoice": "Invoice",
+      "invoiceTitle": "Invoice {n}",
+      "print": "Print",
+      "status": {
+        "PENDING": "Pending",
+        "SUCCEEDED": "Succeeded",
+        "FAILED": "Failed",
+        "REFUNDED": "Refunded"
+      },
+      "askRefund": "Request a refund",
+      "refundText": "You can request a refund within 7 days of payment. An administrator reviews each request; if accepted, the benefits tied to the payment are removed.",
+      "refundReason": "Why would you like a refund?",
+      "refundSend": "Send request",
+      "refundSent": "Request sent. We will get back to you soon.",
+      "refund": {
+        "REQUESTED": "Refund requested",
+        "PROCESSING": "Refund processing",
+        "COMPLETED": "Refunded",
+        "REJECTED": "Request rejected",
+        "FAILED": "Refund failed"
+      }
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "empty": "No data.",
+    "more": "Load more",
+    "done": "Action done.",
+    "search": "Search a member",
+    "status": "Status",
+    "allStatuses": "All statuses",
+    "user": "Member",
+    "noBio": "No bio",
+    "history": "Moderation history",
+    "reason": "Reason (visible to the member)",
+    "days": "Duration (days)",
+    "suspend": "Suspend",
+    "ban": "Ban",
+    "unsuspend": "Lift sanction",
+    "role": "Role",
+    "noReports": "No reports",
+    "by": "by {name}",
+    "totalReports": "{n} report(s) in total",
+    "review": "Start review",
+    "resolve": "Resolve",
+    "dismiss": "Dismiss",
+    "noVerifs": "No pending verifications",
+    "noAppeals": "No appeals",
+    "selfieAlt": "Verification selfie of {name}",
+    "photoAlt": "Photo of {name}",
+    "approve": "Approve",
+    "reject": "Reject",
+    "accept": "Accept",
+    "sanctionReason": "Sanction reason:",
+    "runExpiry": "Run expiry job",
+    "jobDone": "{a} expired, {b} reminder(s).",
+    "cancelling": "cancellation scheduled",
+    "flags": "Feature flags",
+    "noFlags": "No flags",
+    "flagKey": "Flag key",
+    "addFlag": "Add",
+    "audit": "Audit log",
+    "menu": "Admin menu",
+    "backToApp": "Back to the app",
+    "pending": "{count} pending",
+    "sections": {
+      "pilot": "Overview",
+      "members": "Members",
+      "revenue": "Revenue",
+      "settings": "Settings"
+    },
+    "nav": {
+      "overview": "Dashboard",
+      "moderation": "Moderation",
+      "audit": "Audit log",
+      "users": "Users",
+      "reports": "Reports",
+      "subscriptions": "Subscriptions",
+      "payments": "Payments",
+      "flags": "Feature flags",
+      "plans": "Plans and pricing",
+      "refunds": "Refunds",
+      "promos": "Promo codes"
+    },
+    "roles": {
+      "MODERATOR": "Moderator",
+      "ADMIN": "Administrator",
+      "SUPER_ADMIN": "Super administrator",
+      "USER": "Member"
+    },
+    "todo": "To do",
+    "todoItems": {
+      "reports": "open reports",
+      "verifications": "profile verifications",
+      "appeals": "appeals"
+    },
+    "plansTitle": "Plan distribution",
+    "countriesTitle": "Member countries",
+    "recentTitle": "Latest sign-ups",
+    "billing": {
+      "subscriptions": "Subscriptions",
+      "payments": "Payments"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "users": "Users",
+      "reports": "Reports",
+      "moderation": "Moderation",
+      "billing": "Subscriptions & payments",
+      "settings": "Settings & audit"
+    },
+    "mod": {
+      "verifications": "Verifications",
+      "appeals": "Appeals",
+      "photos": "Photos"
+    },
+    "userStatus": {
+      "ACTIVE": "Active",
+      "SUSPENDED": "Suspended",
+      "BANNED": "Banned",
+      "DELETED": "Deleted"
+    },
+    "reportStatus": {
+      "OPEN": "Open",
+      "REVIEWING": "In review",
+      "RESOLVED": "Resolved",
+      "DISMISSED": "Dismissed"
+    },
+    "cols": {
+      "name": "Name",
+      "status": "Status",
+      "plan": "Plan",
+      "reports": "Reports",
+      "joined": "Joined",
+      "amount": "Amount",
+      "invoice": "Invoice",
+      "date": "Date",
+      "ends": "Ends",
+      "actor": "Actor",
+      "action": "Action",
+      "target": "Target"
+    },
+    "stats": {
+      "users": "Members",
+      "signups7": "Sign-ups (7 d)",
+      "signups30": "Sign-ups (30 d)",
+      "active7": "Active (7 d)",
+      "profilesCompleted": "Completed profiles",
+      "likes": "Likes",
+      "matches": "Matches",
+      "activeConversations": "Active conversations (7 d)",
+      "activeSubscriptions": "Active subscriptions",
+      "revenue": "Total revenue",
+      "revenue30": "Revenue (30 d)",
+      "conversion": "Paid conversion rate",
+      "retention": "7-day retention",
+      "signupsChart": "Sign-ups per day (last 14 days)"
+    },
+    "plans": {
+      "intro": "Prices, benefits and quotas are set here, without changing code. A change only applies to future purchases: existing subscriptions and payments keep their period and amount. Every change is logged.",
+      "saved": "Changes saved.",
+      "active": "Active",
+      "inactive": "Inactive",
+      "featured": "Featured",
+      "name": "Name",
+      "monthlyPrice": "Monthly price (XOF)",
+      "currencyHint": "Lengths are derived from it.",
+      "order": "Display order",
+      "featuresTitle": "Features and quotas",
+      "unlimitedHint": "-1 = unlimited (anti-abuse cap applied)",
+      "durations": "Lengths and discounts",
+      "col": {
+        "months": "Length",
+        "discount": "Discount (%)",
+        "override": "Forced price (XOF)",
+        "total": "Computed total",
+        "active": "Offered"
+      },
+      "contractNote": "A forced price replaces the “price × length − discount” calculation.",
+      "productsTitle": "One-off purchases (boosts, packs)",
+      "codeCol": "Code",
+      "quantity": "Quantity",
+      "price": "Price (XOF)"
+    },
+    "refunds": {
+      "intro": "A member request is handled by one administrator. A request created by an administrator requires approval by ANOTHER administrator (double validation). Refunds are full: the subscription is cancelled and unused credits are taken back.",
+      "status": {
+        "REQUESTED": "To review",
+        "PROCESSING": "Processing",
+        "COMPLETED": "Refunded",
+        "REJECTED": "Rejected",
+        "FAILED": "Failed"
+      },
+      "source": {
+        "USER": "Member request",
+        "ADMIN": "Admin request"
+      },
+      "empty": "No refunds",
+      "note": "Note:",
+      "creditsBack": "{n} credit(s) taken back",
+      "approve": "Approve",
+      "reject": "Reject",
+      "needOther": "Another administrator must approve",
+      "approveTitle": "Approve the refund",
+      "rejectTitle": "Reject the request",
+      "approveText": "The payment provider will be asked to refund {amount}. Rights tied to the payment will be removed.",
+      "rejectText": "The member will be notified. State the reason for rejection.",
+      "noteLabel": "Note (kept in the log)",
+      "manual": "I already refunded outside the app (provider dashboard): do not call the provider",
+      "done": "Decision saved.",
+      "failed": "The provider refused:",
+      "created": "Request created: another administrator must approve it.",
+      "request": "Refund",
+      "requestTitle": "Request a refund",
+      "requestText": "Full refund of {name}’s payment ({amount}). Another administrator will have to approve it.",
+      "reasonLabel": "Reason",
+      "action": "Action"
+    },
+    "promos": {
+      "title": "Promo codes",
+      "subtitle": "Percentage discounts or free Match tokens. A code can be used once per member.",
+      "new": "New code",
+      "code": "Code",
+      "kind": "Type",
+      "kindPERCENT": "Percentage discount",
+      "kindTOKENS": "Free tokens",
+      "percent": "Discount (1–90%)",
+      "tokens": "Free tokens",
+      "max": "Max uses (empty = unlimited)",
+      "expires": "Expires on (optional)",
+      "create": "Create code",
+      "created": "Code created.",
+      "value": "Value",
+      "used": "Used",
+      "active": "Active",
+      "inactive": "Disabled",
+      "disable": "Disable",
+      "enable": "Enable",
+      "empty": "No promo codes.",
+      "immutable": "A code’s type and value never change: disable it and create a new one."
+    }
+  },
+  "pricingFaq": {
+    "renew": {
+      "q": "Does the subscription renew automatically?",
+      "a": "No. Mobile Money payments do not allow reliable recurring debits: each period is a one-off payment. We notify you before the end so you can extend."
+    },
+    "cancel": {
+      "q": "Can I cancel?",
+      "a": "Yes, anytime in Settings → Subscription. You keep your benefits until the end of the paid period."
+    },
+    "momo": {
+      "q": "Which payment methods?",
+      "a": "Mobile Money (MTN, Moov, Wave depending on the country) and bank card through our secure payment provider. We never store banking data."
+    },
+    "refund": {
+      "q": "Can I get a refund?",
+      "a": "Write to us via the Contact page with your payment reference: each request is reviewed, notably for double payments or errors."
+    },
+    "guarantee": {
+      "q": "Does Premium guarantee matches?",
+      "a": "No. No subscription guarantees a match or a relationship: it gives you more visibility and tools."
+    },
+    "credits": {
+      "q": "Do my boosts and Super Likes expire?",
+      "a": "No, purchased credits stay on your account until used."
+    }
+  },
+  "shop": {
+    "title": "Shop",
+    "subtitle": "Visibility boosts and Super Like packs, no subscription needed.",
+    "balances": "Your credits",
+    "superLikes": "Super Likes",
+    "superLikesIncluded": "+ {n} included each week with your plan",
+    "boostOf": "Boost {n} {unit}",
+    "hours": "h",
+    "minutes": "min",
+    "activate": "Activate",
+    "boostActivated": "Boost activated: your profile is highlighted.",
+    "boostActive": "Boost active until {date}",
+    "creditsNote": "Purchased credits do not expire. An active boost is extended. No credit is used if the action fails.",
+    "buy": "Buy",
+    "boostHint": "Your profile is shown more to compatible people.",
+    "packHint": "{n} Super Likes to use whenever you like",
+    "history": "Credit history",
+    "noHistory": "No activity yet.",
+    "linkFromPremium": "Boosts and one-off Super Like packs",
+    "reason": {
+      "PURCHASE": "Purchase",
+      "GRANT_PLAN": "Included in plan",
+      "CONSUME": "Used",
+      "REFUND": "Refunded",
+      "ADMIN_GRANT": "Gifted",
+      "GRANT_PROFILE": "Gift: 100% profile",
+      "PROMO": "Promo code",
+      "REFERRAL": "Referral"
+    },
+    "tokens": "Match tokens",
+    "tokensUse": "Use them in Match",
+    "tokenPackHint": "{n} tokens: 1 token opens 1 chat in Match."
+  },
+  "life": {
+    "title": "Lifestyle",
+    "hint": "Optional. Used by the Match menu criteria; leave blank if you prefer not to answer.",
+    "unspecified": "Not specified",
+    "yes": "Yes",
+    "no": "No",
+    "hasChildren": "Do you have children?",
+    "likesPets": "Do you like pets?",
+    "living": "Living situation",
+    "livingOpt": {
+      "ALONE": "I live alone",
+      "FAMILY": "I live with family",
+      "ROOMMATES": "I live with roommates"
+    },
+    "height": "Height (cm)",
+    "heightHint": "Between 120 and 230 cm.",
+    "origin": "Country of origin"
+  },
+  "live": {
+    "title": "Live Match",
+    "subtitle": "Set your criteria: we invite people who are online. Those who accept show up, and you choose who to talk to.",
+    "tokensAria": "{n} Match tokens, open the shop",
+    "giftTitle": "{n} free tokens!",
+    "giftText": "Complete your profile to 100% (currently {pct}%) and confirm your email to receive them.",
+    "giftCta": "Complete my profile",
+    "any": "Any",
+    "heightMin": "Min height (cm)",
+    "heightMax": "Max height (cm)",
+    "strictNote": "A specific criterion only matches profiles that filled in that information: nothing is assumed.",
+    "criteriaTitle": "My criteria right now",
+    "editTitle": "Edit my criteria",
+    "trialsLeft": "{n} free try(ies) left",
+    "launch": "Start searching",
+    "relaunch": "Relaunch with these criteria",
+    "wait": "Next launch in {time}",
+    "rulesNote": "Your search stays active for {hours} h. You can relaunch it every {minutes} min with new criteria. You can chat with up to {chats} people; each chat costs {tokens} token.",
+    "started": "{n} online person(s) invited.",
+    "startedNobody": "Nobody online right now: we’ll let you know as soon as a matching profile connects.",
+    "searching": "Search in progress",
+    "until": "until {time}",
+    "progress": "{pending} awaiting a reply · {accepted} accepted",
+    "editCriteria": "Edit criteria",
+    "stop": "Stop",
+    "acceptedTitle": "They accepted",
+    "noneYet": "Nobody has accepted yet",
+    "noneYetText": "Replies show up here live. You can close the page: the search keeps going.",
+    "choicesLeft": "You have {n} of {max} chats left for this search.",
+    "talk": "Chat ({n} token)",
+    "buyTokens": "Buy tokens",
+    "openChat": "Open chat",
+    "chosen": "Chat opened ({n} token used).",
+    "chosenFree": "You were already connected: no token used.",
+    "incoming": "Match invitations ({n})",
+    "incomingText": "These people would like to meet you. Accept so they can choose you; it costs you nothing.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "accepted": "Invitation accepted: this person can now choose you.",
+    "paywallTitle": "Your free tries are used up",
+    "paywallText": "Go Premium to run unlimited Match searches. Chat tokens stay available in the shop.",
+    "optInTitle": "Receive Match invitations",
+    "optInText": "Turn off to stop being invited when someone searches.",
+    "unavailable": "Match unavailable",
+    "unavailableText": "Confirm your email and finish your profile, then try again."
+  },
+  "promo": {
+    "title": "Promo code",
+    "label": "Your code",
+    "apply": "Apply",
+    "remove": "Remove",
+    "hint": "A code can be used once per account. The discount is calculated at checkout.",
+    "percentApplied": "{code}: −{percent}% on your next payment.",
+    "tokensOffer": "{code}: {n} free Match tokens.",
+    "claim": "Claim my tokens",
+    "claimed": "{n} tokens added to your balance.",
+    "discountBadge": "−{percent}%"
+  },
+  "referral": {
+    "title": "Referral",
+    "subtitle": "Invite friends: you both earn Match tokens.",
+    "yourCode": "Your referral code",
+    "yourLink": "Your invitation link",
+    "copy": "Copy link",
+    "copied": "Link copied.",
+    "share": "Share",
+    "shareText": "Join me on {site}, a serious dating app. My code: {code}",
+    "how": "How it works",
+    "step1": "Share your link or code.",
+    "step2": "Your friend signs up with the code, confirms their email and completes their profile to 100%.",
+    "step3": "You get {referrer} tokens and they get {referee} tokens, once.",
+    "invited": "Invited",
+    "rewarded": "Rewarded",
+    "pending": "Pending",
+    "earned": "Tokens earned",
+    "limit": "Reward limited to {n} friends per referrer.",
+    "referredBy": "You were referred by a member.",
+    "link": "Refer friends, earn tokens",
+    "registerLabel": "Referral code (optional)",
+    "registerHint": "If a friend invited you, enter their code to receive tokens."
+  }
+}

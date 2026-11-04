@@ -1,0 +1,860 @@
+// DuoMatch — schéma de données (PostgreSQL). Voir docs/DATABASE.md.
+// Prisma 7 : l'URL de connexion vit dans apps/api/prisma.config.ts, pas ici.
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../apps/api/src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────── Enums ─────────────────────────
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+  DELETED
+}
+
+enum Gender {
+  MAN
+  WOMAN
+  NON_BINARY
+  OTHER
+}
+
+enum Seeking {
+  MEN
+  WOMEN
+  EVERYONE
+}
+
+enum Intent {
+  SERIOUS
+  MARRIAGE
+  DATING
+  FRIENDSHIP
+  UNSURE
+}
+
+enum Visibility {
+  VISIBLE
+  HIDDEN
+}
+
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TokenType {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+}
+
+enum SwipeAction {
+  LIKE
+  PASS
+  SUPER_LIKE
+}
+
+enum MatchStatus {
+  ACTIVE
+  UNMATCHED
+}
+
+enum ReportReason {
+  FAKE_PROFILE
+  SCAM
+  HARASSMENT
+  INAPPROPRIATE_CONTENT
+  UNDERAGE
+  SPAM
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWING
+  RESOLVED
+  DISMISSED
+}
+
+enum ModerationActionType {
+  WARN
+  SUSPEND
+  BAN
+  UNSUSPEND
+  PHOTO_REJECT
+  VERIFICATION_APPROVE
+  VERIFICATION_REJECT
+  APPEAL_ACCEPT
+  APPEAL_REJECT
+}
+
+enum AppealStatus {
+  NONE
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum PlanCode {
+  FREE
+  PREMIUM
+  VIP
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum CreditType {
+  SUPER_LIKE
+  BOOST_30
+  BOOST_120
+  BOOST_1440
+  MATCH_TOKEN
+}
+
+enum CreditReason {
+  PURCHASE
+  GRANT_PLAN
+  CONSUME
+  REFUND
+  ADMIN_GRANT
+  GRANT_PROFILE
+  PROMO
+  REFERRAL
+}
+
+enum PaymentKind {
+  SUBSCRIPTION
+  PRODUCT
+}
+
+enum ProductKind {
+  BOOST
+  SUPER_LIKE_PACK
+  TOKEN_PACK
+}
+
+enum RefundStatus {
+  REQUESTED
+  PROCESSING
+  COMPLETED
+  REJECTED
+  FAILED
+}
+
+enum RefundSource {
+  USER
+  ADMIN
+}
+
+enum NotificationType {
+  LIKE
+  MATCH
+  MESSAGE
+  PROFILE_VERIFIED
+  SUBSCRIPTION_ACTIVATED
+  SUBSCRIPTION_EXPIRING
+  SECURITY_ALERT
+  REFUND_UPDATE
+  LIVE_INVITE
+  LIVE_ACCEPTED
+  REFERRAL_REWARD
+}
+
+enum PromoKind {
+  PERCENT
+  TOKENS
+}
+
+enum ReferralStatus {
+  PENDING
+  REWARDED
+}
+
+enum LivingSituation {
+  ALONE
+  FAMILY
+  ROOMMATES
+}
+
+enum LiveSearchStatus {
+  ACTIVE
+  CLOSED
+  EXPIRED
+}
+
+enum LiveInviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  CHOSEN
+}
+
+// ───────────────────────── Comptes ─────────────────────────
+
+model User {
+  id               String     @id @default(cuid())
+  email            String     @unique
+  emailVerifiedAt  DateTime?
+  passwordHash     String?
+  role             Role       @default(USER)
+  status           UserStatus @default(ACTIVE)
+  suspendedUntil   DateTime?
+  acceptedTermsAt  DateTime
+  marketingConsent Boolean    @default(false)
+  failedLogins     Int        @default(0)
+  lockedUntil      DateTime?
+  lastActiveAt     DateTime   @default(now())
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  deletedAt        DateTime?
+
+  accounts           Account[]
+  sessions           Session[]
+  tokens             VerificationToken[]
+  profile            Profile?
+  preference         Preference?
+  interests          UserInterest[]
+  verifications      VerificationRequest[]
+  swipesGiven        Swipe[]                 @relation("SwipeGiver")
+  swipesReceived     Swipe[]                 @relation("SwipeTarget")
+  matchesA           Match[]                 @relation("MatchA")
+  matchesB           Match[]                 @relation("MatchB")
+  messages           Message[]
+  blocksGiven        Block[]                 @relation("Blocker")
+  blocksReceived     Block[]                 @relation("Blocked")
+  reportsMade        Report[]                @relation("Reporter")
+  reportsAgainst     Report[]                @relation("ReportTarget")
+  moderationsOn      ModerationAction[]      @relation("ModerationTarget")
+  moderationsBy      ModerationAction[]      @relation("ModerationActor")
+  subscriptions      Subscription[]
+  payments           Payment[]
+  entitlement        Entitlement?
+  notifications      Notification[]
+  notificationPref   NotificationPreference?
+  auditLogs          AuditLog[]
+  creditWallets      CreditWallet[]
+  creditTransactions CreditTransaction[]
+  boosts             Boost[]
+  liveSearches       LiveSearch[]
+  liveInvitesSent    LiveInvite[]            @relation("LiveSeeker")
+  liveInvitesGot     LiveInvite[]            @relation("LiveInvitee")
+  referralCode       String?                 @unique
+  referralsMade      Referral[]              @relation("Referrer")
+  referralReceived   Referral?               @relation("Referee")
+
+  @@index([status, role])
+  @@index([lastActiveAt])
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  provider          String // google | apple
+  providerAccountId String
+  createdAt         DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id         String    @id @default(cuid())
+  userId     String
+  tokenHash  String    @unique // SHA-256 du jeton opaque (le jeton n'est jamais stocké)
+  userAgent  String?
+  ipHash     String?
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime  @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+}
+
+model VerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  type      TokenType
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+}
+
+// ───────────────────────── Profils ─────────────────────────
+
+model Profile {
+  id           String     @id @default(cuid())
+  userId       String     @unique
+  displayName  String
+  birthDate    DateTime
+  gender       Gender
+  pronouns     String?
+  country      String
+  city         String
+  // Coordonnées volontairement arrondies (~11 km) : jamais de GPS précis.
+  approxLat    Float?
+  approxLng    Float?
+  bio          String     @default("")
+  occupation   String?
+  languages    String[]   @default(["fr"])
+  intent       Intent     @default(UNSURE)
+  visibility   Visibility @default(VISIBLE)
+  incognito    Boolean    @default(false) // VIP : visible uniquement des profils likés
+  verified     Boolean    @default(false)
+  completeness Int        @default(0)
+  boostedUntil DateTime?
+  readReceipts Boolean    @default(true)
+  // Mode de vie (facultatif) : sert aux critères du menu Match.
+  hasChildren   Boolean?
+  likesPets     Boolean?
+  living        LivingSituation?
+  heightCm      Int?
+  originCountry String?
+  // Accepte de recevoir des invitations Match en direct.
+  liveOptIn     Boolean          @default(true)
+  onboardedAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photos ProfilePhoto[]
+
+  @@index([country, city])
+  @@index([gender, birthDate])
+  @@index([visibility, boostedUntil])
+}
+
+model ProfilePhoto {
+  id               String           @id @default(cuid())
+  profileId        String
+  key              String // clé de stockage objet
+  position         Int              @default(0)
+  isPrimary        Boolean          @default(false)
+  width            Int
+  height           Int
+  moderationStatus ModerationStatus @default(PENDING)
+  createdAt        DateTime         @default(now())
+  profile          Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, position])
+  @@index([moderationStatus])
+}
+
+model Preference {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  seeking        Seeking  @default(EVERYONE)
+  ageMin         Int      @default(18)
+  ageMax         Int      @default(60)
+  country        String?
+  city           String?
+  intents        Intent[]
+  // Filtres Premium
+  maxDistanceKm  Int?
+  languages      String[] @default([])
+  interests      String[] @default([])
+  verifiedOnly   Boolean  @default(false)
+  activeRecently Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Interest {
+  id    String         @id @default(cuid())
+  slug  String         @unique
+  users UserInterest[]
+}
+
+model UserInterest {
+  userId     String
+  interestId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interest   Interest @relation(fields: [interestId], references: [id], onDelete: Cascade)
+
+  @@id([userId, interestId])
+  @@index([interestId])
+}
+
+model VerificationRequest {
+  id           String           @id @default(cuid())
+  userId       String
+  selfieKey    String
+  status       ModerationStatus @default(PENDING)
+  reviewedById String?
+  reviewedAt   DateTime?
+  note         String?
+  createdAt    DateTime         @default(now())
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([userId])
+}
+
+// ───────────────────────── Rencontres ─────────────────────────
+
+model Swipe {
+  id        String      @id @default(cuid())
+  giverId   String
+  targetId  String
+  action    SwipeAction
+  createdAt DateTime    @default(now())
+  giver     User        @relation("SwipeGiver", fields: [giverId], references: [id], onDelete: Cascade)
+  target    User        @relation("SwipeTarget", fields: [targetId], references: [id], onDelete: Cascade)
+
+  // Une seule décision par couple ordonné : empêche les interactions en double.
+  @@unique([giverId, targetId])
+  @@index([targetId, action])
+  @@index([giverId, createdAt])
+}
+
+model Match {
+  id            String        @id @default(cuid())
+  // userAId < userBId (ordre lexicographique) : un seul match par paire, quel que soit l'ordre des likes.
+  userAId       String
+  userBId       String
+  status        MatchStatus   @default(ACTIVE)
+  unmatchedById String?
+  createdAt     DateTime      @default(now())
+  userA         User          @relation("MatchA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB         User          @relation("MatchB", fields: [userBId], references: [id], onDelete: Cascade)
+  conversation  Conversation?
+
+  @@unique([userAId, userBId])
+  @@index([userBId])
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  matchId       String    @unique
+  lastMessageAt DateTime?
+  createdAt     DateTime  @default(now())
+  match         Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  messages      Message[]
+}
+
+model Message {
+  id             String              @id @default(cuid())
+  conversationId String
+  senderId       String
+  body           String
+  readAt         DateTime?
+  deletedAt      DateTime?
+  createdAt      DateTime            @default(now())
+  conversation   Conversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User                @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  attachments    MessageAttachment[]
+
+  @@index([conversationId, createdAt(sort: Desc)])
+  @@index([senderId])
+}
+
+model MessageAttachment {
+  id               String           @id @default(cuid())
+  messageId        String
+  key              String
+  mime             String
+  size             Int
+  moderationStatus ModerationStatus @default(PENDING)
+  message          Message          @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+}
+
+// ───────────────────────── Sécurité & modération ─────────────────────────
+
+model Block {
+  id        String   @id @default(cuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@index([blockedId])
+}
+
+model Report {
+  id           String             @id @default(cuid())
+  reporterId   String
+  targetId     String
+  reason       ReportReason
+  details      String?
+  status       ReportStatus       @default(OPEN)
+  resolvedById String?
+  resolvedAt   DateTime?
+  createdAt    DateTime           @default(now())
+  reporter     User               @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  target       User               @relation("ReportTarget", fields: [targetId], references: [id], onDelete: Cascade)
+  actions      ModerationAction[]
+
+  @@index([status, createdAt])
+  @@index([targetId])
+}
+
+model ModerationAction {
+  id           String               @id @default(cuid())
+  moderatorId  String
+  targetUserId String
+  reportId     String?
+  type         ModerationActionType
+  reason       String
+  expiresAt    DateTime?
+  // Procédure de contestation
+  appealStatus AppealStatus         @default(NONE)
+  appealText   String?
+  appealedAt   DateTime?
+  createdAt    DateTime             @default(now())
+  moderator    User                 @relation("ModerationActor", fields: [moderatorId], references: [id])
+  target       User                 @relation("ModerationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  report       Report?              @relation(fields: [reportId], references: [id], onDelete: SetNull)
+
+  @@index([targetUserId, createdAt])
+  @@index([appealStatus])
+}
+
+// ───────────────────────── Monétisation ─────────────────────────
+
+model SubscriptionPlan {
+  id            String         @id @default(cuid())
+  code          PlanCode       @unique
+  name          String
+  priceXof      Int
+  currency      String         @default("XOF")
+  intervalDays  Int            @default(30)
+  features      Json // clés : voir PLAN_FEATURE_KEYS (@duomatch/types) — jamais codées en dur dans la logique
+  active        Boolean        @default(true)
+  featured      Boolean        @default(false)
+  sortOrder     Int            @default(0)
+  subscriptions Subscription[]
+  prices        PlanPrice[]
+}
+
+// Durées d'abonnement proposées (1/3/6/12 mois) : prix = tarif mensuel configuré × mois × (1 − remise).
+model PlanPrice {
+  id              String           @id @default(cuid())
+  planId          String
+  months          Int
+  discountPercent Int              @default(0)
+  amountOverride  Int? // prix forcé (FCFA) ; sinon calculé
+  active          Boolean          @default(true)
+  plan            SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, months])
+}
+
+// Achats ponctuels : boosts de visibilité et packs de Super Likes.
+model Product {
+  id         String      @id @default(cuid())
+  code       String      @unique
+  kind       ProductKind
+  creditType CreditType
+  name       String
+  quantity   Int         @default(1)
+  priceXof   Int
+  currency   String      @default("XOF")
+  active     Boolean     @default(true)
+  sortOrder  Int         @default(0)
+  payments   Payment[]
+}
+
+// Solde de crédits par type ; le journal CreditTransaction fait foi (idempotence par (userId, reason, refId)).
+model CreditWallet {
+  id        String     @id @default(cuid())
+  userId    String
+  type      CreditType
+  balance   Int        @default(0)
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type])
+}
+
+model CreditTransaction {
+  id        String       @id @default(cuid())
+  userId    String
+  type      CreditType
+  delta     Int
+  reason    CreditReason
+  refId     String? // paiement, swipe, boost… : même référence = même opération (jamais deux fois)
+  createdAt DateTime     @default(now())
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, reason, refId])
+  @@index([userId, createdAt])
+}
+
+model Boost {
+  id              String   @id @default(cuid())
+  userId          String
+  startsAt        DateTime
+  endsAt          DateTime
+  durationMinutes Int
+  source          String // credit | plan
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, endsAt])
+}
+
+model SystemSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id                String             @id @default(cuid())
+  userId            String
+  planId            String
+  status            SubscriptionStatus @default(PENDING)
+  provider          String
+  providerRef       String?
+  currentPeriodEnd  DateTime?
+  cancelAtPeriodEnd Boolean            @default(false)
+  months            Int                @default(1)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan              SubscriptionPlan   @relation(fields: [planId], references: [id])
+  payments          Payment[]
+
+  @@index([userId, status])
+  @@index([currentPeriodEnd, status])
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  userId         String
+  subscriptionId String?
+  kind           PaymentKind   @default(SUBSCRIPTION)
+  months         Int           @default(1)
+  productId      String?
+  quantity       Int           @default(1)
+  amountXof      Int
+  currency       String        @default("XOF")
+  provider       String
+  providerRef    String
+  status         PaymentStatus @default(PENDING)
+  failureReason  String?
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  product        Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  promoCodeId    String?
+  discountXof    Int           @default(0)
+  promoCode      PromoCode?    @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
+  invoice        Invoice?
+  refunds        Refund[]
+
+  @@unique([provider, providerRef])
+  @@index([userId, createdAt])
+}
+
+// Remboursement intégral d'un paiement. Les demandes ADMIN exigent l'approbation d'un AUTRE administrateur (double validation).
+model Refund {
+  id              String       @id @default(cuid())
+  paymentId       String
+  amountXof       Int
+  reason          String
+  source          RefundSource
+  status          RefundStatus @default(REQUESTED)
+  requestedById   String
+  decidedById     String?
+  decisionNote    String?
+  providerRef     String? // référence du fournisseur, ou "manual" si remboursé hors système
+  failureReason   String?
+  creditsReversed Int          @default(0)
+  createdAt       DateTime     @default(now())
+  decidedAt       DateTime?
+  payment         Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@index([status, createdAt])
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  paymentId String   @unique
+  number    String   @unique
+  amountXof Int
+  issuedAt  DateTime @default(now())
+  payment   Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+}
+
+// Droits matérialisés côté serveur : seule source de vérité pour les fonctions payantes.
+model Entitlement {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  plan         PlanCode  @default(FREE)
+  validUntil   DateTime?
+  boostCredits Int       @default(0)
+  updatedAt    DateTime  @updatedAt
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Idempotence des webhooks de paiement.
+model WebhookEvent {
+  id          String    @id @default(cuid())
+  provider    String
+  eventId     String
+  type        String
+  receivedAt  DateTime  @default(now())
+  processedAt DateTime?
+
+  @@unique([provider, eventId])
+}
+
+// ───────────────────────── Notifications & administration ─────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  data      Json             @default("{}")
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt(sort: Desc)])
+}
+
+model NotificationPreference {
+  id            String  @id @default(cuid())
+  userId        String  @unique
+  inAppLikes    Boolean @default(true)
+  inAppMatches  Boolean @default(true)
+  inAppMessages Boolean @default(true)
+  emailLikes    Boolean @default(false)
+  emailMatches  Boolean @default(true)
+  emailMessages Boolean @default(false)
+  pushEnabled   Boolean @default(false)
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  targetType String?
+  targetId   String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+}
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  enabled     Boolean  @default(false)
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+// ───────────────────────── Match en direct ─────────────────────────
+
+/// Une recherche = des critères validés par le membre ; active 24 h. Le lancement est espacé de 15 min.
+model LiveSearch {
+  id        String           @id @default(cuid())
+  userId    String
+  criteria  Json
+  status    LiveSearchStatus @default(ACTIVE)
+  createdAt DateTime         @default(now())
+  expiresAt DateTime
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invites   LiveInvite[]
+
+  @@index([userId, createdAt])
+  @@index([status, expiresAt])
+}
+
+/// Invitation envoyée à une personne en ligne. Le jeton n'est débité qu'à l'ouverture de la conversation (CHOSEN).
+model LiveInvite {
+  id          String           @id @default(cuid())
+  searchId    String
+  seekerId    String
+  inviteeId   String
+  status      LiveInviteStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+  respondedAt DateTime?
+  expiresAt   DateTime
+  search      LiveSearch       @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  seeker      User             @relation("LiveSeeker", fields: [seekerId], references: [id], onDelete: Cascade)
+  invitee     User             @relation("LiveInvitee", fields: [inviteeId], references: [id], onDelete: Cascade)
+
+  @@unique([searchId, inviteeId])
+  @@index([inviteeId, status])
+  @@index([seekerId, status])
+}
+
+// ───────────────────────── Promotions et parrainage ─────────────────────────
+
+/// Code promotionnel créé par un administrateur : remise en % sur un paiement, ou jetons Match offerts.
+model PromoCode {
+  id             String    @id @default(cuid())
+  code           String    @unique // toujours en MAJUSCULES
+  kind           PromoKind
+  percent        Int? // PERCENT : 1–90
+  tokens         Int? // TOKENS : jetons Match offerts
+  maxRedemptions Int? // null = illimité
+  startsAt       DateTime?
+  expiresAt      DateTime?
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  payments       Payment[]
+}
+
+/// Un filleul = un compte inscrit avec le code d'un autre membre. La récompense n'est versée qu'une fois (profil 100 % + e-mail vérifié).
+model Referral {
+  id         String         @id @default(cuid())
+  referrerId String
+  refereeId  String         @unique
+  status     ReferralStatus @default(PENDING)
+  createdAt  DateTime       @default(now())
+  rewardedAt DateTime?
+  referrer   User           @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referee    User           @relation("Referee", fields: [refereeId], references: [id], onDelete: Cascade)
+
+  @@index([referrerId, status])
+}

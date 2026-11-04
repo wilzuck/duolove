@@ -1,0 +1,69 @@
+@import 'tailwindcss';
+@import '../../../../packages/ui/src/tokens.css';
+@source '../../../../packages/ui/src';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-2: var(--brand-2);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-strong-2: var(--brand-strong-2);
+  --color-brand-ink: var(--brand-ink);
+  --color-soft: var(--soft);
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-navy: var(--navy);
+  --color-success: var(--success);
+  --color-success-ink: var(--success-ink);
+  --color-danger: var(--danger);
+  --color-danger-strong: var(--danger-strong);
+  --color-danger-ink: var(--danger-ink);
+  --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
+  --shadow-soft: var(--shadow-soft);
+  --shadow-pop: var(--shadow-pop);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html { background: var(--bg); color-scheme: light; }
+[data-theme='dark'] { color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+button, a { -webkit-tap-highlight-color: transparent; }
+
+/* Animations sobres : désactivées si l'utilisateur le demande. */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+.skip-link { position: absolute; left: 1rem; top: -4rem; z-index: 100; background: var(--card); padding: .75rem 1rem; border-radius: 9999px; box-shadow: var(--shadow-pop); }
+.skip-link:focus { top: 1rem; }
+.hero-glow { background: radial-gradient(60% 60% at 20% 10%, rgb(255 107 129 / .35), transparent 60%), radial-gradient(50% 50% at 90% 30%, rgb(233 30 99 / .22), transparent 60%), var(--soft); }
+.pb-safe { padding-bottom: max(env(safe-area-inset-bottom), .25rem); }
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+/* Calendrier react-day-picker (DatePicker de @duomatch/ui) aux couleurs DuoMatch.
+   Sélecteurs doublés : la feuille de la lib arrive après globals.css et gagnerait à spécificité égale. */
+.rdp-root.rdp-root {
+  --rdp-accent-color: var(--brand-strong);
+  --rdp-accent-background-color: var(--soft);
+  --rdp-day-height: 2.5rem;
+  --rdp-day-width: 2.5rem;
+  --rdp-today-color: var(--brand-ink);
+  --rdp-selected-border: 2px solid var(--brand-strong);
+  font-size: 0.875rem;
+  color: var(--fg);
+}
+.rdp-root.rdp-root .rdp-chevron { fill: currentColor; }
+.rdp-root.rdp-root .rdp-selected .rdp-day_button { color: var(--brand-ink); font-weight: 700; }
+.rdp-root.rdp-root .rdp-caption_label { text-transform: capitalize; }
+.rdp-root.rdp-root .rdp-today:not(.rdp-outside) { font-weight: 700; }
+.rdp-root.rdp-root .rdp-dropdown { background: var(--card); color: var(--fg); }
+.rdp-root.rdp-root .rdp-dropdowns { gap: .25rem; }
