@@ -15,7 +15,8 @@ import { RefundsService } from '../subscriptions/refunds.service.js';
 import { PromoService } from '../subscriptions/promo.service.js';
 import { promoCodeInput } from '@duomatch/types';
 import { PlanConfigService } from '../subscriptions/plan-config.service.js';
-import { planFeaturesSchema, DURATION_MONTHS } from '@duomatch/types';
+import { planFeaturesSchema, DURATION_MONTHS, FEATURE_FLAGS, type FlagKey } from '@duomatch/types';
+import { FlagsService } from '../common/flags.js';
 import { SubscriptionsModule } from '../subscriptions/subscriptions.controller.js';
 import type { Prisma } from '../generated/prisma/client.js';
 
@@ -52,7 +53,7 @@ const productPatch = z.object({ name: z.string().trim().min(2).max(60).optional(
 const refundCreate = z.object({ paymentId: z.string().min(1), reason: z.string().trim().min(5).max(500) });
 const refundApprove = z.object({ note: z.string().trim().max(500).optional(), manual: z.boolean().optional() });
 const refundReject = z.object({ note: z.string().trim().min(3).max(500) });
-const flagSchema = z.object({ enabled: z.boolean(), description: z.string().max(200).optional() });
+const flagSchema = z.object({ enabled: z.boolean() });
 
 const page = (limit?: string) => Math.min(Math.max(parseInt(limit ?? '25', 10) || 25, 1), 100);
 const cursorArgs = (cursor?: string): { cursor?: { id: string }; skip?: number } => (cursor ? { cursor: { id: cursor }, skip: 1 } : {});
@@ -70,6 +71,7 @@ export class AdminController {
     private readonly config: PlanConfigService,
     private readonly refunds: RefundsService,
     private readonly promos: PromoService,
+    private readonly flagsSvc: FlagsService,
   ) {}
 
   private audit(actorId: string, action: string, targetType?: string, targetId?: string, metadata: Prisma.InputJsonObject = {}) {
@@ -424,14 +426,21 @@ export class AdminController {
 
   // ───────── Paramètres ─────────
   @Roles('ADMIN') @Get('feature-flags')
-  flags() { return this.prisma.featureFlag.findMany({ orderBy: { key: 'asc' } }); }
+  async flags() {
+    const rows = await this.prisma.featureFlag.findMany();
+    const by = new Map(rows.map((r) => [r.key, r]));
+    // Catalogue fermé : on affiche toutes les fonctions pilotables, avec leur état réel (ligne absente = valeur par défaut).
+    return FEATURE_FLAGS.map((f) => ({ key: f.key, category: f.category, emergency: f.emergency, defaultOn: f.defaultOn, enabled: by.get(f.key)?.enabled ?? f.defaultOn, overridden: by.has(f.key), updatedAt: by.get(f.key)?.updatedAt ?? null }));
+  }
 
   @Roles('ADMIN') @Put('feature-flags/:key')
   async setFlag(@CurrentUser() a: AuthUser, @Param('key') key: string, @Body(zod(flagSchema)) body: z.infer<typeof flagSchema>) {
-    if (!/^[a-z0-9_.-]{2,60}$/.test(key)) throw new AppError(400, 'INVALID_KEY');
-    const f = await this.prisma.featureFlag.upsert({ where: { key }, create: { key, ...body }, update: body });
-    await this.audit(a.id, 'flag.set', 'FeatureFlag', key, { enabled: body.enabled });
-    return f;
+    if (!FEATURE_FLAGS.some((f) => f.key === key)) throw notFound('UNKNOWN_FLAG', 'Fonctionnalité inconnue');
+    const before = await this.flagsSvc.isOn(key as FlagKey);
+    const f = await this.prisma.featureFlag.upsert({ where: { key }, create: { key, enabled: body.enabled }, update: { enabled: body.enabled } });
+    this.flagsSvc.invalidate();
+    await this.audit(a.id, 'flag.set', 'FeatureFlag', key, { before, enabled: body.enabled });
+    return { key, enabled: f.enabled };
   }
 
   @Roles('ADMIN') @Get('audit-logs')
@@ -445,12 +454,9 @@ export class AdminController {
 /** Drapeaux de fonctionnalité en lecture publique (le web masque/affiche selon l'état). */
 @Controller('feature-flags')
 export class PublicFlagsController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly flags: FlagsService) {}
   @Public() @Get()
-  async list() {
-    const rows = await this.prisma.featureFlag.findMany({ select: { key: true, enabled: true } });
-    return Object.fromEntries(rows.map((r) => [r.key, r.enabled]));
-  }
+  list() { return this.flags.all(); }
 }
 
 @Module({ imports: [StorageModule, ProfilesModule, SubscriptionsModule], controllers: [AdminController, PublicFlagsController] })

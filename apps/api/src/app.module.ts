@@ -1,5 +1,6 @@
 import { Controller, Get, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { FlagGuard, FlagsModule } from './common/flags.js';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AdminModule } from './admin/admin.controller.js';
 import { BoostsModule } from './boosts/boosts.controller.js';
@@ -40,12 +41,12 @@ class DevController {
   imports: [
     // Limite globale ; des limites plus strictes s'appliquent aux routes sensibles (@Throttle).
     ThrottlerModule.forRoot({ throttlers: [{ ttl: 60_000, limit: 300 }], skipIf: () => getEnv().NODE_ENV === 'test' }),
-    PrismaModule, MailModule, StorageModule, RealtimeModule, EntitlementsModule, NotificationsModule,
+    PrismaModule, FlagsModule, MailModule, StorageModule, RealtimeModule, EntitlementsModule, NotificationsModule,
     AuthModule, UsersModule, ProfilesModule, DiscoveryModule, SwipesModule, MatchesModule, ChatModule,
     SubscriptionsModule, BoostsModule, LiveModule, ReferralModule, ReportsModule, AdminModule,
   ],
   controllers: [HealthController, DevController],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: AuthGuard }],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: AuthGuard }, { provide: APP_GUARD, useClass: FlagGuard }],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

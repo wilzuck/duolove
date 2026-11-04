@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { checkoutSchema, promoPreviewSchema, promoRedeemSchema, type CheckoutInput } from '@duomatch/types';
 import { CurrentUser, Public, RequireVerified, type AuthUser } from '../common/auth.js';
 import { badRequest } from '../common/errors.js';
+import { RequireFlag } from '../common/flags.js';
 import { zod } from '../common/zod.pipe.js';
 import { EntitlementsModule } from './entitlements.service.js';
 import { PaymentsService } from './payments.service.js';
@@ -32,13 +33,13 @@ export class SubscriptionsController {
   @Get('subscriptions/me')
   me(@CurrentUser() u: AuthUser) { return this.payments.current(u.id); }
 
-  @RequireVerified() @Throttle({ default: { limit: 10, ttl: 60_000 } }) @Post('subscriptions/checkout')
+  @RequireVerified() @RequireFlag('payments_enabled') @Throttle({ default: { limit: 10, ttl: 60_000 } }) @Post('subscriptions/checkout')
   checkout(@CurrentUser() u: AuthUser, @Body(zod(legacyCheckout)) body: { plan: 'PREMIUM' | 'VIP'; months: 1 | 3 | 6 | 12 }) {
     return this.payments.checkout(u.id, body.plan, body.months);
   }
 
   /** Point d'entrée unique : abonnement (offre + durée) ou achat ponctuel (boost, pack). Le montant est toujours calculé serveur. */
-  @RequireVerified() @Throttle({ default: { limit: 10, ttl: 60_000 } }) @Post('checkout')
+  @RequireVerified() @RequireFlag('payments_enabled') @Throttle({ default: { limit: 10, ttl: 60_000 } }) @Post('checkout')
   checkoutAny(@CurrentUser() u: AuthUser, @Body(zod(checkoutSchema)) body: CheckoutInput) {
     return body.type === 'subscription' ? this.payments.checkout(u.id, body.plan, body.months, body.promoCode) : this.payments.checkoutProduct(u.id, body.code, body.promoCode);
   }

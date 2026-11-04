@@ -637,7 +637,9 @@
     "PROMO_EXHAUSTED": "This code is no longer available.",
     "PROMO_NOT_APPLICABLE": "This code does not apply here.",
     "PROMO_CODE_EXISTS": "This code already exists.",
-    "invalid_promo": "Invalid code (3–32 letters, digits, - or _)."
+    "invalid_promo": "Invalid code (3–32 letters, digits, - or _).",
+    "FEATURE_DISABLED": "This feature is temporarily unavailable.",
+    "UNKNOWN_FLAG": "Unknown feature."
   },
   "app": {
     "nav": {
@@ -1237,6 +1239,83 @@
       "enable": "Enable",
       "empty": "No promo codes.",
       "immutable": "A code’s type and value never change: disable it and create a new one."
+    },
+    "ff": {
+      "title": "Features",
+      "subtitle": "Turn a feature on or off without redeploying. Click the i icon to understand what each switch does.",
+      "cat": {
+        "access": "Access",
+        "money": "Money",
+        "social": "Dating and chat"
+      },
+      "emergency": "Emergency stop",
+      "on": "On",
+      "off": "Off",
+      "default": "Default value",
+      "info": "What is “{name}” for?",
+      "whenOn": "When on",
+      "whenOff": "When off",
+      "useWhen": "When to use it",
+      "saved": "Saved: {name} is {state}.",
+      "note": "The block is enforced by the server: even an old open tab cannot bypass a switched-off feature. Every change is recorded in the audit log.",
+      "items": {
+        "registration_open": {
+          "name": "Registration open",
+          "what": "Allows new people to create an account (form and Google).",
+          "on": "Anyone can sign up.",
+          "off": "No new account is created. Existing members keep signing in normally.",
+          "useWhen": "When fake accounts flood in, or during maintenance."
+        },
+        "payments_enabled": {
+          "name": "Payments",
+          "what": "Allows starting new payments: subscriptions, Match tokens, boosts, Super Likes.",
+          "on": "Purchases work.",
+          "off": "No new purchase can start. A payment already started can complete, and refunds remain possible.",
+          "useWhen": "When the payment provider has an outage or maintenance."
+        },
+        "promo_codes": {
+          "name": "Promo codes",
+          "what": "Allows entering promo codes (percentage discounts and free tokens).",
+          "on": "Codes are accepted.",
+          "off": "All codes are refused; purchases without a code continue normally.",
+          "useWhen": "If a code leaks or is being abused."
+        },
+        "boosts": {
+          "name": "Visibility boosts",
+          "what": "Allows activating boosts (bought or included in a plan).",
+          "on": "Boosts can be activated.",
+          "off": "Boosts can no longer be activated; members’ credits stay intact.",
+          "useWhen": "If ranking of boosted profiles causes trouble."
+        },
+        "live_match": {
+          "name": "Live Match",
+          "what": "The Match menu: criteria, invitations to people online, chats paid with tokens.",
+          "on": "The Match menu works.",
+          "off": "Match is unavailable for everyone; tokens and existing chats are kept.",
+          "useWhen": "In case of observed abuse or server overload."
+        },
+        "super_likes": {
+          "name": "Super Likes",
+          "what": "Allows sending Super Likes.",
+          "on": "Super Likes work.",
+          "off": "Super Likes are refused; regular likes continue and credits are kept.",
+          "useWhen": "In case of a counting bug or abuse."
+        },
+        "chat_images": {
+          "name": "Photos in messages",
+          "what": "Allows sending images in chats.",
+          "on": "Sending images works.",
+          "off": "No more image sending; text continues and images already sent stay visible.",
+          "useWhen": "If inappropriate images arrive in bulk and moderation is overwhelmed."
+        },
+        "referral_program": {
+          "name": "Referral program",
+          "what": "Enables invitation links and token rewards.",
+          "on": "Referred friends are linked and rewarded.",
+          "off": "No new referral is linked and no reward is paid; pending referrals are rewarded when re-enabled.",
+          "useWhen": "If referrals are abused (fake accounts, invitation loops)."
+        }
+      }
     }
   },
   "pricingFaq": {

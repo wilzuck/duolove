@@ -59,3 +59,10 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 - **Tests** : API 82/82 (14 nouveaux), E2E 22/22 sur le dernier passage (5 nouveaux). Deux passages précédents avaient échoué sur des tests Match/admin déjà verts seuls et n'ont pas été reproduits en 3 relances : cause non identifiée.
 - **Corrigé au passage** : contraste de `--success-ink` (4,4:1 → ≥ 7:1) détecté par axe sur l'admin.
 - **Non implémenté** : parrainage via Google, détection d'abus par IP/appareil, réglage admin des montants de récompense.
+
+## Feature flags (livré)
+- **Terminé** : catalogue FERMÉ de 8 interrupteurs (`FEATURE_FLAGS`, `packages/types`) : inscriptions, paiements, codes promo, boosts, Match en direct, Super Likes, photos dans les messages, parrainage. Page `/admin/flags` : fonctions groupées (Accès / Argent / Rencontres), badge « Coupure d'urgence », état réel (valeur par défaut = actif), icône « i » qui explique à quoi sert la fonction, ce qui se passe activée/coupée et quand l'utiliser.
+- **Appliqué côté serveur** (jamais seulement masqué) : garde `@RequireFlag` (503 `FEATURE_DISABLED`) + contrôles dans les services ; changements audités (avant → après) et pris en compte immédiatement (cache 10 s invalidé).
+- **Garde-fous métier** : une coupure des paiements laisse terminer un paiement déjà lancé et n'empêche pas les remboursements ; la coupure des inscriptions ne bloque pas la connexion des membres existants ; les filleuls en attente sont récompensés à la réactivation du parrainage.
+- **Tests** : API `flags.spec.ts` (7) ; E2E `flags.spec.ts` (2, axe inclus).
+- **Limites** : l'interface des membres ne masque pas encore les menus d'une fonction coupée (elle affiche l'erreur « temporairement indisponible ») ; pas de flags par pourcentage ou par groupe de membres ; les clés libres ont été supprimées (catalogue fermé).

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma, PromoCode } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreditsService } from './credits.service.js';
+import { FlagsService } from '../common/flags.js';
 import { AppError, badRequest, conflict } from '../common/errors.js';
 
 type Db = PrismaService | Prisma.TransactionClient;
@@ -19,9 +20,10 @@ export interface PromoQuote { promoId: string; code: string; percent: number; di
  */
 @Injectable()
 export class PromoService {
-  constructor(private readonly prisma: PrismaService, private readonly credits: CreditsService) {}
+  constructor(private readonly prisma: PrismaService, private readonly credits: CreditsService, private readonly flags: FlagsService) {}
 
   private async load(db: Db, code: string): Promise<PromoCode> {
+    await this.flags.assertOn('promo_codes');
     const promo = await db.promoCode.findUnique({ where: { code } });
     const now = new Date();
     // Même réponse pour « inconnu », « désactivé » et « hors période » : pas d'énumération des codes.

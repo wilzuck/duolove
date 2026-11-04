@@ -6,6 +6,7 @@ import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { messageSchema } from '@duomatch/types';
 import { CurrentUser, RequireVerified, type AuthUser } from '../common/auth.js';
+import { RequireFlag } from '../common/flags.js';
 import { badRequest } from '../common/errors.js';
 import { zod } from '../common/zod.pipe.js';
 import { StorageModule } from '../storage/storage.service.js';
@@ -31,6 +32,7 @@ export class ChatController {
   }
 
   @ApiConsumes('multipart/form-data')
+  @RequireFlag('chat_images')
   @Post('conversations/:id/images')
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 6 * 1024 * 1024, files: 1 } }))
   image(@CurrentUser() u: AuthUser, @Param('id') id: string, @UploadedFile() file?: Express.Multer.File) {

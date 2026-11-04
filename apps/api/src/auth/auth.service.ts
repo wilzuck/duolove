@@ -8,6 +8,7 @@ import { badRequest, conflict, AppError, unauthorized } from '../common/errors.j
 import { hashIp, randomToken, sha256 } from '../common/crypto.js';
 import { getEnv } from '../config/env.js';
 import { computeCompleteness } from '../profiles/completeness.js';
+import { FlagsService } from '../common/flags.js';
 import { CreditsService } from '../subscriptions/credits.service.js';
 import { ReferralService } from '../referral/referral.service.js';
 import { giftTokensIfEligible } from '../live/gift.js';
@@ -30,6 +31,7 @@ export class AuthService {
     private readonly notifications: NotificationsService,
     private readonly credits: CreditsService,
     private readonly referral: ReferralService,
+    private readonly flags: FlagsService,
   ) {}
 
   hashPassword(pw: string) {
@@ -179,6 +181,7 @@ export class AuthService {
       if (!user.emailVerifiedAt) user = await this.prisma.user.update({ where: { id: user.id }, data: { emailVerifiedAt: new Date() } });
     }
     if (!user) {
+      await this.flags.assertOn('registration_open'); // la connexion d'un compte existant reste possible, pas la création
       if (!extra.birthDate || !extra.gender || !extra.country || !extra.city || !extra.acceptTerms) {
         throw new AppError(409, 'PROFILE_DETAILS_REQUIRED', 'Informations complémentaires requises');
       }

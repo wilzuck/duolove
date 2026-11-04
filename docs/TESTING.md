@@ -53,6 +53,8 @@ Prérequis : PostgreSQL local, bases `duomatch` (dev) et `duomatch_test` (créer
 
 - Promos et parrainage : `apps/api/test/promo.spec.ts` (14 tests : calcul serveur, unicité par membre, plafond sous concurrence, remboursement, récompense unique, plafond de parrain) et `apps/web/e2e/promo.spec.ts` (parcours lien d'invitation → récompense, création de codes en admin, remise dans Charme+, jetons offerts ; axe sur `/referral`, `/admin/promos`, `/shop`). L'E2E promeut un compte en ADMIN par `psql` sur `duomatch_test`.
 
+- Flags : `apps/api/test/flags.spec.ts` (catalogue, droits, audit, application serveur de chacun des 8 interrupteurs, rétablissement ; nettoie ses lignes en fin de fichier) et `apps/web/e2e/flags.spec.ts` (page admin, icône i, coupure/rétablissement, axe).
+
 ## Bugs trouvés et corrigés grâce à ces tests (exemples)
 
 - Miniatures de photos en 404 (le suffixe `_t` était refusé par la validation de nom de fichier) → test de non-régression.

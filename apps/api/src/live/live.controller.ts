@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { z } from 'zod';
 import { CurrentUser, RequireVerified, type AuthUser } from '../common/auth.js';
+import { RequireFlag } from '../common/flags.js';
 import { zod } from '../common/zod.pipe.js';
 import { RealtimeGateway } from '../chat/realtime.gateway.js';
 import { LiveService } from './live.service.js';
@@ -13,6 +14,7 @@ const optInSchema = z.object({ enabled: z.boolean() });
 @ApiTags('live')
 @RequireVerified()
 @Controller('live')
+@RequireFlag('live_match')
 export class LiveController {
   constructor(private readonly live: LiveService) {}
 

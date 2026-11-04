@@ -637,7 +637,9 @@
     "PROMO_EXHAUSTED": "Ce code n’est plus disponible.",
     "PROMO_NOT_APPLICABLE": "Ce code ne s’applique pas ici.",
     "PROMO_CODE_EXISTS": "Ce code existe déjà.",
-    "invalid_promo": "Code invalide (3 à 32 lettres, chiffres, - ou _)."
+    "invalid_promo": "Code invalide (3 à 32 lettres, chiffres, - ou _).",
+    "FEATURE_DISABLED": "Cette fonctionnalité est temporairement indisponible.",
+    "UNKNOWN_FLAG": "Fonctionnalité inconnue."
   },
   "app": {
     "nav": {
@@ -1237,6 +1239,83 @@
       "enable": "Réactiver",
       "empty": "Aucun code promo.",
       "immutable": "Le type et la valeur d’un code ne changent pas : désactivez-le et créez-en un autre."
+    },
+    "ff": {
+      "title": "Fonctionnalités",
+      "subtitle": "Activez ou coupez une fonction sans redéployer le site. Cliquez sur l’icône i pour comprendre ce que fait chaque interrupteur.",
+      "cat": {
+        "access": "Accès",
+        "money": "Argent",
+        "social": "Rencontres et échanges"
+      },
+      "emergency": "Coupure d’urgence",
+      "on": "Actif",
+      "off": "Coupé",
+      "default": "Valeur par défaut",
+      "info": "À quoi sert « {name} » ?",
+      "whenOn": "Quand c’est activé",
+      "whenOff": "Quand c’est coupé",
+      "useWhen": "Quand l’utiliser",
+      "saved": "Enregistré : {name} est {state}.",
+      "note": "Le blocage est appliqué par le serveur : même un ancien onglet ouvert ne peut pas contourner un interrupteur coupé. Chaque changement est inscrit dans le journal d’audit.",
+      "items": {
+        "registration_open": {
+          "name": "Inscriptions ouvertes",
+          "what": "Permet à de nouvelles personnes de créer un compte (formulaire et Google).",
+          "on": "Tout le monde peut s’inscrire.",
+          "off": "Plus aucun nouveau compte n’est créé. Les membres existants continuent de se connecter normalement.",
+          "useWhen": "En cas d’afflux suspect de faux comptes, ou pendant une opération de maintenance."
+        },
+        "payments_enabled": {
+          "name": "Paiements",
+          "what": "Permet de lancer de nouveaux paiements : abonnements, jetons Match, boosts, Super Likes.",
+          "on": "Les achats fonctionnent.",
+          "off": "Aucun nouvel achat ne peut démarrer. Un paiement déjà lancé peut se terminer, et les remboursements restent possibles.",
+          "useWhen": "En cas de panne ou de maintenance du fournisseur de paiement."
+        },
+        "promo_codes": {
+          "name": "Codes promo",
+          "what": "Autorise la saisie de codes promo (remises en % et jetons offerts).",
+          "on": "Les codes sont acceptés.",
+          "off": "Tous les codes sont refusés ; les achats sans code continuent normalement.",
+          "useWhen": "Si un code a fuité ou est détourné."
+        },
+        "boosts": {
+          "name": "Boosts de visibilité",
+          "what": "Autorise l’activation des boosts (achetés ou inclus dans une formule).",
+          "on": "Les boosts s’activent.",
+          "off": "Les boosts ne s’activent plus ; les crédits des membres restent intacts.",
+          "useWhen": "Si le classement des profils boostés pose problème."
+        },
+        "live_match": {
+          "name": "Match en direct",
+          "what": "Le menu Match : critères, invitations aux personnes en ligne, conversations payées en jetons.",
+          "on": "Le menu Match fonctionne.",
+          "off": "Match est indisponible pour tous ; les jetons et les conversations existantes sont conservés.",
+          "useWhen": "En cas d’abus constaté ou de surcharge du serveur."
+        },
+        "super_likes": {
+          "name": "Super Likes",
+          "what": "Autorise l’envoi de Super Likes.",
+          "on": "Les Super Likes fonctionnent.",
+          "off": "Les Super Likes sont refusés ; les likes normaux continuent et les crédits sont conservés.",
+          "useWhen": "En cas de bug de décompte ou d’abus."
+        },
+        "chat_images": {
+          "name": "Photos dans les messages",
+          "what": "Autorise l’envoi d’images dans les conversations.",
+          "on": "L’envoi d’images fonctionne.",
+          "off": "Plus d’envoi d’images ; les textes continuent et les images déjà envoyées restent visibles.",
+          "useWhen": "Si des images inappropriées arrivent en masse et que la modération est dépassée."
+        },
+        "referral_program": {
+          "name": "Parrainage",
+          "what": "Active les liens d’invitation et les récompenses en jetons.",
+          "on": "Les filleuls sont rattachés et récompensés.",
+          "off": "Aucun nouveau filleul n’est rattaché et aucune récompense n’est versée ; les filleuls en attente sont récompensés à la réactivation.",
+          "useWhen": "Si le parrainage est détourné (faux comptes, boucles d’invitations)."
+        }
+      }
     }
   },
   "pricingFaq": {

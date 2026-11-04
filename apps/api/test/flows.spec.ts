@@ -393,9 +393,11 @@ describe('modération et administration (RBAC)', () => {
     expect((await am.get('/api/admin/audit-logs')).status).toBe(403);
 
     // drapeaux de fonctionnalité
-    expect((await aa.put('/api/admin/feature-flags/new_ui').send({ enabled: true })).status).toBe(200);
-    expect((await request(c.http).get('/api/feature-flags')).body.new_ui).toBe(true);
-    expect((await am.put('/api/admin/feature-flags/x').send({ enabled: true })).status).toBe(403);
+    expect((await aa.put('/api/admin/feature-flags/new_ui').send({ enabled: true })).status).toBe(404); // catalogue fermé
+    expect((await aa.put('/api/admin/feature-flags/chat_images').send({ enabled: false })).status).toBe(200);
+    expect((await request(c.http).get('/api/feature-flags')).body.chat_images).toBe(false);
+    expect((await aa.put('/api/admin/feature-flags/chat_images').send({ enabled: true })).status).toBe(200);
+    expect((await am.put('/api/admin/feature-flags/chat_images').send({ enabled: false })).status).toBe(403);
   });
 });
 

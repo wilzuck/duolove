@@ -268,3 +268,23 @@ export const reportSchema = z.object({
   reason: z.enum(REPORT_REASONS),
   details: z.string().trim().max(1000).optional(),
 });
+
+/**
+ * Catalogue des interrupteurs de fonctionnalité (feature flags). La liste est FERMÉE : l'administration ne crée pas de clés libres,
+ * elle active ou coupe celles-ci. Chaque clé est appliquée côté SERVEUR (jamais seulement masquée dans l'interface).
+ * Absence de ligne en base = valeur par défaut `defaultOn`. `emergency` = prévu comme coupure d'urgence.
+ */
+export const FLAG_CATEGORIES = ['access', 'money', 'social'] as const;
+export type FlagCategory = (typeof FLAG_CATEGORIES)[number];
+export const FEATURE_FLAGS = [
+  { key: 'registration_open', category: 'access', defaultOn: true, emergency: true },
+  { key: 'payments_enabled', category: 'money', defaultOn: true, emergency: true },
+  { key: 'promo_codes', category: 'money', defaultOn: true, emergency: false },
+  { key: 'boosts', category: 'money', defaultOn: true, emergency: false },
+  { key: 'live_match', category: 'social', defaultOn: true, emergency: true },
+  { key: 'super_likes', category: 'social', defaultOn: true, emergency: false },
+  { key: 'chat_images', category: 'social', defaultOn: true, emergency: true },
+  { key: 'referral_program', category: 'social', defaultOn: true, emergency: false },
+] as const satisfies readonly { key: string; category: FlagCategory; defaultOn: boolean; emergency: boolean }[];
+export type FlagKey = (typeof FEATURE_FLAGS)[number]['key'];
+export const FLAG_KEYS = FEATURE_FLAGS.map((f) => f.key) as FlagKey[];

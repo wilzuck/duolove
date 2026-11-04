@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { REFERRAL } from '@duomatch/types';
 import { randomInt } from 'node:crypto';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { FlagsService } from '../common/flags.js';
 
 /** Alphabet sans caractères ambigus (0/O, 1/I/L) : le code se dicte facilement par téléphone ou WhatsApp. */
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
@@ -9,7 +10,7 @@ const makeCode = () => Array.from({ length: REFERRAL.CODE_LENGTH }, () => ALPHAB
 
 @Injectable()
 export class ReferralService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly flags: FlagsService) {}
 
   /** Code du membre, créé à la première demande (unicité garantie par la base, nouvel essai en cas de collision). */
   async codeFor(userId: string): Promise<string> {
@@ -29,7 +30,7 @@ export class ReferralService {
   /** Rattache un nouveau compte à son parrain. Code inconnu ou parrain inactif : ignoré sans erreur (pas d'énumération). */
   async attach(refereeId: string, rawCode: string | undefined): Promise<boolean> {
     const code = rawCode?.trim().toUpperCase();
-    if (!code) return false;
+    if (!code || !(await this.flags.isOn('referral_program'))) return false;
     const referrer = await this.prisma.user.findUnique({ where: { referralCode: code }, select: { id: true, status: true } });
     if (!referrer || referrer.status !== 'ACTIVE' || referrer.id === refereeId) return false;
     await this.prisma.referral.create({ data: { referrerId: referrer.id, refereeId } }).catch(() => undefined);
@@ -45,7 +46,7 @@ export class ReferralService {
     ]);
     const n = (s: string) => rows.find((r) => r.status === s)?._count ?? 0;
     return {
-      code, invited: n('PENDING') + n('REWARDED'), pending: n('PENDING'), rewarded: n('REWARDED'), tokensEarned: earned._sum.delta ?? 0,
+      enabled: await this.flags.isOn('referral_program'), code, invited: n('PENDING') + n('REWARDED'), pending: n('PENDING'), rewarded: n('REWARDED'), tokensEarned: earned._sum.delta ?? 0,
       limits: { referrerTokens: REFERRAL.REFERRER_TOKENS, refereeTokens: REFERRAL.REFEREE_TOKENS, maxRewarded: REFERRAL.MAX_REWARDED_PER_REFERRER },
       referredBy: mine ? { status: mine.status } : null,
     };

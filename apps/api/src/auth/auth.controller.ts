@@ -5,6 +5,7 @@ import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { loginSchema, registerSchema, type LoginInput, type RegisterInput } from '@duomatch/types';
 import { AllowSuspended, CurrentUser, Public, SESSION_COOKIE, type AuthUser } from '../common/auth.js';
+import { RequireFlag } from '../common/flags.js';
 import { zod } from '../common/zod.pipe.js';
 import { getEnv, isProd } from '../config/env.js';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -40,7 +41,7 @@ const ctxOf = (req: Request) => ({ ip: req.ip, userAgent: req.headers['user-agen
 export class AuthController {
   constructor(private readonly auth: AuthService, private readonly prisma: PrismaService) {}
 
-  @Public() @Throttle(strictLimit) @Post('register')
+  @Public() @RequireFlag('registration_open') @Throttle(strictLimit) @Post('register')
   async register(@Body(zod(registerSchema)) body: RegisterInput, @Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const { user, session } = await this.auth.register(body, ctxOf(req));
     setSessionCookie(res, session.token, session.expiresAt);

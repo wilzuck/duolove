@@ -1,6 +1,7 @@
 import { REFERRAL } from '@duomatch/types';
 import type { CreditsService } from '../subscriptions/credits.service.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
+import { readFlag } from '../common/flags.js';
 
 /**
  * Verse la récompense de parrainage UNE seule fois, quand le filleul est qualifié : profil 100 % + e-mail vérifié + compte actif.
@@ -10,7 +11,7 @@ import type { PrismaService } from '../prisma/prisma.service.js';
  */
 export async function rewardReferralIfEligible(prisma: PrismaService, credits: CreditsService, refereeId: string): Promise<string | null> {
   const ref = await prisma.referral.findUnique({ where: { refereeId } });
-  if (!ref || ref.status !== 'PENDING') return null;
+  if (!ref || ref.status !== 'PENDING' || !(await readFlag(prisma, 'referral_program'))) return null;
   const p = await prisma.profile.findUnique({ where: { userId: refereeId }, select: { completeness: true, user: { select: { emailVerifiedAt: true, status: true } } } });
   if (!p || p.completeness < 100 || !p.user.emailVerifiedAt || p.user.status !== 'ACTIVE') return null;
 

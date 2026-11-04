@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { z } from 'zod';
 import { BOOST_MINUTES, type CreditType } from '@duomatch/types';
 import { CurrentUser, RequireVerified, type AuthUser } from '../common/auth.js';
+import { RequireFlag } from '../common/flags.js';
 import { badRequest } from '../common/errors.js';
 import { zod } from '../common/zod.pipe.js';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -53,7 +54,7 @@ export class BoostsController {
   @Get('boosts')
   history(@CurrentUser() u: AuthUser) { return this.boosts.history(u.id); }
 
-  @RequireVerified() @HttpCode(200) @Post('boosts/activate')
+  @RequireVerified() @RequireFlag('boosts') @HttpCode(200) @Post('boosts/activate')
   activate(@CurrentUser() u: AuthUser, @Body(zod(activateSchema)) body: { creditType: 'BOOST_30' | 'BOOST_120' | 'BOOST_1440' }) {
     return this.boosts.activate(u.id, body.creditType);
   }

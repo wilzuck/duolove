@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, Module, Post, Query } from '@nestjs/co
 import { ApiTags } from '@nestjs/swagger';
 import { swipeSchema, type SwipeInput } from '@duomatch/types';
 import { CurrentUser, RequireVerified, type AuthUser } from '../common/auth.js';
+import { FlagsService } from '../common/flags.js';
 import { zod } from '../common/zod.pipe.js';
 import { CreditsService } from '../subscriptions/credits.service.js';
 import { EntitlementsService } from '../subscriptions/entitlements.service.js';
@@ -11,10 +12,11 @@ import { SwipesService } from './swipes.service.js';
 @RequireVerified()
 @Controller('swipes')
 export class SwipesController {
-  constructor(private readonly swipes: SwipesService, private readonly ent: EntitlementsService, private readonly credits: CreditsService) {}
+  constructor(private readonly swipes: SwipesService, private readonly ent: EntitlementsService, private readonly credits: CreditsService, private readonly flags: FlagsService) {}
 
   @HttpCode(200) @Post()
-  swipe(@CurrentUser() u: AuthUser, @Body(zod(swipeSchema)) body: SwipeInput) {
+  async swipe(@CurrentUser() u: AuthUser, @Body(zod(swipeSchema)) body: SwipeInput) {
+    if (body.action === 'SUPER_LIKE') await this.flags.assertOn('super_likes');
     return this.swipes.swipe(u.id, body);
   }
 
