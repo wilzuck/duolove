@@ -4,7 +4,7 @@ import datetime
 import pytest
 from sqlalchemy import delete, select, update
 
-from app.core import appsettings, flags as flags_core
+from app.core import appsettings, dailysvc, flags as flags_core
 from app.core.scoring import DEFAULT_WEIGHTS, ScoreSubject, SoftPrefs, score_candidate
 from app.db.session import session_maker
 from app.models.models import AuditLog, DailyRecommendation, FeatureFlag, Message, ProfilePrompt, SystemSetting, User
@@ -253,7 +253,7 @@ async def test_daily_picks_exclude_blocked_suspended_and_respect_cooldown(app, d
     assert blocked not in left and suspended not in left and set(left) <= set(by_id)
     # Historique : un jour passé apparaît ; un profil déjà proposé récemment n'est pas reproposé (cooldown).
     async with session_maker()() as s:
-        await s.execute(update(DailyRecommendation).where(DailyRecommendation.userId == w.id).values(day=datetime.date.today() - datetime.timedelta(days=1)))
+        await s.execute(update(DailyRecommendation).where(DailyRecommendation.userId == w.id).values(day=dailysvc.today() - datetime.timedelta(days=1)))  # jour UTC, comme l'application
         await s.commit()
     hist = (await w.agent.get("/api/discovery/daily/history")).json()
     assert hist["days"] and {i["id"] for i in hist["days"][0]["items"]} <= set(left)

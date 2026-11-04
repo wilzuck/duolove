@@ -55,6 +55,7 @@ class SettingsIn(Body):
     visibility: Literal["VISIBLE", "HIDDEN"] | None = None
     incognito: bool | None = None
     readReceipts: bool | None = None
+    typingIndicator: bool | None = None
 
 
 class OrderIn(Body):

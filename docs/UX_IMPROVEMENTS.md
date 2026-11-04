@@ -10,7 +10,8 @@ Charte respectée : rose `#E91E63` (jetons existants de `packages/ui`), blanc, a
 | Découvertes du jour | **Livré** | Liste détaillée sans swipe, raisons, historique par jour, aucune urgence artificielle ; accessible depuis la barre latérale et l'icône ✦ de la découverte |
 | Rencontres sélectionnées (sans swipe) | **Partiel** | Même page : liker, passer, voir le profil. « Enregistrer pour plus tard » non implémenté |
 | Likes reçus / Match réussi | Existants, adaptés | le commentaire est affiché, le match ouvre la conversation avec les premiers messages |
-| Messagerie enrichie, brise-glace | Non démarré | Phase 2 |
+| Messagerie enrichie | **Livré** (hors vocaux et GIF) | Réactions (emoji, temps réel), réponse à un message précis avec citation, emoji inséré au curseur, indicateur de saisie facultatif, accusés « vu » gérables en Premium |
+| Brise-glace | **Livré** | Bouton ampoule du champ de saisie : idées fondées sur l'en commun, « autres idées », insertion modifiable, jamais d'envoi automatique ; FR/EN |
 | Rendez-vous, speed dating, appels | Non démarré | Phase 3 |
 | Paramètres d'engagement, mode pause | Non démarré | Phase 4 |
 

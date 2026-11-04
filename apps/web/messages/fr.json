@@ -218,7 +218,8 @@
       "liveMatch": "Menu Match en direct (illimité)",
       "liveMatchTrials": "Menu Match : {n} essais gratuits",
       "matchTokensMonthly": "{n} jetons Match par mois",
-      "chatImages": "Envoi de photos dans les messages"
+      "chatImages": "Envoi de photos dans les messages",
+      "readReceipts": "Gestion des accusés de lecture (« vu »)"
     },
     "boostLabel": "Boost de visibilité",
     "boostDuration": "de mise en avant",
@@ -664,7 +665,9 @@
     "COVER_ALT_REQUIRED": "Décrivez l’image de couverture (texte alternatif) pour publier.",
     "INVALID_COVER": "Image de couverture introuvable : téléversez-la à nouveau.",
     "SLUG_TAKEN": "Ce lien (slug) existe déjà dans cette langue.",
-    "POST_NOT_FOUND": "Article introuvable."
+    "POST_NOT_FOUND": "Article introuvable.",
+    "INVALID_REPLY": "Le message cité n’est plus disponible.",
+    "INVALID_REACTION": "Cette réaction n’est pas autorisée."
   },
   "app": {
     "nav": {
@@ -765,7 +768,7 @@
     "newMatches": "Nouveaux matchs",
     "empty": "Aucune conversation. Likez des profils pour obtenir des matchs !",
     "noResults": "Aucun résultat.",
-    "you": "Vous :",
+    "you": "vous",
     "photo": "Photo",
     "deleted": "Message supprimé",
     "sayHello": "Dites bonjour !",
@@ -795,7 +798,22 @@
     "attachLocked": "Envoyer une photo (réservé aux abonnés)",
     "imagePlanTitle": "Photos réservées aux abonnés",
     "imagePlanText": "L’envoi de photos dans les messages est inclus dans les formules Premium et VIP. Vous pouvez continuer à écrire gratuitement et à recevoir des photos.",
-    "seePlans": "Voir les formules"
+    "seePlans": "Voir les formules",
+    "react": "Réagir",
+    "reply": "Répondre",
+    "replyingTo": "Réponse à {who}",
+    "cancelReply": "Annuler la réponse",
+    "replyDeleted": "Message supprimé",
+    "replyPhoto": "Photo",
+    "reactWith": "Réagir avec {emoji}",
+    "reactedWith": "Réaction {emoji} : {n}",
+    "messageActions": "Actions sur le message",
+    "iceTitle": "Besoin d’une idée pour commencer ?",
+    "iceHint": "Des idées fondées sur ce que vous avez en commun. Rien n’est envoyé : choisissez, modifiez, puis envoyez.",
+    "iceMore": "Autres idées",
+    "iceEmpty": "Pas d’idée pour le moment.",
+    "iceOpen": "Idées pour commencer",
+    "iceCommon": "En commun : {list}"
   },
   "profile": {
     "completeness": "Complétude du profil",
@@ -999,7 +1017,11 @@
       "deleteCta": "Supprimer mon compte",
       "deleteConfirmTitle": "Confirmer la suppression",
       "deleteConfirmText": "Saisissez votre mot de passe pour confirmer. Les abonnements actifs seront annulés.",
-      "deleteFinal": "Supprimer définitivement"
+      "deleteFinal": "Supprimer définitivement",
+      "typing": "Indicateur de saisie",
+      "typingText": "Montre quand vous écrivez, et vous permet de voir quand l’autre écrit. Désactivé, personne ne voit l’autre écrire.",
+      "receiptsLocked": "La gestion des accusés de lecture est réservée aux abonnés Premium et VIP : vos accusés restent actifs.",
+      "receiptsUpgrade": "Passer Premium"
     },
     "security": {
       "password": "Changer de mot de passe",
@@ -1377,6 +1399,27 @@
           "on": "La page Découvertes du jour est disponible.",
           "off": "La page et son historique sont indisponibles ; la découverte classique continue.",
           "useWhen": "Si la sélection pose un problème de qualité ou de charge."
+        },
+        "message_reactions": {
+          "name": "Réactions aux messages",
+          "what": "Permet de réagir à un message avec un emoji.",
+          "on": "Les réactions sont possibles et visibles.",
+          "off": "Les réactions sont masquées et indisponibles ; elles sont conservées.",
+          "useWhen": "Si les réactions sont détournées."
+        },
+        "message_replies": {
+          "name": "Réponses à un message",
+          "what": "Permet de répondre à un message précis (citation).",
+          "on": "Les citations sont possibles et visibles.",
+          "off": "Les citations sont masquées ; la messagerie simple continue.",
+          "useWhen": "Si les citations sont détournées."
+        },
+        "icebreakers": {
+          "name": "Brise-glace",
+          "what": "Propose des idées de premier message fondées sur ce que les deux personnes ont en commun.",
+          "on": "Le bouton « Idées pour commencer » est disponible.",
+          "off": "Le bouton disparaît ; rien d’autre ne change.",
+          "useWhen": "Si les suggestions posent un problème de qualité."
         }
       }
     },
@@ -1502,7 +1545,19 @@
         "satisfaction": "Satisfaction déclarée",
         "realMeetings": "Rencontres réelles (uniquement sur déclaration volontaire)"
       },
-      "unavailableNote": "Ces indicateurs arriveront avec les fonctionnalités correspondantes ; ils ne sont jamais déduits."
+      "unavailableNote": "Ces indicateurs arriveront avec les fonctionnalités correspondantes ; ils ne sont jamais déduits.",
+      "icebreakersCount": "Idées proposées à la fois",
+      "tabIcebreakers": "Brise-glace",
+      "ice": {
+        "help": "Modèles de premier message. Ils ne sont proposés que si les deux personnes ont l’élément en commun (intérêt ou intention) ; les modèles neutres complètent.",
+        "new": "Nouveau modèle",
+        "kind": "Type",
+        "kindINTEREST": "Centre d’intérêt commun",
+        "kindINTENT": "Même intention",
+        "kindGENERIC": "Neutre",
+        "key": "Élément concerné",
+        "noKey": "—"
+      }
     }
   },
   "pricingFaq": {

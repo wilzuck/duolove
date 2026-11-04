@@ -46,6 +46,8 @@ async def settings(body: SettingsIn, u: AuthUser = Depends(current_user), db: As
         await profilesvc.set_incognito(db, u.id, body.incognito)
     if body.readReceipts is not None:
         await profilesvc.set_read_receipts(db, u.id, body.readReceipts)
+    if body.typingIndicator is not None:
+        await profilesvc.set_typing_indicator(db, u.id, body.typingIndicator)
     return await profilesvc.get_mine(db, u.id)
 
 

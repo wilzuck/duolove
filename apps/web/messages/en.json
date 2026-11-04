@@ -218,7 +218,8 @@
       "liveMatch": "Live Match menu (unlimited)",
       "liveMatchTrials": "Live Match: {n} free tries",
       "matchTokensMonthly": "{n} Match tokens per month",
-      "chatImages": "Send photos in messages"
+      "chatImages": "Send photos in messages",
+      "readReceipts": "Read receipts control (“seen”)"
     },
     "boostLabel": "Visibility boost",
     "boostDuration": "in the spotlight",
@@ -664,7 +665,9 @@
     "COVER_ALT_REQUIRED": "Describe the cover image (alt text) to publish.",
     "INVALID_COVER": "Cover image not found: upload it again.",
     "SLUG_TAKEN": "This link (slug) already exists in this language.",
-    "POST_NOT_FOUND": "Article not found."
+    "POST_NOT_FOUND": "Article not found.",
+    "INVALID_REPLY": "The quoted message is no longer available.",
+    "INVALID_REACTION": "This reaction is not allowed."
   },
   "app": {
     "nav": {
@@ -765,7 +768,7 @@
     "newMatches": "New matches",
     "empty": "No conversations yet. Like profiles to get matches!",
     "noResults": "No results.",
-    "you": "You:",
+    "you": "you",
     "photo": "Photo",
     "deleted": "Message deleted",
     "sayHello": "Say hello!",
@@ -795,7 +798,22 @@
     "attachLocked": "Send a photo (subscribers only)",
     "imagePlanTitle": "Photos are for subscribers",
     "imagePlanText": "Sending photos in messages is included in the Premium and VIP plans. You can still write for free and receive photos.",
-    "seePlans": "See plans"
+    "seePlans": "See plans",
+    "react": "React",
+    "reply": "Reply",
+    "replyingTo": "Replying to {who}",
+    "cancelReply": "Cancel reply",
+    "replyDeleted": "Message deleted",
+    "replyPhoto": "Photo",
+    "reactWith": "React with {emoji}",
+    "reactedWith": "Reaction {emoji}: {n}",
+    "messageActions": "Message actions",
+    "iceTitle": "Need an idea to get started?",
+    "iceHint": "Ideas based on what you have in common. Nothing is sent: pick one, edit it, then send.",
+    "iceMore": "More ideas",
+    "iceEmpty": "No idea right now.",
+    "iceOpen": "Ideas to get started",
+    "iceCommon": "In common: {list}"
   },
   "profile": {
     "completeness": "Profile completeness",
@@ -999,7 +1017,11 @@
       "deleteCta": "Delete my account",
       "deleteConfirmTitle": "Confirm deletion",
       "deleteConfirmText": "Enter your password to confirm. Active subscriptions will be cancelled.",
-      "deleteFinal": "Delete permanently"
+      "deleteFinal": "Delete permanently",
+      "typing": "Typing indicator",
+      "typingText": "Shows when you are typing and lets you see when the other person is. When off, nobody sees the other typing.",
+      "receiptsLocked": "Managing read receipts is reserved for Premium and VIP members: your receipts stay on.",
+      "receiptsUpgrade": "Go Premium"
     },
     "security": {
       "password": "Change password",
@@ -1377,6 +1399,27 @@
           "on": "The Daily picks page is available.",
           "off": "The page and its history are unavailable; classic discovery continues.",
           "useWhen": "If the selection has quality or load problems."
+        },
+        "message_reactions": {
+          "name": "Message reactions",
+          "what": "Lets members react to a message with an emoji.",
+          "on": "Reactions are possible and visible.",
+          "off": "Reactions are hidden and unavailable; they are kept.",
+          "useWhen": "If reactions are abused."
+        },
+        "message_replies": {
+          "name": "Message replies",
+          "what": "Lets members reply to a specific message (quote).",
+          "on": "Quotes are possible and visible.",
+          "off": "Quotes are hidden; plain messaging continues.",
+          "useWhen": "If quotes are abused."
+        },
+        "icebreakers": {
+          "name": "Icebreakers",
+          "what": "Suggests first-message ideas based on what both people have in common.",
+          "on": "The “Ideas to get started” button is available.",
+          "off": "The button disappears; nothing else changes.",
+          "useWhen": "If suggestions have a quality problem."
         }
       }
     },
@@ -1502,7 +1545,19 @@
         "satisfaction": "Reported satisfaction",
         "realMeetings": "Real meetings (only from voluntary declarations)"
       },
-      "unavailableNote": "These will arrive with the matching features; they are never inferred."
+      "unavailableNote": "These will arrive with the matching features; they are never inferred.",
+      "icebreakersCount": "Ideas offered at a time",
+      "tabIcebreakers": "Icebreakers",
+      "ice": {
+        "help": "First-message templates. They are only offered when both people share the item (interest or intent); neutral templates fill in.",
+        "new": "New template",
+        "kind": "Type",
+        "kindINTEREST": "Shared interest",
+        "kindINTENT": "Same intent",
+        "kindGENERIC": "Neutral",
+        "key": "Item",
+        "noKey": "—"
+      }
     }
   },
   "pricingFaq": {

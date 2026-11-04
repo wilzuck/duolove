@@ -5,6 +5,7 @@ from pydantic import BaseModel, field_validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import chat_service as chat
+from app.core import icebreakers
 from app.core import entitlements
 from app.core.auth import AuthUser, verified_user
 from app.core.errors import AppError, bad_request, forbidden
@@ -17,6 +18,7 @@ MAX_IMAGE = 6 * 1024 * 1024
 
 class MessageIn(BaseModel):
     body: str
+    replyToId: str | None = None
 
     @field_validator("body")
     @classmethod
@@ -51,7 +53,7 @@ async def history(conversation_id: str, cursor: str | None = None, limit: str = 
 
 @router.post("/conversations/{conversation_id}/messages", status_code=201)
 async def send(conversation_id: str, body: MessageIn, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
-    return await chat.send(db, u.id, conversation_id, body.body)
+    return await chat.send(db, u.id, conversation_id, body.body, body.replyToId)
 
 
 @router.post("/conversations/{conversation_id}/images", status_code=201, dependencies=[require_flag("chat_images")])
@@ -70,6 +72,27 @@ async def image(conversation_id: str, file: UploadFile | None = File(None), u: A
 @router.post("/conversations/{conversation_id}/read")
 async def read(conversation_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     return await chat.mark_read(db, u.id, conversation_id)
+
+
+class ReactionIn(BaseModel):
+    emoji: str
+
+
+@router.put("/messages/{message_id}/reaction")
+async def react(message_id: str, body: ReactionIn, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await chat.react(db, u.id, message_id, body.emoji)
+
+
+@router.delete("/messages/{message_id}/reaction")
+async def unreact(message_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await chat.unreact(db, u.id, message_id)
+
+
+@router.get("/conversations/{conversation_id}/icebreakers", dependencies=[require_flag("icebreakers")])
+async def icebreakers_for(conversation_id: str, seed: int = Query(0, ge=0, le=1000), locale: str = Query("fr", pattern="^(fr|en)$"),
+                          u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    """« Besoin d'une idée pour commencer ? » : sujets déduits des éléments communs. Rien n'est envoyé : le membre choisit et édite le texte."""
+    return await icebreakers.suggestions(db, u.id, conversation_id, seed, locale)
 
 
 @router.delete("/messages/{message_id}")

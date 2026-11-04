@@ -26,7 +26,8 @@ Audit réalisé avant toute modification, à partir du code du dépôt (novembre
 | Likes avec commentaire / sur un élément | absents (`Swipe` sans contexte) | **Livré** (phase 1) |
 | Découvertes du jour + historique | absentes | **Livré** (phase 1) |
 | Pilotage admin (poids, quotas, questions, indicateurs) | uniquement flags, offres, promos | **Livré** (phase 1) |
-| Messagerie enrichie, messages vocaux, brise-glace | texte + photos seulement | Phase 2 (non démarrée) |
+| Messagerie enrichie, brise-glace | texte, photos, accusés de lecture, saisie et recherche existaient déjà | **Améliorés, pas refaits** (phase 2) : réactions, réponses, brise-glace, accusés Premium, saisie facultative |
+| Messages vocaux, GIF contrôlés | absents | Non implémentés (stockage audio et fournisseur GIF à décider) |
 | Rendez-vous, speed dating, appels audio/vidéo | absents | Phase 3 (non démarrée) |
 | Préférences d'engagement, mode pause, notifications regroupées | préférences de notification basiques | Phase 4 (non démarrée) |
 | Mode « rencontres sélectionnées » sans swipe | absent | **Livré en version simple** : la page Découvertes du jour est une liste détaillée sans swipe ; « enregistrer » un profil pour plus tard n'existe pas |

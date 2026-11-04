@@ -123,3 +123,6 @@ KKiaPay (clés bac à sable puis production, à valider — voir DEPLOYMENT.md) 
 - **Règle** : l'envoi d'une photo dans une conversation est réservé aux formules qui l'incluent (**Premium et VIP** par défaut, pas le Gratuit). Écrire et **recevoir** des photos reste gratuit.
 - **Réglage** : fonctionnalité de formule `chat_images_enabled`, modifiable dans `/admin/plans` (comme les autres). Les formules déjà enregistrées reçoivent la valeur par défaut au démarrage, sans écraser les réglages de l'administrateur.
 - **Application** : côté serveur uniquement (`POST /conversations/:id/images` → 403 `PLAN_REQUIRED`) ; le flag `chat_images` (coupure d'urgence, 503) s'applique avant. Côté interface, le bouton affiche un cadenas et ouvre l'invitation à s'abonner.
+
+## Gestion des accusés de lecture (« vu »)
+Fonctionnalité de formule `read_receipts_control` : **Premium et VIP** peuvent désactiver l'envoi de leurs accusés ; le gratuit les envoie toujours (le réglage est affiché verrouillé avec un lien vers Premium). Réglable par plan dans Admin › Offres et tarifs. Appliquée par le serveur : après une résiliation, les accusés redeviennent actifs sans perdre le réglage de la personne. Aucun prix n'a été modifié.

@@ -2,7 +2,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, Field, Input, Skeleton, Switch, Tabs } from '@duomatch/ui';
+import { INTENTS, INTEREST_SLUGS } from '@duomatch/types';
+import { Badge, Button, Card, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { api, patch, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
@@ -10,6 +11,7 @@ import { useUi } from '@/lib/store';
 type Weights = { intent: number; mutual: number; interests: number; location: number; other: number };
 interface SettingsData { values: Record<string, number | Weights> & { 'matching.weights': Weights }; defaults: Record<string, number | Weights> & { 'matching.weights': Weights }; limits: Record<string, { min: number; max: number }> }
 interface PromptRow { id: string; slug: string; textFr: string; textEn: string; active: boolean; sortOrder: number; answers: number }
+interface IceRow { id: string; slug: string; kind: 'INTEREST' | 'INTENT' | 'GENERIC'; key: string | null; textFr: string; textEn: string; active: boolean; sortOrder: number }
 interface Metrics {
   profilesCompleted: number; profilesWithPrompts: number; profilesWithPromptsRate: number | null; likes: number; likesWithComment: number; likesWithCommentRate: number | null;
   matches: number; matchRate: number | null; conversations: number; firstResponseRate: number | null; reciprocalConversations: number; reports: number; reportsOpen: number;
@@ -17,7 +19,7 @@ interface Metrics {
   dailyPicks: { last30Days: number; actedRate: number | null }; unavailable: string[];
 }
 const WEIGHT_KEYS = ['intent', 'mutual', 'interests', 'location', 'other'] as const;
-const INT_KEYS = [['daily.count_free', 'dailyFree'], ['daily.count_premium', 'dailyPremium'], ['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax']] as const;
+const INT_KEYS = [['daily.count_free', 'dailyFree'], ['daily.count_premium', 'dailyPremium'], ['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount']] as const;
 const num = (v: string, fb = 0) => (v === '' || Number.isNaN(Number(v)) ? fb : Math.round(Number(v)));
 
 function SettingsTab({ data }: { data: SettingsData }) {
@@ -105,6 +107,58 @@ function PromptItem({ p, onSave }: { p: PromptRow; onSave: (b: Partial<PromptRow
   );
 }
 
+function IcebreakersTab() {
+  const t = useTranslations();
+  const qc = useQueryClient();
+  const err = useApiError();
+  const toast = useUi((s) => s.toast);
+  const q = useQuery({ queryKey: ['admin', 'icebreakers'], queryFn: () => api<{ items: IceRow[] }>('/admin/icebreakers') });
+  const blank = { slug: '', kind: 'INTEREST' as IceRow['kind'], key: INTEREST_SLUGS[0] as string, textFr: '', textEn: '', sortOrder: 100 };
+  const [f, setF] = useState(blank);
+  const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin', 'icebreakers'] }); void qc.invalidateQueries({ queryKey: ['icebreakers'] }); };
+  const create = useMutation({ mutationFn: () => post('/admin/icebreakers', { ...f, key: f.kind === 'GENERIC' ? null : f.key }), onSuccess: () => { toast('success', t('admin.eng.created')); setF(blank); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const update = useMutation({ mutationFn: ({ id, ...b }: { id: string } & Partial<IceRow>) => patch(`/admin/icebreakers/${id}`, b), onSuccess: () => { toast('success', t('admin.eng.updated')); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const keyLabel = (r: { kind: IceRow['kind']; key: string | null }) => (r.kind === 'INTEREST' && r.key ? t(`interest.${r.key}` as never) : r.kind === 'INTENT' && r.key ? t(`intent.${r.key}` as never) : t('admin.eng.ice.noKey'));
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-muted">{t('admin.eng.ice.help')}</p>
+      <Card className="p-5">
+        <h3 className="mb-3 font-bold">{t('admin.eng.ice.new')}</h3>
+        <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); create.mutate(); }}>
+          <Field label={t('admin.eng.slug')}>{(p) => <Input {...p} required pattern="[a-z0-9]+(-[a-z0-9]+)*" minLength={2} maxLength={60} value={f.slug} onChange={(e) => setF({ ...f, slug: e.target.value })} />}</Field>
+          <Field label={t('admin.eng.ice.kind')}>{(p) => <Select {...p} value={f.kind} onChange={(e) => { const kind = e.target.value as IceRow['kind']; setF({ ...f, kind, key: kind === 'INTENT' ? INTENTS[0] : INTEREST_SLUGS[0] }); }}>{(['INTEREST', 'INTENT', 'GENERIC'] as const).map((k) => <option key={k} value={k}>{t(`admin.eng.ice.kind${k}`)}</option>)}</Select>}</Field>
+          {f.kind !== 'GENERIC' && <Field label={t('admin.eng.ice.key')}>{(p) => <Select {...p} value={f.key} onChange={(e) => setF({ ...f, key: e.target.value })}>{(f.kind === 'INTENT' ? INTENTS : INTEREST_SLUGS).map((k) => <option key={k} value={k}>{keyLabel({ kind: f.kind, key: k })}</option>)}</Select>}</Field>}
+          <Field label={t('admin.eng.order')}>{(p) => <Input {...p} type="number" min={0} max={1000} value={f.sortOrder} onChange={(e) => setF({ ...f, sortOrder: num(e.target.value) })} />}</Field>
+          <Field label={t('admin.eng.textFr')}>{(p) => <Input {...p} required minLength={10} maxLength={220} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>
+          <Field label={t('admin.eng.textEn')}>{(p) => <Input {...p} required minLength={10} maxLength={220} value={f.textEn} onChange={(e) => setF({ ...f, textEn: e.target.value })} />}</Field>
+          <div className="sm:col-span-2"><Button type="submit" loading={create.isPending}>{t('admin.eng.create')}</Button></div>
+        </form>
+      </Card>
+      {q.isLoading && <Skeleton className="h-40" />}
+      <ul className="space-y-3">{q.data?.items.map((r) => <IceItem key={`${r.id}-${r.textFr}-${r.textEn}-${r.sortOrder}`} r={r} label={`${t(`admin.eng.ice.kind${r.kind}`)} · ${keyLabel(r)}`} onSave={(b) => update.mutate({ id: r.id, ...b })} />)}</ul>
+    </div>
+  );
+}
+
+function IceItem({ r, label, onSave }: { r: IceRow; label: string; onSave: (b: Partial<IceRow>) => void }) {
+  const t = useTranslations();
+  const [d, setD] = useState({ textFr: r.textFr, textEn: r.textEn, sortOrder: r.sortOrder });
+  return (
+    <li><Card className="space-y-3 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="flex items-center gap-2"><code className="text-xs">{r.slug}</code><Badge tone="neutral">{label}</Badge><Badge tone={r.active ? 'success' : 'neutral'}>{t(r.active ? 'admin.eng.active' : 'admin.eng.inactive')}</Badge></span>
+        <label className="flex items-center gap-2 text-sm">{t(r.active ? 'admin.eng.disable' : 'admin.eng.enable')}<Switch checked={r.active} onChange={(v) => onSave({ active: v })} label={`${t(r.active ? 'admin.eng.disable' : 'admin.eng.enable')} ${r.slug}`} /></label>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-[1fr_1fr_6rem_auto] sm:items-end">
+        <Field label={t('admin.eng.textFr')}>{(x) => <Input {...x} maxLength={220} value={d.textFr} onChange={(e) => setD({ ...d, textFr: e.target.value })} />}</Field>
+        <Field label={t('admin.eng.textEn')}>{(x) => <Input {...x} maxLength={220} value={d.textEn} onChange={(e) => setD({ ...d, textEn: e.target.value })} />}</Field>
+        <Field label={t('admin.eng.order')}>{(x) => <Input {...x} type="number" min={0} max={1000} value={d.sortOrder} onChange={(e) => setD({ ...d, sortOrder: num(e.target.value) })} />}</Field>
+        <Button variant="outline" onClick={() => onSave(d)}>{t('admin.eng.save1')}</Button>
+      </div>
+    </Card></li>
+  );
+}
+
 function MetricsTab() {
   const t = useTranslations();
   const q = useQuery({ queryKey: ['admin', 'engagement', 'metrics'], queryFn: () => api<Metrics>('/admin/engagement/metrics') });
@@ -134,15 +188,16 @@ function MetricsTab() {
 
 export default function AdminEngagement() {
   const t = useTranslations();
-  const [tab, setTab] = useState<'settings' | 'prompts' | 'metrics'>('settings');
+  const [tab, setTab] = useState<'settings' | 'prompts' | 'icebreakers' | 'metrics'>('settings');
   const settings = useQuery({ queryKey: ['admin', 'settings'], queryFn: () => api<SettingsData>('/admin/settings') });
   return (
     <div className="space-y-6">
       <header><h2 className="text-lg font-bold">{t('admin.eng.title')}</h2><p className="max-w-2xl text-sm text-muted">{t('admin.eng.subtitle')}</p></header>
-      <Tabs label={t('admin.eng.title')} value={tab} onChange={setTab} tabs={[{ key: 'settings', label: t('admin.eng.tabSettings') }, { key: 'prompts', label: t('admin.eng.tabPrompts') }, { key: 'metrics', label: t('admin.eng.tabMetrics') }]} />
+      <Tabs label={t('admin.eng.title')} value={tab} onChange={setTab} tabs={[{ key: 'settings', label: t('admin.eng.tabSettings') }, { key: 'prompts', label: t('admin.eng.tabPrompts') }, { key: 'icebreakers', label: t('admin.eng.tabIcebreakers') }, { key: 'metrics', label: t('admin.eng.tabMetrics') }]} />
       <div role="tabpanel">
         {tab === 'settings' && (settings.data ? <SettingsTab key={JSON.stringify(settings.data.values)} data={settings.data} /> : <Skeleton className="h-64" />)}
         {tab === 'prompts' && <PromptsTab />}
+        {tab === 'icebreakers' && <IcebreakersTab />}
         {tab === 'metrics' && <MetricsTab />}
       </div>
     </div>

@@ -7,7 +7,7 @@ export type LikeKind = 'PROFILE' | 'PHOTO' | 'PROMPT' | 'INTEREST';
 export interface Affinity { score: number; reasons: { code: string; n?: number }[]; commonInterests: string[]; intentsCompatible: boolean }
 export interface PromptAnswer { id: string; promptId: string; position: number; question: { fr: string; en: string }; answer: string }
 export interface PromptDef { id: string; slug: string; textFr: string; textEn: string; active: boolean; sortOrder: number }
-export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean }; prompts: { min: number; max: number; answerMax: number }; commentMax: number }
+export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[] }
 export interface Card {
   id: string; displayName: string; age: number; city: string; country: string; bio: string; occupation: string | null;
   intent: Intent; verified: boolean; languages: string[]; interests: string[]; commonInterests: string[];
@@ -27,7 +27,7 @@ export interface Me {
 export interface MyProfile {
   id: string; displayName: string; age: number; gender: Gender; pronouns: string | null; country: string; city: string; bio: string;
   occupation: string | null; languages: string[]; intent: Intent; visibility: 'VISIBLE' | 'HIDDEN'; incognito: boolean; verified: boolean;
-  verificationPending: boolean; readReceipts: boolean; boostedUntil: string | null; completeness: number;
+  verificationPending: boolean; readReceipts: boolean; readReceiptsLocked: boolean; typingIndicator: boolean; boostedUntil: string | null; completeness: number;
   completenessLevel: 'INCOMPLETE' | 'IN_PROGRESS' | 'COMPLETE'; onboarded: boolean;
   hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null; liveOptIn: boolean; interests: string[]; photos: Photo[];
   preference: { seeking: Seeking; ageMin: number; ageMax: number; country: string | null; city: string | null; intents: Intent[]; languages: string[]; interests: string[]; verifiedOnly: boolean; activeRecently: boolean; maxDistanceKm: number | null } | null;
@@ -40,6 +40,7 @@ export interface ConversationItem {
 export interface ChatMessage {
   id: string; conversationId: string; senderId: string; mine: boolean; body: string | null; deleted: boolean;
   createdAt: string; readAt: string | null; attachments: { id: string; url: string; mime: string }[];
+  reactions: { emoji: string; count: number; mine: boolean }[]; replyTo: { id: string; mine: boolean; deleted: boolean; body: string | null; hasImage: boolean } | null;
 }
 export interface Paged<T> { items: T[]; nextCursor: string | null }
 export interface SwipeResult { action: string; matched: boolean; match: { id: string; conversationId: string; user: Card | null } | null }

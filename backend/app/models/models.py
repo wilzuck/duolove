@@ -395,6 +395,42 @@ class DailyRecommendation(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class MessageReaction(Base):
+    """Réaction (emoji d'un jeu fermé) d'un membre à un message ; une seule par membre et par message."""
+    __tablename__ = 'MessageReaction'
+    __table_args__ = (
+        ForeignKeyConstraint(['messageId'], ['Message.id'], ondelete='CASCADE', onupdate='CASCADE', name='MessageReaction_messageId_fkey'),
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='MessageReaction_userId_fkey'),
+        PrimaryKeyConstraint('id', name='MessageReaction_pkey'),
+        Index('MessageReaction_messageId_userId_key', 'messageId', 'userId', unique=True),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    messageId: Mapped[str] = mapped_column(Text, nullable=False)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    emoji: Mapped[str] = mapped_column(Text, nullable=False)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
+class IcebreakerTemplate(Base):
+    """Modèle de brise-glace géré par l'administration (bilingue). `kind` : INTEREST (clé = slug d'intérêt), INTENT (clé = intention) ou GENERIC."""
+    __tablename__ = 'IcebreakerTemplate'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='IcebreakerTemplate_pkey'),
+        Index('IcebreakerTemplate_slug_key', 'slug', unique=True),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    slug: Mapped[str] = mapped_column(Text, nullable=False)
+    kind: Mapped[str] = mapped_column(Text, nullable=False)
+    key: Mapped[Optional[str]] = mapped_column(Text)
+    textFr: Mapped[str] = mapped_column(Text, nullable=False)
+    textEn: Mapped[str] = mapped_column(Text, nullable=False)
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
+    sortOrder: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
 class SystemSetting(Base):
     __tablename__ = 'SystemSetting'
     __table_args__ = (
@@ -764,6 +800,7 @@ class Profile(Base):
     verified: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'))
     completeness: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
     readReceipts: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
+    typingIndicator: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
     liveOptIn: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
@@ -1109,6 +1146,7 @@ class Message(Base):
     __table_args__ = (
         ForeignKeyConstraint(['conversationId'], ['Conversation.id'], ondelete='CASCADE', onupdate='CASCADE', name='Message_conversationId_fkey'),
         ForeignKeyConstraint(['senderId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='Message_senderId_fkey'),
+        ForeignKeyConstraint(['replyToId'], ['Message.id'], ondelete='SET NULL', onupdate='CASCADE', name='Message_replyToId_fkey'),
         PrimaryKeyConstraint('id', name='Message_pkey'),
         Index('Message_conversationId_createdAt_idx', 'conversationId', text('"createdAt" DESC')),
         Index('Message_senderId_idx', 'senderId')
@@ -1121,6 +1159,7 @@ class Message(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     readAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
     deletedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    replyToId: Mapped[Optional[str]] = mapped_column(Text)
 
     Conversation_: Mapped['Conversation'] = relationship('Conversation', back_populates='Message')
     User_: Mapped['User'] = relationship('User', back_populates='Message')

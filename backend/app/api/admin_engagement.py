@@ -5,13 +5,13 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.admin import ADM, audit
-from app.core import appsettings, promptsvc
+from app.core import appsettings, icebreakers, promptsvc
 from app.core.auth import AuthUser
 from app.core.errors import AppError, not_found
 from app.core.ids import utcnow
 from app.db.session import get_db
-from app.models.models import ProfilePrompt, ProfilePromptAnswer
-from app.schemas.engagement import PromptCreate, PromptPatch, SettingsPatch
+from app.models.models import IcebreakerTemplate, ProfilePrompt, ProfilePromptAnswer
+from app.schemas.engagement import IcebreakerCreate, IcebreakerPatch, PromptCreate, PromptPatch, SettingsPatch
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -60,6 +60,38 @@ async def patch_prompt(prompt_id: str, body: PromptPatch, a: AuthUser = ADM, db:
     await db.commit()
     await audit(db, a.id, "prompt.update", "ProfilePrompt", p.id, data)
     return promptsvc.prompt_dict(p)
+
+
+@router.get("/icebreakers")
+async def list_icebreakers(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    rows = (await db.execute(select(IcebreakerTemplate).order_by(IcebreakerTemplate.sortOrder, IcebreakerTemplate.createdAt))).scalars().all()
+    return {"items": [icebreakers.template_dict(t) for t in rows]}
+
+
+@router.post("/icebreakers", status_code=201)
+async def create_icebreaker(body: IcebreakerCreate, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    t = IcebreakerTemplate(**body.model_dump())
+    db.add(t)
+    try:
+        await db.commit()
+    except IntegrityError:
+        await db.rollback()
+        raise AppError(409, "SLUG_TAKEN", "Cette clé existe déjà") from None
+    await audit(db, a.id, "icebreaker.create", "IcebreakerTemplate", t.id, {"slug": t.slug})
+    return icebreakers.template_dict(t)
+
+
+@router.patch("/icebreakers/{template_id}")
+async def patch_icebreaker(template_id: str, body: IcebreakerPatch, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    t = await db.get(IcebreakerTemplate, template_id)
+    if not t:
+        raise not_found("TEMPLATE_NOT_FOUND")
+    data = body.model_dump(exclude_unset=True)
+    for k, v in data.items():
+        setattr(t, k, v)
+    await db.commit()
+    await audit(db, a.id, "icebreaker.update", "IcebreakerTemplate", t.id, data)
+    return icebreakers.template_dict(t)
 
 
 @router.get("/engagement/metrics")

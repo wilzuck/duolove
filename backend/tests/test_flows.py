@@ -237,8 +237,10 @@ async def test_messaging(app, db):
 
     assert (await am.post(f"/api/conversations/{conv}/read")).json()["read"] == 5
     assert (await aw.get(f"/api/conversations/{conv}/messages")).json()["items"][0]["readAt"] is not None
-    await db.execute(update(Profile).where(Profile.userId == m["id"]).values(readReceipts=False))
-    await db.commit()
+    # Désactiver les accusés de lecture est une option de formule : gratuit → refusé, abonné → accepté.
+    assert (await am.patch("/api/profiles/me/settings", json={"readReceipts": False})).status_code == 403
+    await make_premium(m["id"])
+    assert (await am.patch("/api/profiles/me/settings", json={"readReceipts": False})).status_code == 200
     assert (await aw.get(f"/api/conversations/{conv}/messages")).json()["items"][0]["readAt"] is None
 
     first = p2.json()["items"][0]

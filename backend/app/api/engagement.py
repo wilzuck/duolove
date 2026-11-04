@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import appsettings, flags, promptsvc
+from app.core.constants import REACTION_EMOJIS
 from app.core.auth import AuthUser, verified_user
 from app.db.session import get_db
 from app.schemas.profiles import PromptAnswersIn
@@ -14,8 +15,8 @@ router = APIRouter(prefix="/engagement", tags=["engagement"])
 async def config(_: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     cfg = await appsettings.all_values(db)
     fl = await flags.all_flags(db)
-    return {"flags": {k: fl[k] for k in ("profile_prompts", "like_comments", "daily_picks")},
-            "prompts": {"min": cfg["prompts.min"], "max": cfg["prompts.max"], "answerMax": promptsvc.ANSWER_MAX}, "commentMax": cfg["likes.comment_max"]}
+    return {"flags": {k: fl[k] for k in ("profile_prompts", "like_comments", "daily_picks", "message_reactions", "message_replies", "icebreakers")},
+            "prompts": {"min": cfg["prompts.min"], "max": cfg["prompts.max"], "answerMax": promptsvc.ANSWER_MAX}, "commentMax": cfg["likes.comment_max"], "reactionEmojis": list(REACTION_EMOJIS)}
 
 
 @router.get("/prompts", dependencies=[flags.require_flag("profile_prompts")])

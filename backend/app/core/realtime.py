@@ -7,7 +7,7 @@ from sqlalchemy import select
 from app.core.auth import SESSION_COOKIE, resolve_session
 from app.core.config import get_settings
 from app.db.session import session_maker
-from app.models.models import Conversation, Match
+from app.models.models import Conversation, Match, Profile
 
 log = logging.getLogger("realtime")
 sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins=[get_settings().app_url], logger=False, engineio_logger=False)
@@ -71,6 +71,11 @@ async def typing(sid, body=None):
     if not conv or not match or match.status.value != "ACTIVE" or uid not in (match.userAId, match.userBId):
         return
     other = match.userBId if uid == match.userAId else match.userAId
+    async with session_maker()() as db:
+        # Réciproque : si l'une des deux personnes a désactivé l'indicateur de saisie, personne ne voit l'autre écrire.
+        on = (await db.execute(select(Profile.typingIndicator).where(Profile.userId.in_([uid, other])))).scalars().all()
+    if len(on) < 2 or not all(on):
+        return
     await emit_to_user(other, "typing", {"conversationId": conv.id, "isTyping": bool(body.get("isTyping"))})
 
 

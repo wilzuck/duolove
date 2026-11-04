@@ -49,7 +49,7 @@ async def get_mine(db: AsyncSession, user_id: str) -> dict:
         "originCountry": p.originCountry, "liveOptIn": p.liveOptIn, "displayName": p.displayName, "birthDate": p.birthDate,
         "age": age_from_birth_date(p.birthDate), "gender": _v(p.gender), "pronouns": p.pronouns, "country": p.country, "city": p.city,
         "bio": p.bio, "occupation": p.occupation, "languages": p.languages or [], "intent": _v(p.intent), "visibility": _v(p.visibility),
-        "incognito": p.incognito, "verified": p.verified, "verificationPending": bool(pending), "readReceipts": p.readReceipts,
+        "incognito": p.incognito, "verified": p.verified, "verificationPending": bool(pending), "readReceipts": p.readReceipts or not await _can_control_receipts(db, user_id), "readReceiptsLocked": not await _can_control_receipts(db, user_id), "typingIndicator": p.typingIndicator,
         "boostedUntil": p.boostedUntil, "completeness": p.completeness, "completenessLevel": completeness_level(p.completeness),
         "onboarded": bool(p.onboardedAt), "interests": list(slugs),
         "photos": [{"id": x.id, "url": photo_url(x.key), "thumbUrl": photo_url(thumb_key(x.key)), "isPrimary": x.isPrimary, "position": x.position} for x in photos],
@@ -95,6 +95,10 @@ async def update_profile(db: AsyncSession, user_id: str, data: dict) -> dict:
     return await get_mine(db, user_id)
 
 
+async def _can_control_receipts(db: AsyncSession, user_id: str) -> bool:
+    return bool((await entitlements.get(db, user_id))["limits"]["readReceiptsControl"])
+
+
 async def set_visibility(db: AsyncSession, user_id: str, visibility: str) -> None:
     await db.execute(update(Profile).where(Profile.userId == user_id).values(visibility=visibility))
     await db.commit()
@@ -109,7 +113,15 @@ async def set_incognito(db: AsyncSession, user_id: str, incognito: bool) -> None
 
 
 async def set_read_receipts(db: AsyncSession, user_id: str, value: bool) -> None:
+    """Désactiver les accusés de lecture est une option de formule (`read_receipts_control`, réglable par l'administration)."""
+    if value is False and not (await entitlements.get(db, user_id))["limits"]["readReceiptsControl"]:
+        raise forbidden("PLAN_REQUIRED", "La gestion des accusés de lecture est réservée aux abonnés Premium et VIP")
     await db.execute(update(Profile).where(Profile.userId == user_id).values(readReceipts=value))
+    await db.commit()
+
+
+async def set_typing_indicator(db: AsyncSession, user_id: str, value: bool) -> None:
+    await db.execute(update(Profile).where(Profile.userId == user_id).values(typingIndicator=value))
     await db.commit()
 
 

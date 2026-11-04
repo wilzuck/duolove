@@ -28,6 +28,7 @@ PLAN_FEATURE_DEFAULTS: dict = {
     "daily_likes_limit": 20, "super_likes_weekly": 0, "can_see_likes": False, "advanced_filters": False,
     "boosts_monthly": 0, "incognito_mode": False, "rewind_enabled": False, "ads_enabled": True,
     "live_match_enabled": False, "live_match_trials": 2, "match_tokens_monthly": 0, "chat_images_enabled": False,
+    "read_receipts_control": False,
 }
 
 DEFAULT_PLANS = {
@@ -36,11 +37,11 @@ DEFAULT_PLANS = {
     "PREMIUM": {"name": "Premium", "priceXof": 2500, "featured": True, "sortOrder": 1,
                 "features": {"daily_likes_limit": -1, "super_likes_weekly": 5, "can_see_likes": True, "advanced_filters": True,
                              "boosts_monthly": 0, "incognito_mode": False, "rewind_enabled": True, "ads_enabled": False,
-                             "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 5, "chat_images_enabled": True}},
+                             "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 5, "chat_images_enabled": True, "read_receipts_control": True}},
     "VIP": {"name": "VIP", "priceXof": 5000, "featured": False, "sortOrder": 2,
             "features": {"daily_likes_limit": -1, "super_likes_weekly": 15, "can_see_likes": True, "advanced_filters": True,
                          "boosts_monthly": 2, "incognito_mode": True, "rewind_enabled": True, "ads_enabled": False,
-                         "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 15, "chat_images_enabled": True}},
+                         "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 15, "chat_images_enabled": True, "read_receipts_control": True}},
 }
 
 DEFAULT_PRODUCTS = (
@@ -96,6 +97,9 @@ FEATURE_FLAGS = (
     FlagDef("profile_prompts", "social", True, False),
     FlagDef("like_comments", "social", True, False),
     FlagDef("daily_picks", "social", True, False),
+    FlagDef("message_reactions", "social", True, False),
+    FlagDef("message_replies", "social", True, False),
+    FlagDef("icebreakers", "social", True, False),
 )
 FLAG_KEYS = tuple(f.key for f in FEATURE_FLAGS)
 
@@ -115,7 +119,7 @@ def limits_from_features(f: dict) -> dict:
         "dailyLikes": UNLIMITED_LIKES_CAP if unlimited else f["daily_likes_limit"], "unlimitedLikes": unlimited,
         "superLikesWeekly": f["super_likes_weekly"], "seeLikers": f["can_see_likes"], "advancedFilters": f["advanced_filters"],
         "rewind": f["rewind_enabled"], "boostsMonthly": f["boosts_monthly"], "incognito": f["incognito_mode"], "ads": f["ads_enabled"],
-        "liveMatch": f["live_match_enabled"], "liveMatchTrials": f["live_match_trials"], "matchTokensMonthly": f["match_tokens_monthly"], "chatImages": f.get("chat_images_enabled", False),
+        "liveMatch": f["live_match_enabled"], "liveMatchTrials": f["live_match_trials"], "matchTokensMonthly": f["match_tokens_monthly"], "chatImages": f.get("chat_images_enabled", False), "readReceiptsControl": f.get("read_receipts_control", False),
     }
 
 
@@ -124,3 +128,6 @@ def price_for_duration(monthly_xof: int, months: int, discount_percent: int, amo
         return amount_override
     # Même arrondi que Math.round (moitié vers le haut) pour des montants positifs.
     return int((monthly_xof * months * (100 - discount_percent)) / 100 + 0.5)
+
+# Jeu fermé de réactions aux messages (côté serveur : un emoji hors liste est refusé).
+REACTION_EMOJIS = ("❤️", "😂", "😮", "😢", "👍", "🔥")

@@ -17,6 +17,7 @@ DEFAULT_PROMPTS = [  # (slug, français, anglais)
     ("unguessed", "Une chose que personne ne devine sur moi…", "Something nobody guesses about me…"),
     ("looking-for", "Ce que je recherche vraiment…", "What I am really looking for…"),
     ("love-language", "Mon langage de l’amour…", "My love language…"),
+    ("travel-destination", "Si je devais voyager, ma prochaine destination serait…", "If I had to travel, my next destination would be…"),
 ]
 
 

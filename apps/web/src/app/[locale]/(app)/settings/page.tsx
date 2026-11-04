@@ -61,7 +61,10 @@ function PrivacyTab() {
     <div className="space-y-5">
       <Card className="divide-y divide-line px-5">
         <Row title={t('settings.privacy.visible')} text={t('settings.privacy.visibleText')}><Switch checked={p.visibility === 'VISIBLE'} onChange={(v) => set.mutate({ visibility: v ? 'VISIBLE' : 'HIDDEN' })} label={t('settings.privacy.visible')} /></Row>
-        <Row title={t('settings.privacy.receipts')} text={t('settings.privacy.receiptsText')}><Switch checked={p.readReceipts} onChange={(v) => set.mutate({ readReceipts: v })} label={t('settings.privacy.receipts')} /></Row>
+        <Row title={t('settings.privacy.receipts')} text={p.readReceiptsLocked ? t('settings.privacy.receiptsLocked') : t('settings.privacy.receiptsText')}>
+          <span className="flex items-center gap-3">{p.readReceiptsLocked && <Link href="/premium" className="text-sm font-semibold text-brand-ink underline">{t('settings.privacy.receiptsUpgrade')}</Link>}
+            <Switch checked={p.readReceipts} disabled={p.readReceiptsLocked} onChange={(v) => set.mutate({ readReceipts: v })} label={t('settings.privacy.receipts')} /></span></Row>
+        <Row title={t('settings.privacy.typing')} text={t('settings.privacy.typingText')}><Switch checked={p.typingIndicator} onChange={(v) => set.mutate({ typingIndicator: v })} label={t('settings.privacy.typing')} /></Row>
         <Row title={t('settings.privacy.incognito')} text={me.entitlement.limits.incognito ? t('settings.privacy.incognitoText') : t('settings.privacy.incognitoLocked')}><Switch checked={p.incognito} disabled={!me.entitlement.limits.incognito} onChange={(v) => set.mutate({ incognito: v })} label={t('settings.privacy.incognito')} /></Row>
         <Row title={t('settings.privacy.marketing')} text={t('settings.privacy.marketingText')}><Switch checked={me.marketingConsent} onChange={(v) => consent.mutate(v)} label={t('settings.privacy.marketing')} /></Row>
       </Card>
