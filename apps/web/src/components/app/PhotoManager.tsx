@@ -61,7 +61,7 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
         )}
       </ul>
       <p className="mt-3 text-sm text-muted">{t('photos.hint', { max: MAX })}</p>
-      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) setFile(f); e.target.value = ''; }} />
+      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" aria-hidden className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) setFile(f); e.target.value = ''; }} />
       <PhotoCropper file={file} onCancel={() => setFile(null)} onDone={(b) => add.mutate(b)} />
     </div>
   );

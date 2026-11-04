@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
-from app.core import jsonfmt, mail, payments, plan_config, realtime
+from app.core import jsonfmt, mail, payments, plan_config, promptsvc, realtime
 from app.core.config import get_settings
 from app.core.errors import install_error_handlers
 from app.core.ratelimit import global_limit
@@ -25,7 +25,7 @@ jsonfmt.install()
 # Routeurs (un module par domaine) : chacun expose `router`.
 ROUTERS = [
     "auth", "users", "profiles", "media", "discovery", "swipes", "matches", "chat", "subscriptions", "boosts",
-    "live", "referral", "reports", "notifications", "admin", "admin_blog", "blog",
+    "live", "referral", "reports", "notifications", "admin", "admin_blog", "blog", "engagement", "admin_engagement",
 ]
 
 
@@ -58,6 +58,7 @@ class CsrfOrigin(BaseHTTPMiddleware):
 async def lifespan(_: FastAPI):
     async with session_maker()() as db:
         await plan_config.ensure_defaults(db)
+        await promptsvc.ensure_defaults(db)
     # Expiration horaire des abonnements : hors tests (les tests appellent la logique directement).
     task = None if get_settings().node_env == "test" else asyncio.create_task(payments.expiry_loop(session_maker()))
     yield

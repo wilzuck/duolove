@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { LiveIncoming, LiveState, ConversationItem, Me, MyProfile, NotificationItem, Paged, Catalog, SubscriptionState } from '@/lib/types';
+import type { EngagementConfig, LiveIncoming, LiveState, ConversationItem, Me, MyProfile, NotificationItem, Paged, Catalog, SubscriptionState } from '@/lib/types';
 
 export const keys = {
   me: ['me'] as const, profile: ['profile'] as const, conversations: (q = '') => ['conversations', q] as const,
@@ -19,3 +19,6 @@ export const useSubscription = () => useQuery({ queryKey: keys.subscription, que
 /** Menu Match : état de la recherche, jetons, personnes ayant accepté. Rafraîchi régulièrement + en direct via Socket.IO. */
 export const useLive = () => useQuery({ queryKey: keys.live, queryFn: () => api<LiveState>('/live/state'), refetchInterval: 20_000, retry: false });
 export const useLiveInvites = () => useQuery({ queryKey: keys.liveInvites, queryFn: () => api<{ items: LiveIncoming[] }>('/live/invites'), refetchInterval: 20_000 });
+
+/** Réglages publics des fonctions d'engagement (activation, bornes) : pilotés par l'administration. */
+export const useEngagementConfig = () => useQuery({ queryKey: ['engagement', 'config'], queryFn: () => api<EngagementConfig>('/engagement/config'), staleTime: 60_000 });

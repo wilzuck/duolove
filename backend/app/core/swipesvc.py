@@ -5,11 +5,11 @@ from sqlalchemy import and_, delete, exists, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased
 
-from app.core import credits, entitlements, notifications, realtime
+from app.core import appsettings, credits, entitlements, flags, notifications, realtime
 from app.core.errors import AppError, forbidden, not_found
 from app.core.ids import utcnow
 from app.core.profile_card import load_cards, to_card
-from app.models.models import Block, Conversation, Match, Profile, Swipe, User
+from app.models.models import Block, Conversation, Interest, Match, Message, Profile, ProfilePhoto, ProfilePromptAnswer, Swipe, User, t_UserInterest
 
 
 def _v(x):
@@ -53,7 +53,39 @@ async def _assert_quota(db: AsyncSession, user_id: str, action: str) -> None:
         raise forbidden("DAILY_LIMIT", "Limite quotidienne de likes atteinte")
 
 
-async def swipe(db: AsyncSession, user_id: str, target_id: str, action: str) -> dict:
+TARGET_KINDS = ("PHOTO", "PROMPT", "INTEREST", "PROFILE")
+
+
+async def _validate_like_target(db: AsyncSession, target_id: str, action: str, comment: str | None, kind: str | None, ref: str | None) -> tuple[str | None, str | None, str | None]:
+    """Like ciblé (photo, réponse, centre d'intérêt, profil) et/ou commenté : l'élément visé doit appartenir à la personne likée."""
+    if comment is None and kind is None:
+        return None, None, None
+    if action == "PASS":
+        raise AppError(400, "COMMENT_ON_PASS", "Un commentaire accompagne un like, pas un « passer »")
+    await flags.assert_on(db, "like_comments")
+    kind = kind or "PROFILE"
+    if comment is not None:
+        mx = await appsettings.get(db, "likes.comment_max")
+        if not 1 <= len(comment) <= mx:
+            raise AppError(400, "INVALID_COMMENT", f"Commentaire : 1 à {mx} caractères", {"max": mx})
+    if kind == "PROFILE":
+        return comment, kind, None
+    if not ref:
+        raise AppError(400, "INVALID_LIKE_TARGET", "Élément visé manquant")
+    if kind == "PHOTO":
+        ok = (await db.execute(select(ProfilePhoto.id).join(Profile, Profile.id == ProfilePhoto.profileId).where(
+            ProfilePhoto.id == ref, Profile.userId == target_id, ProfilePhoto.moderationStatus != "REJECTED"))).first()
+    elif kind == "PROMPT":
+        ok = (await db.execute(select(ProfilePromptAnswer.id).where(ProfilePromptAnswer.id == ref, ProfilePromptAnswer.userId == target_id))).first()
+    else:
+        ok = (await db.execute(select(Interest.slug).join(t_UserInterest, t_UserInterest.c.interestId == Interest.id).where(
+            t_UserInterest.c.userId == target_id, Interest.slug == ref))).first()
+    if not ok:
+        raise AppError(400, "INVALID_LIKE_TARGET", "Cet élément n'appartient pas à ce profil")
+    return comment, kind, ref
+
+
+async def swipe(db: AsyncSession, user_id: str, target_id: str, action: str, comment: str | None = None, target_kind: str | None = None, target_ref: str | None = None) -> dict:
     """Idempotent : rejouer la même requête ne crée ni doublon ni second match. La paire est verrouillée (advisory lock)
     pour que deux likes simultanés A→B et B→A produisent exactement un match."""
     if target_id == user_id:
@@ -68,6 +100,7 @@ async def swipe(db: AsyncSession, user_id: str, target_id: str, action: str) -> 
     ent = await entitlements.get(db, user_id)
     if not existing:
         await _assert_quota(db, user_id, action)
+        comment, target_kind, target_ref = await _validate_like_target(db, target_id, action, comment, target_kind, target_ref)
 
     a, b = order_pair(user_id, target_id)
     await db.commit()  # termine la transaction de lecture ; la suivante commence par le verrou
@@ -75,7 +108,7 @@ async def swipe(db: AsyncSession, user_id: str, target_id: str, action: str) -> 
     prior = (await db.execute(select(Swipe).where(Swipe.giverId == user_id, Swipe.targetId == target_id))).scalar_one_or_none()
     sw = prior
     if not prior:
-        sw = Swipe(giverId=user_id, targetId=target_id, action=action)
+        sw = Swipe(giverId=user_id, targetId=target_id, action=action, comment=comment, targetKind=target_kind, targetRef=target_ref)
         db.add(sw)
         await db.flush()
         # Super Like au-delà du quota hebdomadaire inclus : un crédit acheté est consommé DANS cette transaction
@@ -86,6 +119,7 @@ async def swipe(db: AsyncSession, user_id: str, target_id: str, action: str) -> 
             if used >= ent["limits"]["superLikesWeekly"]:
                 await credits.consume(db, user_id, "SUPER_LIKE", 1, sw.id)
     match = conv = None
+    openers: list[tuple[str, str]] = []
     if _v(sw.action) != "PASS":
         rev = (await db.execute(select(Swipe).where(Swipe.giverId == target_id, Swipe.targetId == user_id))).scalar_one_or_none()
         if rev and _v(rev.action) != "PASS":
@@ -97,6 +131,14 @@ async def swipe(db: AsyncSession, user_id: str, target_id: str, action: str) -> 
                 conv = Conversation(matchId=match.id)
                 db.add(conv)
                 await db.flush()
+                # Les commentaires de like servent de premiers messages : celui qui a liké en premier d'abord, puis le second.
+                openers = [(rev.giverId, rev.comment), (sw.giverId, sw.comment)]
+                openers = [(uid_, txt) for uid_, txt in openers if txt]
+                now = utcnow()
+                for n, (uid_, txt) in enumerate(openers):
+                    db.add(Message(conversationId=conv.id, senderId=uid_, body=txt, createdAt=now + datetime.timedelta(milliseconds=n)))
+                if openers:
+                    conv.lastMessageAt = now + datetime.timedelta(milliseconds=len(openers) - 1)
             else:
                 conv = (await db.execute(select(Conversation).where(Conversation.matchId == match.id))).scalar_one_or_none()
                 if not conv:
@@ -117,7 +159,7 @@ async def swipe(db: AsyncSession, user_id: str, target_id: str, action: str) -> 
             await realtime.emit_to_user(user_id, "match:new", {**md, "userId": target_id})
             await realtime.emit_to_user(target_id, "match:new", {**md, "userId": user_id})
         else:
-            await notifications.create(db, target_id, "LIKE", {"fromUserId": user_id, "superLike": action == "SUPER_LIKE"})
+            await notifications.create(db, target_id, "LIKE", {"fromUserId": user_id, "superLike": action == "SUPER_LIKE", "hasComment": bool(comment)})
 
     matched_profile = None
     if match_id:
@@ -167,7 +209,7 @@ async def sent(db: AsyncSession, user_id: str, cursor: str | None = None, limit:
     for r in page:
         c = cards.get(r.targetId)
         if c:
-            items.append({**to_card(c), "superLike": _v(r.action) == "SUPER_LIKE", "likedAt": r.createdAt, "matched": r.targetId in match_of, "conversationId": match_of.get(r.targetId)})
+            items.append({**to_card(c), "superLike": _v(r.action) == "SUPER_LIKE", "likedAt": r.createdAt, "comment": r.comment, "likeTarget": {"kind": r.targetKind, "ref": r.targetRef} if r.targetKind else None, "matched": r.targetId in match_of, "conversationId": match_of.get(r.targetId)})
     return {"items": items, "nextCursor": page[-1].id if len(rows) > limit else None}
 
 
@@ -188,5 +230,6 @@ async def received(db: AsyncSession, user_id: str, cursor: str | None = None, li
     ids = [r.giverId for r in page]
     profiles = list((await db.execute(select(Profile).where(Profile.userId.in_(ids)))).scalars().all()) if ids else []
     cards = {c.profile.userId: c for c in await load_cards(db, profiles)}
-    items = [{**to_card(cards[r.giverId]), "superLike": _v(r.action) == "SUPER_LIKE", "likedAt": r.createdAt} for r in page if r.giverId in cards]
+    items = [{**to_card(cards[r.giverId]), "superLike": _v(r.action) == "SUPER_LIKE", "likedAt": r.createdAt, "comment": r.comment,
+              "likeTarget": {"kind": r.targetKind, "ref": r.targetRef} if r.targetKind else None} for r in page if r.giverId in cards]
     return {"locked": not limits["seeLikers"], "count": count, "items": items, "nextCursor": page[-1].id if len(rows) > limit else None}

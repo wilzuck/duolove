@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import flags, promptsvc
 from app.core.config import get_settings
 from app.core.constants import age_from_birth_date
 from app.models.models import Interest, Profile, ProfilePhoto, User, t_UserInterest
@@ -26,6 +27,7 @@ class CardProfile:
     photos: list[ProfilePhoto] = field(default_factory=list)
     interests: list[str] = field(default_factory=list)
     last_active_at: object = None
+    prompts: list[dict] = field(default_factory=list)
 
 
 def approx_distance_km(a, b) -> int | None:
@@ -58,14 +60,15 @@ async def load_cards(db: AsyncSession, profiles: list[Profile]) -> list[CardProf
     for uid, slug in irows:
         by_user.setdefault(uid, []).append(slug)
     actives = dict((await db.execute(select(User.id, User.lastActiveAt).where(User.id.in_(uids)))).all())
-    return [CardProfile(p, by_profile.get(p.id, []), by_user.get(p.userId, []), actives.get(p.userId)) for p in profiles]
+    prompts = await promptsvc.answers_for(db, uids) if await flags.is_on(db, "profile_prompts") else {}
+    return [CardProfile(p, by_profile.get(p.id, []), by_user.get(p.userId, []), actives.get(p.userId), prompts.get(p.userId, [])) for p in profiles]
 
 
 async def load_card(db: AsyncSession, profile: Profile) -> CardProfile:
     return (await load_cards(db, [profile]))[0]
 
 
-def to_card(c: CardProfile, *, viewer_interests: list[str] | None = None, distance_km: int | None = None, score: int | float | None = None) -> dict:
+def to_card(c: CardProfile, *, viewer_interests: list[str] | None = None, distance_km: int | None = None, score: int | float | None = None, affinity: dict | None = None) -> dict:
     p = c.profile
     mine = set(viewer_interests or [])
     return {
@@ -74,6 +77,6 @@ def to_card(c: CardProfile, *, viewer_interests: list[str] | None = None, distan
         "hasChildren": p.hasChildren, "likesPets": p.likesPets, "living": p.living.value if p.living else None,
         "heightCm": p.heightCm, "originCountry": p.originCountry,
         "interests": c.interests, "commonInterests": [i for i in c.interests if i in mine],
-        "distanceKm": distance_km, "compatibility": score,
+        "distanceKm": distance_km, "compatibility": score, "affinity": affinity, "prompts": c.prompts,
         "photos": [{"id": x.id, "url": photo_url(x.key), "thumbUrl": photo_url(thumb_key(x.key))} for x in c.photos],
     }

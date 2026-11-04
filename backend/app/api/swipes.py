@@ -13,7 +13,7 @@ router = APIRouter(prefix="/swipes", tags=["swipes"])
 async def swipe(body: SwipeIn, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     if body.action == "SUPER_LIKE":
         await flags.assert_on(db, "super_likes")
-    return await swipesvc.swipe(db, u.id, body.targetId, body.action)
+    return await swipesvc.swipe(db, u.id, body.targetId, body.action, body.comment, body.targetKind, body.targetRef)
 
 
 @router.post("/rewind", status_code=200)

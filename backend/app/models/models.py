@@ -6,7 +6,7 @@ import enum
 
 from app.core.ids import new_id, utcnow
 
-from sqlalchemy import ARRAY, Boolean, Column, DateTime, Double, Enum, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Table, Text, text
+from sqlalchemy import ARRAY, Boolean, Column, Date, DateTime, Double, Enum, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Table, Text, text
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -337,6 +337,62 @@ class BlogPost(Base):
     authorId: Mapped[Optional[str]] = mapped_column(Text)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
+
+
+class ProfilePrompt(Base):
+    """Question de personnalité du catalogue (gérée par l'administration, bilingue)."""
+    __tablename__ = 'ProfilePrompt'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='ProfilePrompt_pkey'),
+        Index('ProfilePrompt_slug_key', 'slug', unique=True),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    slug: Mapped[str] = mapped_column(Text, nullable=False)
+    textFr: Mapped[str] = mapped_column(Text, nullable=False)
+    textEn: Mapped[str] = mapped_column(Text, nullable=False)
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
+    sortOrder: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
+class ProfilePromptAnswer(Base):
+    __tablename__ = 'ProfilePromptAnswer'
+    __table_args__ = (
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='ProfilePromptAnswer_userId_fkey'),
+        ForeignKeyConstraint(['promptId'], ['ProfilePrompt.id'], ondelete='CASCADE', onupdate='CASCADE', name='ProfilePromptAnswer_promptId_fkey'),
+        PrimaryKeyConstraint('id', name='ProfilePromptAnswer_pkey'),
+        Index('ProfilePromptAnswer_userId_promptId_key', 'userId', 'promptId', unique=True),
+        Index('ProfilePromptAnswer_userId_position_idx', 'userId', 'position'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    promptId: Mapped[str] = mapped_column(Text, nullable=False)
+    answer: Mapped[str] = mapped_column(Text, nullable=False)
+    position: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
+
+
+class DailyRecommendation(Base):
+    """Sélection du jour : uniquement de vrais comptes éligibles au moment du calcul ; l'historique est purgé après `daily.retention_days`."""
+    __tablename__ = 'DailyRecommendation'
+    __table_args__ = (
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='DailyRecommendation_userId_fkey'),
+        ForeignKeyConstraint(['targetId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='DailyRecommendation_targetId_fkey'),
+        PrimaryKeyConstraint('id', name='DailyRecommendation_pkey'),
+        Index('DailyRecommendation_userId_targetId_day_key', 'userId', 'targetId', 'day', unique=True),
+        Index('DailyRecommendation_userId_day_idx', 'userId', 'day'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    targetId: Mapped[str] = mapped_column(Text, nullable=False)
+    day: Mapped[datetime.date] = mapped_column(Date, nullable=False)
+    score: Mapped[int] = mapped_column(Integer, nullable=False)
+    reasons: Mapped[object] = mapped_column(JSONB, nullable=False)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
 class SystemSetting(Base):
@@ -839,6 +895,9 @@ class Swipe(Base):
     targetId: Mapped[str] = mapped_column(Text, nullable=False)
     action: Mapped[SwipeAction] = mapped_column(Enum(SwipeAction, values_callable=lambda cls: [member.value for member in cls], name='SwipeAction'), nullable=False)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    comment: Mapped[Optional[str]] = mapped_column(Text)
+    targetKind: Mapped[Optional[str]] = mapped_column(Text)
+    targetRef: Mapped[Optional[str]] = mapped_column(Text)
 
     User_: Mapped['User'] = relationship('User', foreign_keys=[giverId], back_populates='Swipe_giverId')
     User1: Mapped['User'] = relationship('User', foreign_keys=[targetId], back_populates='Swipe_targetId')

@@ -43,7 +43,8 @@ export default function LikesPage() {
               <Link href={`/profile/${c.id}`} className="flex min-w-0 flex-1 items-center gap-4" aria-label={t('likes.view', { name: c.displayName })}>
                 <Avatar src={c.photos[0]?.thumbUrl} name={c.displayName} size={72} className="rounded-2xl" />
                 <span className="min-w-0"><span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.superLike && <Star className="size-4 fill-sky-500 text-sky-500" aria-label={t('likes.superLike')} />}</span>
-                  <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span></span>
+                  <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span>
+                  {c.comment && <span className="mt-1 block truncate text-sm italic text-muted"><span className="sr-only">{t('likes.commentLabel')} </span>« {c.comment} »</span>}</span>
               </Link>
               {c.matched && c.conversationId
                 ? <Link href={`/messages/${c.conversationId}`}><Button size="sm"><MessageCircle className="size-4" aria-hidden />{t('likes.chat')}</Button></Link>
@@ -76,6 +77,7 @@ export default function LikesPage() {
                 <span className="min-w-0">
                   <span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <BadgeCheck className="size-4 fill-sky-500 text-white" aria-label={t('card.verified')} />}{c.superLike && <Star className="size-4 fill-sky-500 text-sky-500" aria-label={t('likes.superLike')} />}</span>
                   <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span>
+                  {c.comment && <span className="mt-1 block rounded-xl bg-soft px-3 py-1.5 text-sm"><span className="sr-only">{t('likes.commentLabel')} </span>« {c.comment} »</span>}
                 </span>
               </Link>
               <div className="flex gap-2">

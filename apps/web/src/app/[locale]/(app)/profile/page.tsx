@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { Badge, Button, Card, Skeleton } from '@duomatch/ui';
 import { PhotoManager } from '@/components/app/PhotoManager';
+import { PromptsEditor } from '@/components/app/PromptsEditor';
 import { AboutFields, InterestPicker, LifestyleFields, PreferenceFields, SaveBar, aboutFrom, lifeFrom, prefDefault, type AboutValue, type LifeValue } from '@/components/app/ProfileForms';
 import { useApiError } from '@/hooks/useApiError';
 import { keys, useMe, useMyProfile } from '@/hooks/useQueries';
@@ -64,6 +65,7 @@ export default function ProfilePage() {
       <Card className="space-y-4 p-5"><h2 className="font-bold">{t('profile.about')}</h2><AboutFields value={a} onChange={setAbout} withLocation /></Card>
       <Card className="space-y-4 p-5"><div><h2 className="font-bold">{t('life.title')}</h2><p className="text-sm text-muted">{t('life.hint')}</p></div><LifestyleFields value={lf} onChange={setLife} /></Card>
       <Card className="space-y-4 p-5"><h2 className="font-bold">{t('profile.interests')}</h2><InterestPicker value={a.interests} onChange={(v) => setAbout({ ...a, interests: v })} /></Card>
+      <PromptsEditor />
       <Card id="filters" className="scroll-mt-20 space-y-4 p-5"><h2 className="font-bold">{t('prefs.title')}</h2><PreferenceFields value={pr} onChange={setPref} limits={me.entitlement.limits} /></Card>
 
       <Card className="space-y-3 p-5">
@@ -72,7 +74,7 @@ export default function ProfilePage() {
           <>
             <p className="text-sm text-muted">{t('profile.verifyText')}</p>
             <Button variant="outline" onClick={() => selfie.current?.click()} loading={verify.isPending}><Camera className="size-4" aria-hidden />{t('profile.verifyCta')}</Button>
-            <input ref={selfie} type="file" accept="image/jpeg,image/png,image/webp" capture="user" className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) verify.mutate(f); e.target.value = ''; }} />
+            <input ref={selfie} type="file" accept="image/jpeg,image/png,image/webp" capture="user" aria-hidden className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) verify.mutate(f); e.target.value = ''; }} />
           </>
         )}
       </Card>

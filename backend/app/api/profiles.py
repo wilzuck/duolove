@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import profilesvc
+from app.core import discoverysvc, profilesvc
 from app.core.auth import AuthUser, current_user
 from app.core.errors import AppError, bad_request, not_found
 from app.core.profile_card import load_card, to_card
@@ -94,4 +94,6 @@ async def view(user_id: str, u: AuthUser = Depends(current_user), db: AsyncSessi
     if not p or block or (p.visibility.value == "HIDDEN" and user_id != u.id):
         raise not_found("PROFILE_NOT_FOUND")
     mine = (await db.execute(select(Interest.slug).join(t_UserInterest, t_UserInterest.c.interestId == Interest.id).where(t_UserInterest.c.userId == u.id))).scalars().all()
-    return to_card(await load_card(db, p), viewer_interests=list(mine))
+    card = await load_card(db, p)
+    affinity = await discoverysvc.explain_for(db, u.id, p, [card]) if user_id != u.id else None
+    return to_card(card, viewer_interests=list(mine), affinity=affinity, score=affinity["score"] if affinity else None)

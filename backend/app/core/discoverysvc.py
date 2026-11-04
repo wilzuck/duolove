@@ -5,12 +5,12 @@ from sqlalchemy import and_, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased
 
-from app.core import entitlements
+from app.core import appsettings, entitlements
 from app.core.constants import age_from_birth_date
 from app.core.errors import forbidden
 from app.core.ids import utcnow
 from app.core.profile_card import approx_distance_km, load_cards, to_card
-from app.core.scoring import ScoreSubject, score_candidate
+from app.core.scoring import ScoreSubject, SoftPrefs, score_candidate
 from app.models.models import Block, Interest, Preference, Profile, ProfilePhoto, Swipe, User, t_UserInterest
 
 GENDERS_FOR = {"MEN": ["MAN"], "WOMEN": ["WOMAN"], "EVERYONE": ["MAN", "WOMAN", "NON_BINARY", "OTHER"]}
@@ -29,7 +29,7 @@ def _v(x):
     return getattr(x, "value", x)
 
 
-async def _my_slugs(db: AsyncSession, user_id: str) -> list[str]:
+async def my_slugs(db: AsyncSession, user_id: str) -> list[str]:
     return list((await db.execute(select(Interest.slug).join(t_UserInterest, t_UserInterest.c.interestId == Interest.id).where(t_UserInterest.c.userId == user_id))).scalars().all())
 
 
@@ -88,30 +88,68 @@ def _subject(p: Profile, interests: list[str], last_active: datetime.datetime) -
                         lastActiveAt=last_active, completeness=p.completeness, verified=p.verified, boostedUntil=p.boostedUntil)
 
 
-async def feed(db: AsyncSession, user_id: str, limit: int, cursor: str | None) -> dict:
-    """Recommandations classées par score ; pagination par décalage dans la liste classée (cursor = offset)."""
+def _soft(pref: Preference | None) -> SoftPrefs | None:
+    return SoftPrefs([_v(i) for i in pref.intents or []], list(pref.languages or []), list(pref.interests or [])) if pref else None
+
+
+async def ranked(db: AsyncSession, user_id: str, *, exclude: set[str] | None = None, boost: bool = True, pool_size: int = 200):
+    """Candidats éligibles classés [(carte, distance, ScoreResult)] : filtres obligatoires en SQL, puis score pondéré (réglages admin)."""
     me, pref, limits = await _context(db, user_id)
     q, U = _query(user_id, me, pref, limits)
-    pool = (await db.execute(q.order_by(Profile.boostedUntil.desc().nulls_last(), U.lastActiveAt.desc()).limit(200))).scalars().all()
+    if exclude:
+        q = q.where(Profile.userId.not_in(exclude))
+    pool = (await db.execute(q.order_by(Profile.boostedUntil.desc().nulls_last(), U.lastActiveAt.desc()).limit(pool_size))).scalars().all()
     cards = await load_cards(db, list(pool))
-    my_slugs = await _my_slugs(db, user_id)
+    mine_slugs = await my_slugs(db, user_id)
     my_active = (await db.execute(select(User.lastActiveAt).where(User.id == user_id))).scalar_one()
-    mine = _subject(me, my_slugs, my_active)
+    mine = _subject(me, mine_slugs, my_active)
+    weights = (await appsettings.all_values(db))["matching.weights"]
+    their_prefs = {p.userId: p for p in (await db.execute(select(Preference).where(Preference.userId.in_([c.profile.userId for c in cards])))).scalars().all()} if cards else {}
     scored = []
     for c in cards:
         dist = approx_distance_km(me, c.profile)
         if limits["advancedFilters"] and pref.maxDistanceKm and dist is not None and dist > pref.maxDistanceKm:
             continue
-        r = score_candidate(mine, _subject(c.profile, c.interests, c.last_active_at), dist)
+        r = score_candidate(mine, _subject(c.profile, c.interests, c.last_active_at), dist, weights=weights, viewer_prefs=_soft(pref), cand_prefs=_soft(their_prefs.get(c.profile.userId)))
+        if not boost:
+            r.rank = r.compatibility  # sélection du jour : aucune mise en avant payante
         scored.append((c, dist, r))
     scored.sort(key=lambda x: x[2].rank, reverse=True)  # tri stable
+    return scored
+
+
+def affinity_dict(r) -> dict:
+    """Explication destinée au membre : estimation d'affinité et raisons, jamais une garantie."""
+    return {"score": r.compatibility, "reasons": r.reasons, "commonInterests": r.common_interests, "intentsCompatible": r.intents_compatible}
+
+
+async def feed(db: AsyncSession, user_id: str, limit: int, cursor: str | None) -> dict:
+    """Recommandations classées par score ; pagination par décalage dans la liste classée (cursor = offset)."""
+    scored = await ranked(db, user_id)
+    mine = await my_slugs(db, user_id)
     try:
         start = max(0, int(cursor or "0"))
     except ValueError:
         start = 0
     page = scored[start:start + limit]
     return {
-        "items": [to_card(c, viewer_interests=my_slugs, distance_km=d, score=r.compatibility) for c, d, r in page],
+        "items": [to_card(c, viewer_interests=mine, distance_km=d, score=r.compatibility, affinity=affinity_dict(r)) for c, d, r in page],
         "nextCursor": str(start + limit) if start + limit < len(scored) else None,
         "total": len(scored),
     }
+
+
+async def explain_for(db: AsyncSession, viewer_id: str, target_profile: Profile, cards: list | None = None) -> dict | None:
+    """Affinité estimée avec un profil précis (page profil). Aucune donnée privée n'est renvoyée, seulement les raisons."""
+    me = (await db.execute(select(Profile).where(Profile.userId == viewer_id))).scalar_one_or_none()
+    pref = (await db.execute(select(Preference).where(Preference.userId == viewer_id))).scalar_one_or_none()
+    if not me:
+        return None
+    cand = (cards or await load_cards(db, [target_profile]))[0]
+    mine_slugs = await my_slugs(db, viewer_id)
+    my_active = (await db.execute(select(User.lastActiveAt).where(User.id == viewer_id))).scalar_one()
+    their = (await db.execute(select(Preference).where(Preference.userId == target_profile.userId))).scalar_one_or_none()
+    weights = (await appsettings.all_values(db))["matching.weights"]
+    r = score_candidate(_subject(me, mine_slugs, my_active), _subject(cand.profile, cand.interests, cand.last_active_at), approx_distance_km(me, cand.profile),
+                        weights=weights, viewer_prefs=_soft(pref), cand_prefs=_soft(their))
+    return affinity_dict(r)

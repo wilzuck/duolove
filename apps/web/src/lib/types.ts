@@ -3,11 +3,17 @@ import type { CreditType, Gender, Intent, Limits, LiveCriteria, Living, PlanCode
 export type { Limits };
 
 export interface Photo { id: string; url: string; thumbUrl: string; isPrimary?: boolean; position?: number }
+export type LikeKind = 'PROFILE' | 'PHOTO' | 'PROMPT' | 'INTEREST';
+export interface Affinity { score: number; reasons: { code: string; n?: number }[]; commonInterests: string[]; intentsCompatible: boolean }
+export interface PromptAnswer { id: string; promptId: string; position: number; question: { fr: string; en: string }; answer: string }
+export interface PromptDef { id: string; slug: string; textFr: string; textEn: string; active: boolean; sortOrder: number }
+export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean }; prompts: { min: number; max: number; answerMax: number }; commentMax: number }
 export interface Card {
   id: string; displayName: string; age: number; city: string; country: string; bio: string; occupation: string | null;
   intent: Intent; verified: boolean; languages: string[]; interests: string[]; commonInterests: string[];
   distanceKm: number | null; compatibility: number | null; photos: Photo[];
-  superLike?: boolean; likedAt?: string;
+  superLike?: boolean; likedAt?: string; affinity?: Affinity | null; prompts?: PromptAnswer[];
+  comment?: string | null; likeTarget?: { kind: LikeKind; ref: string | null } | null; decision?: 'LIKE' | 'PASS' | 'SUPER_LIKE' | null;
   hasChildren?: boolean | null; likesPets?: boolean | null; living?: Living | null; heightCm?: number | null; originCountry?: string | null;
 }
 export interface Me {

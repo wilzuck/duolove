@@ -1,7 +1,7 @@
 'use client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
-import { Crown, Heart, Info, RotateCcw, SlidersHorizontal, Star, X } from 'lucide-react';
+import { Crown, Heart, Info, RotateCcw, SlidersHorizontal, Sparkles, Star, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Dialog, EmptyState, Skeleton, cn } from '@duomatch/ui';
@@ -126,6 +126,7 @@ export default function DiscoverPage() {
         <h1 className="text-2xl font-extrabold">{t('app.nav.discover')}</h1>
         <div className="flex items-center gap-2">
           {remaining != null && me?.entitlement.plan === 'FREE' && <span className="rounded-full bg-soft px-3 py-1.5 text-xs font-semibold text-brand-ink" aria-live="polite">{t('discover.likesLeft', { n: remaining })}</span>}
+          <Link href="/daily" aria-label={t('app.nav.daily')} className="rounded-full p-2.5 text-brand-ink hover:bg-soft"><Sparkles className="size-5" /></Link>
           <Link href="/profile#filters" aria-label={t('discover.filters')} className="rounded-full p-2.5 text-muted hover:bg-soft"><SlidersHorizontal className="size-5" /></Link>
         </div>
       </div>
@@ -153,7 +154,8 @@ export default function DiscoverPage() {
       )}
 
       <Dialog open={!!detail} onClose={() => setDetail(null)} title={detail?.displayName ?? ''} closeLabel={t('common.close')} className="w-[min(94vw,32rem)]">
-        {detail && <ProfileDetail card={detail} onBlocked={() => { setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); }} />}
+        {detail && <ProfileDetail card={detail} onBlocked={() => { setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); }}
+          onLiked={(r) => { setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); void qc.invalidateQueries({ queryKey: ['usage'] }); if (r.matched && r.match) showMatch({ matchId: r.match.id, conversationId: r.match.conversationId, user: r.match.user ?? detail }); }} />}
       </Dialog>
 
       <Dialog open={!!upsell} onClose={() => setUpsell(null)} title={t(upsell === 'DAILY_LIMIT' ? 'discover.limitTitle' : upsell === 'NO_SUPER_LIKES' ? 'discover.noSuperTitle' : 'discover.planTitle')} closeLabel={t('common.close')}>

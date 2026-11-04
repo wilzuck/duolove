@@ -676,7 +676,8 @@
       "notifications": "Notifications",
       "admin": "Administration",
       "shop": "Charm+",
-      "match": "Match"
+      "match": "Match",
+      "daily": "Daily picks"
     },
     "upsellTitle": "Go Premium",
     "upsellText": "More likes, see who likes you, advanced filters.",
@@ -752,7 +753,11 @@
     "sentEmptyTitle": "You haven’t liked anyone yet",
     "sentEmptyText": "Browse profiles and like the ones you fancy: they will appear here.",
     "chat": "Chat",
-    "pending": "Pending"
+    "pending": "Pending",
+    "commentLabel": "Comment:",
+    "aboutAnswer": "About your answer",
+    "aboutPhoto": "About one of your photos",
+    "aboutInterest": "About: {name}"
   },
   "chat": {
     "title": "Messages",
@@ -1114,7 +1119,8 @@
       "plans": "Plans and pricing",
       "refunds": "Refunds",
       "promos": "Promo codes",
-      "blog": "Blog"
+      "blog": "Blog",
+      "engagement": "Engagement"
     },
     "roles": {
       "MODERATOR": "Moderator",
@@ -1350,6 +1356,27 @@
           "on": "Referred friends are linked and rewarded.",
           "off": "No new referral is linked and no reward is paid; pending referrals are rewarded when re-enabled.",
           "useWhen": "If referrals are abused (fake accounts, invitation loops)."
+        },
+        "profile_prompts": {
+          "name": "Personality questions",
+          "what": "Lets members answer profile questions shown on cards.",
+          "on": "Answers can be edited and are visible.",
+          "off": "Answers are hidden and cannot be edited; they are kept.",
+          "useWhen": "If answers raise moderation problems."
+        },
+        "like_comments": {
+          "name": "Likes with comments",
+          "what": "Lets members target an item (photo, answer, interest) and add a comment to a Like.",
+          "on": "The comment goes with the Like and becomes the first message on a match.",
+          "off": "Only the plain Like remains possible.",
+          "useWhen": "If comments are abused (spam, harassment)."
+        },
+        "daily_picks": {
+          "name": "Daily picks",
+          "what": "Offers a limited selection of compatible profiles every day.",
+          "on": "The Daily picks page is available.",
+          "off": "The page and its history are unavailable; classic discovery continues.",
+          "useWhen": "If the selection has quality or load problems."
         }
       }
     },
@@ -1403,6 +1430,79 @@
       "unpublishedOk": "Article unpublished.",
       "deleted": "Article deleted.",
       "coverUploaded": "Image uploaded."
+    },
+    "eng": {
+      "title": "Engagement and matching",
+      "subtitle": "Tune the recommendation engine, quotas and profile questions. Changes apply within seconds and are logged.",
+      "tabSettings": "Settings",
+      "tabPrompts": "Questions",
+      "tabMetrics": "Metrics",
+      "weightsTitle": "Matching weights",
+      "weightsHelp": "Relative weight of each criteria family. The total must be 100. Starting values to evaluate, not scientific truths.",
+      "total": "Total: {n} / 100",
+      "totalBad": "The total must be 100",
+      "w": {
+        "intent": "Compatible intentions",
+        "mutual": "Mutual preferences",
+        "interests": "Interests",
+        "location": "Approximate location",
+        "other": "Other criteria (languages, activity, complete profile, verified)"
+      },
+      "quotasTitle": "Daily picks and limits",
+      "dailyFree": "Profiles per day (free)",
+      "dailyPremium": "Profiles per day (Premium and VIP)",
+      "cooldown": "Don’t suggest again before (days)",
+      "retention": "Keep history for (days)",
+      "promptsMin": "Minimum questions per profile",
+      "promptsMax": "Maximum questions per profile",
+      "commentMax": "Max length of a like comment",
+      "save": "Save settings",
+      "saved": "Settings saved.",
+      "defaults": "Defaults",
+      "flagsNote": "Switching features on or off (questions, commented likes, daily picks) is done in Settings › Feature flags.",
+      "promptsTitle": "Question catalogue",
+      "promptsHelp": "Disabled questions disappear from profiles; answers are kept.",
+      "newPrompt": "New question",
+      "slug": "Technical key",
+      "textFr": "Text (French)",
+      "textEn": "Text (English)",
+      "order": "Order",
+      "create": "Add",
+      "created": "Question added.",
+      "updated": "Question updated.",
+      "answers": "Answers",
+      "active": "Active",
+      "inactive": "Disabled",
+      "enable": "Enable",
+      "disable": "Disable",
+      "save1": "Save",
+      "metricsTitle": "Engagement metrics",
+      "metricsHelp": "Computed from the platform’s real data. Nothing is estimated or invented.",
+      "m": {
+        "profilesCompleted": "Completed profiles",
+        "profilesWithPrompts": "Profiles with questions",
+        "likes": "Likes sent",
+        "likesWithComment": "Likes with a comment",
+        "matches": "Matches",
+        "matchRate": "Match rate (share of Likes that led to a match)",
+        "conversations": "Conversations started",
+        "firstResponseRate": "First-reply rate",
+        "reciprocalConversations": "Two-way conversations",
+        "reports": "Reports (open: {open})",
+        "retentionD7": "D7 retention (cohort: {n})",
+        "retentionD30": "D30 retention (cohort: {n})",
+        "premiumConversionRate": "Premium conversion",
+        "dailyPicks": "Daily picks (30 d) followed by a decision",
+        "none": "—"
+      },
+      "unavailableTitle": "Not measured yet",
+      "unavailable": {
+        "dateProposals": "Dates proposed",
+        "datesAccepted": "Dates accepted",
+        "satisfaction": "Reported satisfaction",
+        "realMeetings": "Real meetings (only from voluntary declarations)"
+      },
+      "unavailableNote": "These will arrive with the matching features; they are never inferred."
     }
   },
   "pricingFaq": {
@@ -1585,5 +1685,83 @@
     "link": "Refer friends, earn tokens",
     "registerLabel": "Referral code (optional)",
     "registerHint": "If a friend invited you, enter their code to receive tokens."
+  },
+  "engagement": {
+    "affinity": {
+      "title": "Estimated affinity",
+      "disclaimer": "An estimate based on your preferences and theirs, not a guarantee of romantic compatibility.",
+      "why": "Why this profile?",
+      "common": "Shared interests",
+      "reasons": {
+        "intent_same": "You are looking for the same thing",
+        "intent_close": "Your intentions are close",
+        "interests_common": "{n, plural, one {# shared interest} other {# shared interests}}",
+        "same_city": "You live in the same city",
+        "same_country": "You live in the same country",
+        "languages_shared": "You share a language",
+        "preferences_match": "Your preferences line up",
+        "active_recently": "Recently active",
+        "verified": "Verified profile"
+      }
+    },
+    "prompts": {
+      "title": "Personality questions",
+      "subtitle": "Pick {min} to {max} questions and answer in your own words: this is what makes people want to write to you.",
+      "count": "{n} / {max} questions",
+      "needMin": "Pick at least {min} questions, or remove them all.",
+      "pick": "Add a question",
+      "pickPlaceholder": "Choose a question…",
+      "answer": "Your answer",
+      "answerHint": "{n} / {max} characters",
+      "up": "Move up",
+      "down": "Move down",
+      "remove": "Remove",
+      "save": "Save my answers",
+      "saved": "Answers saved.",
+      "empty": "No questions yet.",
+      "viewTitle": "Personality questions",
+      "likeAnswer": "Like this answer",
+      "disabled": "This feature is temporarily unavailable."
+    },
+    "composer": {
+      "title": "Send a Like to {name}",
+      "what": "What do you like?",
+      "kind": {
+        "PROFILE": "Their profile",
+        "PHOTO": "A photo",
+        "PROMPT": "An answer",
+        "INTEREST": "An interest"
+      },
+      "comment": "Add a comment (optional)",
+      "placeholder": "I saw you love travelling. Which country do you dream of discovering?",
+      "counter": "{n} / {max}",
+      "hint": "If you match, your comment becomes your first message.",
+      "send": "Send the Like",
+      "sent": "Like sent.",
+      "likeWith": "Like with a comment",
+      "choosePhoto": "Choose the photo",
+      "chooseAnswer": "Choose the answer",
+      "chooseInterest": "Choose the interest"
+    },
+    "daily": {
+      "title": "Your picks of the day",
+      "subtitle": "A limited selection of compatible people, chosen for you. Take your time: nothing vanishes at midnight.",
+      "tabToday": "Today",
+      "tabHistory": "History",
+      "pending": "{n} to discover",
+      "emptyTitle": "No new selection right now",
+      "emptyText": "No new compatible profile today. Widen your criteria or come back tomorrow.",
+      "historyEmpty": "No past selections.",
+      "like": "Like",
+      "pass": "Pass",
+      "details": "View profile",
+      "liked": "Already liked",
+      "passed": "Passed",
+      "more": "Previous days",
+      "day": "Selection of {date}",
+      "error": "Could not load the selection.",
+      "disabledTitle": "Daily picks unavailable",
+      "disabledText": "This feature is temporarily turned off."
+    }
   }
 }

@@ -287,6 +287,9 @@ export const FEATURE_FLAGS = [
   { key: 'super_likes', category: 'social', defaultOn: true, emergency: false },
   { key: 'chat_images', category: 'social', defaultOn: true, emergency: true },
   { key: 'referral_program', category: 'social', defaultOn: true, emergency: false },
+  { key: 'profile_prompts', category: 'social', defaultOn: true, emergency: false },
+  { key: 'like_comments', category: 'social', defaultOn: true, emergency: false },
+  { key: 'daily_picks', category: 'social', defaultOn: true, emergency: false },
 ] as const satisfies readonly { key: string; category: FlagCategory; defaultOn: boolean; emergency: boolean }[];
 export type FlagKey = (typeof FEATURE_FLAGS)[number]['key'];
 export const FLAG_KEYS = FEATURE_FLAGS.map((f) => f.key) as FlagKey[];

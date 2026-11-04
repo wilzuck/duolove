@@ -1,5 +1,5 @@
 'use client';
-import { Bell, Compass, Crown, Heart, Radio, MessageCircle, ShieldAlert, ShoppingBag, User } from 'lucide-react';
+import { Bell, Compass, Crown, Heart, Radio, MessageCircle, ShieldAlert, ShoppingBag, Sparkles, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Avatar, Button, Logo, cn } from '@duomatch/ui';
@@ -48,6 +48,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
               {href === '/messages' && null}
             </Link>
           ))}
+          <Link href="/daily" aria-current={active('/daily') ? 'page' : undefined} className={cn('flex items-center gap-3 rounded-2xl px-4 py-3 font-semibold transition', active('/daily') ? 'bg-soft text-brand-ink' : 'text-muted hover:bg-soft hover:text-fg')}><Sparkles className="size-5" aria-hidden />{t('app.nav.daily')}</Link>
           <Link href="/shop" aria-current={active('/shop') ? 'page' : undefined} className={cn('flex items-center gap-3 rounded-2xl px-4 py-3 font-semibold transition', active('/shop') ? 'bg-soft text-brand-ink' : 'text-muted hover:bg-soft hover:text-fg')}><ShoppingBag className="size-5" aria-hidden />{t('app.nav.shop')}</Link>
           {staff && (
             <Link href="/admin" className="mt-2 flex items-center gap-3 rounded-2xl px-4 py-3 font-semibold text-muted hover:bg-soft hover:text-fg"><ShieldAlert className="size-5" aria-hidden />{t('app.nav.admin')}</Link>

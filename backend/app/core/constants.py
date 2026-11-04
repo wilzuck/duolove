@@ -93,6 +93,9 @@ FEATURE_FLAGS = (
     FlagDef("super_likes", "social", True, False),
     FlagDef("chat_images", "social", True, True),
     FlagDef("referral_program", "social", True, False),
+    FlagDef("profile_prompts", "social", True, False),
+    FlagDef("like_comments", "social", True, False),
+    FlagDef("daily_picks", "social", True, False),
 )
 FLAG_KEYS = tuple(f.key for f in FEATURE_FLAGS)
 

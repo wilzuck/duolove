@@ -64,6 +64,18 @@ class OrderIn(Body):
 class SwipeIn(Body):
     targetId: Annotated[str, Field(min_length=1)]
     action: Literal["LIKE", "PASS", "SUPER_LIKE"]
+    comment: Annotated[str, BeforeValidator(lambda v: v.strip() if isinstance(v, str) else v)] | None = None
+    targetKind: Literal["PHOTO", "PROMPT", "INTEREST", "PROFILE"] | None = None
+    targetRef: Annotated[str, Field(max_length=120)] | None = None
+
+
+class PromptAnswerIn(Body):
+    promptId: Annotated[str, Field(min_length=1)]
+    answer: Annotated[str, BeforeValidator(lambda v: v.strip() if isinstance(v, str) else v), Field(min_length=3, max_length=300)]
+
+
+class PromptAnswersIn(Body):
+    items: Annotated[list[PromptAnswerIn], Field(max_length=8)]
 
 
 class NotifPrefsIn(Body):

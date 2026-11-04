@@ -676,7 +676,8 @@
       "notifications": "Notifications",
       "admin": "Administration",
       "shop": "Charme+",
-      "match": "Match"
+      "match": "Match",
+      "daily": "Découvertes du jour"
     },
     "upsellTitle": "Passez à Premium",
     "upsellText": "Plus de likes, voir qui vous aime, filtres avancés.",
@@ -752,7 +753,11 @@
     "sentEmptyTitle": "Vous n’avez encore liké personne",
     "sentEmptyText": "Parcourez des profils et likez ceux qui vous plaisent : ils apparaîtront ici.",
     "chat": "Discuter",
-    "pending": "En attente"
+    "pending": "En attente",
+    "commentLabel": "Commentaire :",
+    "aboutAnswer": "À propos de votre réponse",
+    "aboutPhoto": "À propos d’une de vos photos",
+    "aboutInterest": "À propos de : {name}"
   },
   "chat": {
     "title": "Messages",
@@ -1114,7 +1119,8 @@
       "plans": "Offres et tarifs",
       "refunds": "Remboursements",
       "promos": "Codes promo",
-      "blog": "Blog"
+      "blog": "Blog",
+      "engagement": "Engagement"
     },
     "roles": {
       "MODERATOR": "Modérateur",
@@ -1350,6 +1356,27 @@
           "on": "Les filleuls sont rattachés et récompensés.",
           "off": "Aucun nouveau filleul n’est rattaché et aucune récompense n’est versée ; les filleuls en attente sont récompensés à la réactivation.",
           "useWhen": "Si le parrainage est détourné (faux comptes, boucles d’invitations)."
+        },
+        "profile_prompts": {
+          "name": "Questions de personnalité",
+          "what": "Permet de répondre à des questions de profil, affichées sur les cartes.",
+          "on": "Les réponses sont modifiables et visibles.",
+          "off": "Les réponses ne s’affichent plus et ne sont plus modifiables ; elles sont conservées.",
+          "useWhen": "Si des réponses posent un problème de modération."
+        },
+        "like_comments": {
+          "name": "Likes avec commentaire",
+          "what": "Permet de cibler un élément (photo, réponse, intérêt) et d’ajouter un commentaire à un J’aime.",
+          "on": "Le commentaire accompagne le J’aime et devient le premier message en cas de match.",
+          "off": "Seul le J’aime simple reste possible.",
+          "useWhen": "Si les commentaires sont détournés (spam, harcèlement)."
+        },
+        "daily_picks": {
+          "name": "Découvertes du jour",
+          "what": "Propose chaque jour une sélection limitée de profils compatibles.",
+          "on": "La page Découvertes du jour est disponible.",
+          "off": "La page et son historique sont indisponibles ; la découverte classique continue.",
+          "useWhen": "Si la sélection pose un problème de qualité ou de charge."
         }
       }
     },
@@ -1403,6 +1430,79 @@
       "unpublishedOk": "Article dépublié.",
       "deleted": "Article supprimé.",
       "coverUploaded": "Image téléversée."
+    },
+    "eng": {
+      "title": "Engagement et matching",
+      "subtitle": "Réglez le moteur de recommandations, les quotas et les questions de profil. Les changements s’appliquent en quelques secondes et sont journalisés.",
+      "tabSettings": "Réglages",
+      "tabPrompts": "Questions",
+      "tabMetrics": "Indicateurs",
+      "weightsTitle": "Pondérations du matching",
+      "weightsHelp": "Poids relatif de chaque famille de critères. Le total doit faire 100. Valeurs de départ à évaluer, pas des vérités scientifiques.",
+      "total": "Total : {n} / 100",
+      "totalBad": "Le total doit faire 100",
+      "w": {
+        "intent": "Intentions compatibles",
+        "mutual": "Préférences mutuelles",
+        "interests": "Centres d’intérêt",
+        "location": "Localisation approximative",
+        "other": "Autres critères (langues, activité, profil complet, vérifié)"
+      },
+      "quotasTitle": "Découvertes du jour et limites",
+      "dailyFree": "Profils par jour (gratuit)",
+      "dailyPremium": "Profils par jour (Premium et VIP)",
+      "cooldown": "Ne pas reproposer avant (jours)",
+      "retention": "Conserver l’historique (jours)",
+      "promptsMin": "Questions minimum par profil",
+      "promptsMax": "Questions maximum par profil",
+      "commentMax": "Longueur max. d’un commentaire de like",
+      "save": "Enregistrer les réglages",
+      "saved": "Réglages enregistrés.",
+      "defaults": "Valeurs par défaut",
+      "flagsNote": "Les activations (questions, likes commentés, découvertes du jour) se gèrent dans Paramètres › Feature flags.",
+      "promptsTitle": "Catalogue des questions",
+      "promptsHelp": "Les questions désactivées disparaissent des profils ; les réponses sont conservées.",
+      "newPrompt": "Nouvelle question",
+      "slug": "Clé technique",
+      "textFr": "Texte (français)",
+      "textEn": "Texte (anglais)",
+      "order": "Ordre",
+      "create": "Ajouter",
+      "created": "Question ajoutée.",
+      "updated": "Question mise à jour.",
+      "answers": "Réponses",
+      "active": "Active",
+      "inactive": "Désactivée",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "save1": "Enregistrer",
+      "metricsTitle": "Indicateurs d’engagement",
+      "metricsHelp": "Calculés sur les données réelles de la plateforme. Rien n’est estimé ni inventé.",
+      "m": {
+        "profilesCompleted": "Profils complétés",
+        "profilesWithPrompts": "Profils avec questions",
+        "likes": "J’aime envoyés",
+        "likesWithComment": "J’aime avec commentaire",
+        "matches": "Matchs",
+        "matchRate": "Taux de match (part des J’aime aboutis)",
+        "conversations": "Conversations démarrées",
+        "firstResponseRate": "Taux de première réponse",
+        "reciprocalConversations": "Conversations réciproques",
+        "reports": "Signalements (dont ouverts : {open})",
+        "retentionD7": "Rétention J7 (cohorte : {n})",
+        "retentionD30": "Rétention J30 (cohorte : {n})",
+        "premiumConversionRate": "Conversion Premium",
+        "dailyPicks": "Découvertes du jour (30 j) : suivies d’une décision",
+        "none": "—"
+      },
+      "unavailableTitle": "Pas encore mesuré",
+      "unavailable": {
+        "dateProposals": "Rendez-vous proposés",
+        "datesAccepted": "Rendez-vous acceptés",
+        "satisfaction": "Satisfaction déclarée",
+        "realMeetings": "Rencontres réelles (uniquement sur déclaration volontaire)"
+      },
+      "unavailableNote": "Ces indicateurs arriveront avec les fonctionnalités correspondantes ; ils ne sont jamais déduits."
     }
   },
   "pricingFaq": {
@@ -1585,5 +1685,83 @@
     "link": "Parrainez vos amis, gagnez des jetons",
     "registerLabel": "Code de parrainage (facultatif)",
     "registerHint": "Si un ami vous a invité(e), saisissez son code pour recevoir des jetons."
+  },
+  "engagement": {
+    "affinity": {
+      "title": "Affinité estimée",
+      "disclaimer": "Estimation fondée sur vos préférences et celles de cette personne, pas une garantie de compatibilité amoureuse.",
+      "why": "Pourquoi ce profil ?",
+      "common": "Centres d’intérêt en commun",
+      "reasons": {
+        "intent_same": "Vous recherchez la même chose",
+        "intent_close": "Vos intentions sont proches",
+        "interests_common": "{n, plural, one {# centre d’intérêt en commun} other {# centres d’intérêt en commun}}",
+        "same_city": "Vous vivez dans la même ville",
+        "same_country": "Vous vivez dans le même pays",
+        "languages_shared": "Vous parlez une langue en commun",
+        "preferences_match": "Vos préférences se rejoignent",
+        "active_recently": "Actif(ve) récemment",
+        "verified": "Profil vérifié"
+      }
+    },
+    "prompts": {
+      "title": "Questions de personnalité",
+      "subtitle": "Choisissez {min} à {max} questions et répondez avec vos mots : c’est ce qui donne envie de vous écrire.",
+      "count": "{n} / {max} questions",
+      "needMin": "Choisissez au moins {min} questions, ou retirez-les toutes.",
+      "pick": "Ajouter une question",
+      "pickPlaceholder": "Choisir une question…",
+      "answer": "Votre réponse",
+      "answerHint": "{n} / {max} caractères",
+      "up": "Monter",
+      "down": "Descendre",
+      "remove": "Retirer",
+      "save": "Enregistrer mes réponses",
+      "saved": "Réponses enregistrées.",
+      "empty": "Aucune question pour le moment.",
+      "viewTitle": "Questions de personnalité",
+      "likeAnswer": "Aimer cette réponse",
+      "disabled": "Cette fonction est momentanément indisponible."
+    },
+    "composer": {
+      "title": "Envoyer un J’aime à {name}",
+      "what": "Qu’est-ce qui vous plaît ?",
+      "kind": {
+        "PROFILE": "Son profil",
+        "PHOTO": "Une photo",
+        "PROMPT": "Une réponse",
+        "INTEREST": "Un centre d’intérêt"
+      },
+      "comment": "Ajouter un commentaire (facultatif)",
+      "placeholder": "J’ai vu que tu aimes voyager. Quel pays rêves-tu de découvrir ?",
+      "counter": "{n} / {max}",
+      "hint": "En cas de match, votre commentaire devient votre premier message.",
+      "send": "Envoyer le J’aime",
+      "sent": "J’aime envoyé.",
+      "likeWith": "J’aime avec un commentaire",
+      "choosePhoto": "Choisissez la photo",
+      "chooseAnswer": "Choisissez la réponse",
+      "chooseInterest": "Choisissez l’intérêt"
+    },
+    "daily": {
+      "title": "Tes découvertes du jour",
+      "subtitle": "Une sélection limitée de personnes compatibles, choisies pour toi. Prends ton temps : rien ne disparaît à minuit.",
+      "tabToday": "Aujourd’hui",
+      "tabHistory": "Historique",
+      "pending": "{n} à découvrir",
+      "emptyTitle": "Pas de nouvelle sélection pour le moment",
+      "emptyText": "Aucun nouveau profil compatible aujourd’hui. Élargissez vos critères ou revenez demain.",
+      "historyEmpty": "Aucune sélection passée.",
+      "like": "J’aime",
+      "pass": "Passer",
+      "details": "Voir le profil",
+      "liked": "Déjà aimé(e)",
+      "passed": "Passé(e)",
+      "more": "Jours précédents",
+      "day": "Sélection du {date}",
+      "error": "Impossible de charger la sélection.",
+      "disabledTitle": "Découvertes du jour indisponibles",
+      "disabledText": "Cette fonction est momentanément désactivée."
+    }
   }
 }

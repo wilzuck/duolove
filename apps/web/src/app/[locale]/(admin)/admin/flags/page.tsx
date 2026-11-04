@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CreditCard, Gift, Image as ImageIcon, Info, Radio, Rocket, Star, UserPlus, Users, type LucideIcon } from 'lucide-react';
+import { CreditCard, Gift, HelpCircle, Image as ImageIcon, Info, MessageSquareHeart, Radio, Rocket, Sparkles, Star, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { FLAG_CATEGORIES, type FlagCategory, type FlagKey } from '@duomatch/types';
@@ -13,6 +13,7 @@ interface Flag { key: FlagKey; category: FlagCategory; emergency: boolean; defau
 const ICONS: Record<FlagKey, LucideIcon> = {
   registration_open: UserPlus, payments_enabled: CreditCard, promo_codes: Gift, boosts: Rocket,
   live_match: Radio, super_likes: Star, chat_images: ImageIcon, referral_program: Users,
+  profile_prompts: HelpCircle, like_comments: MessageSquareHeart, daily_picks: Sparkles,
 };
 
 export default function AdminFlags() {
