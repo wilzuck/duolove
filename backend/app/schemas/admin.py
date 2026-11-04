@@ -118,6 +118,8 @@ class PlanPatch(BaseModel):
     sortOrder: int | None = Field(None, ge=0, le=100)
     features: PlanFeatures | None = None
     prices: list[PriceIn] | None = Field(None, max_length=4)
+    taglineFr: Trim(0, 120) | None = None
+    taglineEn: Trim(0, 120) | None = None
 
 
 class ProductPatch(BaseModel):

@@ -1,0 +1,119 @@
+"""Blog : articles bilingues (une ligne par langue), image de couverture obligatoire pour publier, corps en Markdown restreint."""
+from __future__ import annotations
+
+import math
+import re
+import secrets
+import unicodedata
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core import storage
+from app.core.errors import AppError, bad_request, not_found
+from app.core.ids import utcnow
+from app.models.models import BlogPost
+
+LOCALES = ("fr", "en")
+SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+COVER_RE = re.compile(r"^blog/[a-f0-9]{32}\.webp$")
+THUMB = (800, 450)
+WORDS_PER_MINUTE = 200
+
+
+def slugify(title: str) -> str:
+    s = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-")[:80]
+
+
+def thumb_key(key: str) -> str:
+    return key.replace(".webp", "_t.webp")
+
+
+def url_of(key: str | None) -> str | None:
+    return f"/api/media/{key}" if key else None
+
+
+def thumb_url_of(key: str | None) -> str | None:
+    return f"/api/media/{thumb_key(key)}" if key else None
+
+
+def read_minutes(body: str) -> int:
+    return max(1, math.ceil(len(re.findall(r"\w+", body)) / WORDS_PER_MINUTE))
+
+
+def iso(d):
+    return d.isoformat(timespec="milliseconds") + "Z" if d else None
+
+
+def card(p: BlogPost) -> dict:
+    return {"id": p.id, "slug": p.slug, "locale": p.locale, "title": p.title, "excerpt": p.excerpt, "coverUrl": url_of(p.coverKey),
+            "coverThumbUrl": thumb_url_of(p.coverKey), "coverAlt": p.coverAlt, "publishedAt": iso(p.publishedAt), "readMinutes": read_minutes(p.body)}
+
+
+def admin_row(p: BlogPost) -> dict:
+    return {**card(p), "status": p.status, "coverKey": p.coverKey, "createdAt": iso(p.createdAt), "updatedAt": iso(p.updatedAt)}
+
+
+async def upload_image(data: bytes) -> dict:
+    img = await storage.process_image(data, THUMB)
+    key = f"blog/{secrets.token_hex(16)}.webp"
+    await storage.put(key, img.full)
+    await storage.put(thumb_key(key), img.thumb)
+    return {"key": key, "url": url_of(key), "thumbUrl": thumb_url_of(key), "width": img.width, "height": img.height}
+
+
+async def _check(db: AsyncSession, p: BlogPost) -> None:
+    if p.coverKey and (not COVER_RE.match(p.coverKey) or await storage.get(p.coverKey) is None):
+        raise bad_request("INVALID_COVER", "Image de couverture introuvable : téléversez-la d'abord")
+    if p.status == "PUBLISHED":
+        if not p.coverKey:
+            raise bad_request("COVER_REQUIRED", "Un article publié doit avoir une image de couverture")
+        if not (p.coverAlt or "").strip():
+            raise bad_request("COVER_ALT_REQUIRED", "Décrivez l'image de couverture (texte alternatif) pour publier")
+    dup = (await db.execute(select(BlogPost.id).where(BlogPost.locale == p.locale, BlogPost.slug == p.slug, BlogPost.id != (p.id or "")))).first()
+    if dup:
+        raise AppError(409, "SLUG_TAKEN", "Ce lien (slug) existe déjà dans cette langue")
+
+
+async def create(db: AsyncSession, data: dict, author_id: str) -> BlogPost:
+    p = BlogPost(**{k: data[k] for k in ("slug", "locale", "title", "excerpt", "body", "coverKey", "coverAlt", "status")}, authorId=author_id)
+    p.id = secrets.token_hex(12)
+    if p.status == "PUBLISHED":
+        p.publishedAt = utcnow()
+    await _check(db, p)
+    db.add(p)
+    await db.commit()
+    return p
+
+
+async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
+    p = await db.get(BlogPost, post_id)
+    if not p:
+        raise not_found("POST_NOT_FOUND")
+    old_cover = p.coverKey
+    for k, v in data.items():
+        setattr(p, k, v)
+    if "status" in data:
+        if p.status == "PUBLISHED" and not p.publishedAt:
+            p.publishedAt = utcnow()
+        elif p.status == "DRAFT":
+            p.publishedAt = None
+    await _check(db, p)
+    await db.commit()
+    if "coverKey" in data and old_cover and old_cover != p.coverKey:
+        await storage.delete(old_cover)
+        await storage.delete(thumb_key(old_cover))
+    return p
+
+
+async def delete(db: AsyncSession, post_id: str) -> None:
+    p = await db.get(BlogPost, post_id)
+    if not p:
+        raise not_found("POST_NOT_FOUND")
+    key = p.coverKey
+    await db.delete(p)
+    await db.commit()
+    if key:
+        await storage.delete(key)
+        await storage.delete(thumb_key(key))

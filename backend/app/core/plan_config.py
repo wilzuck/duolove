@@ -94,7 +94,8 @@ async def _load(db: AsyncSession) -> dict[str, dict]:
             prices.append({"months": p.months, "discountPercent": p.discountPercent, "totalXof": total,
                            "monthlyEquivalentXof": int(total / p.months + 0.5), "savingsXof": max(0, r.priceXof * p.months - total)})
         plans[r.code.value] = {"code": r.code.value, "name": r.name, "priceXof": r.priceXof, "currency": r.currency, "features": features,
-                               "featured": r.featured, "sortOrder": r.sortOrder, "prices": prices}
+                               "featured": r.featured, "sortOrder": r.sortOrder, "prices": prices,
+                               "taglineFr": r.taglineFr, "taglineEn": r.taglineEn}
     _cache["plans"], _cache["at"] = plans, time.monotonic()
     return plans
 

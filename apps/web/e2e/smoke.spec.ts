@@ -5,7 +5,7 @@ test('pages publiques FR/EN, SEO et protection des espaces privés', async ({ pa
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Deux cœurs');
   await page.goto('/en');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Two hearts');
-  for (const p of ['/how-it-works', '/pricing', '/about', '/blog', '/contact', '/help', '/legal/terms', '/legal/privacy', '/legal/cookies', '/legal/community', '/blog/avoid-romance-scams']) {
+  for (const p of ['/how-it-works', '/pricing', '/about', '/blog', '/contact', '/help', '/legal/terms', '/legal/privacy', '/legal/cookies', '/legal/community']) {
     const r = await request.get(p);
     expect(r.status(), p).toBe(200);
   }

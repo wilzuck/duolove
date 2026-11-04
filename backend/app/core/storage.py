@@ -56,7 +56,7 @@ class ProcessedImage:
     height: int
 
 
-def _process(data: bytes) -> ProcessedImage:
+def _process(data: bytes, thumb_size: tuple[int, int] = (480, 600)) -> ProcessedImage:
     try:
         img = Image.open(io.BytesIO(data))
         fmt = img.format
@@ -70,11 +70,11 @@ def _process(data: bytes) -> ProcessedImage:
     full.thumbnail((1600, 1600))
     buf = io.BytesIO()
     full.save(buf, "WEBP", quality=82)
-    thumb = ImageOps.fit(base, (480, 600))
+    thumb = ImageOps.fit(base, thumb_size)
     tbuf = io.BytesIO()
     thumb.save(tbuf, "WEBP", quality=75)
     return ProcessedImage(buf.getvalue(), tbuf.getvalue(), full.width, full.height)
 
 
-async def process_image(data: bytes) -> ProcessedImage:
-    return await asyncio.to_thread(_process, data)
+async def process_image(data: bytes, thumb_size: tuple[int, int] = (480, 600)) -> ProcessedImage:
+    return await asyncio.to_thread(_process, data, thumb_size)

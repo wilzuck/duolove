@@ -229,6 +229,46 @@ async def seed_lifestyle(db) -> None:
     print(f"Mode de vie renseigné pour {len(rows)} profils de démonstration.")
 
 
+def blog_cover(hue: int) -> str:
+    """Illustration décorative de couverture (dégradé + formes, 16:9) : à remplacer par de vraies images depuis l'admin."""
+    w, h = 1600, 900
+    c1, c2 = _hsl(hue, 0.85, 0.66), _hsl((hue + 45) % 360, 0.75, 0.42)
+    mask = Image.new("L", (2, 2))
+    mask.putdata([0, 128, 128, 255])
+    img = Image.composite(Image.new("RGB", (w, h), c2), Image.new("RGB", (w, h), c1), mask.resize((w, h), Image.BILINEAR))
+    lay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    for cx, cy, r, a in ((1180, 330, 330, 60), (1330, 560, 210, 80), (260, 760, 280, 45), (700, 200, 150, 50)):
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(255, 255, 255, a))
+    img = Image.alpha_composite(img.convert("RGBA"), lay).convert("RGB")
+    key = f"blog/{secrets.token_hex(16)}.webp"
+    (ROOT / "blog").mkdir(parents=True, exist_ok=True)
+    img.save(ROOT / key, "WEBP", quality=82)
+    img.resize((800, 450)).save(ROOT / key.replace(".webp", "_t.webp"), "WEBP", quality=75)
+    return key
+
+
+async def seed_blog(db) -> int:
+    from sqlalchemy import func
+
+    from app.models.models import BlogPost
+    from scripts.blog_content import POSTS
+
+    author = (await db.execute(select(User.id).where(User.email == "admin@duo.test"))).scalar()
+    made = 0
+    for post in POSTS:
+        for loc in ("fr", "en"):
+            c = post[loc]
+            if (await db.execute(select(func.count()).select_from(BlogPost).where(BlogPost.locale == loc, BlogPost.slug == c["slug"]))).scalar():
+                continue
+            when = utcnow() - datetime.timedelta(days=post["ageDays"])
+            db.add(BlogPost(slug=c["slug"], locale=loc, title=c["title"], excerpt=c["excerpt"], body=c["body"], coverKey=blog_cover(post["hue"]), coverAlt=c["alt"],
+                            status="PUBLISHED", publishedAt=when, authorId=author, createdAt=when))
+            made += 1
+    await db.commit()
+    return made
+
+
 async def main() -> None:
     pw_hash = await hash_password(PASSWORD)
     async with session_maker()() as db:
@@ -265,6 +305,8 @@ async def main() -> None:
         crowd = await seed_crowd(db, pw_hash, interests)
         await seed_activity(db)
         await seed_lifestyle(db)
+        blog_posts = await seed_blog(db)
+    print(f"Blog : {blog_posts} articles créés (images de couverture décoratives).")
     print(f"Seed OK : {crowd} membres de démonstration supplémentaires, {created} membres créés, {len(staff)} comptes staff (si absents).")
     print(f"Mot de passe de TOUS les comptes seed : {PASSWORD}  (domaine @duo.test ; les comptes déjà existants gardent leur mot de passe)")
     await dispose()

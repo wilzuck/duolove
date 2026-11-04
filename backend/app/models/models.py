@@ -307,9 +307,36 @@ class SubscriptionPlan(Base):
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     featured: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'))
     sortOrder: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    taglineFr: Mapped[Optional[str]] = mapped_column(Text)
+    taglineEn: Mapped[Optional[str]] = mapped_column(Text)
 
     PlanPrice: Mapped[list['PlanPrice']] = relationship('PlanPrice', back_populates='SubscriptionPlan_')
     Subscription: Mapped[list['Subscription']] = relationship('Subscription', back_populates='SubscriptionPlan_')
+
+
+class BlogPost(Base):
+    """Article de blog (une ligne par langue). Corps en Markdown restreint, rendu sans HTML brut côté web."""
+    __tablename__ = 'BlogPost'
+    __table_args__ = (
+        ForeignKeyConstraint(['authorId'], ['User.id'], ondelete='SET NULL', onupdate='CASCADE', name='BlogPost_authorId_fkey'),
+        PrimaryKeyConstraint('id', name='BlogPost_pkey'),
+        Index('BlogPost_locale_slug_key', 'locale', 'slug', unique=True),
+        Index('BlogPost_locale_status_publishedAt_idx', 'locale', 'status', 'publishedAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    slug: Mapped[str] = mapped_column(Text, nullable=False)
+    locale: Mapped[str] = mapped_column(Text, nullable=False)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    excerpt: Mapped[str] = mapped_column(Text, nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    coverKey: Mapped[Optional[str]] = mapped_column(Text)
+    coverAlt: Mapped[Optional[str]] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'DRAFT'::text"))
+    publishedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    authorId: Mapped[Optional[str]] = mapped_column(Text)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
 
 
 class SystemSetting(Base):

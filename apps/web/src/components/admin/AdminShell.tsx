@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, CreditCard, Flag, Gift, History, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, CreditCard, Newspaper, Flag, Gift, History, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -31,7 +31,10 @@ const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/payments', key: 'payments', icon: Wallet, min: 'ADMIN' },
     { href: '/admin/refunds', key: 'refunds', icon: Undo2, min: 'ADMIN' },
   ] },
-  { id: 'settings', items: [{ href: '/admin/flags', key: 'flags', icon: ToggleRight, min: 'ADMIN' }] },
+  { id: 'settings', items: [
+    { href: '/admin/blog', key: 'blog', icon: Newspaper, min: 'ADMIN' },
+    { href: '/admin/flags', key: 'flags', icon: ToggleRight, min: 'ADMIN' },
+  ] },
 ];
 
 export function AdminShell({ children }: { children: ReactNode }) {

@@ -219,11 +219,18 @@
       "liveMatchTrials": "Live Match: {n} free tries",
       "matchTokensMonthly": "{n} Match tokens per month",
       "chatImages": "Send photos in messages"
-    }
+    },
+    "boostLabel": "Visibility boost",
+    "boostDuration": "in the spotlight",
+    "superLikesLabel": "Super Likes",
+    "tokensLabel": "Match tokens",
+    "perUnit": "i.e. {price} each",
+    "minutesShort": "{n} min",
+    "hoursShort": "{n} h"
   },
   "about": {
     "title": "About DuoMatch",
-    "lead": "A modern, elegant and respectful dating platform.",
+    "lead": "Behind every family, there was a day when two strangers looked at each other differently.",
     "mission": "We’re building DuoMatch to make serious dating and beautiful stories easier between adults, in francophone Africa and beyond, in an environment where everyone feels safe.",
     "valuesTitle": "Our commitments",
     "values": {
@@ -243,7 +250,38 @@
         "title": "Sincerity",
         "text": "A verified badge is only earned after a real check. No fake testimonials."
       }
-    }
+    },
+    "storyKicker": "Our story",
+    "chapters": {
+      "c1": {
+        "title": "It all starts with a glance",
+        "p1": "Every great family has a first chapter. A glance across a wedding hall, a shy message sent one evening, a “hello” that could have gone unanswered. Nobody plans that tiny moment, yet everything else flows from it: the home, the children, Sunday meals, the laughter, the silences that reassure.",
+        "p2": "We started from a simple conviction: that first chapter deserves every chance."
+      },
+      "c2": {
+        "title": "Meeting people has never been so easy… or so hard",
+        "p1": "We’re more connected than ever, yet so many sincere people feel alone. Too many profiles, too many promises, too many conversations that fade after two messages. Many are looking for someone to build something real with, and end up lost in the noise, sometimes exposed to fake profiles and scams.",
+        "p2": "DuoMatch was born for those who want something else: less showcase, more meaning."
+      },
+      "c3": {
+        "title": "A platform built to build, not to consume",
+        "p1": "Here, we don’t ask you to be perfect, we help you be understood. Your intentions, values, interests, city and languages matter more than any photo. Our compatibility score is never based on appearance.",
+        "p2": "And when two people truly like each other, live matching lets them talk right away, while they’re both there, with a genuine wish to connect."
+      },
+      "c4": {
+        "title": "Trust is the first foundation",
+        "p1": "You can’t build a family on doubt. That’s why we keep the platform for adults, moderate with real people, grant the “verified” badge only after a real check, blur your location, and let you export or delete your data whenever you want.",
+        "p2": "Every rule we enforce has the same purpose: so you can open your heart without lowering your guard."
+      },
+      "c5": {
+        "title": "Our dream: families that begin here",
+        "p1": "We dream of the day a couple tells us: “We met on DuoMatch.” Of the day children ask how their parents met, and the answer begins with a simple profile, a simple “Like”.",
+        "p2": "We don’t sell promises. We build the conditions for beautiful stories to happen: a respectful, safe, human-sized place, in francophone Africa and beyond."
+      }
+    },
+    "nextTitle": "The next one might be you.",
+    "nextText": "Somewhere, the person who will change your life may be creating their profile right now. And the next family story we tell may well be that of whoever is reading these lines. Your first chapter starts here.",
+    "nextCta": "Write my first chapter"
   },
   "contact": {
     "title": "Contact us",
@@ -331,44 +369,14 @@
     "title": "The DuoMatch blog",
     "lead": "Tips for safe and successful dating.",
     "read": "Read the article",
-    "posts": {
-      "avoid-romance-scams": {
-        "title": "5 habits to avoid romance scams",
-        "excerpt": "The warning signs to know before you trust.",
-        "intro": "Romance scams look alike. Here are the habits that protect you.",
-        "tips": [
-          "Never send money, even for an “emergency” or a “gift”.",
-          "Insist on a video call before getting attached: refusing is a warning sign.",
-          "Be wary of very fast declarations of love.",
-          "Never share your banking details or codes.",
-          "Report the profile at the first doubt: it protects others too."
-        ]
-      },
-      "first-message": {
-        "title": "Writing a great first message",
-        "excerpt": "How to start a natural, sincere conversation.",
-        "intro": "A good first message is simple, personal and open.",
-        "tips": [
-          "Read their profile and mention one specific detail.",
-          "Ask an open question instead of “hi”.",
-          "Be yourself: sincerity shows.",
-          "Keep it short: one or two sentences are enough.",
-          "Respect a lack of reply and don’t chase."
-        ]
-      },
-      "meet-safely": {
-        "title": "Meeting safely",
-        "excerpt": "The precautions to take before a first date.",
-        "intro": "A great first date starts with a few precautions.",
-        "tips": [
-          "Pick a public, busy place.",
-          "Tell a friend: place, time, the person’s name.",
-          "Arrive and leave on your own.",
-          "Keep an eye on your drink and belongings.",
-          "Trust your instinct: you can leave at any time."
-        ]
-      }
-    }
+    "minutes": "{n} min read",
+    "latest": "Featured",
+    "more": "All articles",
+    "empty": "The first articles are coming soon.",
+    "back": "Back to the blog",
+    "ctaTitle": "Ready to write your story?",
+    "ctaText": "Join DuoMatch and meet people looking for the same thing as you.",
+    "ctaButton": "Create my account"
   },
   "legal": {
     "draftTitle": "Draft version.",
@@ -598,7 +606,7 @@
     "PHOTO_REQUIRED": "Add at least one photo to continue.",
     "PHOTO_LIMIT": "Maximum number of photos reached.",
     "INVALID_IMAGE": "This image can’t be read.",
-    "UNSUPPORTED_IMAGE_FORMAT": "Accepted formats: JPEG, PNG, WebP.",
+    "UNSUPPORTED_IMAGE_FORMAT": "Accepted formats: JPEG, PNG or WebP.",
     "FILE_REQUIRED": "No file received.",
     "PAYLOAD_TOO_LARGE": "File too large.",
     "NOTHING_TO_REWIND": "Nothing to take back.",
@@ -651,7 +659,12 @@
     "PROMO_CODE_EXISTS": "This code already exists.",
     "invalid_promo": "Invalid code (3–32 letters, digits, - or _).",
     "FEATURE_DISABLED": "This feature is temporarily unavailable.",
-    "UNKNOWN_FLAG": "Unknown feature."
+    "UNKNOWN_FLAG": "Unknown feature.",
+    "COVER_REQUIRED": "A published article needs a cover image.",
+    "COVER_ALT_REQUIRED": "Describe the cover image (alt text) to publish.",
+    "INVALID_COVER": "Cover image not found: upload it again.",
+    "SLUG_TAKEN": "This link (slug) already exists in this language.",
+    "POST_NOT_FOUND": "Article not found."
   },
   "app": {
     "nav": {
@@ -1099,7 +1112,8 @@
       "flags": "Feature flags",
       "plans": "Plans and pricing",
       "refunds": "Refunds",
-      "promos": "Promo codes"
+      "promos": "Promo codes",
+      "blog": "Blog"
     },
     "roles": {
       "MODERATOR": "Moderator",
@@ -1199,7 +1213,10 @@
       "productsTitle": "One-off purchases (boosts, packs)",
       "codeCol": "Code",
       "quantity": "Quantity",
-      "price": "Price (XOF)"
+      "price": "Price (XOF)",
+      "taglineFr": "Tagline (French)",
+      "taglineEn": "Tagline (English)",
+      "taglineHint": "Short text under the plan name on the Pricing page. Leave empty to keep the default text."
     },
     "refunds": {
       "intro": "A member request is handled by one administrator. A request created by an administrator requires approval by ANOTHER administrator (double validation). Refunds are full: the subscription is cancelled and unused credits are taken back.",
@@ -1334,6 +1351,57 @@
           "useWhen": "If referrals are abused (fake accounts, invitation loops)."
         }
       }
+    },
+    "blog": {
+      "title": "Blog articles",
+      "subtitle": "Write, illustrate and publish the articles shown on the Blog page. A published article must have an image.",
+      "new": "New article",
+      "empty": "No articles yet.",
+      "colTitle": "Article",
+      "colLang": "Language",
+      "colStatus": "Status",
+      "colUpdated": "Updated",
+      "DRAFT": "Draft",
+      "PUBLISHED": "Published",
+      "edit": "Edit",
+      "view": "View",
+      "delete": "Delete",
+      "deleteTitle": "Delete this article?",
+      "deleteText": "The article and its cover image will be permanently deleted.",
+      "cancel": "Cancel",
+      "back": "Back to articles",
+      "createTitle": "New article",
+      "editTitle": "Edit article",
+      "locale": "Article language",
+      "localeFr": "Français",
+      "localeEn": "English",
+      "fieldTitle": "Title",
+      "slug": "Article link (slug)",
+      "slugHint": "Lowercase letters, digits and hyphens. Address: /blog/your-link",
+      "excerpt": "Summary (shown in the list)",
+      "body": "Content",
+      "bodyHint": "Headings: ## Title · Lists: - item · **bold** · *italic* · > quote · [text](https://link)",
+      "tabWrite": "Write",
+      "tabPreview": "Preview",
+      "previewEmpty": "Nothing to show yet.",
+      "cover": "Cover image",
+      "coverHint": "Required to publish. JPEG, PNG or WebP, ideally 16:9.",
+      "coverAlt": "Image description (accessibility)",
+      "coverNone": "No image",
+      "coverUpload": "Choose an image",
+      "coverReplace": "Replace image",
+      "uploading": "Uploading image…",
+      "insertImage": "Insert an image in the text",
+      "insertedAlt": "Image description",
+      "saveDraft": "Save draft",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "saveChanges": "Save",
+      "saved": "Article saved.",
+      "publishedOk": "Article published.",
+      "unpublishedOk": "Article unpublished.",
+      "deleted": "Article deleted.",
+      "coverUploaded": "Image uploaded."
     }
   },
   "pricingFaq": {

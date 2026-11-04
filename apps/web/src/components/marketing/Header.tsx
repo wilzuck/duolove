@@ -3,7 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, IconButton, Logo } from '@duomatch/ui';
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 
@@ -11,8 +11,11 @@ const LINKS = [
   ['/how-it-works', 'nav.how'], ['/pricing', 'nav.pricing'], ['/about', 'nav.about'], ['/blog', 'nav.blog'], ['/help', 'nav.help'],
 ] as const;
 
+const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
 export function MarketingHeader() {
   const t = useTranslations();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
@@ -20,7 +23,7 @@ export function MarketingHeader() {
         <Link href="/" aria-label={t('nav.home')}><Logo /></Link>
         <nav aria-label={t('nav.main')} className="hidden items-center gap-1 lg:flex">
           {LINKS.map(([href, key]) => (
-            <Link key={href} href={href} className="rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-muted hover:bg-soft hover:text-fg xl:px-4">{t(key)}</Link>
+            <Link key={href} href={href} aria-current={isActive(pathname, href) ? 'page' : undefined} className={`rounded-full px-3 py-2 text-sm whitespace-nowrap hover:bg-soft xl:px-4 ${isActive(pathname, href) ? 'bg-soft font-bold text-brand-ink underline decoration-2 underline-offset-8' : 'font-medium text-muted hover:text-fg'}`}>{t(key)}</Link>
           ))}
         </nav>
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
@@ -35,7 +38,7 @@ export function MarketingHeader() {
       {open && (
         <nav id="mobile-nav" aria-label={t('nav.main')} className="border-t border-line bg-bg px-4 pb-4 lg:hidden">
           <ul className="flex flex-col py-2">
-            {LINKS.map(([href, key]) => <li key={href}><Link href={href} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 font-medium hover:bg-soft">{t(key)}</Link></li>)}
+            {LINKS.map(([href, key]) => <li key={href}><Link href={href} onClick={() => setOpen(false)} aria-current={isActive(pathname, href) ? 'page' : undefined} className={`block rounded-xl px-3 py-3 hover:bg-soft ${isActive(pathname, href) ? 'bg-soft font-bold text-brand-ink' : 'font-medium'}`}>{t(key)}</Link></li>)}
             <li><Link href="/login" onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 font-medium hover:bg-soft sm:hidden">{t('nav.login')}</Link></li>
           </ul>
           <div className="flex items-center gap-2 pt-2 sm:hidden"><LocaleSwitcher /><ThemeToggle /></div>

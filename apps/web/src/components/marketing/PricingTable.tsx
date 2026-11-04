@@ -72,7 +72,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1 }: { 
                 <h3 className="text-xl font-bold">{p.name}</h3>
                 {current === p.code && <Badge tone="success">{t('plans.current')}</Badge>}
               </div>
-              <p className="text-sm text-muted">{t(`plans.${p.code}.tagline`)}</p>
+              <p className="text-sm text-muted">{(locale === 'en' ? p.taglineEn : p.taglineFr) || t(`plans.${p.code}.tagline`)}</p>
               {p.code === 'FREE' || !price ? (
                 <p className="font-display text-4xl font-extrabold">{t('plans.free')}</p>
               ) : (

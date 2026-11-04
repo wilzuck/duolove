@@ -9,7 +9,7 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 | Domaine | Détail |
 |---|---|
 | Fondations | monorepo pnpm/Turborepo, Next 16, API FastAPI (Python) + SQLAlchemy 2 + Alembic, PostgreSQL, design system, i18n FR/EN, thème clair/sombre |
-| Pages publiques | accueil, comment ça marche, tarifs, à propos, blog (3 articles), contact, aide, CGU, confidentialité, cookies, règles — SEO, Open Graph, sitemap, robots |
+| Pages publiques | accueil, comment ça marche, tarifs, à propos, blog (articles gérés depuis l'admin), contact, aide, CGU, confidentialité, cookies, règles — SEO, Open Graph, sitemap, robots |
 | Auth | inscription (18+), connexion, déconnexion, e-mail à confirmer, mot de passe oublié/réinitialisation, changement de mot de passe, verrouillage, sessions actives, Google (code prêt) |
 | Profil | onboarding 4 étapes, photos (recadrage, ordre, principale, suppression, suppression EXIF), complétude, préférences, vérification par selfie (revue humaine), boost VIP |
 | Découverte | swipe (glisser/boutons/clavier), Super Like, retour arrière, filtres gratuits + Premium (serveur), score + % de compatibilité, exclusion bloqués/suspendus/masqués, mode discret, position arrondie |
@@ -95,3 +95,11 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 ## Match : guide quand on n'a pas de jeton (livré)
 - **Terminé** : quand une personne a accepté et que le membre n'a aucun jeton, un guide s'affiche au-dessus de la liste : 1) obtenir un jeton (acheter, compléter le profil pour les 3 jetons offerts, saisir un code promo), 2) revenir pour « Discuter », 3) alternatives gratuites « J'aime » / « Passer » ; chaque carte indique jusqu'à quelle heure la personne reste disponible (2 h après sa réponse, ou la fin de la recherche). Le guide disparaît dès qu'un jeton est disponible.
 - **Tests** : E2E `live.spec.ts` (3 nouveaux : guide visible avec liens et accessibilité, disparition après achat).
+
+## À propos, navigation, blog administrable, tarifs (livré)
+- **Terminé** : page À propos réécrite en récit (5 chapitres, engagements, appel « Le prochain, c'est peut-être vous ») FR/EN, sans témoignage ni chiffre inventé ; lien actif de la navbar mis en évidence (gras, souligné, `aria-current="page"`, y compris sous-pages et menu mobile).
+- **Terminé** : blog administrable (admin > Blog) : table `BlogPost` (migration `0003`), brouillon/publié, une ligne par langue, éditeur avec aperçu, image de couverture + texte alternatif **obligatoires pour publier** (contrôlé par l'API), images insérables dans le texte, suppression qui retire aussi l'image, journal d'audit. Rendu Markdown restreint **sans HTML brut** ; pages publiques : à la une + grille avec images, durée de lecture, Open Graph, sitemap dynamique. Cache de 5 min purgé immédiatement à chaque enregistrement.
+- **Terminé** : accroches des formules (FR/EN) modifiables dans admin > Offres et tarifs ; prix, durées, remises, fonctionnalités et packs l'étaient déjà. Page Tarifs : boosts, Super Likes et jetons en trois sections, durées de boost et quantités en grand.
+- **Simulé** : les 3 articles et leurs images de démonstration (`make seed`) ; les illustrations sont des dégradés décoratifs à remplacer par de vraies images. En production, le blog démarre vide.
+- **Non implémenté** : traduction liée entre les versions FR/EN d'un même article, suppression des images insérées dans le texte quand l'article est supprimé (seule la couverture l'est), planification de publication, éditeur visuel (Markdown saisi à la main).
+- **Tests** : pytest 119/119 (`test_blog.py` : droits, brouillon invisible, image obligatoire, doublons de slug, remplacement/suppression d'image, accroches) ; Playwright 34/34 (`blog.spec.ts` : parcours admin complet + accessibilité, Tarifs en trois sections).

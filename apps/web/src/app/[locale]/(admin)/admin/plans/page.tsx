@@ -9,7 +9,7 @@ import { api, patch } from '@/lib/api';
 import { formatXof } from '@/lib/format';
 import { useUi } from '@/lib/store';
 
-interface PlanRow { id: string; code: string; name: string; priceXof: number; active: boolean; featured: boolean; sortOrder: number; features: PlanFeatures; prices: { months: number; discountPercent: number; amountOverride: number | null; active: boolean }[] }
+interface PlanRow { taglineFr: string | null; taglineEn: string | null; id: string; code: string; name: string; priceXof: number; active: boolean; featured: boolean; sortOrder: number; features: PlanFeatures; prices: { months: number; discountPercent: number; amountOverride: number | null; active: boolean }[] }
 interface ProductRow { id: string; code: string; name: string; priceXof: number; quantity: number; active: boolean; kind: string }
 
 const num = (v: string, fallback = 0) => (v === '' || Number.isNaN(Number(v)) ? fallback : Number(v));
@@ -20,10 +20,10 @@ function PlanEditor({ plan }: { plan: PlanRow }) {
   const qc = useQueryClient();
   const err = useApiError();
   const toast = useUi((s) => s.toast);
-  const [d, setD] = useState(() => ({ name: plan.name, priceXof: plan.priceXof, active: plan.active, featured: plan.featured, sortOrder: plan.sortOrder, features: plan.features,
+  const [d, setD] = useState(() => ({ taglineFr: plan.taglineFr ?? '', taglineEn: plan.taglineEn ?? '', name: plan.name, priceXof: plan.priceXof, active: plan.active, featured: plan.featured, sortOrder: plan.sortOrder, features: plan.features,
     prices: DURATION_MONTHS.map((m) => { const p = plan.prices.find((x) => x.months === m); return { months: m, discountPercent: p?.discountPercent ?? 0, amountOverride: p?.amountOverride ?? null, active: p?.active ?? true }; }) }));
   const save = useMutation({
-    mutationFn: () => patch(`/admin/plans/${plan.code}`, { name: d.name, priceXof: d.priceXof, active: d.active, featured: d.featured, sortOrder: d.sortOrder, features: d.features, ...(plan.code === 'FREE' ? {} : { prices: d.prices }) }),
+    mutationFn: () => patch(`/admin/plans/${plan.code}`, { name: d.name, priceXof: d.priceXof, active: d.active, featured: d.featured, sortOrder: d.sortOrder, taglineFr: d.taglineFr, taglineEn: d.taglineEn, features: d.features, ...(plan.code === 'FREE' ? {} : { prices: d.prices }) }),
     onSuccess: () => { toast('success', t('admin.plans.saved')); void qc.invalidateQueries({ queryKey: ['admin', 'plans'] }); void qc.invalidateQueries({ queryKey: ['plans'] }); },
     onError: (e) => toast('error', err(e)),
   });
@@ -37,6 +37,10 @@ function PlanEditor({ plan }: { plan: PlanRow }) {
         <Field label={t('admin.plans.name')}>{(p) => <Input {...p} value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />}</Field>
         <Field label={t('admin.plans.monthlyPrice')} hint={t('admin.plans.currencyHint')}>{(p) => <Input {...p} type="number" min={0} disabled={plan.code === 'FREE'} value={d.priceXof} onChange={(e) => setD({ ...d, priceXof: num(e.target.value) })} />}</Field>
         <Field label={t('admin.plans.order')}>{(p) => <Input {...p} type="number" min={0} value={d.sortOrder} onChange={(e) => setD({ ...d, sortOrder: num(e.target.value) })} />}</Field>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={t('admin.plans.taglineFr')} hint={t('admin.plans.taglineHint')}>{(p) => <Input {...p} maxLength={120} value={d.taglineFr} onChange={(e) => setD({ ...d, taglineFr: e.target.value })} />}</Field>
+        <Field label={t('admin.plans.taglineEn')}>{(p) => <Input {...p} maxLength={120} value={d.taglineEn} onChange={(e) => setD({ ...d, taglineEn: e.target.value })} />}</Field>
       </div>
       <fieldset className="space-y-3"><legend className="font-bold">{t('admin.plans.featuresTitle')}</legend>
         <div className="grid gap-3 sm:grid-cols-2">

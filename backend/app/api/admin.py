@@ -435,6 +435,9 @@ async def patch_plan(code: str, body: PlanPatch, a: AuthUser = ADM, db: AsyncSes
     for k in ("name", "priceXof", "active", "featured", "sortOrder"):
         if k in data:
             setattr(plan, k, data[k])
+    for k in ("taglineFr", "taglineEn"):
+        if k in data:
+            setattr(plan, k, data[k] or None)  # vide = retour à l'accroche par défaut
     if "features" in data and data["features"] is not None:
         plan.features = data["features"]
     for pr in body.prices or []:

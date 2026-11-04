@@ -39,7 +39,7 @@ export interface Paged<T> { items: T[]; nextCursor: string | null }
 export interface SwipeResult { action: string; matched: boolean; match: { id: string; conversationId: string; user: Card | null } | null }
 export interface NotificationItem { id: string; type: string; readAt: string | null; createdAt: string; data: Record<string, unknown> }
 export interface PriceOption { months: number; discountPercent: number; totalXof: number; monthlyEquivalentXof: number; savingsXof: number }
-export interface PlanView { code: PlanCode; name: string; priceXof: number; currency: string; features: PlanFeatures; featured: boolean; sortOrder: number; prices: PriceOption[] }
+export interface PlanView { code: PlanCode; name: string; priceXof: number; currency: string; features: PlanFeatures; featured: boolean; sortOrder: number; prices: PriceOption[]; taglineFr?: string | null; taglineEn?: string | null }
 export interface ProductView { code: string; kind: 'BOOST' | 'SUPER_LIKE_PACK' | 'TOKEN_PACK'; creditType: CreditType; name: string; quantity: number; priceXof: number; currency: string }
 export interface Catalog { plans: PlanView[]; products: ProductView[] }
 export interface SubscriptionState {
@@ -60,3 +60,8 @@ export interface LiveState {
   accepted: LiveAccepted[];
 }
 export interface LiveIncoming extends Card { inviteId: string; expiresAt: string }
+
+export interface BlogCard { id: string; slug: string; locale: string; title: string; excerpt: string; coverUrl: string | null; coverThumbUrl: string | null; coverAlt: string | null; publishedAt: string | null; readMinutes: number }
+export interface BlogPostFull extends BlogCard { body: string }
+export interface AdminBlogRow extends BlogCard { status: 'DRAFT' | 'PUBLISHED'; coverKey: string | null; createdAt: string; updatedAt: string }
+export interface AdminBlogPost extends AdminBlogRow { body: string }

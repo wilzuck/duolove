@@ -18,3 +18,17 @@ async def photo(file: str):
     if data is None:
         raise not_found()
     return Response(data, media_type="image/webp", headers={"Cache-Control": "public, max-age=31536000, immutable", "Cross-Origin-Resource-Policy": "cross-origin"})
+
+
+_BLOG_FILE = re.compile(r"^[a-f0-9]{32}(_t)?\.webp$")
+
+
+@router.get("/blog/{file}")
+async def blog_image(file: str):
+    """Images des articles publiées par l'équipe (clés aléatoires, jamais de chemin libre)."""
+    if not _BLOG_FILE.match(file):
+        raise not_found()
+    data = await storage.get(f"blog/{file}")
+    if data is None:
+        raise not_found()
+    return Response(data, media_type="image/webp", headers={"Cache-Control": "public, max-age=31536000, immutable", "Cross-Origin-Resource-Policy": "cross-origin"})

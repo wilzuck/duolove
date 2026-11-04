@@ -219,11 +219,18 @@
       "liveMatchTrials": "Menu Match : {n} essais gratuits",
       "matchTokensMonthly": "{n} jetons Match par mois",
       "chatImages": "Envoi de photos dans les messages"
-    }
+    },
+    "boostLabel": "Boost de visibilité",
+    "boostDuration": "de mise en avant",
+    "superLikesLabel": "Super Likes",
+    "tokensLabel": "jetons Match",
+    "perUnit": "soit {price} l’unité",
+    "minutesShort": "{n} min",
+    "hoursShort": "{n} h"
   },
   "about": {
     "title": "À propos de DuoMatch",
-    "lead": "Une plateforme de rencontres moderne, élégante et respectueuse.",
+    "lead": "Derrière chaque famille, il y a eu un jour deux inconnus qui se sont regardés autrement.",
     "mission": "Nous construisons DuoMatch pour faciliter les rencontres sérieuses et les belles histoires entre adultes, en Afrique francophone et au-delà, dans un environnement où chacun se sent en sécurité.",
     "valuesTitle": "Nos engagements",
     "values": {
@@ -243,7 +250,38 @@
         "title": "Sincérité",
         "text": "Un badge vérifié ne s’obtient qu’après un vrai contrôle. Pas de faux témoignages."
       }
-    }
+    },
+    "storyKicker": "Notre histoire",
+    "chapters": {
+      "c1": {
+        "title": "Tout commence par un regard",
+        "p1": "Toutes les grandes familles ont un premier chapitre. Un regard échangé à un mariage, un message timide envoyé un soir, un « bonjour » qui aurait pu rester sans réponse. Ce moment minuscule, personne ne le planifie, et pourtant tout le reste en découle : la maison, les enfants, les repas du dimanche, les fous rires, les silences qui rassurent.",
+        "p2": "Nous sommes partis d’une conviction simple : ce premier chapitre mérite qu’on lui donne toutes ses chances."
+      },
+      "c2": {
+        "title": "Se rencontrer n’a jamais été aussi facile… ni aussi difficile",
+        "p1": "Nous sommes plus connectés que jamais, et pourtant tant de personnes sincères se sentent seules. Trop de profils, trop de promesses, trop de conversations qui s’éteignent après deux messages. Beaucoup cherchent quelqu’un avec qui bâtir quelque chose de vrai, et se retrouvent noyés dans le bruit, parfois exposés aux faux profils et aux arnaques.",
+        "p2": "DuoMatch est né pour ceux qui veulent autre chose : moins de vitrine, plus de sens."
+      },
+      "c3": {
+        "title": "Une plateforme pensée pour bâtir, pas pour consommer",
+        "p1": "Ici, on ne vous demande pas d’être parfait, on vous aide à être compris. Vos intentions, vos valeurs, vos centres d’intérêt, votre ville et vos langues comptent plus que n’importe quelle photo. Notre score de compatibilité n’est jamais fondé sur l’apparence.",
+        "p2": "Et quand deux personnes se plaisent vraiment, la rencontre en direct leur permet d’échanger tout de suite, pendant qu’elles sont toutes les deux là, avec l’envie réelle de se parler."
+      },
+      "c4": {
+        "title": "La confiance est la première fondation",
+        "p1": "On ne construit pas une famille sur du doute. C’est pourquoi nous réservons la plateforme aux adultes, modérons avec de vraies personnes, ne donnons le badge « vérifié » qu’après un contrôle réel, floutons votre position et vous laissons exporter ou supprimer vos données quand vous le voulez.",
+        "p2": "Chaque règle que nous appliquons a la même raison d’être : que vous puissiez ouvrir votre cœur sans baisser la garde."
+      },
+      "c5": {
+        "title": "Notre rêve : des familles qui commencent ici",
+        "p1": "Nous rêvons du jour où un couple nous racontera : « Nous nous sommes rencontrés sur DuoMatch. » Du jour où des enfants demanderont comment leurs parents se sont connus, et où la réponse commencera par un simple profil, un simple « J’aime ».",
+        "p2": "Nous ne vendons pas des promesses. Nous construisons les conditions pour que les belles histoires aient lieu : un endroit respectueux, sûr, et à taille humaine, en Afrique francophone et au-delà."
+      }
+    },
+    "nextTitle": "Le prochain, c’est peut-être vous.",
+    "nextText": "Quelque part, la personne qui changera votre vie est peut-être en train de créer son profil en ce moment même. Et la prochaine belle histoire de famille que nous raconterons sera peut-être celle de la personne qui lit ces lignes. Votre premier chapitre commence ici.",
+    "nextCta": "Écrire mon premier chapitre"
   },
   "contact": {
     "title": "Nous contacter",
@@ -331,44 +369,14 @@
     "title": "Le blog DuoMatch",
     "lead": "Conseils pour des rencontres réussies et sûres.",
     "read": "Lire l’article",
-    "posts": {
-      "avoid-romance-scams": {
-        "title": "5 réflexes pour éviter les arnaques sentimentales",
-        "excerpt": "Les signaux d’alerte à connaître avant de faire confiance.",
-        "intro": "Les arnaques sentimentales se ressemblent. Voici les réflexes qui vous protègent.",
-        "tips": [
-          "Ne jamais envoyer d’argent, même pour une urgence ou un « cadeau ».",
-          "Exiger un appel vidéo avant de s’attacher : refuser est un signal d’alerte.",
-          "Se méfier des déclarations d’amour très rapides.",
-          "Ne jamais partager vos informations bancaires ou vos codes.",
-          "Signaler le profil dès le premier doute : cela protège aussi les autres."
-        ]
-      },
-      "first-message": {
-        "title": "Réussir son premier message",
-        "excerpt": "Comment démarrer une conversation naturelle et sincère.",
-        "intro": "Un bon premier message est simple, personnel et ouvert.",
-        "tips": [
-          "Lisez son profil et citez un détail précis.",
-          "Posez une question ouverte plutôt que « salut ».",
-          "Soyez vous-même : la sincérité se remarque.",
-          "Restez court : une ou deux phrases suffisent.",
-          "Respectez l’absence de réponse, sans relancer."
-        ]
-      },
-      "meet-safely": {
-        "title": "Se rencontrer en toute sécurité",
-        "excerpt": "Les précautions à prendre avant un premier rendez-vous.",
-        "intro": "Un premier rendez-vous réussi commence par quelques précautions.",
-        "tips": [
-          "Choisissez un lieu public et fréquenté.",
-          "Prévenez un proche : lieu, heure, nom de la personne.",
-          "Venez et repartez par vos propres moyens.",
-          "Gardez un œil sur votre boisson et vos affaires.",
-          "Faites confiance à votre instinct : vous pouvez partir à tout moment."
-        ]
-      }
-    }
+    "minutes": "{n} min de lecture",
+    "latest": "À la une",
+    "more": "Tous les articles",
+    "empty": "Les premiers articles arrivent bientôt.",
+    "back": "Retour au blog",
+    "ctaTitle": "Prêt(e) à écrire votre histoire ?",
+    "ctaText": "Rejoignez DuoMatch et rencontrez des personnes qui cherchent la même chose que vous.",
+    "ctaButton": "Créer mon compte"
   },
   "legal": {
     "draftTitle": "Version provisoire.",
@@ -598,7 +606,7 @@
     "PHOTO_REQUIRED": "Ajoutez au moins une photo pour continuer.",
     "PHOTO_LIMIT": "Nombre maximum de photos atteint.",
     "INVALID_IMAGE": "Cette image est illisible.",
-    "UNSUPPORTED_IMAGE_FORMAT": "Formats acceptés : JPEG, PNG, WebP.",
+    "UNSUPPORTED_IMAGE_FORMAT": "Formats acceptés : JPEG, PNG ou WebP.",
     "FILE_REQUIRED": "Aucun fichier reçu.",
     "PAYLOAD_TOO_LARGE": "Fichier trop volumineux.",
     "NOTHING_TO_REWIND": "Aucun profil à reprendre.",
@@ -651,7 +659,12 @@
     "PROMO_CODE_EXISTS": "Ce code existe déjà.",
     "invalid_promo": "Code invalide (3 à 32 lettres, chiffres, - ou _).",
     "FEATURE_DISABLED": "Cette fonctionnalité est temporairement indisponible.",
-    "UNKNOWN_FLAG": "Fonctionnalité inconnue."
+    "UNKNOWN_FLAG": "Fonctionnalité inconnue.",
+    "COVER_REQUIRED": "Un article publié doit avoir une image de couverture.",
+    "COVER_ALT_REQUIRED": "Décrivez l’image de couverture (texte alternatif) pour publier.",
+    "INVALID_COVER": "Image de couverture introuvable : téléversez-la à nouveau.",
+    "SLUG_TAKEN": "Ce lien (slug) existe déjà dans cette langue.",
+    "POST_NOT_FOUND": "Article introuvable."
   },
   "app": {
     "nav": {
@@ -1099,7 +1112,8 @@
       "flags": "Feature flags",
       "plans": "Offres et tarifs",
       "refunds": "Remboursements",
-      "promos": "Codes promo"
+      "promos": "Codes promo",
+      "blog": "Blog"
     },
     "roles": {
       "MODERATOR": "Modérateur",
@@ -1199,7 +1213,10 @@
       "productsTitle": "Achats ponctuels (boosts, packs)",
       "codeCol": "Code",
       "quantity": "Quantité",
-      "price": "Prix (FCFA)"
+      "price": "Prix (FCFA)",
+      "taglineFr": "Accroche (français)",
+      "taglineEn": "Accroche (anglais)",
+      "taglineHint": "Texte court sous le nom de la formule sur la page Tarifs. Laissez vide pour garder le texte par défaut."
     },
     "refunds": {
       "intro": "Une demande de membre est traitée par un administrateur. Une demande créée par un administrateur exige l’approbation d’un AUTRE administrateur (double validation). Le remboursement est intégral : l’abonnement est résilié et les crédits non utilisés sont repris.",
@@ -1334,6 +1351,57 @@
           "useWhen": "Si le parrainage est détourné (faux comptes, boucles d’invitations)."
         }
       }
+    },
+    "blog": {
+      "title": "Articles du blog",
+      "subtitle": "Rédigez, illustrez et publiez les articles affichés sur la page Blog. Un article publié doit avoir une image.",
+      "new": "Nouvel article",
+      "empty": "Aucun article pour le moment.",
+      "colTitle": "Article",
+      "colLang": "Langue",
+      "colStatus": "Statut",
+      "colUpdated": "Modifié le",
+      "DRAFT": "Brouillon",
+      "PUBLISHED": "Publié",
+      "edit": "Modifier",
+      "view": "Voir",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer cet article ?",
+      "deleteText": "L’article et son image de couverture seront supprimés définitivement.",
+      "cancel": "Annuler",
+      "back": "Retour aux articles",
+      "createTitle": "Nouvel article",
+      "editTitle": "Modifier l’article",
+      "locale": "Langue de l’article",
+      "localeFr": "Français",
+      "localeEn": "English",
+      "fieldTitle": "Titre",
+      "slug": "Lien de l’article (slug)",
+      "slugHint": "Minuscules, chiffres et tirets. Adresse : /blog/votre-lien",
+      "excerpt": "Résumé (affiché dans la liste)",
+      "body": "Contenu",
+      "bodyHint": "Titres : ## Titre · Listes : - élément · **gras** · *italique* · > citation · [texte](https://lien)",
+      "tabWrite": "Rédiger",
+      "tabPreview": "Aperçu",
+      "previewEmpty": "Rien à afficher pour l’instant.",
+      "cover": "Image de couverture",
+      "coverHint": "Obligatoire pour publier. JPEG, PNG ou WebP, idéalement au format 16:9.",
+      "coverAlt": "Description de l’image (accessibilité)",
+      "coverNone": "Aucune image",
+      "coverUpload": "Choisir une image",
+      "coverReplace": "Remplacer l’image",
+      "uploading": "Envoi de l’image…",
+      "insertImage": "Insérer une image dans le texte",
+      "insertedAlt": "Description de l’image",
+      "saveDraft": "Enregistrer le brouillon",
+      "publish": "Publier",
+      "unpublish": "Dépublier",
+      "saveChanges": "Enregistrer",
+      "saved": "Article enregistré.",
+      "publishedOk": "Article publié.",
+      "unpublishedOk": "Article dépublié.",
+      "deleted": "Article supprimé.",
+      "coverUploaded": "Image téléversée."
     }
   },
   "pricingFaq": {
