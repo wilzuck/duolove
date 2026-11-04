@@ -3,11 +3,11 @@
   "configurations": [
     {
       "name": "duomatch-api",
-      "runtimeExecutable": "pnpm",
+      "runtimeExecutable": "make",
       "runtimeArgs": [
-        "--filter",
-        "@duomatch/api",
-        "start"
+        "-C",
+        "backend",
+        "dev"
       ],
       "port": 4000
     },

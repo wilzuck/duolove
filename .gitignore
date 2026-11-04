@@ -22,3 +22,9 @@ apps/api/src/generated
 # Réglages locaux de l’assistant
 .claude/settings.local.json
 .claude/worktrees
+
+backend/.venv/
+backend/.env
+backend/uploads*/
+backend/**/__pycache__/
+.pytest_cache/

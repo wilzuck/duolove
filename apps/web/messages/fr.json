@@ -513,7 +513,18 @@
     "verifyTitle": "Confirmation de l’e-mail",
     "verifyOk": "Votre adresse e-mail est confirmée. Bienvenue !",
     "verifyBad": "Ce lien est invalide ou a expiré. Demandez-en un nouveau depuis l’application.",
-    "continue": "Continuer"
+    "continue": "Continuer",
+    "remember": "Restez connecté",
+    "rememberHint": "Garde votre session ouverte 30 jours sur cet appareil. À éviter sur un appareil partagé.",
+    "magicLink": "Recevoir un lien de connexion par e-mail",
+    "magicTitle": "Connexion par lien magique",
+    "magicSubtitle": "Saisissez votre e-mail : nous vous envoyons un lien de connexion valable 15 minutes, sans mot de passe.",
+    "magicSent": "Si un compte existe avec cette adresse, un lien de connexion vient d’être envoyé. Pensez à regarder vos courriers indésirables.",
+    "magicSend": "Envoyer le lien",
+    "magicBack": "Utiliser mon mot de passe",
+    "magicVerifying": "Connexion en cours…",
+    "magicBad": "Ce lien est invalide, déjà utilisé ou expiré. Demandez-en un nouveau depuis la page de connexion.",
+    "magicOk": "Vous êtes connecté(e)."
   },
   "gender": {
     "MAN": "Homme",

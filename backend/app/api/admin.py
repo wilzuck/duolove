@@ -1,0 +1,553 @@
+"""Administration : modération, finances, offres, codes promo, flags, audit. Rôle minimal MODERATOR ; ADMIN / SUPER_ADMIN selon la route."""
+from __future__ import annotations
+
+import datetime
+
+from fastapi import APIRouter, Depends, Query, Response
+from sqlalchemy import and_, distinct, func, inspect as sa_inspect, or_, select, text, update
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core import flags as flagsvc
+from app.core import notifications, payments, plan_config, promo, refunds, storage
+from app.core.auth import AuthUser, has_role, require_role
+from app.core.constants import FEATURE_FLAGS
+from app.core.errors import AppError, forbidden, not_found
+from app.core.ids import utcnow
+from app.core.profile_card import thumb_key
+from app.db.session import get_db
+from app.models.models import (
+    AuditLog, Conversation, Entitlement, FeatureFlag, Match, ModerationAction, Payment, PlanPrice, Product, Profile, ProfilePhoto,
+    PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, User, VerificationRequest,
+)
+from app.schemas.admin import (
+    FlagSet, PlanPatch, ProductPatch, PromoCreate, PromoPatch, ReasonOnly, RefundApprove, RefundCreate, RefundReject, ResolveReport,
+    Review, RoleChange, Sanction,
+)
+
+router = APIRouter(prefix="/admin", tags=["admin"])
+public_router = APIRouter(tags=["admin"])
+MOD, ADM, SUP = Depends(require_role("MODERATOR")), Depends(require_role("ADMIN")), Depends(require_role("SUPER_ADMIN"))
+ev = payments.ev
+DAY = datetime.timedelta(days=1)
+
+
+def page(limit: str | None) -> int:
+    try:
+        n = int(limit or "25")
+    except ValueError:
+        n = 25
+    return min(max(n or 25, 1), 100)
+
+
+def iso(d):
+    return d.isoformat(timespec="milliseconds") + "Z" if d else None
+
+
+def to_dict(obj) -> dict:
+    """Toutes les colonnes d'une ligne (noms d'attributs), valeurs enum converties en chaîne."""
+    return {a.key: ev(getattr(obj, a.key)) for a in sa_inspect(obj).mapper.column_attrs}
+
+
+async def after_cursor(db: AsyncSession, q, model, cursor: str | None, *, desc: bool = True):
+    """Pagination par curseur sur (createdAt, id) : lignes strictement après la ligne `cursor` dans l'ordre demandé."""
+    if cursor:
+        c = await db.get(model, cursor)
+        if c:
+            if desc:
+                q = q.where(or_(model.createdAt < c.createdAt, and_(model.createdAt == c.createdAt, model.id < c.id)))
+            else:
+                q = q.where(or_(model.createdAt > c.createdAt, and_(model.createdAt == c.createdAt, model.id > c.id)))
+    return q
+
+
+def paged(rows, take: int, items: list) -> dict:
+    return {"items": items, "nextCursor": rows[take - 1].id if len(rows) > take else None}
+
+
+async def audit(db: AsyncSession, actor_id: str, action: str, target_type: str | None = None, target_id: str | None = None, metadata: dict | None = None):
+    db.add(AuditLog(actorId=actor_id, action=action, targetType=target_type, targetId=target_id, metadata_=metadata or {}))
+    await db.commit()
+
+
+async def _display_names(db: AsyncSession, ids) -> dict[str, str]:
+    ids = list({i for i in ids if i})
+    if not ids:
+        return {}
+    return dict((await db.execute(select(Profile.userId, Profile.displayName).where(Profile.userId.in_(ids)))).all())
+
+
+# ───────── Vue d'ensemble ─────────
+@router.get("/overview")
+async def overview(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    now = utcnow()
+    d = lambda n: now - n * DAY  # noqa: E731
+
+    async def count(model, *where):
+        return (await db.execute(select(func.count()).select_from(model).where(*where))).scalar_one()
+
+    async def total(*where):
+        return (await db.execute(select(func.coalesce(func.sum(Payment.amountXof), 0)).where(*where))).scalar_one()
+
+    users = await count(User, User.status != "DELETED")
+    paid = (await db.execute(select(func.count(distinct(Payment.userId))).where(Payment.status == "SUCCEEDED"))).scalar_one()
+    cohort = await count(User, User.createdAt >= d(30), User.createdAt < d(7))
+    cohort_active = await count(User, User.createdAt >= d(30), User.createdAt < d(7), User.lastActiveAt >= d(7))
+    series = (await db.execute(text('SELECT date_trunc(\'day\', "createdAt") AS day, COUNT(*)::bigint AS count FROM "User" WHERE "createdAt" > now() - interval \'14 days\' GROUP BY 1 ORDER BY 1'))).all()
+    plans = (await db.execute(select(Entitlement.plan, func.count()).group_by(Entitlement.plan))).all()
+    recent = (await db.execute(select(User).where(User.status != "DELETED").order_by(User.createdAt.desc()).limit(8))).scalars().all()
+    profiles = {p.userId: p for p in (await db.execute(select(Profile).where(Profile.userId.in_([u.id for u in recent])))).scalars()}
+    by_country = (await db.execute(select(Profile.country, func.count().label("n")).group_by(Profile.country).order_by(func.count().desc()).limit(6))).all()
+    refunded = (await db.execute(select(func.coalesce(func.sum(Refund.amountXof), 0)).where(Refund.status == "COMPLETED"))).scalar_one()
+    return {
+        "planDistribution": [{"plan": ev(p), "count": c} for p, c in plans],
+        "recentSignups": [{"id": u.id, "displayName": profiles[u.id].displayName if u.id in profiles else "—", "city": profiles[u.id].city if u.id in profiles else "",
+                           "country": profiles[u.id].country if u.id in profiles else "", "createdAt": u.createdAt} for u in recent],
+        "refundedXof": refunded, "topCountries": [{"country": c, "count": n} for c, n in by_country],
+        "users": users, "signups7": await count(User, User.createdAt >= d(7)), "signups30": await count(User, User.createdAt >= d(30)),
+        "active7": await count(User, User.lastActiveAt >= d(7), User.status == "ACTIVE"), "profilesCompleted": await count(Profile, Profile.completeness >= 80),
+        "likes": await count(Swipe, Swipe.action.in_(["LIKE", "SUPER_LIKE"])), "matches": await count(Match),
+        "activeConversations": await count(Conversation, Conversation.lastMessageAt >= d(7)), "activeSubscriptions": await count(Subscription, Subscription.status == "ACTIVE"),
+        "revenueXof": await total(Payment.status == "SUCCEEDED"), "revenue30dXof": await total(Payment.status == "SUCCEEDED", Payment.paidAt >= d(30)),
+        "conversionRate": round(paid / users * 1000) / 10 if users else 0, "retentionD7": round(cohort_active / cohort * 1000) / 10 if cohort else 0,
+        "signupsPerDay": [{"day": r.day.date().isoformat(), "count": int(r.count)} for r in series],
+    }
+
+
+@router.get("/badges")
+async def badges(_: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    """Compteurs de travail en attente (pastilles du menu) — modérateurs et plus."""
+    async def c(model, *w):
+        return (await db.execute(select(func.count()).select_from(model).where(*w))).scalar_one()
+
+    reports, verifs, appeals = await c(Report, Report.status == "OPEN"), await c(VerificationRequest, VerificationRequest.status == "PENDING"), await c(ModerationAction, ModerationAction.appealStatus == "PENDING")
+    return {"reports": reports, "moderation": verifs + appeals, "verifications": verifs, "appeals": appeals}
+
+
+# ───────── Utilisateurs ─────────
+@router.get("/users")
+async def users(a: AuthUser = MOD, q: str | None = None, status: str | None = None, cursor: str | None = None, limit: str | None = None, db: AsyncSession = Depends(get_db)):
+    take = page(limit)
+    stmt = select(User).order_by(User.createdAt.desc(), User.id.desc())
+    if status in ("ACTIVE", "SUSPENDED", "BANNED", "DELETED"):
+        stmt = stmt.where(User.status == status)
+    if q:
+        conds = [User.id == q, User.id.in_(select(Profile.userId).where(Profile.displayName.ilike(f"%{q}%")))]
+        if has_role(a.role, "ADMIN"):
+            conds.append(User.email.ilike(f"%{q}%"))
+        stmt = stmt.where(or_(*conds))
+    stmt = await after_cursor(db, stmt, User, cursor)
+    rows = (await db.execute(stmt.limit(take + 1))).scalars().all()
+    ids = [u.id for u in rows[:take]]
+    profiles = {p.userId: p for p in (await db.execute(select(Profile).where(Profile.userId.in_(ids)))).scalars()}
+    plans = dict((await db.execute(select(Entitlement.userId, Entitlement.plan).where(Entitlement.userId.in_(ids)))).all())
+    reports = dict((await db.execute(select(Report.targetId, func.count()).where(Report.targetId.in_(ids)).group_by(Report.targetId))).all())
+    items = []
+    for u in rows[:take]:
+        p = profiles.get(u.id)
+        items.append({"id": u.id, "displayName": p.displayName if p else "—", "email": u.email if has_role(a.role, "ADMIN") else None, "role": ev(u.role), "status": ev(u.status),
+                      "city": p.city if p else None, "country": p.country if p else None, "verified": bool(p and p.verified), "plan": ev(plans.get(u.id, "FREE")),
+                      "reports": reports.get(u.id, 0), "createdAt": u.createdAt, "lastActiveAt": u.lastActiveAt})
+    return paged(rows, take, items)
+
+
+@router.get("/users/{user_id}")
+async def user(user_id: str, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    u = await db.get(User, user_id)
+    if not u:
+        raise not_found("USER_NOT_FOUND")
+    p = (await db.execute(select(Profile).where(Profile.userId == user_id))).scalar_one_or_none()
+    photos = (await db.execute(select(ProfilePhoto).where(ProfilePhoto.profileId == p.id))).scalars().all() if p else []
+    mods = (await db.execute(select(ModerationAction).where(ModerationAction.targetUserId == user_id).order_by(ModerationAction.createdAt.desc()).limit(20))).scalars().all()
+    reps = (await db.execute(select(Report).where(Report.targetId == user_id).order_by(Report.createdAt.desc()).limit(20))).scalars().all()
+    plan = (await db.execute(select(Entitlement.plan).where(Entitlement.userId == user_id))).scalar_one_or_none()
+    return {
+        "id": u.id, "email": u.email if has_role(a.role, "ADMIN") else None, "role": ev(u.role), "status": ev(u.status), "suspendedUntil": u.suspendedUntil,
+        "createdAt": u.createdAt, "lastActiveAt": u.lastActiveAt, "emailVerified": bool(u.emailVerifiedAt), "plan": ev(plan) if plan else "FREE",
+        "profile": {"displayName": p.displayName, "bio": p.bio, "city": p.city, "country": p.country, "gender": ev(p.gender), "verified": p.verified, "completeness": p.completeness,
+                    "photos": [{"id": x.id, "url": f"/api/media/{x.key}", "status": ev(x.moderationStatus)} for x in photos]} if p else None,
+        "moderation": [to_dict(m) for m in mods], "reports": [to_dict(r) for r in reps],
+    }
+
+
+async def guard_target(db: AsyncSession, actor: AuthUser, target_id: str) -> User:
+    """Un modérateur ne peut pas sanctionner un rôle égal ou supérieur, ni lui-même."""
+    t = await db.get(User, target_id)
+    if not t:
+        raise not_found("USER_NOT_FOUND")
+    if t.id == actor.id or (ev(t.role) != "USER" and not has_role(actor.role, "SUPER_ADMIN")):
+        raise forbidden("CANNOT_SANCTION_STAFF")
+    return t
+
+
+@router.post("/users/{user_id}/suspend")
+async def suspend(user_id: str, body: Sanction, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    u = await guard_target(db, a, user_id)
+    until = utcnow() + (body.days or 7) * DAY
+    u.status, u.suspendedUntil = "SUSPENDED", until
+    db.add(ModerationAction(moderatorId=a.id, targetUserId=user_id, type="SUSPEND", reason=body.reason, expiresAt=until, reportId=body.reportId))
+    await db.commit()
+    await audit(db, a.id, "user.suspend", "User", user_id, {"days": body.days or 7})
+    await notifications.create(db, user_id, "SECURITY_ALERT", {"event": "suspended"})
+    return {"ok": True}
+
+
+@router.post("/users/{user_id}/ban")
+async def ban(user_id: str, body: Sanction, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    u = await guard_target(db, a, user_id)
+    u.status = "BANNED"
+    await db.execute(update(Session).where(Session.userId == user_id, Session.revokedAt.is_(None)).values(revokedAt=utcnow()))
+    await db.execute(update(Profile).where(Profile.userId == user_id).values(visibility="HIDDEN"))
+    db.add(ModerationAction(moderatorId=a.id, targetUserId=user_id, type="BAN", reason=body.reason, reportId=body.reportId))
+    await db.commit()
+    await audit(db, a.id, "user.ban", "User", user_id)
+    return {"ok": True}
+
+
+@router.post("/users/{user_id}/unsuspend")
+async def unsuspend(user_id: str, body: ReasonOnly, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    u = await guard_target(db, a, user_id)
+    u.status, u.suspendedUntil = "ACTIVE", None
+    await db.execute(update(Profile).where(Profile.userId == user_id).values(visibility="VISIBLE"))
+    db.add(ModerationAction(moderatorId=a.id, targetUserId=user_id, type="UNSUSPEND", reason=body.reason))
+    await db.commit()
+    await audit(db, a.id, "user.unsuspend", "User", user_id)
+    return {"ok": True}
+
+
+@router.patch("/users/{user_id}/role")
+async def role(user_id: str, body: RoleChange, a: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
+    if user_id == a.id:
+        raise forbidden("CANNOT_CHANGE_SELF")
+    res = await db.execute(update(User).where(User.id == user_id).values(role=body.role, updatedAt=utcnow()))
+    if res.rowcount == 0:
+        raise not_found("NOT_FOUND")
+    await db.commit()
+    await audit(db, a.id, "user.role", "User", user_id, {"role": body.role})
+    return {"ok": True}
+
+
+# ───────── Signalements ─────────
+@router.get("/reports")
+async def reports(status: str = "OPEN", cursor: str | None = None, limit: str | None = None, _: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    take = page(limit)
+    stmt = await after_cursor(db, select(Report).where(Report.status == status).order_by(Report.createdAt.asc(), Report.id.asc()), Report, cursor, desc=False)
+    rows = (await db.execute(stmt.limit(take + 1))).scalars().all()
+    page_rows = rows[:take]
+    names = await _display_names(db, [r.reporterId for r in page_rows] + [r.targetId for r in page_rows])
+    targets = {u.id: u for u in (await db.execute(select(User).where(User.id.in_([r.targetId for r in page_rows])))).scalars()}
+    totals = dict((await db.execute(select(Report.targetId, func.count()).where(Report.targetId.in_([r.targetId for r in page_rows])).group_by(Report.targetId))).all())
+    return paged(rows, take, [{"id": r.id, "reason": ev(r.reason), "details": r.details, "status": ev(r.status), "createdAt": r.createdAt,
+                               "reporter": {"id": r.reporterId, "displayName": names.get(r.reporterId)},
+                               "target": {"id": r.targetId, "displayName": names.get(r.targetId), "status": ev(targets[r.targetId].status), "totalReports": totals.get(r.targetId, 0)}}
+                              for r in page_rows])
+
+
+@router.post("/reports/{report_id}/resolve")
+async def resolve_report(report_id: str, body: ResolveReport, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    res = await db.execute(update(Report).where(Report.id == report_id).values(status=body.status, resolvedById=a.id, resolvedAt=None if body.status == "REVIEWING" else utcnow()))
+    if res.rowcount == 0:
+        raise not_found("REPORT_NOT_FOUND")
+    await db.commit()
+    await audit(db, a.id, "report.resolve", "Report", report_id, {"status": body.status, "note": body.note})
+    return {"ok": True}
+
+
+# ───────── Photos ─────────
+@router.get("/photos")
+async def photos(status: str = "APPROVED", cursor: str | None = None, limit: str | None = None, _: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    take = page(limit)
+    stmt = await after_cursor(db, select(ProfilePhoto).where(ProfilePhoto.moderationStatus == status).order_by(ProfilePhoto.createdAt.desc(), ProfilePhoto.id.desc()), ProfilePhoto, cursor)
+    rows = (await db.execute(stmt.limit(take + 1))).scalars().all()
+    profs = {p.id: p for p in (await db.execute(select(Profile).where(Profile.id.in_([r.profileId for r in rows[:take]])))).scalars()}
+    return paged(rows, take, [{"id": p.id, "url": f"/api/media/{thumb_key(p.key)}", "status": ev(p.moderationStatus), "userId": profs[p.profileId].userId,
+                               "displayName": profs[p.profileId].displayName, "createdAt": p.createdAt} for p in rows[:take]])
+
+
+@router.post("/photos/{photo_id}/reject")
+async def reject_photo(photo_id: str, body: ReasonOnly, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    p = await db.get(ProfilePhoto, photo_id)
+    if not p:
+        raise not_found("PHOTO_NOT_FOUND")
+    profile = await db.get(Profile, p.profileId)
+    p.moderationStatus, p.isPrimary = "REJECTED", False
+    db.add(ModerationAction(moderatorId=a.id, targetUserId=profile.userId, type="PHOTO_REJECT", reason=body.reason))
+    await db.commit()
+    await storage.delete(p.key)
+    await storage.delete(thumb_key(p.key))
+    rest = (await db.execute(select(ProfilePhoto).where(ProfilePhoto.profileId == p.profileId, ProfilePhoto.moderationStatus != "REJECTED").order_by(ProfilePhoto.position))).scalars().all()
+    for i, x in enumerate(rest):
+        x.position, x.isPrimary = i, i == 0
+    await db.commit()
+    from app.core import profilesvc
+
+    await profilesvc.recompute(db, profile.userId)
+    await audit(db, a.id, "photo.reject", "ProfilePhoto", photo_id)
+    return {"ok": True}
+
+
+# ───────── Vérification de profil ─────────
+@router.get("/verifications")
+async def verifications(status: str = "PENDING", _: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    rows = (await db.execute(select(VerificationRequest).where(VerificationRequest.status == status).order_by(VerificationRequest.createdAt).limit(100))).scalars().all()
+    names = await _display_names(db, [v.userId for v in rows])
+    return [{"id": v.id, "userId": v.userId, "displayName": names.get(v.userId), "status": ev(v.status), "createdAt": v.createdAt} for v in rows]
+
+
+@router.get("/verifications/{vid}/selfie")
+async def selfie(vid: str, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    """Le selfie est privé : servi seulement au personnel de modération."""
+    v = await db.get(VerificationRequest, vid)
+    data = await storage.get(v.selfieKey) if v else None
+    if not data:
+        raise not_found()
+    await audit(db, a.id, "verification.view", "VerificationRequest", vid)
+    return Response(content=data, media_type="image/webp", headers={"Cache-Control": "no-store"})
+
+
+@router.post("/verifications/{vid}/review")
+async def review_verification(vid: str, body: Review, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    v = await db.get(VerificationRequest, vid)
+    if not v or ev(v.status) != "PENDING":
+        raise not_found("VERIFICATION_NOT_FOUND")
+    v.status, v.reviewedById, v.reviewedAt, v.note = ("APPROVED" if body.approve else "REJECTED"), a.id, utcnow(), body.note
+    if body.approve:
+        await db.execute(update(Profile).where(Profile.userId == v.userId).values(verified=True))
+    db.add(ModerationAction(moderatorId=a.id, targetUserId=v.userId, type="VERIFICATION_APPROVE" if body.approve else "VERIFICATION_REJECT",
+                            reason=body.note or ("approved" if body.approve else "rejected")))
+    await db.commit()
+    # Le selfie n'est plus nécessaire une fois la décision prise : minimisation des données.
+    await storage.delete(v.selfieKey)
+    if body.approve:
+        await notifications.create(db, v.userId, "PROFILE_VERIFIED", {})
+    await audit(db, a.id, "verification.review", "VerificationRequest", vid, {"approve": body.approve})
+    return {"ok": True}
+
+
+# ───────── Contestations ─────────
+@router.get("/appeals")
+async def appeals(_: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    rows = (await db.execute(select(ModerationAction).where(ModerationAction.appealStatus == "PENDING").order_by(ModerationAction.appealedAt))).scalars().all()
+    names = await _display_names(db, [r.targetUserId for r in rows])
+    return [{"id": r.id, "userId": r.targetUserId, "displayName": names.get(r.targetUserId), "type": ev(r.type), "reason": r.reason, "appealText": r.appealText, "appealedAt": r.appealedAt} for r in rows]
+
+
+@router.post("/appeals/{aid}/decide")
+async def decide_appeal(aid: str, body: Review, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    act = await db.get(ModerationAction, aid)
+    if not act or ev(act.appealStatus) != "PENDING":
+        raise not_found("APPEAL_NOT_FOUND")
+    act.appealStatus = "ACCEPTED" if body.approve else "REJECTED"
+    if body.approve:
+        await db.execute(update(User).where(User.id == act.targetUserId).values(status="ACTIVE", suspendedUntil=None, updatedAt=utcnow()))
+    db.add(ModerationAction(moderatorId=a.id, targetUserId=act.targetUserId, type="APPEAL_ACCEPT" if body.approve else "APPEAL_REJECT", reason=body.note or "—"))
+    await db.commit()
+    await audit(db, a.id, "appeal.decide", "ModerationAction", aid, {"approve": body.approve})
+    return {"ok": True}
+
+
+# ───────── Finances (ADMIN) ─────────
+@router.get("/subscriptions")
+async def subscriptions(cursor: str | None = None, limit: str | None = None, _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    take = page(limit)
+    stmt = await after_cursor(db, select(Subscription).order_by(Subscription.createdAt.desc(), Subscription.id.desc()), Subscription, cursor)
+    rows = (await db.execute(stmt.limit(take + 1))).scalars().all()
+    names = await _display_names(db, [s.userId for s in rows[:take]])
+    codes = dict((await db.execute(select(SubscriptionPlan.id, SubscriptionPlan.code))).all())
+    return paged(rows, take, [{"id": s.id, "userId": s.userId, "displayName": names.get(s.userId), "plan": ev(codes[s.planId]), "status": ev(s.status),
+                               "currentPeriodEnd": s.currentPeriodEnd, "cancelAtPeriodEnd": s.cancelAtPeriodEnd, "provider": s.provider, "createdAt": s.createdAt} for s in rows[:take]])
+
+
+@router.get("/payments")
+async def payments_list(cursor: str | None = None, limit: str | None = None, _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    from app.models.models import Invoice
+
+    take = page(limit)
+    stmt = await after_cursor(db, select(Payment).order_by(Payment.createdAt.desc(), Payment.id.desc()), Payment, cursor)
+    rows = (await db.execute(stmt.limit(take + 1))).scalars().all()
+    ids = [p.id for p in rows[:take]]
+    names = await _display_names(db, [p.userId for p in rows[:take]])
+    invs = dict((await db.execute(select(Invoice.paymentId, Invoice.number).where(Invoice.paymentId.in_(ids)))).all())
+    last_refund: dict[str, str] = {}
+    for pid, st in (await db.execute(select(Refund.paymentId, Refund.status).where(Refund.paymentId.in_(ids)).order_by(Refund.createdAt.asc()))).all():
+        last_refund[pid] = ev(st)  # le dernier (le plus récent) l'emporte
+    return paged(rows, take, [{"refund": last_refund.get(p.id), "id": p.id, "userId": p.userId, "displayName": names.get(p.userId), "amountXof": p.amountXof,
+                               "status": ev(p.status), "provider": p.provider, "failureReason": p.failureReason, "invoiceNumber": invs.get(p.id), "createdAt": p.createdAt}
+                              for p in rows[:take]])
+
+
+# ───────── Remboursements (ADMIN) ─────────
+@router.get("/refunds")
+async def refunds_list(status: str | None = None, cursor: str | None = None, limit: str | None = None, _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    return await refunds.list_(db, status, cursor, page(limit))
+
+
+@router.post("/refunds", status_code=201)
+async def refund_create(body: RefundCreate, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Création par un administrateur : nécessite l'approbation d'un AUTRE administrateur."""
+    r = await refunds.request_by_admin(db, a.id, body.paymentId, body.reason)
+    await audit(db, a.id, "refund.request", "Payment", body.paymentId, {"refundId": r.id, "amountXof": r.amountXof})
+    return {"id": r.id, "status": ev(r.status)}
+
+
+@router.post("/refunds/{refund_id}/approve")
+async def refund_approve(refund_id: str, body: RefundApprove, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    r = await refunds.approve(db, a.id, refund_id, body.note, bool(body.manual))
+    await audit(db, a.id, "refund.approve", "Refund", refund_id, {"result": r["status"], "manual": bool(body.manual)})
+    return r
+
+
+@router.post("/refunds/{refund_id}/reject")
+async def refund_reject(refund_id: str, body: RefundReject, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    r = await refunds.reject(db, a.id, refund_id, body.note)
+    await audit(db, a.id, "refund.reject", "Refund", refund_id, {"note": body.note})
+    return r
+
+
+@router.post("/jobs/expire-subscriptions")
+async def expire(a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    r = await payments.run_expiry_job(db)
+    await audit(db, a.id, "job.expire-subscriptions", None, None, r)
+    return r
+
+
+# ───────── Offres, tarifs et produits (ADMIN) ─────────
+@router.get("/plans")
+async def plans(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Les modifications ne valent QUE pour les achats futurs : le montant est figé sur Payment, la période sur Subscription."""
+    rows = (await db.execute(select(SubscriptionPlan).order_by(SubscriptionPlan.sortOrder))).scalars().all()
+    prices = (await db.execute(select(PlanPrice).order_by(PlanPrice.months))).scalars().all()
+    products = (await db.execute(select(Product).order_by(Product.sortOrder))).scalars().all()
+    catalog = await plan_config.catalog(db)
+    return {"plans": [{**to_dict(p), "prices": [to_dict(x) for x in prices if x.planId == p.id],
+                       "preview": next((c["prices"] for c in catalog if c["code"] == ev(p.code)), [])} for p in rows],
+            "products": [to_dict(x) for x in products]}
+
+
+@router.patch("/plans/{code}")
+async def patch_plan(code: str, body: PlanPatch, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    plan = (await db.execute(select(SubscriptionPlan).where(SubscriptionPlan.code == code))).scalar_one_or_none() if code in ("FREE", "PREMIUM", "VIP") else None
+    if not plan:
+        raise not_found("PLAN_NOT_FOUND")
+    if ev(plan.code) == "FREE" and ((body.priceXof or 0) > 0 or body.active is False):
+        raise forbidden("FREE_PLAN_LOCKED", "La formule gratuite ne peut ni être payante ni être désactivée")
+    before = {"name": plan.name, "priceXof": plan.priceXof, "active": plan.active}
+    data = body.model_dump(mode="json", exclude_unset=True)
+    for k in ("name", "priceXof", "active", "featured", "sortOrder"):
+        if k in data:
+            setattr(plan, k, data[k])
+    if "features" in data and data["features"] is not None:
+        plan.features = data["features"]
+    for pr in body.prices or []:
+        row = (await db.execute(select(PlanPrice).where(PlanPrice.planId == plan.id, PlanPrice.months == pr.months))).scalar_one_or_none()
+        if row:
+            row.discountPercent, row.amountOverride = pr.discountPercent, pr.amountOverride
+            if pr.active is not None:
+                row.active = pr.active
+        else:
+            db.add(PlanPrice(planId=plan.id, months=pr.months, discountPercent=pr.discountPercent, amountOverride=pr.amountOverride, active=True if pr.active is None else pr.active))
+    await db.commit()
+    plan_config.invalidate()
+    await audit(db, a.id, "plan.update", "SubscriptionPlan", ev(plan.code), {"before": before, "after": data})
+    return {"ok": True}
+
+
+@router.patch("/products/{code}")
+async def patch_product(code: str, body: ProductPatch, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    p = (await db.execute(select(Product).where(Product.code == code))).scalar_one_or_none()
+    if not p:
+        raise not_found("PRODUCT_NOT_FOUND")
+    data = body.model_dump(mode="json", exclude_unset=True)
+    for k, v in data.items():
+        setattr(p, k, v)
+    await db.commit()
+    plan_config.invalidate()
+    await audit(db, a.id, "product.update", "Product", code, data)
+    return {"ok": True}
+
+
+# ───────── Codes promotionnels (ADMIN) ─────────
+@router.get("/promos")
+async def list_promos(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    rows = (await db.execute(select(PromoCode).order_by(PromoCode.createdAt.desc()))).scalars().all()
+    used = await promo.usage_map(db, list(rows))
+    return [{**to_dict(r), "used": used[r.id]} for r in rows]
+
+
+@router.post("/promos", status_code=201)
+async def create_promo(body: PromoCreate, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    if (await db.execute(select(PromoCode.id).where(PromoCode.code == body.code))).first():
+        raise AppError(409, "PROMO_CODE_EXISTS")
+    p = PromoCode(code=body.code, kind=body.kind, percent=body.percent, tokens=body.tokens, maxRedemptions=body.maxRedemptions, startsAt=body.startsAt, expiresAt=body.expiresAt)
+    db.add(p)
+    await db.commit()
+    await audit(db, a.id, "promo.create", "PromoCode", p.code, {"kind": body.kind, "percent": p.percent, "tokens": p.tokens, "maxRedemptions": p.maxRedemptions})
+    return to_dict(p)
+
+
+@router.patch("/promos/{promo_id}")
+async def patch_promo(promo_id: str, body: PromoPatch, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Le type et la valeur d'un code ne changent jamais : on le désactive et on en crée un autre."""
+    p = await db.get(PromoCode, promo_id)
+    if not p:
+        raise not_found("PROMO_NOT_FOUND")
+    sent = body.model_dump(exclude_unset=True)
+    for k, v in sent.items():
+        setattr(p, k, v)
+    await db.commit()
+    await audit(db, a.id, "promo.update", "PromoCode", promo_id, body.model_dump(mode="json", exclude_unset=True))
+    return {"ok": True}
+
+
+# ───────── Paramètres ─────────
+@router.get("/feature-flags")
+async def flags(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    by = {r.key: r for r in (await db.execute(select(FeatureFlag))).scalars()}
+    # Catalogue fermé : toutes les fonctions pilotables, avec leur état réel (ligne absente = valeur par défaut).
+    return [{"key": f.key, "category": f.category, "emergency": f.emergency, "defaultOn": f.default_on,
+             "enabled": by[f.key].enabled if f.key in by else f.default_on, "overridden": f.key in by,
+             "updatedAt": by[f.key].updatedAt if f.key in by else None} for f in FEATURE_FLAGS]
+
+
+@router.put("/feature-flags/{key}")
+async def set_flag(key: str, body: FlagSet, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    if not any(f.key == key for f in FEATURE_FLAGS):
+        raise not_found("UNKNOWN_FLAG", "Fonctionnalité inconnue")
+    before = await flagsvc.is_on(db, key)
+    row = (await db.execute(select(FeatureFlag).where(FeatureFlag.key == key))).scalar_one_or_none()
+    if row:
+        row.enabled = body.enabled
+    else:
+        row = FeatureFlag(key=key, enabled=body.enabled)
+        db.add(row)
+    await db.commit()
+    flagsvc.invalidate()
+    await audit(db, a.id, "flag.set", "FeatureFlag", key, {"before": before, "enabled": body.enabled})
+    return {"key": key, "enabled": row.enabled}
+
+
+@router.get("/audit-logs")
+async def audit_logs(cursor: str | None = None, action: str | None = None, limit: str | None = None, _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    take = page(limit)
+    stmt = select(AuditLog).order_by(AuditLog.createdAt.desc(), AuditLog.id.desc())
+    if action:
+        stmt = stmt.where(AuditLog.action == action)
+    stmt = await after_cursor(db, stmt, AuditLog, cursor)
+    rows = (await db.execute(stmt.limit(take + 1))).scalars().all()
+    names = await _display_names(db, [r.actorId for r in rows[:take]])
+    return paged(rows, take, [{"id": l.id, "actorId": l.actorId, "actor": names.get(l.actorId), "action": l.action, "targetType": l.targetType,
+                               "targetId": l.targetId, "metadata": l.metadata_, "createdAt": l.createdAt} for l in rows[:take]])
+
+
+@public_router.get("/feature-flags")
+async def public_flags(db: AsyncSession = Depends(get_db)):
+    """Drapeaux de fonctionnalité en lecture publique (le web masque/affiche selon l'état)."""
+    return await flagsvc.all_flags(db)
+
+
+
+
+# Le routeur exporté regroupe les routes /admin/* et la lecture publique des flags (/feature-flags).
+_admin_router = router
+router = APIRouter()
+router.include_router(_admin_router)
+router.include_router(public_router)

@@ -6,13 +6,14 @@ Cadre : OWASP Top 10 / ASVS, RGPD. Cette page décrit **ce qui est réellement e
 
 | Domaine | Mesure | Où / comment vérifier |
 |---|---|---|
-| Mots de passe | **Argon2id** (19 Mo, 2 itérations), politique 10+ car. maj/min/chiffre ; vérification à coût constant pour un e-mail inconnu | `auth.service.ts` · tests `login` |
+| Mots de passe | **Argon2id** (19 Mo, 2 itérations), politique 10+ car. maj/min/chiffre ; vérification à coût constant pour un e-mail inconnu | `core/authsvc.py`, `core/security.py` · tests `test_flows` |
+| Lien magique | jeton aléatoire 256 bits (haché en base), 15 min, usage unique consommé de façon atomique, pas d'énumération de comptes, limite d'un e-mail par minute et par compte + limiteur de débit par IP | `core/authsvc.py` · `test_login_options` |
 | Brute-force | verrouillage 15 min après 5 échecs + limiteur de débit (10/min sur login/inscription, 5/min mot de passe oublié) | test « verrouille le compte » |
-| Sessions | jeton opaque 256 bits, **hash SHA-256 en base**, cookie `httpOnly`, `SameSite=Lax`, `Secure` en production, expiration 30 j, révocation unitaire/globale (changement et réinitialisation de mot de passe) | `common/auth.ts` |
+| Sessions | jeton opaque 256 bits, **hash SHA-256 en base**, cookie `httpOnly`, `SameSite=Lax`, `Secure` en production, expiration 30 j, révocation unitaire/globale (changement et réinitialisation de mot de passe) | `core/auth.py` |
 | CSRF | cookie `SameSite=Lax` **+** rejet des requêtes mutantes dont l'en-tête `Origin` n'est pas l'application | test « CSRF » |
-| Contrôle d'accès | garde global (tout est privé sauf `@Public`), rôles hiérarchiques `USER < MODERATOR < ADMIN < SUPER_ADMIN`, contrôle **objet par objet** (conversation, message, paiement, pièce jointe, session) avec 404 pour ne pas révéler l'existence | tests messagerie, paiements, admin |
-| Validation | schémas Zod partagés web/API sur toutes les entrées ; images décodées côté serveur | `ZodPipe` |
-| Injection | Prisma (requêtes paramétrées) ; `$queryRaw` uniquement avec gabarits étiquetés | — |
+| Contrôle d'accès | dépendances FastAPI (`current_user` sur toute route privée), rôles hiérarchiques `USER < MODERATOR < ADMIN < SUPER_ADMIN`, contrôle **objet par objet** (conversation, message, paiement, pièce jointe, session) avec 404 pour ne pas révéler l'existence | tests messagerie, paiements, admin |
+| Validation | modèles Pydantic sur toutes les entrées (mêmes règles que les schémas Zod du web, contrôlées par `test_contract`) ; images décodées côté serveur | `app/schemas/` |
+| Injection | SQLAlchemy (requêtes paramétrées) ; `text()` uniquement avec paramètres liés | — |
 | XSS | React échappe par défaut ; aucun `dangerouslySetInnerHTML` hors script de thème constant | — |
 | Uploads | taille max (8 Mo photos, 6 Mo chat), format réel via décodeur (JPEG/PNG/WebP), limite de pixels, **suppression de toutes les métadonnées (EXIF/GPS)**, ré-encodage WebP ; clés aléatoires 120 bits ; routes média n'acceptent que `[a-f0-9]+(_t)?.webp` (anti traversée de chemin, testé) | `StorageService/ImagesService` |
 | Fichiers privés | selfies de vérification et pièces jointes de chat sous `private/`, servis uniquement à leurs ayants droit ; selfie **supprimé après décision** | admin / chat |

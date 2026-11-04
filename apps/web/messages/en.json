@@ -513,7 +513,18 @@
     "verifyTitle": "Email confirmation",
     "verifyOk": "Your email address is confirmed. Welcome!",
     "verifyBad": "This link is invalid or has expired. Request a new one from the app.",
-    "continue": "Continue"
+    "continue": "Continue",
+    "remember": "Keep me signed in",
+    "rememberHint": "Keeps your session open for 30 days on this device. Avoid on a shared device.",
+    "magicLink": "Email me a sign-in link",
+    "magicTitle": "Magic link sign-in",
+    "magicSubtitle": "Enter your email: we send you a sign-in link valid for 15 minutes, no password needed.",
+    "magicSent": "If an account exists with this address, a sign-in link has just been sent. Check your spam folder too.",
+    "magicSend": "Send the link",
+    "magicBack": "Use my password",
+    "magicVerifying": "Signing you in…",
+    "magicBad": "This link is invalid, already used or expired. Request a new one from the sign-in page.",
+    "magicOk": "You are signed in."
   },
   "gender": {
     "MAN": "Man",

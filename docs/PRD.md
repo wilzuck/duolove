@@ -57,7 +57,7 @@ Voir [STATUS.md](STATUS.md) pour l'état exact (terminé / simulé / non implém
 
 **Filtres obligatoires (symétriques)** : genre recherché ↔ genre du candidat, **préférences réciproques** (le candidat doit accepter mon genre et mon âge), tranche d'âge, ≥ 1 photo non rejetée, profil visible, onboarding terminé, compte actif. Le mode discret (VIP) n'expose le profil qu'aux personnes qu'il a likées.
 
-**Score de compatibilité (0–100, affiché)** — `apps/api/src/discovery/scoring.ts` :
+**Score de compatibilité (0–100, affiché)** — `backend/app/core/scoring.py` :
 
 | Critère | Points max |
 |---|---|

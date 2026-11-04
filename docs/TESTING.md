@@ -3,11 +3,13 @@
 ## Commandes
 
 ```bash
-pnpm lint          # ESLint (API, web, ui, types)
-pnpm typecheck     # tsc strict sur les 6 paquets
-pnpm test          # API (Vitest + PostgreSQL réel) + web (Vitest) ; applique les migrations sur duomatch_test
-pnpm build         # types → ui → api → web
-pnpm test:e2e      # Playwright (lance API + web si absents ; base duomatch_test)
+pnpm lint          # ESLint (web, ui, types)
+pnpm typecheck     # tsc strict (web, ui, types)
+pnpm test          # web (Vitest) + cohérence i18n
+pnpm test:api      # API Python : pytest sur PostgreSQL réel (duomatch_test), migrations Alembic appliquées au démarrage
+make -C backend check   # aucune migration en attente, une seule tête
+pnpm build         # types → ui → web
+pnpm test:e2e      # Playwright (lance API Python + web si absents ; base duomatch_test)
 pnpm audit:deps    # pnpm audit --prod
 node apps/web/scripts/i18n-check.mjs   # cohérence FR/EN et clés utilisées
 ```
@@ -44,6 +46,12 @@ Prérequis : PostgreSQL local, bases `duomatch` (dev) et `duomatch_test` (créer
 | 11 | Annulation | `journey` 10-11 |
 | 12 | Suppression du compte | `journey` 12 + intégration (export + anonymisation) |
 
+## Tests de l'API Python (`backend/tests/`)
+
+108 tests pytest (PostgreSQL réel, `httpx` en ASGI, un client par membre simulé) : `test_flows` (inscription → match → messagerie → blocage → export/suppression), `test_scoring`, `test_live`, `test_referral`, `test_chat_reports_boosts`, `test_monetization`, `test_refunds`, `test_kkiapay`, `test_promo`, `test_flags`, `test_flags_enforcement`, `test_admin`, `test_login_options`, `test_health`, `test_contract` (les constantes Python et `packages/types` ne divergent pas). Pour isoler une exécution : `TEST_DATABASE_URL=postgresql://…/ma_base_test make -C backend test`. Les événements Socket.IO émis en test sont lus dans `app.core.realtime.emitted`.
+
+Non couvert : le téléversement de selfie, la connexion Google, l'événement `typing`, le déclenchement de la présence par une vraie connexion socket (seul l'E2E `live` passe par un vrai socket).
+
 ## Ce que les tests ne couvrent pas (à faire)
 
 - Pages authentifiées avec axe ; lecteurs d'écran ; tests manuels sur appareils Android d'entrée de gamme.
@@ -51,9 +59,9 @@ Prérequis : PostgreSQL local, bases `duomatch` (dev) et `duomatch_test` (créer
 - Fournisseurs externes réels (Google, SMTP, paiement).
 - Test d'intrusion.
 
-- Promos et parrainage : `apps/api/test/promo.spec.ts` (14 tests : calcul serveur, unicité par membre, plafond sous concurrence, remboursement, récompense unique, plafond de parrain) et `apps/web/e2e/promo.spec.ts` (parcours lien d'invitation → récompense, création de codes en admin, remise dans Charme+, jetons offerts ; axe sur `/referral`, `/admin/promos`, `/shop`). L'E2E promeut un compte en ADMIN par `psql` sur `duomatch_test`.
+- Promos et parrainage : `backend/tests/test_promo.py` et `test_referral.py` (promos : calcul serveur, unicité par membre, plafond sous concurrence, remboursement ; parrainage : récompense unique, plafond de parrain ; ex. 14 tests : calcul serveur, unicité par membre, plafond sous concurrence, remboursement, récompense unique, plafond de parrain) et `apps/web/e2e/promo.spec.ts` (parcours lien d'invitation → récompense, création de codes en admin, remise dans Charme+, jetons offerts ; axe sur `/referral`, `/admin/promos`, `/shop`). L'E2E promeut un compte en ADMIN par `psql` sur `duomatch_test`.
 
-- Flags : `apps/api/test/flags.spec.ts` (catalogue, droits, audit, application serveur de chacun des 8 interrupteurs, rétablissement ; nettoie ses lignes en fin de fichier) et `apps/web/e2e/flags.spec.ts` (page admin, icône i, coupure/rétablissement, axe).
+- Flags : `backend/tests/test_flags.py` et `test_flags_enforcement.py` (catalogue, droits, audit, application serveur de chacun des 8 interrupteurs, rétablissement ; nettoie ses lignes en fin de fichier) et `apps/web/e2e/flags.spec.ts` (page admin, icône i, coupure/rétablissement, axe).
 
 ## Bugs trouvés et corrigés grâce à ces tests (exemples)
 

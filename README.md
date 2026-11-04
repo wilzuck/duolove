@@ -6,31 +6,30 @@ Plateforme de rencontres amoureuses pour adultes (18+), mobile-first, FR/EN : ma
 
 ## Stack
 
-Next.js 16 (App Router) · React 19 · TypeScript strict · Tailwind 4 · next-intl · TanStack Query · Zustand · Framer Motion · NestJS 12 · Prisma 7 · PostgreSQL 17 · Socket.IO · Playwright · Vitest · pnpm + Turborepo.
+Next.js 16 (App Router) · React 19 · TypeScript strict · Tailwind 4 · next-intl · TanStack Query · Zustand · Framer Motion · FastAPI · SQLAlchemy 2 + Alembic · PostgreSQL 17 · Socket.IO · Playwright · Vitest · pytest · pnpm + Turborepo.
 
 ```
 apps/web        site + application (Next.js)         :3000
-apps/api        API REST + WebSocket (NestJS)        :4000  (/api/docs = OpenAPI en dev)
+backend/         API REST + WebSocket (FastAPI)       :4000  (/api/docs = OpenAPI en dev)
 packages/ui     design system DuoMatch (tokens, composants accessibles)
-packages/types  schémas Zod + constantes partagés web/API (formules, pays…)
-prisma/         schéma + migrations PostgreSQL
+packages/types  schémas Zod + constantes du web (copie Python vérifiée par test_contract)
 docs/           PRD, architecture, base de données, sécurité, tests, déploiement, guides
 docker/         Dockerfiles (api, web) · docker-compose.yml à la racine
 ```
 
 ## Démarrer en local
 
-Prérequis : Node ≥ 22, pnpm 11, PostgreSQL ≥ 15.
+Prérequis : Node ≥ 22, pnpm 11, Python ≥ 3.13, PostgreSQL ≥ 15.
 
 ```bash
 pnpm install
 createdb duomatch && createdb duomatch_test
-cp .env.example apps/api/.env        # ajuster DATABASE_URL
-pnpm db:migrate                      # applique les migrations
-pnpm --filter @duomatch/api db:generate   # génère le client Prisma (Prisma 7 ne le fait pas après migrate)
+make -C backend install               # virtualenv + dépendances Python
+cp .env.example backend/.env         # ajuster DATABASE_URL (sans ?schema=)
+pnpm db:migrate                      # applique les migrations Alembic
 pnpm db:seed                         # ~125 membres variés (pays, âges, intentions, Premium/VIP, photos) + likes + 3 conversations + 3 comptes staff — dev uniquement
 pnpm --filter @duomatch/types build
-pnpm dev                             # web :3000 + API :4000
+pnpm dev                             # web :3000 + API :4000 (ou séparément : pnpm dev:api · pnpm dev:web)
 ```
 
 Comptes de démonstration (`@seed.duomatch.test`) : `aminata@…` (membre), `admin@…`, `moderateur@…`, `super@…` — le mot de passe de développement est affiché à la fin de `pnpm db:seed`. **Jamais en production.**
@@ -41,8 +40,8 @@ En développement, les e-mails (confirmation, réinitialisation) ne partent pas 
 
 | | |
 |---|---|
-| `pnpm lint` · `pnpm typecheck` | qualité statique (6 paquets) |
-| `pnpm test` | unitaires + intégration API (PostgreSQL réel, base `duomatch_test`) + web + cohérence i18n |
+| `pnpm lint` · `pnpm typecheck` | qualité statique (web, ui, types) |
+| `pnpm test` · `pnpm test:api` | web + cohérence i18n · API Python (pytest, PostgreSQL réel, base `duomatch_test`) |
 | `pnpm test:e2e` | Playwright : 12 scénarios utilisateur + accessibilité (installer le navigateur une fois : `pnpm --filter @duomatch/web exec playwright install chromium`) |
 | `pnpm build` | build de production |
 | `pnpm db:migrate` · `pnpm db:seed` | base de données |

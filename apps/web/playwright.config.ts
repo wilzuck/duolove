@@ -12,8 +12,8 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } }],
   webServer: [
     // L'API des E2E utilise une base dédiée (duomatch_test) : jamais la base de développement.
-    { command: 'pnpm --filter @duomatch/api start', url: 'http://localhost:4000/api/health', reuseExistingServer: true, timeout: 90_000,
-      env: { DATABASE_URL: process.env.E2E_DATABASE_URL ?? 'postgresql://admin@localhost:5432/duomatch_test?schema=public', UPLOAD_DIR: './uploads-test' } },
+    { command: 'make -C ../../backend start', url: 'http://localhost:4000/api/health', reuseExistingServer: true, timeout: 90_000,
+      env: { NODE_ENV: 'test', DATABASE_URL: process.env.E2E_DATABASE_URL ?? 'postgresql://admin@localhost:5432/duomatch_test', UPLOAD_DIR: './uploads-test' } },
     { command: 'pnpm --filter @duomatch/web start', url: 'http://localhost:3000', reuseExistingServer: true, timeout: 90_000 },
   ],
 });

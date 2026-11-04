@@ -6,13 +6,13 @@
 Navigateur ──HTTPS──▶ Next.js (apps/web, :3000)
    │  ▲                 │  /api/* réécrit (rewrites)
    │  │ cookie httpOnly ▼
-   │  └────────────── NestJS (apps/api, :4000) ──▶ PostgreSQL 17 (Prisma 7)
+   │  └────────────── FastAPI (backend/, :4000) ──▶ PostgreSQL 17 (SQLAlchemy async)
    └── WebSocket (Socket.IO, cookie) ─────────────▶  │
                                                        └─▶ stockage fichiers (local · interface prête pour S3)
 ```
 
-- **Monorepo pnpm + Turborepo** : `apps/web`, `apps/api`, `packages/{ui,types,config,eslint-config}`, `prisma/` (schéma + migrations), `docs/`, `docker/`, `scripts/`.
-- **Un seul contrat partagé** : `@duomatch/types` contient les schémas Zod (inscription, profil, préférences, swipe…), les constantes (formules, pays, intérêts) et `PLAN_LIMITS`. Le web valide avec les mêmes schémas que l'API → pas de divergence.
+- **Monorepo pnpm + Turborepo** : `apps/web` (Next.js), `packages/{ui,types,config,eslint-config}`, `docs/`, `docker/`, `scripts/`. L'API Python vit à part dans `backend/` (même organisation que WaMarket : `app/api` routeurs, `app/core` briques métier, `app/models`, `app/schemas`, `alembic/`, `tests/`).
+- **Un seul contrat partagé** : `@duomatch/types` contient les schémas Zod du web (formulaires) et les constantes (formules, pays, intérêts, flags). L'API Python en a une **copie** (`backend/app/core/constants.py` et `app/schemas/`) ; `backend/tests/test_contract.py` échoue si les constantes dérivent du TypeScript. Les règles de validation sont dupliquées : toute modification se fait des deux côtés.
 - **`@duomatch/ui`** : design system (tokens CSS DuoMatch, `Button`, `Field`, `Card`, `Dialog` natif accessible, `Logo`…), source-only (transpilé par Next).
 
 ## Choix techniques notables
@@ -21,16 +21,17 @@ Navigateur ──HTTPS──▶ Next.js (apps/web, :3000)
 |---|---|
 | **Sessions opaques en cookie httpOnly** (hash SHA-256 en base) plutôt que JWT | révocation immédiate, liste des appareils, pas de secret côté client |
 | **Web et API sur la même origine** via `rewrites` Next | cookie `SameSite=Lax` sans CORS ; protection CSRF par vérification d'`Origin` |
-| **Prisma 7 + `@prisma/adapter-pg`** | stable (la 8 est en RC) ; client généré dans `apps/api/src/generated` (ESM) |
-| **NestJS 12 (ESM)** | dernière version ; `tsc` + décorateurs ; tests via SWC pour les métadonnées |
+| **FastAPI + SQLAlchemy 2 async + asyncpg** | même socle que WaMarket ; routes async, validation Pydantic v2 |
+| **Alembic en mode synchrone (psycopg2)** | migrations multi-instructions fiables ; la révision `0001_baseline` reprend le schéma créé à l'origine par Prisma (sans effet sur une base qui l'a déjà) |
+| **python-socketio monté sur l'ASGI** | même chemin `/socket.io` et mêmes événements : le client `socket.io-client` du web n'a pas changé |
 | **Verrou consultatif PostgreSQL** (`pg_advisory_xact_lock`) sur la paire de membres | deux likes simultanés A→B et B→A produisent **exactement un** match (testé) |
 | **Droits matérialisés** (`Entitlement`) + vérification d'expiration à la lecture | une formule expirée est traitée comme gratuite immédiatement |
 | **Webhook signé HMAC + table `WebhookEvent`** | authentification et idempotence des événements de paiement |
 | **Redis/BullMQ non utilisés (pour l'instant)** | non disponible dans l'environnement de développement ; limiteur de débit et job d'expiration en mémoire/`setInterval` — voir *Passage à l'échelle* |
 
-## Modules de l'API (`apps/api/src`)
+## Modules de l'API (`backend/app`)
 
-`auth` (inscription, connexion, e-mail, mot de passe, Google, sessions) · `users` (compte, export RGPD, suppression, contestation) · `profiles` (profil, photos, préférences, vérification, boost, localisation arrondie, média) · `discovery` (filtres + scoring) · `swipes` (likes, quotas, rewind, likes reçus) · `matches` · `chat` (messages, pièces jointes, passerelle Socket.IO) · `subscriptions` (plans, checkout, webhooks, factures, expiration) · `notifications` · `reports` (signalement, blocage) · `admin` (RBAC, modération, stats, flags, audit) · `common` (auth guard, erreurs, validation Zod, crypto) · `storage` (fichiers + traitement d'images) · `mail`.
+`auth` (inscription, connexion, e-mail, mot de passe, Google, sessions) · `users` (compte, export RGPD, suppression, contestation) · `profiles` (profil, photos, préférences, vérification, boost, localisation arrondie, média) · `discovery` (filtres + scoring) · `swipes` (likes, quotas, rewind, likes reçus) · `matches` · `chat` (messages, pièces jointes, passerelle Socket.IO) · `subscriptions` (plans, checkout, webhooks, factures, expiration) · `notifications` · `reports` (signalement, blocage) · `admin` (RBAC, modération, stats, flags, audit) · `core` (auth par cookie, erreurs, rôles, crédits, flags, notifications, limiteur de débit, temps réel, stockage et traitement d'images avec Pillow, e-mail). Un routeur par domaine dans `app/api/<domaine>.py` ; la logique métier est dans `app/core/*.py`.
 
 Format d'erreur unique : `{ "error": { "code": "DAILY_LIMIT", "message": "…", "details"?: … } }` — les **codes** sont stables et traduits côté web (`errors.<CODE>`).
 
@@ -38,11 +39,11 @@ OpenAPI : `http://localhost:4000/api/docs` (désactivé en production).
 
 ## Flux critiques
 
-1. **Authentification** : `POST /auth/login` → vérifie Argon2id (même coût pour un e-mail inconnu), verrouillage 15 min après 5 échecs, crée une `Session`, pose `duomatch_sid` (httpOnly, SameSite=Lax, Secure en prod). `AuthGuard` global résout la session à chaque requête, applique rôles (`@Roles`), e-mail vérifié (`@RequireVerified`), comptes suspendus.
+1. **Authentification** : `POST /auth/login` → vérifie Argon2id (même coût pour un e-mail inconnu), verrouillage 15 min après 5 échecs, crée une `Session`, pose `duomatch_sid` (httpOnly, SameSite=Lax, Secure en prod). Les dépendances FastAPI de `core/auth.py` résolvent la session à chaque requête et appliquent rôles (`require_role`), e-mail vérifié (`verified_user`) et comptes suspendus.
 2. **Swipe / match** : quota journalier (selon `Entitlement`) → transaction avec verrou de paire → `Swipe` (unique `(giverId,targetId)`) → si like réciproque, `Match` ordonné `(userAId < userBId)` + `Conversation` → notifications + événement temps réel `match:new`.
 3. **Messagerie** : `POST /conversations/:id/messages` (REST) → persistance → diffusion `message:new` vers `user:<id>` (Socket.IO authentifié par cookie). Frappe et lecture via WebSocket. Toute action vérifie l'appartenance à la conversation (404 sinon, pour ne pas révéler l'existence).
 4. **Paiement** : `checkout` crée `Subscription(PENDING)` + `Payment(PENDING)` → redirection fournisseur → **webhook signé** → `Payment SUCCEEDED`, `Invoice`, `Subscription ACTIVE`, `Entitlement` mis à jour, notification. Le retour navigateur n'active rien.
-5. **Images** : décodage serveur (`sharp`), formats JPEG/PNG/WebP, rotation EXIF appliquée puis **toutes les métadonnées supprimées**, WebP 1600 px + miniature 480×600. Selfies de vérification et pièces jointes de chat sont **privés** (`private/…`), jamais servis par la route publique.
+5. **Images** : décodage serveur (Pillow), formats JPEG/PNG/WebP, rotation EXIF appliquée puis **toutes les métadonnées supprimées**, WebP 1600 px + miniature 480×600. Selfies de vérification et pièces jointes de chat sont **privés** (`private/…`), jamais servis par la route publique.
 
 ## Frontend (`apps/web/src`)
 

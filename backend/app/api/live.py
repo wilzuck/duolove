@@ -1,0 +1,62 @@
+"""Menu « Match » : recherche en direct, invitations, ouverture de conversation avec jetons (flag live_match)."""
+from typing import Any
+
+from fastapi import APIRouter, Body, Depends
+from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core import live_service as live
+from app.core import realtime
+from app.core.auth import AuthUser, verified_user
+from app.core.flags import require_flag
+from app.core.ratelimit import limit
+from app.db.session import get_db
+
+router = APIRouter(prefix="/live", tags=["live"], dependencies=[require_flag("live_match")])
+# Branche le menu Match sur la connexion temps réel (sans dépendance circulaire).
+realtime.on_presence = live.on_presence
+
+
+class OptIn(BaseModel):
+    enabled: bool
+
+
+@router.get("/state")
+async def state(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.state(db, u.id)
+
+
+# Les critères sont validés par le service avec le schéma partagé (messages d'erreur homogènes).
+@router.post("/searches", dependencies=[limit(10)])
+async def start(body: Any = Body(None), u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.start(db, u.id, body)
+
+
+@router.delete("/searches/active")
+async def cancel(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.cancel(db, u.id)
+
+
+@router.get("/invites")
+async def incoming(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.incoming(db, u.id)
+
+
+@router.post("/invites/{invite_id}/accept", dependencies=[limit(30)])
+async def accept(invite_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.respond(db, u.id, invite_id, True)
+
+
+@router.post("/invites/{invite_id}/decline", dependencies=[limit(30)])
+async def decline(invite_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.respond(db, u.id, invite_id, False)
+
+
+@router.post("/invites/{invite_id}/choose", dependencies=[limit(20)])
+async def choose(invite_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.choose(db, u.id, invite_id)
+
+
+@router.put("/opt-in")
+async def opt_in(body: OptIn, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.set_opt_in(db, u.id, body.enabled)

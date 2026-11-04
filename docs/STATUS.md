@@ -8,7 +8,7 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 
 | Domaine | Détail |
 |---|---|
-| Fondations | monorepo pnpm/Turborepo, Next 16, NestJS 12, Prisma 7, PostgreSQL, design system, i18n FR/EN, thème clair/sombre |
+| Fondations | monorepo pnpm/Turborepo, Next 16, API FastAPI (Python) + SQLAlchemy 2 + Alembic, PostgreSQL, design system, i18n FR/EN, thème clair/sombre |
 | Pages publiques | accueil, comment ça marche, tarifs, à propos, blog (3 articles), contact, aide, CGU, confidentialité, cookies, règles — SEO, Open Graph, sitemap, robots |
 | Auth | inscription (18+), connexion, déconnexion, e-mail à confirmer, mot de passe oublié/réinitialisation, changement de mot de passe, verrouillage, sessions actives, Google (code prêt) |
 | Profil | onboarding 4 étapes, photos (recadrage, ordre, principale, suppression, suppression EXIF), complétude, préférences, vérification par selfie (revue humaine), boost VIP |
@@ -66,3 +66,16 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 - **Garde-fous métier** : une coupure des paiements laisse terminer un paiement déjà lancé et n'empêche pas les remboursements ; la coupure des inscriptions ne bloque pas la connexion des membres existants ; les filleuls en attente sont récompensés à la réactivation du parrainage.
 - **Tests** : API `flags.spec.ts` (7) ; E2E `flags.spec.ts` (2, axe inclus).
 - **Limites** : l'interface des membres ne masque pas encore les menus d'une fonction coupée (elle affiche l'erreur « temporairement indisponible ») ; pas de flags par pourcentage ou par groupe de membres ; les clés libres ont été supprimées (catalogue fermé).
+
+## Migration de l'API vers FastAPI (Python)
+- **Terminé** : l'API NestJS/Prisma est remplacée par `backend/` (FastAPI, SQLAlchemy 2 async, Alembic, python-socketio), organisation de WaMarket. Mêmes routes `/api`, mêmes formes JSON et codes d'erreur, même cookie `duomatch_sid`, même chemin Socket.IO, même port 4000 : le web n'a pas changé. Base PostgreSQL reprise telle quelle (migration `0001_baseline`, sans effet sur une base existante ; `alembic check` propre).
+- **Tests (réels, dernier passage)** : pytest 108/108 sur `duomatch_test` ; E2E Playwright 24/24 contre l'API Python (dont deux sockets réels : messagerie et Match en direct). Un E2E (création de code promo) a échoué à cause d'une liste admin lente (N+1) : corrigé par des comptages groupés.
+- **À savoir** : les règles de validation et les constantes existent en double (Zod côté web, Pydantic côté API) ; `test_contract` ne contrôle que les constantes, pas chaque règle de validation. Les identifiants et `updatedAt` sont produits par l'application (plus de défaut SQL), et les dates par défaut sont en UTC.
+- **Non couvert par un test** : selfie de vérification, connexion Google, événement `typing`, déclenchement de la présence par une vraie connexion socket, démarrage via Docker (le Dockerfile et docker-compose ont été réécrits mais **non testés**), job CI Python (non exécuté).
+- **Limites inchangées** : présence et limiteur de débit en mémoire d'un seul processus (Redis avant plusieurs instances) ; job d'expiration des abonnements dans le processus de l'API (un seul worker).
+
+## Options de connexion (livré)
+- **Terminé** : « Restez connecté » (case cochée par défaut sur `/login` : session de 30 jours avec cookie persistant ; décochée : session de 24 h et cookie de session sans date d'expiration) et **connexion par lien magique** (`POST /auth/magic-link`, `POST /auth/magic-link/verify`, page `/magic-link`) : lien à usage unique valable 15 minutes, réponse identique que l'adresse existe ou non, un seul e-mail par minute et par compte, comptes supprimés ou bannis exclus ; cliquer le lien confirme aussi l'adresse e-mail. Migration `0002_magic_link` (nouvelle valeur de `TokenType`).
+- **Tests** : pytest `test_login_options.py` (4) ; E2E `login-options.spec.ts` (2, axe inclus).
+- **Simulé / non vérifié** : l'e-mail du lien magique n'est lu qu'en boîte d'envoi de développement (aucun SMTP réel testé). La connexion Google existe côté API mais n'a jamais été testée avec un vrai identifiant client.
+- **Non implémenté** : code par SMS/WhatsApp, Apple, Facebook, clés d'accès (passkeys) ; le lien magique ne crée pas de compte (seuls les comptes existants peuvent l'utiliser).

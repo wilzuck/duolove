@@ -15,9 +15,9 @@ services:
 
   migrate: # applique les migrations puis s'arrête (exécution contrôlée, jamais au démarrage de l'API)
     build: { context: ., dockerfile: docker/Dockerfile.api }
-    working_dir: /app/apps/api
-    command: ["pnpm", "exec", "prisma", "migrate", "deploy"]
-    environment: &dbenv { DATABASE_URL: "postgresql://duomatch:${POSTGRES_PASSWORD:-duomatch-dev}@postgres:5432/duomatch?schema=public" }
+    working_dir: /app/backend
+    command: ["alembic", "upgrade", "head"]
+    environment: &dbenv { DATABASE_URL: "postgresql://duomatch:${POSTGRES_PASSWORD:-duomatch-dev}@postgres:5432/duomatch" }
     depends_on: { postgres: { condition: service_healthy } }
     restart: "no"
 

@@ -18,6 +18,9 @@ function LoginForm() {
   const params = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(true);
+  const [magic, setMagic] = useState(false);
+  const [magicSent, setMagicSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const next = params.get('next');
 
@@ -25,7 +28,8 @@ function LoginForm() {
     await qc.invalidateQueries();
     router.replace(next && next.startsWith('/') && !next.startsWith('//') ? next : '/discover');
   };
-  const login = useMutation({ mutationFn: () => post('/auth/login', { email, password }), onSuccess: done, onError: (e) => setError(err(e)) });
+  const login = useMutation({ mutationFn: () => post('/auth/login', { email, password, remember }), onSuccess: done, onError: (e) => setError(err(e)) });
+  const sendLink = useMutation({ mutationFn: () => post('/auth/magic-link', { email, remember }), onSuccess: () => setMagicSent(true), onError: (e) => setError(err(e)) });
   const google = useMutation({
     mutationFn: (idToken: string) => post('/auth/google', { idToken }),
     onSuccess: done,
@@ -35,12 +39,18 @@ function LoginForm() {
   return (
     <AuthShell title={t('auth.loginTitle')} subtitle={t('auth.loginSubtitle')} footer={<>{t('auth.noAccount')} <Link href="/register" className="font-semibold text-brand-ink underline">{t('nav.register')}</Link></>}>
       <GoogleButton onToken={(tok) => google.mutate(tok)} />
-      <form onSubmit={(e) => { e.preventDefault(); setError(null); login.mutate(); }} className="space-y-5" noValidate>
+      <form onSubmit={(e) => { e.preventDefault(); setError(null); setMagicSent(false); if (magic) sendLink.mutate(); else login.mutate(); }} className="space-y-5" noValidate>
         {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm text-danger-ink">{error}</p>}
         <Field label={t('auth.email')}>{(p) => <Input {...p} type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />}</Field>
-        <Field label={t('auth.password')}>{(p) => <Input {...p} type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />}</Field>
-        <div className="text-right text-sm"><Link href="/forgot-password" className="font-medium text-brand-ink underline">{t('auth.forgot')}</Link></div>
-        <Button type="submit" size="lg" className="w-full" loading={login.isPending}>{t('nav.login')}</Button>
+        {magicSent && <p role="status" className="rounded-2xl bg-success/10 px-4 py-3 text-sm text-success-ink">{t('auth.magicSent')}</p>}
+        {!magic && <Field label={t('auth.password')}>{(p) => <Input {...p} type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />}</Field>}
+        <label className="flex items-start gap-3 text-sm">
+          <input type="checkbox" className="mt-0.5 size-5 accent-brand-strong" checked={remember} onChange={(e) => setRemember(e.target.checked)} aria-describedby="remember-hint" />
+          <span><span className="font-medium">{t('auth.remember')}</span><span id="remember-hint" className="block text-muted">{t('auth.rememberHint')}</span></span>
+        </label>
+        {!magic && <div className="text-right text-sm"><Link href="/forgot-password" className="font-medium text-brand-ink underline">{t('auth.forgot')}</Link></div>}
+        <Button type="submit" size="lg" className="w-full" loading={login.isPending || sendLink.isPending}>{magic ? t('auth.magicSend') : t('nav.login')}</Button>
+        <button type="button" className="w-full text-center text-sm font-medium text-brand-ink underline" onClick={() => { setMagic(!magic); setError(null); setMagicSent(false); }}>{magic ? t('auth.magicBack') : t('auth.magicLink')}</button>
       </form>
     </AuthShell>
   );

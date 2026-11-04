@@ -1,6 +1,6 @@
-# Base de données (PostgreSQL 17 · Prisma 7)
+# Base de données (PostgreSQL 17 · SQLAlchemy 2 + Alembic)
 
-Schéma : [`prisma/schema.prisma`](../prisma/schema.prisma) · migrations : `prisma/migrations/` · client généré : `apps/api/src/generated/prisma` (non versionné).
+Modèles : [`backend/app/models/models.py`](../backend/app/models/models.py) · migrations : `backend/alembic/versions/` (une seule tête). Les noms de tables et de colonnes (casse conservée) sont ceux créés à l'origine par Prisma ; la migration `0001_baseline` les recrée sur une base vide et ne fait rien sur une base existante. Les identifiants et `updatedAt` sont produits par l'application (pas de défaut SQL).
 
 ## Entités
 
@@ -35,8 +35,9 @@ Schéma : [`prisma/schema.prisma`](../prisma/schema.prisma) · migrations : `pri
 ## Migrations
 
 ```bash
-pnpm db:migrate      # dev : crée + applique (prisma migrate dev)
-pnpm --filter @duomatch/api db:deploy   # prod/CI : applique sans interaction
+make -C backend revision m="message"   # crée une migration depuis les modèles (relire le script !)
+pnpm db:migrate                         # applique les migrations (alembic upgrade head)
+make -C backend check                   # aucune migration en attente + une seule tête
 ```
 | Promos et parrainage | `PromoCode`, `Referral` | code en MAJUSCULES unique ; `kind` PERCENT (1–90 %, figé sur `Payment.discountXof`/`promoCodeId`) ou TOKENS (crédit unique `(userId, PROMO, 'promo:<id>')`) ; `User.referralCode` unique ; `Referral.refereeId` unique (un seul parrain par filleul), statut `PENDING → REWARDED`, crédits `(userId, REFERRAL, 'referral:<filleul>' ou 'referral-bonus')` |
 

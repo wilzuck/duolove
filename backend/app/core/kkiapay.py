@@ -1,0 +1,81 @@
+"""KKiaPay : paiement par widget (Mobile Money + carte). Le navigateur n'est JAMAIS cru :
+le serveur interroge l'API KKiaPay avec les clés privées pour obtenir le statut et le montant réels."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+import httpx
+
+from app.core.config import get_settings
+from app.core.security import random_token
+
+BASE = {"sandbox": "https://api-sandbox.kkiapay.me", "live": "https://api.kkiapay.me"}
+STATES = {"SUCCESS": "SUCCESS", "FAILED": "FAILED", "FAILURE": "FAILED", "PENDING": "PENDING"}
+
+
+@dataclass
+class KkiapayTransaction:
+    status: str  # SUCCESS | FAILED | PENDING
+    amount: float
+    reference: str | None
+    method: str | None
+
+
+async def post_json(url: str, api_key: str, body: dict, timeout: float) -> tuple[int, dict | None]:
+    """Appel HTTP unique vers KKiaPay (point d'extension des tests : aucun appel réseau réel en test)."""
+    async with httpx.AsyncClient(timeout=timeout) as c:
+        r = await c.post(url, json=body, headers={"x-api-key": api_key})
+    try:
+        data = r.json()
+    except ValueError:
+        data = None
+    return r.status_code, data
+
+
+def _base() -> str:
+    return BASE["sandbox"] if get_settings().kkiapay_sandbox else BASE["live"]
+
+
+async def verify_transaction(transaction_id: str) -> KkiapayTransaction | None:
+    """Statut réel d'une transaction. None si inconnue ; lève une exception si KKiaPay est injoignable ou répond de façon inexploitable."""
+    s = get_settings()
+    status, j = await post_json(f"{_base()}/api/v1/transactions/status", s.kkiapay_private_key or "", {"transactionId": transaction_id}, 10)
+    if status in (404, 400):
+        return None
+    if not 200 <= status < 300:
+        raise RuntimeError(f"KKiaPay {status}")
+    st = STATES.get(str((j or {}).get("status", "")).upper())
+    if not j or not st:
+        raise RuntimeError("KKiaPay : réponse inexploitable")
+    try:
+        amount = float(j.get("amount"))
+    except (TypeError, ValueError):
+        amount = float("nan")
+    # `partnerId` = notre référence de paiement, transmise au widget et restituée ici.
+    return KkiapayTransaction(st, amount, str(j["partnerId"]) if j.get("partnerId") else None,
+                              str(j["source"]).lower() if j.get("source") else None)
+
+
+async def revert_transaction(transaction_id: str) -> None:
+    """Annule (rembourse) une transaction chez KKiaPay. Lève une exception si KKiaPay refuse ou est injoignable."""
+    s = get_settings()
+    status, _ = await post_json(f"{_base()}/api/v1/transactions/revert", s.kkiapay_private_key or "", {"transactionId": transaction_id}, 15)
+    if not 200 <= status < 300:
+        raise RuntimeError(f"KKiaPay a refusé le remboursement ({status})")
+
+
+class KkiapayProvider:
+    name = "kkiapay"
+
+    async def refund(self, provider_ref: str, amount_xof: int) -> dict:
+        # providerRef devient `tx_<id>` une fois la transaction confirmée.
+        tx = provider_ref[3:] if provider_ref.startswith("tx_") else None
+        if not tx:
+            raise RuntimeError("Transaction KKiaPay inconnue : remboursement manuel requis")
+        await revert_transaction(tx)
+        return {}
+
+    async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None) -> dict:
+        s = get_settings()
+        ref = f"kk_{random_token(12)}"
+        return {"providerRef": ref, "widget": {"publicKey": s.kkiapay_public_key, "sandbox": s.kkiapay_sandbox, "amount": amount_xof, "reference": ref, "name": s.site_name}}
