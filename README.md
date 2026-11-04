@@ -32,7 +32,7 @@ pnpm --filter @duomatch/types build
 pnpm dev                             # web :3000 + API :4000 (ou séparément : pnpm dev:api · pnpm dev:web)
 ```
 
-Comptes de démonstration (`@seed.duomatch.test`) : `aminata@…` (membre), `admin@…`, `moderateur@…`, `super@…` — le mot de passe de développement est affiché à la fin de `pnpm db:seed`. **Jamais en production.**
+Comptes de démonstration (`@duo.test`) : `aminata@…` (membre), `admin@…`, `moderateur@…`, `super@…` — le mot de passe de développement est affiché à la fin de `pnpm db:seed`. **Jamais en production.**
 
 En développement, les e-mails (confirmation, réinitialisation) ne partent pas : ouvrez le dernier via le lien « (dev) ouvrir le dernier e-mail » du bandeau, ou `GET /api/dev/outbox`.
 

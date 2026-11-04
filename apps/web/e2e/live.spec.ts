@@ -69,6 +69,11 @@ test.describe.serial('Match en direct', () => {
     await page.goto('/match');
     await expect(page.getByRole('heading', { name: 'Ils ont accepté' })).toBeVisible();
     await expect(page.getByText(/Yao, \d+/)).toBeVisible();
+    await expect(page.getByRole('button', { name: /Aimer Yao/ })).toBeVisible(); // J'aime et Passer, sans jeton
+    await expect(page.getByRole('button', { name: /Passer Yao/ })).toBeVisible();
+    await page.getByRole('button', { name: /Aimer Yao/ }).click();
+    await expect(page.getByText(/Like envoyé/)).toBeVisible();
+    await expect(page.getByRole('button', { name: /Aimer Yao/ })).toBeDisabled(); // déjà aimé
     await page.getByRole('button', { name: /Discuter \(1 jeton\)/ }).click();
     await expect(page).toHaveURL(/\/messages\/.+/);
     await page.goto('/match');

@@ -35,6 +35,12 @@ export default function ShopPage() {
   });
   if (!catalog || !wallet.data || !me) return <div className="mx-auto max-w-4xl space-y-4 p-4"><Skeleton className="h-32" /><Skeleton className="h-64" /></div>;
   const b = wallet.data.balances;
+  // Trois familles d'achat distinctes : jetons Match, boosts de visibilité, Super Likes.
+  const groups = [
+    { kind: 'TOKEN_PACK', title: t('shop.groupTokens'), text: t('shop.groupTokensText') },
+    { kind: 'BOOST', title: t('shop.groupBoosts'), text: t('shop.groupBoostsText') },
+    { kind: 'SUPER_LIKE_PACK', title: t('shop.groupSuperLikes'), text: t('shop.groupSuperLikesText') },
+  ] as const;
   const boostedUntil = profile?.boostedUntil && new Date(profile.boostedUntil) > new Date() ? profile.boostedUntil : null;
   const label = (c: CreditType) => (c === 'SUPER_LIKE' ? t('shop.superLikes') : c === 'MATCH_TOKEN' ? t('shop.tokens') : t('shop.boostOf', { n: BOOST_MINUTES[c as keyof typeof BOOST_MINUTES] >= 60 ? BOOST_MINUTES[c as keyof typeof BOOST_MINUTES] / 60 : BOOST_MINUTES[c as keyof typeof BOOST_MINUTES], unit: BOOST_MINUTES[c as keyof typeof BOOST_MINUTES] >= 60 ? t('shop.hours') : t('shop.minutes') }));
 
@@ -57,15 +63,23 @@ export default function ShopPage() {
 
       <PromoCard applied={promo} onApply={setPromo} />
 
-      <section aria-labelledby="prod"><h2 id="prod" className="mb-3 font-bold">{t('shop.buy')}</h2>
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {catalog.products.map((p) => (
-            <li key={p.code}><Card className="flex items-center justify-between gap-3 p-4">
-              <div><p className="font-semibold">{p.name}</p><p className="text-sm text-muted">{p.kind === 'BOOST' ? t('shop.boostHint') : p.kind === 'TOKEN_PACK' ? t('shop.tokenPackHint', { n: p.quantity }) : t('shop.packHint', { n: p.quantity })}</p></div>
-              <Button size="sm" loading={pending && variables?.key === p.code} onClick={() => pay({ key: p.code, body: { type: 'product', code: p.code, promoCode: promo?.code } })}>{promo ? <><s className="mr-1 text-xs opacity-70">{formatXof(p.priceXof, locale)}</s>{formatXof(discounted(p.priceXof, promo.percent), locale)}</> : formatXof(p.priceXof, locale)}</Button></Card></li>
-          ))}
-        </ul>
-      </section>
+      {groups.map((g) => {
+        const items = catalog.products.filter((p) => p.kind === g.kind);
+        if (items.length === 0) return null;
+        return (
+          <section key={g.kind} aria-labelledby={`prod-${g.kind}`}>
+            <h2 id={`prod-${g.kind}`} className="font-bold">{g.title}</h2>
+            <p className="mb-3 text-sm text-muted">{g.text}</p>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {items.map((p) => (
+                <li key={p.code}><Card className="flex items-center justify-between gap-3 p-4">
+                  <div><p className="font-semibold">{p.name}</p><p className="text-sm text-muted">{p.kind === 'BOOST' ? t('shop.boostHint') : p.kind === 'TOKEN_PACK' ? t('shop.tokenPackHint', { n: p.quantity }) : t('shop.packHint', { n: p.quantity })}</p></div>
+                  <Button size="sm" loading={pending && variables?.key === p.code} onClick={() => pay({ key: p.code, body: { type: 'product', code: p.code, promoCode: promo?.code } })}>{promo ? <><s className="mr-1 text-xs opacity-70">{formatXof(p.priceXof, locale)}</s>{formatXof(discounted(p.priceXof, promo.percent), locale)}</> : formatXof(p.priceXof, locale)}</Button></Card></li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
 
       <Link href="/referral" className="block"><Card className="flex items-center justify-between gap-3 p-4 hover:bg-soft"><span className="font-semibold">{t('referral.link')}</span><span aria-hidden>→</span></Card></Link>
 

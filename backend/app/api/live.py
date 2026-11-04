@@ -57,6 +57,16 @@ async def choose(invite_id: str, u: AuthUser = Depends(verified_user), db: Async
     return await live.choose(db, u.id, invite_id)
 
 
+@router.post("/invites/{invite_id}/like", dependencies=[limit(30)])
+async def like(invite_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.react(db, u.id, invite_id, "LIKE")
+
+
+@router.post("/invites/{invite_id}/pass", dependencies=[limit(30)])
+async def pass_(invite_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live.react(db, u.id, invite_id, "PASS")
+
+
 @router.put("/opt-in")
 async def opt_in(body: OptIn, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     return await live.set_opt_in(db, u.id, body.enabled)

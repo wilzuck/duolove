@@ -19,7 +19,7 @@ def test_dates_are_iso_with_z():
 
 
 def test_reserved_test_domains_are_valid_emails():
-    """Les comptes de démonstration (…@seed.duomatch.test) doivent pouvoir se connecter, comme avec zod `.email()`."""
+    """Les comptes de démonstration (…@duo.test) doivent pouvoir se connecter, comme avec zod `.email()`."""
     from app.schemas.auth import LoginIn
 
-    assert LoginIn(email="Admin@seed.duomatch.test", password="x").email == "admin@seed.duomatch.test"
+    assert LoginIn(email="Admin@duo.test", password="x").email == "admin@duo.test"

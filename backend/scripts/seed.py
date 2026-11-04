@@ -1,5 +1,5 @@
 """Données de DÉVELOPPEMENT uniquement (refuse de tourner en production).
-Tous les comptes ont une adresse en @seed.duomatch.test ; mot de passe commun affiché à la fin.
+Tous les comptes ont une adresse en @duo.test ; mot de passe commun affiché à la fin.
 Usage : cd backend && .venv/bin/python -m scripts.seed   (SEED_PASSWORD pour fixer le mot de passe, sinon tirage aléatoire)"""
 from __future__ import annotations
 
@@ -155,7 +155,7 @@ async def seed_crowd(db, pw_hash: str, interests: dict[str, str]) -> int:
     r = Rng(20261103)
     created = 0
     for i in range(1, 101):
-        email = f"membre{i:03d}@seed.duomatch.test"
+        email = f"membre{i:03d}@duo.test"
         if (await db.execute(select(User.id).where(User.email == email))).first():
             continue
         roll = r()
@@ -181,7 +181,7 @@ async def seed_crowd(db, pw_hash: str, interests: dict[str, str]) -> int:
 
 async def seed_activity(db) -> None:
     """Des likes, un Super Like et trois conversations pour que « Likes » et « Messages » ne soient pas vides côté Aminata."""
-    me = (await db.execute(select(User).where(User.email == "aminata@seed.duomatch.test"))).scalar_one_or_none()
+    me = (await db.execute(select(User).where(User.email == "aminata@duo.test"))).scalar_one_or_none()
     if not me:
         return
     men = (await db.execute(select(User).join(Profile, Profile.userId == User.id).where(User.email.like("membre%"), Profile.gender == "MAN", Profile.visibility == "VISIBLE")
@@ -217,7 +217,7 @@ async def seed_activity(db) -> None:
 
 async def seed_lifestyle(db) -> None:
     """Mode de vie des profils de démonstration (taille, enfants, animaux…) : permet de tester les critères du menu Match. Idempotent."""
-    rows = (await db.execute(select(Profile).join(User, User.id == Profile.userId).where(Profile.heightCm.is_(None), User.email.like("%@seed.duomatch.test"), User.role == "USER")
+    rows = (await db.execute(select(Profile).join(User, User.id == Profile.userId).where(Profile.heightCm.is_(None), User.email.like("%@duo.test"), User.role == "USER")
                              .order_by(Profile.id))).scalars().all()
     r = Rng(2026)
     for p in rows:
@@ -240,7 +240,7 @@ async def main() -> None:
         await db.commit()
         interests = {i.slug: i.id for i in (await db.execute(select(Interest))).scalars()}
 
-        staff = [("super@seed.duomatch.test", "Super Admin", "SUPER_ADMIN"), ("admin@seed.duomatch.test", "Admin DuoMatch", "ADMIN"), ("moderateur@seed.duomatch.test", "Modératrice", "MODERATOR")]
+        staff = [("super@duo.test", "Super Admin", "SUPER_ADMIN"), ("admin@duo.test", "Admin DuoMatch", "ADMIN"), ("moderateur@duo.test", "Modératrice", "MODERATOR")]
         for email, name, role in staff:
             if (await db.execute(select(User.id).where(User.email == email))).first():
                 continue
@@ -253,7 +253,7 @@ async def main() -> None:
             import unicodedata
 
             ascii_name = "".join(c for c in unicodedata.normalize("NFD", name.lower()) if "a" <= c <= "z")
-            email = f"{ascii_name}@seed.duomatch.test"
+            email = f"{ascii_name}@duo.test"
             if (await db.execute(select(User.id).where(User.email == email))).first():
                 continue
             await add_member(db, email=email, pw_hash=pw_hash, name=name, gender=gender, birth=birth_for(age), country=country, city=city, intent=intent, completeness=85,
@@ -266,7 +266,7 @@ async def main() -> None:
         await seed_activity(db)
         await seed_lifestyle(db)
     print(f"Seed OK : {crowd} membres de démonstration supplémentaires, {created} membres créés, {len(staff)} comptes staff (si absents).")
-    print(f"Mot de passe de TOUS les comptes seed : {PASSWORD}  (domaine @seed.duomatch.test ; les comptes déjà existants gardent leur mot de passe)")
+    print(f"Mot de passe de TOUS les comptes seed : {PASSWORD}  (domaine @duo.test ; les comptes déjà existants gardent leur mot de passe)")
     await dispose()
 
 

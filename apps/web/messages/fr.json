@@ -1386,7 +1386,13 @@
     },
     "tokens": "Jetons Match",
     "tokensUse": "Les utiliser dans Match",
-    "tokenPackHint": "{n} jetons : 1 jeton ouvre 1 conversation dans Match."
+    "tokenPackHint": "{n} jetons : 1 jeton ouvre 1 conversation dans Match.",
+    "groupTokens": "Jetons Match",
+    "groupTokensText": "Pour ouvrir une conversation avec une personne qui accepte votre recherche dans le menu Match (1 jeton = 1 conversation).",
+    "groupBoosts": "Boosts de visibilité",
+    "groupBoostsText": "Mettent votre profil en avant auprès des personnes compatibles pendant 30 minutes, 2 heures ou 24 heures.",
+    "groupSuperLikes": "Super Likes",
+    "groupSuperLikesText": "Pour vous démarquer auprès d’une personne qui vous plaît vraiment."
   },
   "life": {
     "title": "Mode de vie",
@@ -1450,7 +1456,15 @@
     "optInTitle": "Recevoir des invitations Match",
     "optInText": "Désactivez pour ne plus être invité(e) quand quelqu’un cherche.",
     "unavailable": "Match indisponible",
-    "unavailableText": "Confirmez votre e-mail et terminez votre profil, puis réessayez."
+    "unavailableText": "Confirmez votre e-mail et terminez votre profil, puis réessayez.",
+    "like": "J’aime",
+    "liked": "Aimé",
+    "pass": "Passer",
+    "likeAria": "Aimer {name}",
+    "passAria": "Passer {name}",
+    "likeDone": "Like envoyé. Si cette personne vous aime aussi, c’est un match.",
+    "matchDone": "C’est un match ! Vous pouvez discuter gratuitement.",
+    "passDone": "Cette personne a été retirée de vos propositions."
   },
   "promo": {
     "title": "Code promo",

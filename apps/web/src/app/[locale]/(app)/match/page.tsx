@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { BadgeCheck, Clock, Coins, Crown, MessageCircle, Radio, Sparkles, X } from 'lucide-react';
+import { BadgeCheck, Clock, Coins, Crown, Heart, MessageCircle, Radio, Sparkles, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { COUNTRIES, LIVING, SEEKING, type LiveCriteria } from '@duomatch/types';
@@ -74,7 +74,7 @@ function PersonCard({ c, locale, children }: { c: ProfileCardT; locale: string; 
         <p className="text-sm text-muted">{c.city}, {countryName(c.country, locale)}</p>
         {c.bio && <p className="mt-1 line-clamp-2 text-sm">{c.bio}</p>}
       </div>
-      <div className="flex shrink-0 gap-2">{children}</div>
+      <div className="flex shrink-0 flex-wrap gap-2">{children}</div>
     </Card>
   );
 }
@@ -107,6 +107,11 @@ export default function MatchPage() {
   const choose = useMutation({
     mutationFn: (id: string) => post<{ conversationId: string; charged: number }>(`/live/invites/${id}/choose`),
     onSuccess: (r) => { refresh(); toast('success', r.charged ? t('live.chosen', { n: r.charged }) : t('live.chosenFree')); router.push(`/messages/${r.conversationId}`); },
+    onError: (e) => { toast('error', err(e)); refresh(); },
+  });
+  const react = useMutation({
+    mutationFn: ({ id, action }: { id: string; action: 'like' | 'pass' }) => post<{ action: 'LIKE' | 'PASS'; matched: boolean; conversationId: string | null }>(`/live/invites/${id}/${action}`),
+    onSuccess: (r) => { refresh(); toast('success', r.action === 'PASS' ? t('live.passDone') : r.matched ? t('live.matchDone') : t('live.likeDone')); },
     onError: (e) => { toast('error', err(e)); refresh(); },
   });
   const optIn = useMutation({ mutationFn: (enabled: boolean) => put('/live/opt-in', { enabled }), onSuccess: refresh, onError: (e) => toast('error', err(e)) });
@@ -194,7 +199,17 @@ export default function MatchPage() {
               <p className="text-sm text-muted">{t('live.choicesLeft', { n: search.choicesLeft, max: live.rules.maxChoices })}</p>
               {live.accepted.map((c) => (
                 <PersonCard key={c.inviteId} c={c} locale={locale}>
-                  {c.status === 'CHOSEN' && c.conversationId ? (
+                  {!c.conversationId && (
+                    <>
+                      <Button size="sm" variant="ghost" aria-label={t('live.passAria', { name: c.displayName })} onClick={() => react.mutate({ id: c.inviteId, action: 'pass' })} disabled={react.isPending || c.liked}>
+                        <X className="size-4" aria-hidden />{t('live.pass')}
+                      </Button>
+                      <Button size="sm" variant="outline" aria-label={t('live.likeAria', { name: c.displayName })} onClick={() => react.mutate({ id: c.inviteId, action: 'like' })} disabled={react.isPending || c.liked}>
+                        <Heart className={c.liked ? 'size-4 fill-current text-brand-ink' : 'size-4'} aria-hidden />{c.liked ? t('live.liked') : t('live.like')}
+                      </Button>
+                    </>
+                  )}
+                  {c.conversationId ? (
                     <Link href={`/messages/${c.conversationId}`}><Button size="sm" variant="outline"><MessageCircle className="size-4" aria-hidden />{t('live.openChat')}</Button></Link>
                   ) : !hasTokens ? (
                     <Link href="/shop"><Button size="sm" variant="secondary"><Coins className="size-4" aria-hidden />{t('live.buyTokens')}</Button></Link>

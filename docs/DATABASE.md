@@ -45,4 +45,4 @@ Ne jamais éditer une migration déjà appliquée ; ne jamais lancer `migrate re
 
 ## Données de développement
 
-`pnpm db:seed` (refuse de tourner en production) : plans, centres d'intérêt, 3 comptes staff et 24 membres de démonstration en `@seed.duomatch.test`. Mot de passe de développement affiché à la fin de la commande.
+`pnpm db:seed` (refuse de tourner en production) : plans, centres d'intérêt, 3 comptes staff et 24 membres de démonstration en `@duo.test`. Mot de passe de développement affiché à la fin de la commande.

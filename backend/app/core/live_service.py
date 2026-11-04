@@ -15,7 +15,7 @@ from app.core.jsonfmt import iso
 from app.core.live_criteria import accepts_seeker, matches_criteria, parse_criteria
 from app.core.profile_card import load_cards, to_card
 from app.models.models import (
-    Block, Conversation, LiveInvite, LiveSearch, Match, Preference, Profile, ProfilePhoto, User,
+    Block, Conversation, LiveInvite, LiveSearch, Match, Preference, Profile, ProfilePhoto, Swipe, User,
 )
 
 log = logging.getLogger("live")
@@ -80,14 +80,19 @@ async def state(db: AsyncSession, user_id: str) -> dict:
             pairs = [order_pair(user_id, i.inviteeId) for i in shown]
             rows = (await db.execute(
                 select(Match.userAId, Match.userBId, Conversation.id).outerjoin(Conversation, Conversation.matchId == Match.id)
-                .where(or_(*[and_(Match.userAId == a, Match.userBId == b) for a, b in pairs]))
+                .where(Match.status == "ACTIVE", or_(*[and_(Match.userAId == a, Match.userBId == b) for a, b in pairs]))
             )).all()
             conv_of = {(r.userBId if r.userAId == user_id else r.userAId): r[2] for r in rows}
+        liked_ids = set()
+        if shown:
+            liked_ids = set((await db.execute(select(Swipe.targetId).where(
+                Swipe.giverId == user_id, Swipe.targetId.in_([i.inviteeId for i in shown]), Swipe.action.in_(["LIKE", "SUPER_LIKE"])))).scalars())
         for i in shown:
             card = cards.get(i.inviteeId)
             if card:
-                accepted.append({**card, "inviteId": i.id, "status": i.status.value,
-                                 "conversationId": (conv_of.get(i.inviteeId) if i.status.value == "CHOSEN" else None), "expiresAt": iso(i.expiresAt)})
+                # Une conversation existe aussi quand un like réciproque a créé le match (sans jeton) : elle est alors ouvrable gratuitement.
+                accepted.append({**card, "inviteId": i.id, "status": i.status.value, "conversationId": conv_of.get(i.inviteeId),
+                                 "liked": i.inviteeId in liked_ids, "expiresAt": iso(i.expiresAt)})
     chosen = sum(1 for a in accepted if a["status"] == "CHOSEN")
     return {
         "access": access, "tokens": balances["MATCH_TOKEN"], "optIn": me.liveOptIn,
@@ -357,3 +362,22 @@ async def set_opt_in(db: AsyncSession, user_id: str, enabled: bool) -> dict:
         await db.execute(update(LiveInvite).where(LiveInvite.inviteeId == user_id, LiveInvite.status == "PENDING").values(status="EXPIRED"))
     await db.commit()
     return {"optIn": enabled}
+
+
+async def react(db: AsyncSession, user_id: str, invite_id: str, action: str) -> dict:
+    """« J'aime » ou « Passer » sur une personne qui a accepté : un like/pass normal (mêmes quotas, même réciprocité que Découvrir),
+    sans jeton. Un like réciproque crée le match et sa conversation gratuitement. « Passer » retire la personne de la liste."""
+    from app.core import swipesvc
+
+    inv = (await db.execute(select(LiveInvite).where(LiveInvite.id == invite_id))).scalar_one_or_none()
+    if not inv or inv.seekerId != user_id:
+        raise not_found("INVITE_NOT_FOUND")
+    if inv.status.value != "ACCEPTED" or inv.expiresAt < utcnow():
+        raise conflict("INVITE_CLOSED", "Cette personne n’est plus disponible")
+    result = await swipesvc.swipe(db, user_id, inv.inviteeId, action)
+    if action == "PASS":
+        # Statut « expirée » : l'invitation sort de la liste des personnes proposées (le statut DECLINED est réservé au refus de l'invité).
+        await db.execute(update(LiveInvite).where(LiveInvite.id == invite_id, LiveInvite.status == "ACCEPTED").values(status="EXPIRED"))
+        await db.commit()
+    match = result.get("match")
+    return {"action": action, "matched": bool(result["matched"]), "conversationId": match["conversationId"] if match else None}

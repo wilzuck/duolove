@@ -48,7 +48,7 @@ export interface SubscriptionState {
 }
 export interface PaymentItem { refundable: boolean; refund: string | null; id: string; kind: 'SUBSCRIPTION' | 'PRODUCT'; months: number; product: string | null; amountXof: number; currency: string; status: string; provider: string; plan: PlanCode | null; createdAt: string; paidAt: string | null; invoiceNumber: string | null }
 
-export interface LiveAccepted extends Card { inviteId: string; status: 'ACCEPTED' | 'CHOSEN'; conversationId: string | null; expiresAt: string }
+export interface LiveAccepted extends Card { inviteId: string; status: 'ACCEPTED' | 'CHOSEN'; conversationId: string | null; liked: boolean; expiresAt: string }
 export interface LiveState {
   access: { unlimited: boolean; trialsLeft: number | null; canStart: boolean };
   tokens: number; optIn: boolean;

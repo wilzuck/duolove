@@ -1386,7 +1386,13 @@
     },
     "tokens": "Match tokens",
     "tokensUse": "Use them in Match",
-    "tokenPackHint": "{n} tokens: 1 token opens 1 chat in Match."
+    "tokenPackHint": "{n} tokens: 1 token opens 1 chat in Match.",
+    "groupTokens": "Match tokens",
+    "groupTokensText": "To open a conversation with someone who accepts your search in the Match menu (1 token = 1 conversation).",
+    "groupBoosts": "Visibility boosts",
+    "groupBoostsText": "Put your profile forward to compatible people for 30 minutes, 2 hours or 24 hours.",
+    "groupSuperLikes": "Super Likes",
+    "groupSuperLikesText": "To stand out to someone you really like."
   },
   "life": {
     "title": "Lifestyle",
@@ -1450,7 +1456,15 @@
     "optInTitle": "Receive Match invitations",
     "optInText": "Turn off to stop being invited when someone searches.",
     "unavailable": "Match unavailable",
-    "unavailableText": "Confirm your email and finish your profile, then try again."
+    "unavailableText": "Confirm your email and finish your profile, then try again.",
+    "like": "Like",
+    "liked": "Liked",
+    "pass": "Pass",
+    "likeAria": "Like {name}",
+    "passAria": "Pass on {name}",
+    "likeDone": "Like sent. If they like you back, it’s a match.",
+    "matchDone": "It’s a match! You can chat for free.",
+    "passDone": "This person was removed from your suggestions."
   },
   "promo": {
     "title": "Promo code",

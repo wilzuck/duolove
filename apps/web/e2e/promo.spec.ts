@@ -79,6 +79,14 @@ test.describe.serial('Parrainage et codes promo', () => {
   test('Awa applique la remise dans Charme+, puis récupère les jetons offerts', async () => {
     const { page } = awaPage;
     await page.goto('/shop');
+    // Trois familles d'achat séparées : jetons Match, boosts, Super Likes.
+    const tokens = page.getByRole('region', { name: 'Jetons Match' });
+    const boosts = page.getByRole('region', { name: 'Boosts de visibilité' });
+    await expect(tokens.getByText('Pack 5 tokens Match')).toBeVisible();
+    await expect(tokens.getByText('Boost 30 minutes')).toHaveCount(0);
+    await expect(boosts.getByText('Boost 30 minutes')).toBeVisible();
+    await expect(boosts.getByText(/Pack \d+ tokens Match/)).toHaveCount(0);
+    await expect(page.getByRole('region', { name: 'Super Likes' }).getByText('Pack 5 Super Likes')).toBeVisible();
     await page.getByLabel('Votre code').fill(PCT);
     await page.getByRole('button', { name: 'Appliquer' }).click();
     await expect(page.getByText(`${PCT} : −20 % sur votre prochain paiement.`)).toBeVisible();

@@ -69,7 +69,7 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 
 ## Migration de l'API vers FastAPI (Python)
 - **Terminé** : l'API NestJS/Prisma est remplacée par `backend/` (FastAPI, SQLAlchemy 2 async, Alembic, python-socketio), organisation de WaMarket. Mêmes routes `/api`, mêmes formes JSON et codes d'erreur, même cookie `duomatch_sid`, même chemin Socket.IO, même port 4000 : le web n'a pas changé. Base PostgreSQL reprise telle quelle (migration `0001_baseline`, sans effet sur une base existante ; `alembic check` propre).
-- **Tests (réels, dernier passage)** : pytest 108/108 sur `duomatch_test` ; E2E Playwright 24/24 contre l'API Python (dont deux sockets réels : messagerie et Match en direct). Un E2E (création de code promo) a échoué à cause d'une liste admin lente (N+1) : corrigé par des comptages groupés.
+- **Tests (réels, dernier passage)** : pytest 111/111 sur `duomatch_test` ; E2E Playwright 24/24 contre l'API Python (dont deux sockets réels : messagerie et Match en direct). Un E2E (création de code promo) a échoué à cause d'une liste admin lente (N+1) : corrigé par des comptages groupés.
 - **À savoir** : les règles de validation et les constantes existent en double (Zod côté web, Pydantic côté API) ; `test_contract` ne contrôle que les constantes, pas chaque règle de validation. Les identifiants et `updatedAt` sont produits par l'application (plus de défaut SQL), et les dates par défaut sont en UTC.
 - **Non couvert par un test** : selfie de vérification, connexion Google, événement `typing`, déclenchement de la présence par une vraie connexion socket, démarrage via Docker (le Dockerfile et docker-compose ont été réécrits mais **non testés**), job CI Python (non exécuté).
 - **Limites inchangées** : présence et limiteur de débit en mémoire d'un seul processus (Redis avant plusieurs instances) ; job d'expiration des abonnements dans le processus de l'API (un seul worker).
@@ -79,3 +79,9 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 - **Tests** : pytest `test_login_options.py` (4) ; E2E `login-options.spec.ts` (2, axe inclus).
 - **Simulé / non vérifié** : l'e-mail du lien magique n'est lu qu'en boîte d'envoi de développement (aucun SMTP réel testé). La connexion Google existe côté API mais n'a jamais été testée avec un vrai identifiant client.
 - **Non implémenté** : code par SMS/WhatsApp, Apple, Facebook, clés d'accès (passkeys) ; le lien magique ne crée pas de compte (seuls les comptes existants peuvent l'utiliser).
+
+## Match : J'aime / Passer, et boutique en trois familles (livré)
+- **Terminé** : sur chaque personne qui a accepté, boutons **J'aime** (un like normal : mêmes quotas et même réciprocité que Découvrir, **sans jeton** ; un like réciproque crée le match et ouvre la conversation gratuitement) et **Passer** (la personne est retirée de la liste, sans consommer de choix). Si un match existe déjà, la carte propose « Ouvrir la conversation ». Boutique Charme+ : trois sections séparées (**Jetons Match**, **Boosts de visibilité**, **Super Likes**).
+- **Tests** : pytest `test_live_react.py` (3) ; E2E `live` et `promo` étendus. Dernier passage : pytest 111/111 (3 relances consécutives), E2E 26/26.
+- **Non expliqué** : un passage pytest sur quatre a eu 1 échec, non reproduit en 3 relances ; le test concerné n'a pas été identifié (la sortie n'a pas été conservée).
+- **Choix de conception** : « J'aime » compte dans le quota quotidien de likes (c'est un like normal) ; « Passer » est enregistré comme un « pas intéressé » définitif.
