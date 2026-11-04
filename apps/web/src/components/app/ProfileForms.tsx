@@ -115,6 +115,12 @@ export function PreferenceFields({ value, onChange, limits }: { value: Pref; onC
       </div>
       <div className="space-y-2"><p className="text-sm font-medium">{t('prefs.intents')}</p><Chips label={t('prefs.intents')} options={INTENTS} value={value.intents} onChange={(v) => set('intents', v)} render={(i) => t(`intent.${i}`)} /></div>
 
+      {locked && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-gold/15 p-4">
+          <p className="flex items-start gap-2 text-sm font-medium text-gold-ink"><Crown className="mt-0.5 size-4 shrink-0" aria-hidden />{t('prefs.premiumUpsell')}</p>
+          <Link href="/premium"><Button size="sm">{t('app.goPremium')}</Button></Link>
+        </div>
+      )}
       <fieldset disabled={locked} className={cn('space-y-5 rounded-3xl border border-dashed border-line p-5', locked && 'opacity-70')}>
         <legend className="px-2 text-sm font-bold">{t('prefs.advanced')}{premiumBadge}</legend>
         <Field label={t('prefs.distance')} hint={t('prefs.distanceHint')}>{(p) => <Input {...p} type="number" min={5} max={500} step={5} value={value.maxDistanceKm ?? ''} onChange={(e) => set('maxDistanceKm', e.target.value ? Number(e.target.value) : null)} />}</Field>

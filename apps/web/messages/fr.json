@@ -850,7 +850,8 @@
     "languages": "Langues",
     "interests": "Centres d’intérêt",
     "verifiedOnly": "Profils vérifiés uniquement",
-    "activeRecently": "Actifs récemment (7 jours)"
+    "activeRecently": "Actifs récemment (7 jours)",
+    "premiumUpsell": "Les filtres avancés (distance, langues, centres d’intérêt, profils vérifiés, activité) sont inclus avec Premium."
   },
   "photos": {
     "add": "Ajouter une photo",
