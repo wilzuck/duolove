@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, MailWarning } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Skeleton, Textarea } from '@duomatch/ui';
+import { Alert, Button, Skeleton, Textarea } from '@duomatch/ui';
 import { AppShell } from '@/components/app/AppShell';
 import { MatchOverlay } from '@/components/app/MatchOverlay';
 import { useApiError } from '@/hooks/useApiError';
@@ -50,7 +50,7 @@ function Suspended({ moderation }: { moderation: NonNullable<ReturnType<typeof u
         <form onSubmit={(e) => { e.preventDefault(); m.mutate(); }} className="space-y-3">
           <label htmlFor="appeal" className="font-semibold">{t('suspended.appealLabel')}</label>
           <Textarea id="appeal" required minLength={10} maxLength={1000} value={text} onChange={(e) => setText(e.target.value)} />
-          {m.isError && <p role="alert" className="text-sm text-danger-ink">{err(m.error)}</p>}
+          {m.isError && <Alert variant="text">{err(m.error)}</Alert>}
           <Button type="submit" loading={m.isPending}>{t('suspended.appealCta')}</Button>
         </form>
       ) : (

@@ -1,7 +1,7 @@
 'use client';
 import { AlertCircle, CheckCircle2, Info, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { cn } from '@duomatch/ui';
+import { cn, IconButton } from '@duomatch/ui';
 import { useUi } from '@/lib/store';
 
 const icons = { success: CheckCircle2, error: AlertCircle, info: Info };
@@ -18,7 +18,7 @@ export function Toaster() {
             className={cn('pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-2xl border bg-card px-4 py-3 shadow-pop', x.kind === 'error' ? 'border-danger/40' : 'border-line')}>
             <Icon className={cn('size-5 shrink-0', x.kind === 'success' && 'text-success-ink', x.kind === 'error' && 'text-danger-ink', x.kind === 'info' && 'text-brand-ink')} aria-hidden />
             <p className="flex-1 text-sm">{x.text}</p>
-            <button onClick={() => dismiss(x.id)} aria-label={t('common.close')} className="rounded-full p-1 text-muted hover:bg-soft"><X className="size-4" /></button>
+            <IconButton label={t('common.close')} size="sm" className="size-7" onClick={() => dismiss(x.id)}><X className="size-4" /></IconButton>
           </div>
         );
       })}

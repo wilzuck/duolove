@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, CreditCard, Flag, Gift, History, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Avatar, Logo, Skeleton, cn } from '@duomatch/ui';
+import { Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
 import { useMe } from '@/hooks/useQueries';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { ApiError, api, post } from '@/lib/api';
@@ -96,7 +96,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
       {open && <div className="fixed inset-0 z-50 lg:hidden"><button aria-label={t('common.close')} className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} /><aside className="absolute inset-y-0 left-0 flex w-72 flex-col gap-3 bg-[#1b1a24] p-4 shadow-pop"><div className="flex items-center justify-between px-2"><span className="[&_*]:!text-white"><Logo /></span><button aria-label={t('common.close')} className="rounded-full p-2 text-white" onClick={() => setOpen(false)}><X className="size-5" /></button></div>{nav}{account}</aside></div>}
       <div className="flex min-w-0 flex-col">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-line bg-bg/90 px-4 backdrop-blur lg:px-8">
-          <button className="rounded-full p-2.5 hover:bg-soft lg:hidden" aria-label={t('nav.menu')} aria-expanded={open} onClick={() => setOpen(true)}><Menu className="size-5" /></button>
+          <IconButton label={t('nav.menu')} tone="plain" className="lg:hidden" aria-expanded={open} onClick={() => setOpen(true)}><Menu className="size-5" /></IconButton>
           <p className="hidden text-sm font-semibold text-muted lg:block">{t('admin.title')}</p>
           <div className="flex items-center gap-1"><LocaleSwitcher /><ThemeToggle /></div>
         </header>

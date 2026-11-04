@@ -2,7 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, Field, Input, Select, Skeleton } from '@duomatch/ui';
+import { Badge, Button, Card, DataTable, Field, Input, Select, Skeleton } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { api, patch, post } from '@/lib/api';
 import { formatDate } from '@/lib/format';
@@ -47,20 +47,17 @@ export default function AdminPromos() {
       {list.isLoading && <Skeleton className="h-32" />}
       {list.data?.length === 0 && <p className="text-center text-muted">{t('admin.promos.empty')}</p>}
       {!!list.data?.length && (
-        <Card className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="text-muted"><tr><th className="px-3 py-2">{t('admin.promos.code')}</th><th className="px-3 py-2">{t('admin.promos.kind')}</th><th className="px-3 py-2">{t('admin.promos.value')}</th><th className="px-3 py-2">{t('admin.promos.used')}</th><th className="px-3 py-2">{t('admin.promos.expires')}</th><th className="px-3 py-2"><span className="sr-only">{t('admin.status')}</span></th></tr></thead>
-            <tbody className="divide-y divide-line">{list.data.map((p) => (
-              <tr key={p.id}>
-                <td className="px-3 py-2 font-mono font-semibold">{p.code}</td>
-                <td className="px-3 py-2">{t(`admin.promos.kind${p.kind}` as never)}</td>
-                <td className="px-3 py-2">{p.kind === 'PERCENT' ? `${p.percent} %` : p.tokens}</td>
-                <td className="px-3 py-2">{p.used}{p.maxRedemptions ? ` / ${p.maxRedemptions}` : ''}</td>
-                <td className="px-3 py-2">{p.expiresAt ? formatDate(p.expiresAt, locale) : '—'}</td>
-                <td className="px-3 py-2"><span className="flex items-center gap-2"><Badge tone={p.active ? 'success' : 'neutral'}>{p.active ? t('admin.promos.active') : t('admin.promos.inactive')}</Badge><Button size="sm" variant="outline" onClick={() => toggle.mutate(p)}>{p.active ? t('admin.promos.disable') : t('admin.promos.enable')}</Button></span></td>
-              </tr>))}</tbody>
-          </table>
-        </Card>
+        <DataTable
+          rows={list.data} rowKey={(p) => p.id}
+          columns={[
+            { key: 'code', header: t('admin.promos.code'), cellClassName: 'font-mono font-semibold', cell: (p) => p.code },
+            { key: 'kind', header: t('admin.promos.kind'), cell: (p) => t(`admin.promos.kind${p.kind}` as never) },
+            { key: 'value', header: t('admin.promos.value'), cell: (p) => (p.kind === 'PERCENT' ? `${p.percent} %` : p.tokens) },
+            { key: 'used', header: t('admin.promos.used'), cell: (p) => `${p.used}${p.maxRedemptions ? ` / ${p.maxRedemptions}` : ''}` },
+            { key: 'expires', header: t('admin.promos.expires'), cell: (p) => (p.expiresAt ? formatDate(p.expiresAt, locale) : '—') },
+            { key: 'status', header: t('admin.status'), srOnlyHeader: true, cell: (p) => <span className="flex items-center gap-2"><Badge tone={p.active ? 'success' : 'neutral'}>{p.active ? t('admin.promos.active') : t('admin.promos.inactive')}</Badge><Button size="sm" variant="outline" onClick={() => toggle.mutate(p)}>{p.active ? t('admin.promos.disable') : t('admin.promos.enable')}</Button></span> },
+          ]}
+        />
       )}
     </div>
   );

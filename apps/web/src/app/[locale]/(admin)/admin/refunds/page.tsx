@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Banknote } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, Dialog, EmptyState, Field, Select, Skeleton, Textarea } from '@duomatch/ui';
+import { Alert, Badge, Button, Card, Checkbox, Dialog, EmptyState, Field, Select, Skeleton, Textarea } from '@duomatch/ui';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { useMe } from '@/hooks/useQueries';
@@ -45,7 +45,7 @@ export default function AdminRefunds() {
             <p className="font-semibold">{r.displayName} — {r.product ?? '—'} — {formatXof(r.amountXof, locale)}</p>
             <p className="rounded-2xl bg-soft p-3 text-sm">{r.reason}</p>
             {r.decisionNote && <p className="text-sm text-muted">{t('admin.refunds.note')} {r.decisionNote}</p>}
-            {r.failureReason && <p role="alert" className="text-sm text-danger-ink">{r.failureReason}</p>}
+            {r.failureReason && <Alert variant="text">{r.failureReason}</Alert>}
             {r.status === 'COMPLETED' && r.creditsReversed > 0 && <p className="text-sm text-muted">{t('admin.refunds.creditsBack', { n: r.creditsReversed })}</p>}
             {r.status === 'REQUESTED' && (
               <div className="flex flex-wrap items-center gap-2">
@@ -64,7 +64,7 @@ export default function AdminRefunds() {
           <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); act.mutate(); }}>
             <p className="text-sm text-muted">{dlg.kind === 'approve' ? t('admin.refunds.approveText', { amount: formatXof(dlg.r.amountXof, locale) }) : t('admin.refunds.rejectText')}</p>
             <Field label={t('admin.refunds.noteLabel')}>{(p) => <Textarea {...p} required={dlg.kind === 'reject'} minLength={dlg.kind === 'reject' ? 3 : undefined} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} />}</Field>
-            {dlg.kind === 'approve' && <label className="flex items-start gap-3 text-sm"><input type="checkbox" className="mt-1 size-5 accent-brand-strong" checked={manual} onChange={(e) => setManual(e.target.checked)} /><span>{t('admin.refunds.manual')}</span></label>}
+            {dlg.kind === 'approve' && <Checkbox label={t('admin.refunds.manual')} checked={manual} onChange={(e) => setManual(e.target.checked)} />}
             <div className="flex justify-end gap-2"><Button variant="ghost" onClick={() => setDlg(null)}>{t('common.cancel')}</Button><Button type="submit" variant={dlg.kind === 'approve' ? 'primary' : 'danger'} loading={act.isPending}>{t(`admin.refunds.${dlg.kind}`)}</Button></div>
           </form>
         )}

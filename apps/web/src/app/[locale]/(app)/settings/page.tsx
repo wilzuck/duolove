@@ -4,7 +4,7 @@ import { Download, LogOut, MapPin, Monitor, Receipt, ShieldCheck, Trash2 } from 
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
-import { Badge, Button, Card, Dialog, EmptyState, Field, Input, Skeleton, Switch, Textarea, cn } from '@duomatch/ui';
+import { Alert, Badge, Button, Card, cn, Dialog, EmptyState, Field, Input, Skeleton, Switch, Textarea } from '@duomatch/ui';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useApiError } from '@/hooks/useApiError';
@@ -166,7 +166,7 @@ function PaymentsTab() {
   return (
     <div className="space-y-4">
       {status === 'success' && <p role="status" className="rounded-2xl bg-success/15 p-4 text-sm font-medium">{t('settings.pay.success')}</p>}
-      {status === 'fail' && <p role="alert" className="rounded-2xl bg-danger/10 p-4 text-sm font-medium text-danger-ink">{t('settings.pay.failed')}</p>}
+      {status === 'fail' && <Alert className="font-medium">{t('settings.pay.failed')}</Alert>}
       {!q.data ? <Skeleton className="h-40" /> : q.data.length === 0 ? <EmptyState icon={<Receipt className="size-8" aria-hidden />} title={t('settings.pay.empty')} /> : (
         <Card className="divide-y divide-line px-5">{q.data.map((p) => (
           <div key={p.id} className="flex items-center justify-between gap-3 py-4"><div><p className="font-semibold">{p.kind === 'PRODUCT' ? p.product : p.plan ? `${t(`plans.${p.plan}.name`)} · ${t('plans.months', { n: p.months })}` : '—'} · {formatXof(p.amountXof, locale)}</p><p className="text-xs text-muted">{formatDate(p.createdAt, locale)} · {p.provider}</p></div>

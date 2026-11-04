@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CircleCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Button, Card, EmptyState, Skeleton, cn } from '@duomatch/ui';
+import { Button, Card, EmptyState, Skeleton, Tabs } from '@duomatch/ui';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { api, post } from '@/lib/api';
@@ -64,7 +64,7 @@ export default function AdminModeration() {
   const [tab, setTab] = useState<(typeof TABS)[number]>('verifications');
   return (
     <div className="space-y-4">
-      <div role="tablist" aria-label={t('admin.tabs.moderation')} className="flex gap-2">{TABS.map((k) => <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={cn('rounded-full px-4 py-2 text-sm font-semibold', tab === k ? 'bg-brand-strong text-white' : 'bg-soft text-brand-ink')}>{t(`admin.mod.${k}`)}</button>)}</div>
+      <Tabs label={t('admin.tabs.moderation')} value={tab} onChange={setTab} tabs={TABS.map((k) => ({ key: k, label: t(`admin.mod.${k}`) }))} />
       <div role="tabpanel">{tab === 'verifications' ? <Verifications /> : tab === 'appeals' ? <Appeals /> : <Photos />}</div>
     </div>
   );

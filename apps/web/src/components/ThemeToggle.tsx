@@ -2,6 +2,7 @@
 import { Moon, Sun } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSyncExternalStore } from 'react';
+import { IconButton } from '@duomatch/ui';
 
 const subscribe = (cb: () => void) => {
   const obs = new MutationObserver(cb);
@@ -23,8 +24,8 @@ export function ThemeToggle({ className }: { className?: string }) {
     try { localStorage.setItem('duomatch-theme', next); } catch { /* Silence assumé : stockage indisponible (navigation privée), le thème reste appliqué pour la session. */ }
   };
   return (
-    <button type="button" onClick={toggle} aria-label={dark ? t('common.themeLight') : t('common.themeDark')} className={className ?? 'rounded-full p-2.5 text-muted hover:bg-soft hover:text-fg'}>
+    <IconButton label={dark ? t('common.themeLight') : t('common.themeDark')} onClick={toggle} className={className}>
       {dark ? <Sun className="size-5" /> : <Moon className="size-5" />}
-    </button>
+    </IconButton>
   );
 }

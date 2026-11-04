@@ -1,7 +1,7 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
-import { Badge, Button, Skeleton } from '@duomatch/ui';
+import { Badge, Button, DataTable, Skeleton } from '@duomatch/ui';
 import { useAdminList } from '@/hooks/useAdmin';
 import { post } from '@/lib/api';
 import { formatDate } from '@/lib/format';
@@ -21,8 +21,15 @@ export default function AdminSubscriptions() {
     <div className="space-y-6">
       <div className="flex justify-end"><Button variant="outline" size="sm" onClick={() => job.mutate()} loading={job.isPending}>{t('admin.runExpiry')}</Button></div>
       <section aria-labelledby="subs"><h2 id="subs" className="mb-3 text-lg font-bold">{t('admin.billing.subscriptions')}</h2>
-        {subs.isLoading ? <Skeleton className="h-32" /> : <div className="overflow-x-auto rounded-3xl border border-line bg-card"><table className="w-full min-w-[36rem] text-left text-sm"><thead className="border-b border-line text-muted"><tr>{['name', 'plan', 'status', 'ends'].map((h) => <th key={h} scope="col" className="px-4 py-3">{t(`admin.cols.${h}`)}</th>)}</tr></thead>
-          <tbody>{subs.items.map((s) => <tr key={s.id} className="border-b border-line last:border-0"><td className="px-4 py-3 font-medium">{s.displayName}</td><td className="px-4 py-3">{s.plan}</td><td className="px-4 py-3"><Badge tone={s.status === 'ACTIVE' ? 'success' : 'neutral'}>{s.status}</Badge></td><td className="px-4 py-3 text-muted">{s.currentPeriodEnd ? d(s.currentPeriodEnd) : '—'}{s.cancelAtPeriodEnd ? ` (${t('admin.cancelling')})` : ''}</td></tr>)}</tbody></table>{subs.items.length === 0 && <p className="p-6 text-center text-muted">{t('admin.empty')}</p>}</div>}
+        {subs.isLoading ? <Skeleton className="h-32" /> : <DataTable
+          rows={subs.items} rowKey={(s) => s.id} empty={t('admin.empty')}
+          columns={[
+            { key: 'name', header: t('admin.cols.name'), cellClassName: 'font-medium', cell: (s) => s.displayName },
+            { key: 'plan', header: t('admin.cols.plan'), cell: (s) => s.plan },
+            { key: 'status', header: t('admin.cols.status'), cell: (s) => <Badge tone={s.status === 'ACTIVE' ? 'success' : 'neutral'}>{s.status}</Badge> },
+            { key: 'ends', header: t('admin.cols.ends'), cellClassName: 'text-muted', cell: (s) => `${s.currentPeriodEnd ? d(s.currentPeriodEnd) : '—'}${s.cancelAtPeriodEnd ? ` (${t('admin.cancelling')})` : ''}` },
+          ]}
+        />}
       </section>
     </div>
   );

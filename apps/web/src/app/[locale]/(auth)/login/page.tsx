@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
-import { Button, Field, Input } from '@duomatch/ui';
+import { Alert, Button, Checkbox, Field, Input } from '@duomatch/ui';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { useApiError } from '@/hooks/useApiError';
@@ -40,14 +40,11 @@ function LoginForm() {
     <AuthShell title={t('auth.loginTitle')} subtitle={t('auth.loginSubtitle')} footer={<>{t('auth.noAccount')} <Link href="/register" className="font-semibold text-brand-ink underline">{t('nav.register')}</Link></>}>
       <GoogleButton onToken={(tok) => google.mutate(tok)} />
       <form onSubmit={(e) => { e.preventDefault(); setError(null); setMagicSent(false); if (magic) sendLink.mutate(); else login.mutate(); }} className="space-y-5" noValidate>
-        {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm text-danger-ink">{error}</p>}
+        {error && <Alert>{error}</Alert>}
         <Field label={t('auth.email')}>{(p) => <Input {...p} type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />}</Field>
-        {magicSent && <p role="status" className="rounded-2xl bg-success/10 px-4 py-3 text-sm text-success-ink">{t('auth.magicSent')}</p>}
+        {magicSent && <Alert tone="success">{t('auth.magicSent')}</Alert>}
         {!magic && <Field label={t('auth.password')}>{(p) => <Input {...p} type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />}</Field>}
-        <label className="flex items-start gap-3 text-sm">
-          <input type="checkbox" className="mt-0.5 size-5 accent-brand-strong" checked={remember} onChange={(e) => setRemember(e.target.checked)} aria-describedby="remember-hint" />
-          <span><span className="font-medium">{t('auth.remember')}</span><span id="remember-hint" className="block text-muted">{t('auth.rememberHint')}</span></span>
-        </label>
+        <Checkbox label={t('auth.remember')} hint={t('auth.rememberHint')} checked={remember} onChange={(e) => setRemember(e.target.checked)} />
         {!magic && <div className="text-right text-sm"><Link href="/forgot-password" className="font-medium text-brand-ink underline">{t('auth.forgot')}</Link></div>}
         <Button type="submit" size="lg" className="w-full" loading={login.isPending || sendLink.isPending}>{magic ? t('auth.magicSend') : t('nav.login')}</Button>
         <button type="button" className="w-full text-center text-sm font-medium text-brand-ink underline" onClick={() => { setMagic(!magic); setError(null); setMagicSent(false); }}>{magic ? t('auth.magicBack') : t('auth.magicLink')}</button>

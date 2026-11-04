@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { MailCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Button, Field, Input } from '@duomatch/ui';
+import { Alert, Button, Field, Input } from '@duomatch/ui';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { useApiError } from '@/hooks/useApiError';
 import { Link } from '@/i18n/navigation';
@@ -20,7 +20,7 @@ export default function ForgotPage() {
         <div role="status" className="flex flex-col items-center gap-3 text-center"><MailCheck className="size-10 text-success-ink" aria-hidden /><p>{t('auth.forgotSent')}</p></div>
       ) : (
         <form onSubmit={(e) => { e.preventDefault(); m.mutate(); }} className="space-y-5">
-          {m.isError && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm text-danger-ink">{err(m.error)}</p>}
+          {m.isError && <Alert>{err(m.error)}</Alert>}
           <Field label={t('auth.email')}>{(p) => <Input {...p} type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />}</Field>
           <Button type="submit" size="lg" className="w-full" loading={m.isPending}>{t('auth.sendLink')}</Button>
         </form>

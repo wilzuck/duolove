@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { DURATION_MONTHS, PLAN_FEATURE_KEYS, priceForDuration, type PlanFeatures } from '@duomatch/types';
-import { Badge, Button, Card, Field, Input, Skeleton, Switch } from '@duomatch/ui';
+import { Badge, Button, Card, DataTable, Field, Input, Skeleton, Switch } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { api, patch } from '@/lib/api';
 import { formatXof } from '@/lib/format';
@@ -50,7 +50,10 @@ function PlanEditor({ plan }: { plan: PlanRow }) {
       </fieldset>
       {plan.code !== 'FREE' && (
         <fieldset className="space-y-3"><legend className="font-bold">{t('admin.plans.durations')}</legend>
-          <div className="overflow-x-auto rounded-2xl border border-line"><table className="w-full min-w-[34rem] text-left text-sm"><thead className="border-b border-line text-muted"><tr>{['months', 'discount', 'override', 'total', 'active'].map((h) => <th key={h} scope="col" className="px-3 py-2">{t(`admin.plans.col.${h}`)}</th>)}</tr></thead>
+          <DataTable
+            minWidth="34rem" className="rounded-2xl bg-transparent"
+            columns={['months', 'discount', 'override', 'total', 'active'].map((h) => ({ key: h, header: t(`admin.plans.col.${h}`) }))}
+          >
             <tbody>{d.prices.map((p, i) => (
               <tr key={p.months} className="border-b border-line last:border-0">
                 <td className="px-3 py-2 font-semibold">{t('plans.months', { n: p.months })}</td>
@@ -58,7 +61,7 @@ function PlanEditor({ plan }: { plan: PlanRow }) {
                 <td className="px-3 py-2"><Input aria-label={t('admin.plans.col.override')} type="number" min={0} className="h-10 w-32" placeholder="—" value={p.amountOverride ?? ''} onChange={(e) => setD({ ...d, prices: d.prices.map((x, j) => (j === i ? { ...x, amountOverride: e.target.value === '' ? null : num(e.target.value) } : x)) })} /></td>
                 <td className="px-3 py-2 font-semibold">{formatXof(priceForDuration(d.priceXof, p.months, p.discountPercent, p.amountOverride), locale)}</td>
                 <td className="px-3 py-2"><Switch checked={p.active} onChange={(v) => setD({ ...d, prices: d.prices.map((x, j) => (j === i ? { ...x, active: v } : x)) })} label={t('admin.plans.col.active')} /></td>
-              </tr>))}</tbody></table></div>
+              </tr>))}</tbody></DataTable>
           <p className="text-xs text-muted">{t('admin.plans.contractNote')}</p>
         </fieldset>
       )}
@@ -95,8 +98,11 @@ export default function AdminPlans() {
       <p className="text-sm text-muted">{t('admin.plans.intro')}</p>
       {q.data.plans.map((p) => <PlanEditor key={p.code} plan={p} />)}
       <section aria-labelledby="pr"><h2 id="pr" className="mb-3 text-lg font-bold">{t('admin.plans.productsTitle')}</h2>
-        <div className="overflow-x-auto rounded-3xl border border-line bg-card"><table className="w-full min-w-[40rem] text-left text-sm"><thead className="border-b border-line text-muted"><tr>{['code', 'name', 'quantity', 'price', 'active', ''].map((h, i) => <th key={i} scope="col" className="px-3 py-3">{h ? t(`admin.plans.${h === 'code' ? 'codeCol' : h}`) : <span className="sr-only">{t('common.save')}</span>}</th>)}</tr></thead>
-          <tbody>{q.data.products.map((p) => <ProductEditor key={p.code} product={p} />)}</tbody></table></div>
+        <DataTable
+          minWidth="40rem"
+          columns={['code', 'name', 'quantity', 'price', 'active', ''].map((h) => ({ key: h || 'save', header: h ? t(`admin.plans.${h === 'code' ? 'codeCol' : h}`) : t('common.save'), srOnlyHeader: !h }))}
+        >
+          <tbody>{q.data.products.map((p) => <ProductEditor key={p.code} product={p} />)}</tbody></DataTable>
       </section>
     </div>
   );

@@ -2,7 +2,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Dialog, Field, Skeleton, Textarea } from '@duomatch/ui';
+import { Badge, Button, DataTable, Dialog, Field, Skeleton, Textarea } from '@duomatch/ui';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { post } from '@/lib/api';
@@ -31,13 +31,17 @@ export default function AdminPayments() {
     <div className="space-y-6">
       <section aria-labelledby="pays"><h2 id="pays" className="mb-3 text-lg font-bold">{t('admin.billing.payments')}</h2>
         {pays.isLoading ? <Skeleton className="h-32" /> : (
-          <div className="overflow-x-auto rounded-3xl border border-line bg-card"><table className="w-full min-w-[44rem] text-left text-sm"><thead className="border-b border-line text-muted"><tr>{['name', 'amount', 'status', 'invoice', 'date'].map((h) => <th key={h} scope="col" className="px-4 py-3">{t(`admin.cols.${h}`)}</th>)}<th scope="col" className="px-4 py-3"><span className="sr-only">{t('admin.refunds.action')}</span></th></tr></thead>
-            <tbody>{pays.items.map((p) => (
-              <tr key={p.id} className="border-b border-line last:border-0"><td className="px-4 py-3 font-medium">{p.displayName}</td><td className="px-4 py-3">{formatXof(p.amountXof, locale)}</td>
-                <td className="px-4 py-3"><Badge tone={p.status === 'SUCCEEDED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'neutral'}>{p.status}</Badge>{p.refund && <Badge tone="gold" className="ml-1">{t(`admin.refunds.status.${p.refund}`)}</Badge>}</td>
-                <td className="px-4 py-3 text-muted">{p.invoiceNumber ?? '—'}</td><td className="px-4 py-3 text-muted">{d(p.createdAt)}</td>
-                <td className="px-4 py-3">{p.status === 'SUCCEEDED' && !(p.refund && ACTIVE_REFUND.includes(p.refund)) && <Button size="sm" variant="outline" onClick={() => setTarget(p)}>{t('admin.refunds.request')}</Button>}</td></tr>
-            ))}</tbody></table>{pays.items.length === 0 && <p className="p-6 text-center text-muted">{t('admin.empty')}</p>}</div>
+          <DataTable
+            minWidth="44rem" rows={pays.items} rowKey={(p) => p.id} empty={t('admin.empty')}
+            columns={[
+              { key: 'name', header: t('admin.cols.name'), cellClassName: 'font-medium', cell: (p) => p.displayName },
+              { key: 'amount', header: t('admin.cols.amount'), cell: (p) => formatXof(p.amountXof, locale) },
+              { key: 'status', header: t('admin.cols.status'), cell: (p) => <><Badge tone={p.status === 'SUCCEEDED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'neutral'}>{p.status}</Badge>{p.refund && <Badge tone="gold" className="ml-1">{t(`admin.refunds.status.${p.refund}`)}</Badge>}</> },
+              { key: 'invoice', header: t('admin.cols.invoice'), cellClassName: 'text-muted', cell: (p) => p.invoiceNumber ?? '—' },
+              { key: 'date', header: t('admin.cols.date'), cellClassName: 'text-muted', cell: (p) => d(p.createdAt) },
+              { key: 'action', header: t('admin.refunds.action'), srOnlyHeader: true, cell: (p) => p.status === 'SUCCEEDED' && !(p.refund && ACTIVE_REFUND.includes(p.refund)) && <Button size="sm" variant="outline" onClick={() => setTarget(p)}>{t('admin.refunds.request')}</Button> },
+            ]}
+          />
         )}
         {pays.hasNextPage && <div className="mt-3 text-center"><Button variant="outline" onClick={() => pays.fetchNextPage()}>{t('admin.more')}</Button></div>}
       </section>

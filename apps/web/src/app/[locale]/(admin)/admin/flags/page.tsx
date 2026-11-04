@@ -4,7 +4,7 @@ import { CreditCard, Gift, Image as ImageIcon, Info, Radio, Rocket, Star, UserPl
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { FLAG_CATEGORIES, type FlagCategory, type FlagKey } from '@duomatch/types';
-import { Badge, Card, Skeleton, Switch } from '@duomatch/ui';
+import { Badge, Card, IconButton, Skeleton, Switch } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { api, put } from '@/lib/api';
 import { useUi } from '@/lib/store';
@@ -50,8 +50,7 @@ export default function AdminFlags() {
                         <p className="flex flex-wrap items-center gap-2 font-semibold">{name}{f.emergency && <Badge tone="gold">{t('admin.ff.emergency')}</Badge>}</p>
                         <p className="text-xs text-muted">{f.enabled ? t('admin.ff.on') : t('admin.ff.off')}{!f.overridden && ` · ${t('admin.ff.default')}`}</p>
                       </div>
-                      <button type="button" aria-expanded={isOpen} aria-controls={`ff-${f.key}`} aria-label={t('admin.ff.info', { name })} onClick={() => setOpen(isOpen ? null : f.key)}
-                        className="inline-flex size-10 items-center justify-center rounded-full text-brand-ink hover:bg-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"><Info className="size-5" aria-hidden /></button>
+                      <IconButton label={t('admin.ff.info', { name })} tone="plain" className="text-brand-ink" aria-expanded={isOpen} aria-controls={`ff-${f.key}`} onClick={() => setOpen(isOpen ? null : f.key)}><Info className="size-5" aria-hidden /></IconButton>
                       <Switch checked={f.enabled} onChange={(v) => set.mutate({ k: f.key, enabled: v })} label={name} />
                     </div>
                     {isOpen && (

@@ -6,3 +6,8 @@ export * from './logo';
 export * from './dialog';
 export * from './popover';
 export * from './date-picker';
+export * from './checkbox';
+export * from './alert';
+export * from './icon-button';
+export * from './tabs';
+export * from './data-table';

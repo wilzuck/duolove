@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BadgeCheck, Crown, Heart, MessageCircle, Star, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Avatar, Badge, Button, Card, EmptyState, Skeleton, cn } from '@duomatch/ui';
+import { Avatar, Badge, Button, Card, EmptyState, Skeleton, Tabs } from '@duomatch/ui';
 import { countryName } from '@/components/app/ProfileCard';
 import { useApiError } from '@/hooks/useApiError';
 import { Link } from '@/i18n/navigation';
@@ -33,11 +33,7 @@ export default function LikesPage() {
   return (
     <div className="mx-auto w-full max-w-2xl space-y-5 px-4 py-4">
       <h1 className="text-2xl font-extrabold">{t('likes.heading')}</h1>
-      <div role="tablist" aria-label={t('likes.heading')} className="flex gap-2">
-        {(['received', 'sent'] as const).map((k) => (
-          <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={cn('rounded-full px-4 py-2 text-sm font-semibold transition', tab === k ? 'bg-brand-strong text-white' : 'bg-soft text-brand-ink hover:bg-brand/15')}>{t(`likes.tab.${k}`)}{k === 'received' && q.data ? ` (${q.data.count})` : ''}</button>
-        ))}
-      </div>
+      <Tabs label={t('likes.heading')} value={tab} onChange={setTab} tabs={[{ key: 'received', label: `${t('likes.tab.received')}${q.data ? ` (${q.data.count})` : ''}` }, { key: 'sent', label: t('likes.tab.sent') }]} />
       {tab === 'sent' && (
         <div role="tabpanel" className="space-y-3">
           {sent.isLoading && <><Skeleton className="h-24" /><Skeleton className="h-24" /></>}

@@ -3,7 +3,7 @@ import { Crown } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { COUNTRIES, INTENTS, INTEREST_SLUGS, LIVING, SEEKING, type Intent, type Living } from '@duomatch/types';
-import { Button, Field, Input, Select, Textarea, cn } from '@duomatch/ui';
+import { Button, Checkbox, cn, Field, Input, Select, Textarea } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Limits, MyProfile } from '@/lib/types';
 
@@ -120,8 +120,8 @@ export function PreferenceFields({ value, onChange, limits }: { value: Pref; onC
         <Field label={t('prefs.distance')} hint={t('prefs.distanceHint')}>{(p) => <Input {...p} type="number" min={5} max={500} step={5} value={value.maxDistanceKm ?? ''} onChange={(e) => set('maxDistanceKm', e.target.value ? Number(e.target.value) : null)} />}</Field>
         <div className="space-y-2"><p className="text-sm font-medium">{t('prefs.languages')}</p><Chips label={t('prefs.languages')} options={LANGS} value={value.languages as (typeof LANGS)[number][]} onChange={(v) => set('languages', v)} render={(l) => t(`lang.${l}`)} /></div>
         <div className="space-y-2"><p className="text-sm font-medium">{t('prefs.interests')}</p><Chips label={t('prefs.interests')} options={INTEREST_SLUGS} value={value.interests as (typeof INTEREST_SLUGS)[number][]} onChange={(v) => set('interests', v)} render={(s) => t(`interest.${s}`)} /></div>
-        <label className="flex items-center gap-3 text-sm"><input type="checkbox" className="size-5 accent-brand-strong" checked={value.verifiedOnly} onChange={(e) => set('verifiedOnly', e.target.checked)} />{t('prefs.verifiedOnly')}</label>
-        <label className="flex items-center gap-3 text-sm"><input type="checkbox" className="size-5 accent-brand-strong" checked={value.activeRecently} onChange={(e) => set('activeRecently', e.target.checked)} />{t('prefs.activeRecently')}</label>
+        <Checkbox align="center" label={t('prefs.verifiedOnly')} checked={value.verifiedOnly} onChange={(e) => set('verifiedOnly', e.target.checked)} />
+        <Checkbox align="center" label={t('prefs.activeRecently')} checked={value.activeRecently} onChange={(e) => set('activeRecently', e.target.checked)} />
       </fieldset>
     </div>
   );

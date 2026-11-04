@@ -3,7 +3,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { ArrowLeft, Ban, Check, CheckCheck, Flag, HeartCrack, ImagePlus, MoreVertical, Send, Smile, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { use, useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Button, Skeleton, Textarea, cn } from '@duomatch/ui';
+import { Avatar, Button, cn, IconButton, Skeleton, Textarea } from '@duomatch/ui';
 import { ReportDialog } from '@/components/app/ReportDialog';
 import { useApiError } from '@/hooks/useApiError';
 import { getSocket } from '@/hooks/useRealtime';
@@ -81,7 +81,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
           <Link href={`/profile/${conv.user.id}`} className="flex min-w-0 flex-1 items-center gap-3"><Avatar src={conv.user.thumbUrl} name={conv.user.displayName} size={42} /><span className="min-w-0"><span className="block truncate font-bold">{conv.user.displayName}</span><span className="block text-xs text-muted" aria-live="polite">{typing ? t('chat.typing') : t('chat.viewProfile')}</span></span></Link>
         ) : <Skeleton className="h-10 flex-1" />}
         <div className="relative">
-          <button type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="menu" aria-label={t('chat.options')} className="rounded-full p-2 hover:bg-soft"><MoreVertical className="size-5" /></button>
+          <IconButton label={t('chat.options')} tone="plain" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="menu"><MoreVertical className="size-5" /></IconButton>
           {menu && conv && (
             <ul role="menu" className="absolute right-0 z-20 mt-1 w-56 overflow-hidden rounded-2xl border border-line bg-card py-1 shadow-pop">
               <li><button role="menuitem" className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm hover:bg-soft" onClick={() => { setMenu(false); unmatch.mutate(); }}><HeartCrack className="size-4" aria-hidden />{t('chat.unmatch')}</button></li>
@@ -110,7 +110,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
                     </>)}
                     <p className={cn('mt-0.5 flex items-center justify-end gap-1 text-[11px]', m.mine ? 'text-white/80' : 'text-muted')}>{formatTime(m.createdAt, locale)}{m.mine && !m.deleted && (m.readAt ? <CheckCheck className="size-3.5" aria-label={t('chat.read')} /> : <Check className="size-3.5" aria-label={t('chat.sent')} />)}</p>
                   </div>
-                  {m.mine && !m.deleted && <button type="button" onClick={() => remove.mutate(m.id)} aria-label={t('chat.deleteMessage')} className="rounded-full p-1.5 text-muted opacity-0 transition hover:bg-soft focus:opacity-100 group-hover:opacity-100"><Trash2 className="size-4" /></button>}
+                  {m.mine && !m.deleted && <IconButton label={t('chat.deleteMessage')} size="sm" onClick={() => remove.mutate(m.id)} className="opacity-0 focus:opacity-100 group-hover:opacity-100"><Trash2 className="size-4" /></IconButton>}
                 </div>
               </li>
             );
@@ -128,11 +128,11 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
             </div>
           )}
           <div className="flex items-end gap-2">
-            <button type="button" onClick={() => file.current?.click()} aria-label={t('chat.attach')} disabled={sendImg.isPending} className="rounded-full p-2.5 text-muted hover:bg-soft"><ImagePlus className="size-5" /></button>
+            <IconButton label={t('chat.attach')} onClick={() => file.current?.click()} disabled={sendImg.isPending}><ImagePlus className="size-5" /></IconButton>
             <input ref={file} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) sendImg.mutate(f); e.target.value = ''; }} />
             <Textarea aria-label={t('chat.compose')} placeholder={t('chat.compose')} rows={1} maxLength={2000} value={text} onChange={(e) => onType(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); } }} className="max-h-32 min-h-11 flex-1 resize-none rounded-3xl py-2.5" />
-            <button type="button" onClick={() => setEmoji(!emoji)} aria-expanded={emoji} aria-label={t('chat.emojis')} className="rounded-full p-2.5 text-muted hover:bg-soft"><Smile className="size-5" /></button>
+            <IconButton label={t('chat.emojis')} onClick={() => setEmoji(!emoji)} aria-expanded={emoji}><Smile className="size-5" /></IconButton>
             <Button type="submit" size="icon" aria-label={t('chat.send')} disabled={!text.trim()} loading={send.isPending}><Send className="size-5" /></Button>
           </div>
         </form>

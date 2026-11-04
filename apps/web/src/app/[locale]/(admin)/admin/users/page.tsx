@@ -2,7 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { Badge, Button, Dialog, Field, Input, Select, Skeleton } from '@duomatch/ui';
+import { Badge, Button, DataTable, Dialog, Field, Input, Select, Skeleton } from '@duomatch/ui';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { useMe } from '@/hooks/useQueries';
@@ -42,18 +42,16 @@ export default function AdminUsers() {
         <Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="w-44"><option value="">{t('admin.allStatuses')}</option>{['ACTIVE', 'SUSPENDED', 'BANNED', 'DELETED'].map((s) => <option key={s} value={s}>{t(`admin.userStatus.${s}`)}</option>)}</Select>
       </div>
       {list.isLoading ? <Skeleton className="h-64" /> : (
-        <div className="overflow-x-auto rounded-3xl border border-line bg-card">
-          <table className="w-full min-w-[40rem] text-left text-sm">
-            <thead className="border-b border-line text-muted"><tr>{['name', 'status', 'plan', 'reports', 'joined'].map((h) => <th key={h} scope="col" className="px-4 py-3 font-semibold">{t(`admin.cols.${h}`)}</th>)}</tr></thead>
-            <tbody>{list.items.map((u) => (
-              <tr key={u.id} className="border-b border-line last:border-0 hover:bg-soft/50">
-                <td className="px-4 py-3"><button className="text-left font-semibold text-brand-ink underline-offset-2 hover:underline" onClick={() => setSel(u.id)}>{u.displayName}</button><span className="block text-xs text-muted">{u.email ?? u.id.slice(0, 8)} · {u.role}</span></td>
-                <td className="px-4 py-3"><Badge tone={tone(u.status)}>{t(`admin.userStatus.${u.status}`)}</Badge></td>
-                <td className="px-4 py-3">{u.plan}</td><td className="px-4 py-3">{u.reports}</td><td className="px-4 py-3 text-muted">{formatDate(u.createdAt, locale, { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-              </tr>))}</tbody>
-          </table>
-          {list.items.length === 0 && <p className="p-8 text-center text-muted">{t('admin.empty')}</p>}
-        </div>
+        <DataTable
+          minWidth="40rem" rows={list.items} rowKey={(u) => u.id} rowClassName="hover:bg-soft/50" empty={t('admin.empty')}
+          columns={[
+            { key: 'name', header: t('admin.cols.name'), cell: (u) => <><button className="text-left font-semibold text-brand-ink underline-offset-2 hover:underline" onClick={() => setSel(u.id)}>{u.displayName}</button><span className="block text-xs text-muted">{u.email ?? u.id.slice(0, 8)} · {u.role}</span></> },
+            { key: 'status', header: t('admin.cols.status'), cell: (u) => <Badge tone={tone(u.status)}>{t(`admin.userStatus.${u.status}`)}</Badge> },
+            { key: 'plan', header: t('admin.cols.plan'), cell: (u) => u.plan },
+            { key: 'reports', header: t('admin.cols.reports'), cell: (u) => u.reports },
+            { key: 'joined', header: t('admin.cols.joined'), cellClassName: 'text-muted', cell: (u) => formatDate(u.createdAt, locale, { day: 'numeric', month: 'short', year: 'numeric' }) },
+          ]}
+        />
       )}
       {list.hasNextPage && <div className="text-center"><Button variant="outline" onClick={() => list.fetchNextPage()} loading={list.isFetchingNextPage}>{t('admin.more')}</Button></div>}
 

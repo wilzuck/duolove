@@ -2,7 +2,7 @@
 import { Menu, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Button, Logo } from '@duomatch/ui';
+import { Button, IconButton, Logo } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
@@ -27,9 +27,9 @@ export function MarketingHeader() {
           <div className="hidden items-center gap-1 md:flex"><LocaleSwitcher /><ThemeToggle /></div>
           <Link href="/login" className="hidden sm:block"><Button variant="ghost" size="sm">{t('nav.login')}</Button></Link>
           <Link href="/register"><Button size="sm">{t('nav.register')}</Button></Link>
-          <button className="rounded-full p-2.5 hover:bg-soft lg:hidden" aria-expanded={open} aria-controls="mobile-nav" aria-label={open ? t('common.close') : t('nav.menu')} onClick={() => setOpen(!open)}>
+          <IconButton label={open ? t('common.close') : t('nav.menu')} tone="plain" className="lg:hidden" aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen(!open)}>
             {open ? <X className="size-6" /> : <Menu className="size-6" />}
-          </button>
+          </IconButton>
         </div>
       </div>
       {open && (

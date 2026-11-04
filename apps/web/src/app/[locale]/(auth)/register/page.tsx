@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { COUNTRIES, GENDERS, MIN_AGE, registerSchema } from '@duomatch/types';
-import { Button, DatePicker, Field, Input, Select } from '@duomatch/ui';
+import { Alert, Button, Checkbox, DatePicker, Field, Input, Select } from '@duomatch/ui';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { useApiError } from '@/hooks/useApiError';
@@ -74,7 +74,7 @@ function RegisterForm() {
       {!googleToken && <GoogleButton onToken={setGoogleToken} />}
       {googleToken && <p className="mb-5 rounded-2xl bg-soft p-4 text-sm">{t('auth.googleComplete')}</p>}
       <form onSubmit={submit} className="space-y-4" noValidate>
-        {formError && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm text-danger-ink">{formError}</p>}
+        {formError && <Alert>{formError}</Alert>}
         {!googleToken && (
           <>
             <Field label={t('auth.displayName')} error={errors.displayName}>{(p) => <Input {...p} autoComplete="given-name" value={f.displayName} onChange={(e) => set('displayName', e.target.value)} />}</Field>
@@ -99,11 +99,11 @@ function RegisterForm() {
         </div>
         {!googleToken && <Field label={t('referral.registerLabel')} hint={t('referral.registerHint')}>{(p) => <Input {...p} autoComplete="off" autoCapitalize="characters" maxLength={32} value={referralCode} onChange={(e) => set('referralCode', e.target.value.toUpperCase())} />}</Field>}
         <div className="space-y-3 pt-1 text-sm">
-          <label className="flex items-start gap-3">
-            <input type="checkbox" className="mt-1 size-5 accent-brand-strong" checked={f.acceptTerms} onChange={(e) => set('acceptTerms', e.target.checked)} aria-invalid={!!errors.acceptTerms} />
-            <span>{t.rich('auth.acceptTerms', { terms: (c) => <Link href="/legal/terms" className="text-brand-ink underline" target="_blank">{c}</Link>, privacy: (c) => <Link href="/legal/privacy" className="text-brand-ink underline" target="_blank">{c}</Link> })}</span>
-          </label>
-          {errors.acceptTerms && <p role="alert" className="text-danger-ink">{errors.acceptTerms}</p>}
+          <Checkbox
+            checked={f.acceptTerms} onChange={(e) => set('acceptTerms', e.target.checked)} aria-invalid={!!errors.acceptTerms}
+            label={t.rich('auth.acceptTerms', { terms: (c) => <Link href="/legal/terms" className="text-brand-ink underline" target="_blank">{c}</Link>, privacy: (c) => <Link href="/legal/privacy" className="text-brand-ink underline" target="_blank">{c}</Link> })}
+          />
+          {errors.acceptTerms && <Alert variant="text">{errors.acceptTerms}</Alert>}
         </div>
         <Button type="submit" size="lg" className="w-full" loading={reg.isPending || google.isPending}>{t('auth.createAccount')}</Button>
       </form>
