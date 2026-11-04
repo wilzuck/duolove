@@ -1,5 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CircleCheck } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, Button, Card, EmptyState, Select, Skeleton } from '@duomatch/ui';
@@ -25,7 +26,7 @@ export default function AdminReports() {
     <div className="space-y-4">
       <Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="w-52">{['OPEN', 'REVIEWING', 'RESOLVED', 'DISMISSED'].map((s) => <option key={s} value={s}>{t(`admin.reportStatus.${s}`)}</option>)}</Select>
       {list.isLoading && <Skeleton className="h-40" />}
-      {!list.isLoading && list.items.length === 0 && <EmptyState icon={<span aria-hidden>✅</span>} title={t('admin.noReports')} />}
+      {!list.isLoading && list.items.length === 0 && <EmptyState icon={<CircleCheck className="size-8" aria-hidden />} title={t('admin.noReports')} />}
       <ul className="space-y-3">{list.items.map((r) => (
         <li key={r.id}><Card className="space-y-3 p-5">
           <div className="flex flex-wrap items-center gap-2"><Badge tone="danger">{t(`report.reasons.${r.reason}` as never)}</Badge><span className="text-sm text-muted">{timeAgo(r.createdAt, locale)} · {t('admin.by', { name: r.reporter.displayName ?? '?' })}</span></div>

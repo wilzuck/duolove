@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { completeOnboarding, newMember, persona, signUp, uid } from './helpers';
 
-// Parrainage + codes promo : lien d'invitation → récompense, création d'un code par un admin, remise en boutique, jetons offerts.
+// Parrainage + codes promo : lien d'invitation → récompense, création d'un code par un admin, remise dans Charme+, jetons offerts.
 const DB = 'postgresql://admin@localhost:5432/duomatch_test';
 const sql = (q: string) => execFileSync('psql', [DB, '-Atc', q], { encoding: 'utf8' }).trim();
 const axeOf = async (page: import('@playwright/test').Page) => (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help} :: ${v.nodes.slice(0, 4).map((n) => `${n.target.join(' ')} ${(n.any[0]?.data as { fgColor?: string; bgColor?: string; contrastRatio?: number } | undefined)?.contrastRatio} ${(n.any[0]?.data as { fgColor?: string } | undefined)?.fgColor}`).join(' | ')}`);
@@ -76,7 +76,7 @@ test.describe.serial('Parrainage et codes promo', () => {
     expect(await axeOf(page)).toEqual([]);
   });
 
-  test('Awa applique la remise en boutique, puis récupère les jetons offerts', async () => {
+  test('Awa applique la remise dans Charme+, puis récupère les jetons offerts', async () => {
     const { page } = awaPage;
     await page.goto('/shop');
     await page.getByLabel('Votre code').fill(PCT);

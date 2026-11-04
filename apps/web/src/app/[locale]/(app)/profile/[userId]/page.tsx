@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Lock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { use } from 'react';
 import { EmptyState, Skeleton } from '@duomatch/ui';
@@ -18,7 +18,7 @@ export default function ProfileView({ params }: { params: Promise<{ userId: stri
     <div className="mx-auto w-full max-w-lg space-y-4 px-4 py-4">
       <button type="button" onClick={() => router.back()} className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-fg"><ArrowLeft className="size-4" aria-hidden />{t('common.back')}</button>
       {q.isLoading && <Skeleton className="aspect-[4/5] rounded-[2rem]" />}
-      {q.isError && <EmptyState icon={<span aria-hidden>🔒</span>} title={t('profileView.unavailable')}><Link href="/discover" className="font-semibold text-brand-ink underline">{t('profileView.back')}</Link></EmptyState>}
+      {q.isError && <EmptyState icon={<Lock className="size-8" aria-hidden />} title={t('profileView.unavailable')}><Link href="/discover" className="font-semibold text-brand-ink underline">{t('profileView.back')}</Link></EmptyState>}
       {q.data && <ProfileDetail card={q.data} onBlocked={() => router.replace('/discover')} />}
     </div>
   );

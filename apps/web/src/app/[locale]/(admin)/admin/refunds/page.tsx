@@ -1,5 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Banknote } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, Button, Card, Dialog, EmptyState, Field, Select, Skeleton, Textarea } from '@duomatch/ui';
@@ -35,7 +36,7 @@ export default function AdminRefunds() {
       <p className="text-sm text-muted">{t('admin.refunds.intro')}</p>
       <Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="w-56">{['REQUESTED', 'COMPLETED', 'REJECTED', 'FAILED', 'PROCESSING'].map((s) => <option key={s} value={s}>{t(`admin.refunds.status.${s}`)}</option>)}</Select>
       {list.isLoading && <Skeleton className="h-40" />}
-      {!list.isLoading && list.items.length === 0 && <EmptyState icon={<span aria-hidden>💸</span>} title={t('admin.refunds.empty')} />}
+      {!list.isLoading && list.items.length === 0 && <EmptyState icon={<Banknote className="size-8" aria-hidden />} title={t('admin.refunds.empty')} />}
       <ul className="space-y-3">{list.items.map((r) => {
         const selfBlocked = r.source === 'ADMIN' && r.requestedById === me?.id;
         return (

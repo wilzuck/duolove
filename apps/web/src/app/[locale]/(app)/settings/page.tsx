@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, LogOut, MapPin, Monitor, Trash2 } from 'lucide-react';
+import { Download, LogOut, MapPin, Monitor, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
@@ -118,7 +118,7 @@ function BlockedTab() {
   const q = useQuery({ queryKey: ['blocks'], queryFn: () => api<{ userId: string; displayName: string }[]>('/blocks') });
   const un = useMutation({ mutationFn: (id: string) => del(`/blocks/${id}`), onSuccess: () => qc.invalidateQueries({ queryKey: ['blocks'] }) });
   if (!q.data) return <Skeleton className="h-40" />;
-  if (!q.data.length) return <EmptyState icon={<span aria-hidden>🛡️</span>} title={t('settings.blocked.empty')} />;
+  if (!q.data.length) return <EmptyState icon={<ShieldCheck className="size-8" aria-hidden />} title={t('settings.blocked.empty')} />;
   return <Card className="divide-y divide-line px-5">{q.data.map((b) => <Row key={b.userId} title={b.displayName}><Button variant="outline" size="sm" onClick={() => un.mutate(b.userId)}>{t('settings.blocked.unblock')}</Button></Row>)}</Card>;
 }
 
@@ -167,7 +167,7 @@ function PaymentsTab() {
     <div className="space-y-4">
       {status === 'success' && <p role="status" className="rounded-2xl bg-success/15 p-4 text-sm font-medium">{t('settings.pay.success')}</p>}
       {status === 'fail' && <p role="alert" className="rounded-2xl bg-danger/10 p-4 text-sm font-medium text-danger-ink">{t('settings.pay.failed')}</p>}
-      {!q.data ? <Skeleton className="h-40" /> : q.data.length === 0 ? <EmptyState icon={<span aria-hidden>🧾</span>} title={t('settings.pay.empty')} /> : (
+      {!q.data ? <Skeleton className="h-40" /> : q.data.length === 0 ? <EmptyState icon={<Receipt className="size-8" aria-hidden />} title={t('settings.pay.empty')} /> : (
         <Card className="divide-y divide-line px-5">{q.data.map((p) => (
           <div key={p.id} className="flex items-center justify-between gap-3 py-4"><div><p className="font-semibold">{p.kind === 'PRODUCT' ? p.product : p.plan ? `${t(`plans.${p.plan}.name`)} · ${t('plans.months', { n: p.months })}` : '—'} · {formatXof(p.amountXof, locale)}</p><p className="text-xs text-muted">{formatDate(p.createdAt, locale)} · {p.provider}</p></div>
             <div className="flex items-center gap-2"><Badge tone={p.status === 'SUCCEEDED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'neutral'}>{t(`settings.pay.status.${p.status}`)}</Badge>{p.refund && <Badge tone={p.refund === 'COMPLETED' ? 'success' : 'gold'}>{t(`settings.pay.refund.${p.refund}`)}</Badge>}{p.invoiceNumber && <Button variant="outline" size="sm" onClick={() => open.mutate(p.id)}>{t('settings.pay.invoice')}</Button>}{p.refundable && <Button variant="ghost" size="sm" onClick={() => setRefundFor(p)}>{t('settings.pay.askRefund')}</Button>}</div></div>

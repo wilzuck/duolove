@@ -18,7 +18,7 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 | Notifications | in-app + temps réel + e-mail (préférences), page de réglages |
 | Abonnements | plans, checkout, **webhook signé idempotent**, factures, historique, annulation/reprise, expiration, droits côté serveur |
 | Calendrier | composant `DatePicker` (react-day-picker, repris de WaMarcket) avec menus mois/année, utilisé pour la date de naissance ; à réutiliser pour toute date |
-| Monétisation | offres, prix par durée (1/3/6/12 mois), quotas et remises **configurables** (`/admin/plans`), boutique de boosts et packs de Super Likes, portefeuille de crédits idempotent — voir [MONETISATION.md](MONETISATION.md) |
+| Monétisation | offres, prix par durée (1/3/6/12 mois), quotas et remises **configurables** (`/admin/plans`), Charme+ (boutique de boosts, packs de Super Likes et jetons), portefeuille de crédits idempotent — voir [MONETISATION.md](MONETISATION.md) |
 | Match en direct | menu `/match` : critères (âge, genre, pays, enfants, animaux, vie, taille, origine), invitation des personnes **en ligne** compatibles et réciproques, acceptation en direct (Socket.IO), conversation ouverte contre **1 jeton** (2 personnes au plus par recherche), recherche active 24 h relançable toutes les 15 min, **3 jetons offerts une fois** à 100 % de profil + e-mail vérifié, packs de jetons en boutique, essais gratuits pour le plan Gratuit — voir [MONETISATION.md](MONETISATION.md) §8 |
 | Administration | console dédiée (barre latérale groupée, pastilles de travail en attente), RBAC (modérateur/admin/super-admin), stats, utilisateurs (suspendre/bannir/lever/rôle), signalements, photos, vérifications, contestations, abonnements/paiements, feature flags, journal d'audit |
 | Vie privée | export JSON, suppression/anonymisation, visibilité, accusés de lecture, consentement marketing |
@@ -55,7 +55,7 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 - **Limites** : crédité d'un bloc (pas de distribution mensuelle ni d'expiration) ; pas de rétroaction sur les abonnés déjà actifs.
 
 ## Promos et parrainage (livré)
-- **Terminé** : codes promo (remise % ou jetons offerts) créés et désactivés en admin, appliqués au paiement côté serveur, plafonds et unicité testés en concurrence ; parrainage avec lien d'invitation, récompense unique 5/2 jetons, plafond de 20 ; page `/referral`, champ à l'inscription, saisie de code en boutique et sur Premium ; migration `20261104150000_promos_referral`.
+- **Terminé** : codes promo (remise % ou jetons offerts) créés et désactivés en admin, appliqués au paiement côté serveur, plafonds et unicité testés en concurrence ; parrainage avec lien d'invitation, récompense unique 5/2 jetons, plafond de 20 ; page `/referral`, champ à l'inscription, saisie de code dans Charme+ et sur Premium ; migration `20261104150000_promos_referral`.
 - **Tests** : API 82/82 (14 nouveaux), E2E 22/22 sur le dernier passage (5 nouveaux). Deux passages précédents avaient échoué sur des tests Match/admin déjà verts seuls et n'ont pas été reproduits en 3 relances : cause non identifiée.
 - **Corrigé au passage** : contraste de `--success-ink` (4,4:1 → ≥ 7:1) détecté par axe sur l'admin.
 - **Non implémenté** : parrainage via Google, détection d'abus par IP/appareil, réglage admin des montants de récompense.

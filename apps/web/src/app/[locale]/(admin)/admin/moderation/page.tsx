@@ -1,5 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { CircleCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, Card, EmptyState, Skeleton, cn } from '@duomatch/ui';
@@ -18,7 +19,7 @@ function Verifications() {
   const q = useQuery({ queryKey: ['admin', 'verifs'], queryFn: () => api<{ id: string; displayName: string }[]>('/admin/verifications') });
   const m = useMutation({ mutationFn: ({ id, approve }: { id: string; approve: boolean }) => post(`/admin/verifications/${id}/review`, { approve }), onSuccess: () => qc.invalidateQueries({ queryKey: ['admin'] }), onError: (e) => toast('error', err(e)) });
   if (!q.data) return <Skeleton className="h-40" />;
-  if (!q.data.length) return <EmptyState icon={<span aria-hidden>✅</span>} title={t('admin.noVerifs')} />;
+  if (!q.data.length) return <EmptyState icon={<CircleCheck className="size-8" aria-hidden />} title={t('admin.noVerifs')} />;
   return <ul className="grid gap-3 sm:grid-cols-2">{q.data.map((v) => (
     <li key={v.id}><Card className="space-y-3 p-4"><p className="font-semibold">{v.displayName}</p><img src={`/api/admin/verifications/${v.id}/selfie`} alt={t('admin.selfieAlt', { name: v.displayName })} className="aspect-[4/5] w-full rounded-2xl object-cover" />
       <div className="flex gap-2"><Button size="sm" onClick={() => m.mutate({ id: v.id, approve: true })}>{t('admin.approve')}</Button><Button size="sm" variant="outline" onClick={() => m.mutate({ id: v.id, approve: false })}>{t('admin.reject')}</Button></div></Card></li>
@@ -33,7 +34,7 @@ function Appeals() {
   const q = useQuery({ queryKey: ['admin', 'appeals'], queryFn: () => api<{ id: string; displayName: string; type: string; reason: string; appealText: string }[]>('/admin/appeals') });
   const m = useMutation({ mutationFn: ({ id, approve }: { id: string; approve: boolean }) => post(`/admin/appeals/${id}/decide`, { approve }), onSuccess: () => qc.invalidateQueries({ queryKey: ['admin'] }), onError: (e) => toast('error', err(e)) });
   if (!q.data) return <Skeleton className="h-40" />;
-  if (!q.data.length) return <EmptyState icon={<span aria-hidden>✅</span>} title={t('admin.noAppeals')} />;
+  if (!q.data.length) return <EmptyState icon={<CircleCheck className="size-8" aria-hidden />} title={t('admin.noAppeals')} />;
   return <ul className="space-y-3">{q.data.map((a) => (
     <li key={a.id}><Card className="space-y-2 p-5"><p className="font-semibold">{a.displayName} — {a.type}</p><p className="text-sm text-muted">{t('admin.sanctionReason')} {a.reason}</p><p className="rounded-2xl bg-soft p-3 text-sm">{a.appealText}</p>
       <div className="flex gap-2"><Button size="sm" onClick={() => m.mutate({ id: a.id, approve: true })}>{t('admin.accept')}</Button><Button size="sm" variant="outline" onClick={() => m.mutate({ id: a.id, approve: false })}>{t('admin.reject')}</Button></div></Card></li>

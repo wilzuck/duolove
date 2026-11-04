@@ -51,7 +51,7 @@ Prérequis : PostgreSQL local, bases `duomatch` (dev) et `duomatch_test` (créer
 - Fournisseurs externes réels (Google, SMTP, paiement).
 - Test d'intrusion.
 
-- Promos et parrainage : `apps/api/test/promo.spec.ts` (14 tests : calcul serveur, unicité par membre, plafond sous concurrence, remboursement, récompense unique, plafond de parrain) et `apps/web/e2e/promo.spec.ts` (parcours lien d'invitation → récompense, création de codes en admin, remise en boutique, jetons offerts ; axe sur `/referral`, `/admin/promos`, `/shop`). L'E2E promeut un compte en ADMIN par `psql` sur `duomatch_test`.
+- Promos et parrainage : `apps/api/test/promo.spec.ts` (14 tests : calcul serveur, unicité par membre, plafond sous concurrence, remboursement, récompense unique, plafond de parrain) et `apps/web/e2e/promo.spec.ts` (parcours lien d'invitation → récompense, création de codes en admin, remise dans Charme+, jetons offerts ; axe sur `/referral`, `/admin/promos`, `/shop`). L'E2E promeut un compte en ADMIN par `psql` sur `duomatch_test`.
 
 ## Bugs trouvés et corrigés grâce à ces tests (exemples)
 

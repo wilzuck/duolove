@@ -1,5 +1,5 @@
 'use client';
-import { Search } from 'lucide-react';
+import { Camera, Search } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Avatar, Badge, Input, Skeleton, cn } from '@duomatch/ui';
@@ -43,7 +43,7 @@ export default function MessagesLayout({ children }: { children: ReactNode }) {
                   <Avatar src={c.user.thumbUrl} name={c.user.displayName} size={52} />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline justify-between gap-2"><span className="truncate font-semibold">{c.user.displayName}</span>{c.lastMessage && <time className="shrink-0 text-xs text-muted" dateTime={c.lastMessage.createdAt}>{timeAgo(c.lastMessage.createdAt, locale)}</time>}</span>
-                    <span className={cn('block truncate text-sm', c.unread ? 'font-semibold text-fg' : 'text-muted')}>{c.lastMessage ? (c.lastMessage.mine ? `${t('chat.you')} ` : '') + (c.lastMessage.body ?? (c.lastMessage.hasImage ? t('chat.photo') : t('chat.deleted'))) : t('chat.sayHello')}</span>
+                    <span className={cn('block truncate text-sm', c.unread ? 'font-semibold text-fg' : 'text-muted')}>{c.lastMessage ? <>{c.lastMessage.mine ? `${t('chat.you')} ` : ''}{c.lastMessage.body ?? (c.lastMessage.hasImage ? <span className="inline-flex items-center gap-1 align-middle"><Camera className="size-3.5" aria-hidden />{t('chat.photo')}</span> : t('chat.deleted'))}</> : t('chat.sayHello')}</span>
                   </span>
                   {c.unread > 0 && <Badge className="bg-brand-strong text-white" aria-label={t('chat.unread', { count: c.unread })}>{c.unread}</Badge>}
                 </Link>
