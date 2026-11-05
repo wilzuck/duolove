@@ -29,13 +29,15 @@ def _check(key: str, limit: int, ttl: float) -> None:
     q.append(now)
 
 
-def limit(max_requests: int, seconds: int = 60):
-    """Dépendance de route : au plus `max_requests` appels par fenêtre de `seconds` pour une même IP. Inactive en test."""
+def limit(max_requests: int, seconds: int = 60, scope: str | None = None):
+    """Dépendance de route : au plus `max_requests` appels par fenêtre de `seconds` pour une même IP. Inactive en test.
+    `scope` regroupe toutes les variantes d'une route à identifiant dans une seule fenêtre (sans lui, chaque chemin distinct aurait son propre compteur :
+    inutile contre quelqu'un qui devine des jetons)."""
 
     async def _dep(request: Request) -> None:
         if get_settings().node_env == "test":
             return
-        _check(f"{client_ip(request)}:{request.method}:{request.url.path}", max_requests, seconds)
+        _check(f"{client_ip(request)}:{scope}" if scope else f"{client_ip(request)}:{request.method}:{request.url.path}", max_requests, seconds)
 
     return Depends(_dep)
 

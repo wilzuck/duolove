@@ -4,32 +4,28 @@ import { expect, test, type Page } from '@playwright/test';
 // Connexion et inscription : accueil chaleureux, saisie du mot de passe facilitée, accessibilité, mobile ; quota de découvertes par formule sur la page Tarifs.
 const axeOf = async (page: Page) => (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help}`);
 
-test('connexion : accueil chaleureux, afficher/masquer la saisie, accessible', async ({ page }) => {
+test('connexion : carte centrée sobre, lien « mot de passe oublié » centré, pied de page, accessible', async ({ page }) => {
   await page.goto('/login');
   await expect(page.getByRole('heading', { level: 1, name: 'Bon retour !' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Votre histoire vous attend.' })).toBeVisible();
-  await expect(page.getByText('Vos conversations restent privées et votre position n’est jamais précise.')).toBeVisible();
-  const pw = page.getByLabel('Mot de passe', { exact: true });
-  await pw.fill('Secret-123456');
-  await expect(pw).toHaveAttribute('type', 'password');
-  const toggle = page.getByRole('button', { name: 'Afficher la saisie' });
-  await toggle.click();
-  await expect(pw).toHaveAttribute('type', 'text');
-  await expect(page.getByRole('button', { name: 'Masquer la saisie' })).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('button', { name: 'Masquer la saisie' }).click();
-  await expect(pw).toHaveAttribute('type', 'password');
-  await expect(page.getByRole('link', { name: 'Mot de passe oublié ?' })).toBeVisible();
+  await expect(page.getByText('Connectez-vous pour retrouver vos matchs.')).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0); // pas de panneau d'accueil : la page reste sobre
+  await expect(page.getByLabel('Mot de passe', { exact: true })).toHaveAttribute('type', 'password');
+  await expect(page.getByRole('button', { name: 'Afficher la saisie' })).toHaveCount(0);
+  const forgot = await page.getByRole('link', { name: 'Mot de passe oublié ?' }).evaluate((el) => getComputedStyle(el.parentElement!).textAlign);
+  expect(forgot).toBe('center');
   await expect(page.getByRole('navigation', { name: 'Liens du site' })).toBeVisible();
   expect(await axeOf(page)).toEqual([]);
   await page.goto('/en/login');
   await expect(page.getByRole('heading', { level: 1, name: 'Welcome back!' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Your story is waiting.' })).toBeVisible();
 });
 
-test('inscription : message « à tout âge », règles du mot de passe en direct, règles de la communauté, accessible', async ({ page }) => {
+test('inscription : réassurance sobre, règles du mot de passe en direct, règles de la communauté, accessible', async ({ page }) => {
   await page.goto('/register');
-  await expect(page.getByRole('heading', { level: 2, name: 'L’amour n’a pas d’âge.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Créer mon compte' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0); // carte centrée sobre, comme la connexion
   await expect(page.getByText('Gratuit pour commencer, sans carte bancaire.')).toBeVisible();
+  await expect(page.getByText('De vrais profils : modération humaine et badge « vérifié ».')).toBeVisible();
+  await expect(page.getByText('Vous gardez la main : profil masquable, mode pause.')).toBeVisible();
   const pw = page.getByLabel('Mot de passe', { exact: true });
   await pw.fill('abc');
   const rules = page.getByRole('list').filter({ hasText: '10 caractères ou plus' });
@@ -46,10 +42,10 @@ test('inscription : message « à tout âge », règles du mot de passe en direc
   await expect(page.getByText(/Votre adresse e-mail n’apparaît jamais sur votre profil/)).toBeVisible();
   expect(await axeOf(page)).toEqual([]);
   await page.goto('/en/register');
-  await expect(page.getByRole('heading', { level: 2, name: 'Love has no age.' })).toBeVisible();
+  await expect(page.getByText('Free to start, no credit card.')).toBeVisible();
 });
 
-test('mobile : pas de débordement, panneau d’accueil masqué, formulaire complet', async ({ page }) => {
+test('mobile : pas de débordement, formulaire complet', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   for (const p of ['/login', '/register', '/en/login', '/en/register']) {
     await page.goto(p);

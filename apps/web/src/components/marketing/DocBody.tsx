@@ -28,7 +28,7 @@ export function DocBody({ sections, icons, tocLabel, listLabels, extra, footer }
         <details className="rounded-2xl border border-line bg-card p-3 lg:hidden"><summary className="cursor-pointer px-3 py-2 font-semibold">{tocLabel}</summary><nav aria-label={tocLabel} className="mt-2">{toc}</nav></details>
         <nav aria-label={tocLabel} className="hidden lg:block"><p className="mb-2 px-3 text-sm font-bold">{tocLabel}</p>{toc}</nav>
       </aside>
-      <div className="space-y-6">
+      <div className="min-w-0 space-y-6">
         {sections.map((s, i) => {
           const Icon = icons[s.id] ?? Heart;
           return (

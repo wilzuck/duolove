@@ -7,15 +7,21 @@ from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import flags, mail, notifications
+from app.core import appsettings, flags, mail, notifications
 from app.core.completeness import compute_completeness
 from app.core.config import get_settings
 from app.core.errors import AppError, bad_request, conflict, unauthorized
 from app.core.ids import utcnow
-from app.core.security import dummy_hash, hash_ip, hash_password, random_token, sha256, verify_password
+import hmac
+import secrets
+
+from app.core.security import dummy_hash, hash_ip, hash_password, hmac_hex, random_token, sha256, verify_password
 from app.models.models import (
-    Account, Entitlement, NotificationPreference, Preference, Profile, Session, User, VerificationToken,
+    Account, EmailCode, Entitlement, NotificationPreference, Preference, Profile, Session, User, VerificationToken,
 )
+
+CODE_MAX_ATTEMPTS = 5
+RESEND_COOLDOWN = datetime.timedelta(seconds=30)
 
 MAX_FAILED = 5
 LOCK_MINUTES = 15
@@ -81,8 +87,7 @@ async def register(db: AsyncSession, inp, ctx: ReqCtx) -> tuple[User, tuple[str,
     from app.core import referral  # fourni par le fork B
 
     await referral.attach(db, user.id, inp.referralCode)
-    token = await _issue_token(db, user.id, "EMAIL_VERIFY", datetime.timedelta(hours=24))
-    await mail.send_verification(user.email, inp.displayName, token)
+    await send_confirmation(db, user, inp.displayName)
     return user, await create_session(db, user.id, ctx)
 
 
@@ -137,13 +142,117 @@ async def verify_email(db: AsyncSession, token: str) -> None:
         await db.rollback()
 
 
-async def resend_verification(db: AsyncSession, user_id: str) -> None:
+def _code_hash(user_id: str, code: str) -> str:
+    """HMAC (jamais le code en clair) lié au compte : un code volé d'une base ne sert à rien sans le secret du serveur."""
+    return hmac_hex(get_settings().ip_hash_salt, f"{user_id}:{code}")
+
+
+async def send_confirmation(db: AsyncSession, user: User, name: str) -> None:
+    """Émet un nouveau code (les précédents sont invalidés) ET un lien, et envoie un seul e-mail contenant les deux."""
+    minutes = await appsettings.get(db, "signup.code_ttl_minutes")
+    now = utcnow()
+    await db.execute(update(EmailCode).where(EmailCode.userId == user.id, EmailCode.consumedAt.is_(None)).values(consumedAt=now))
+    code = get_settings().fixed_email_code or f"{secrets.randbelow(1_000_000):06d}"  # code fixe : développement local uniquement
+    db.add(EmailCode(userId=user.id, codeHash=_code_hash(user.id, code), expiresAt=now + datetime.timedelta(minutes=minutes)))
+    await db.commit()
+    token = await _issue_token(db, user.id, "EMAIL_VERIFY", datetime.timedelta(hours=24))
+    await mail.send_verification(user.email, name, token, code, minutes)
+
+
+async def _mark_verified(db: AsyncSession, user_id: str) -> None:
+    await db.execute(update(User).where(User.id == user_id, User.emailVerifiedAt.is_(None)).values(emailVerifiedAt=utcnow()))
+    await db.commit()
+    # Le profil peut déjà être complet : cadeau de profil et parrainage dépendent aussi de la vérification.
+    try:
+        from app.core import gift
+
+        await gift.gift_tokens_if_eligible(db, user_id)
+    except Exception:  # Silence assumé : un échec du cadeau ne doit pas faire échouer la vérification (rejouable plus tard).
+        await db.rollback()
+
+
+async def verify_code(db: AsyncSession, user_id: str, code: str) -> None:
+    """Confirme l'e-mail avec le code reçu. Après 5 essais faux, le code est annulé : il faut en demander un nouveau."""
+    user = await db.get(User, user_id)
+    if user is None:
+        raise unauthorized()
+    if user.emailVerifiedAt:
+        return
+    row = (await db.execute(select(EmailCode).where(EmailCode.userId == user_id, EmailCode.consumedAt.is_(None)).order_by(EmailCode.createdAt.desc()).limit(1))).scalar_one_or_none()
+    now = utcnow()
+    if row is None or row.expiresAt <= now:
+        raise bad_request("CODE_EXPIRED", "Ce code a expiré : demandez-en un nouveau")
+    if row.attempts >= CODE_MAX_ATTEMPTS:
+        raise AppError(429, "CODE_LOCKED", "Trop d'essais : demandez un nouveau code")
+    if not hmac.compare_digest(row.codeHash, _code_hash(user_id, code)):
+        row.attempts += 1
+        left = CODE_MAX_ATTEMPTS - row.attempts
+        if left <= 0:
+            row.consumedAt = now  # code épuisé
+        await db.commit()
+        raise AppError(400, "INVALID_CODE", "Code incorrect", {"remaining": max(left, 0)})
+    claimed = await db.execute(update(EmailCode).where(EmailCode.id == row.id, EmailCode.consumedAt.is_(None)).values(consumedAt=now))
+    if claimed.rowcount == 0:  # deux saisies simultanées : une seule consomme le code
+        await db.rollback()
+        raise bad_request("CODE_EXPIRED", "Ce code a expiré : demandez-en un nouveau")
+    await db.commit()
+    await _mark_verified(db, user_id)
+
+
+async def resend_verification(db: AsyncSession, user_id: str) -> int:
+    """Nouveau code. Au plus un envoi toutes les 30 secondes (évite d'inonder une boîte e-mail) ; renvoie le délai avant le prochain envoi possible."""
     u = await db.get(User, user_id)
     if not u or u.emailVerifiedAt:
-        return
+        return 0
+    last = (await db.execute(select(EmailCode.createdAt).where(EmailCode.userId == user_id).order_by(EmailCode.createdAt.desc()).limit(1))).scalar_one_or_none()
+    if last and utcnow() - last < RESEND_COOLDOWN:
+        wait = int((RESEND_COOLDOWN - (utcnow() - last)).total_seconds()) + 1
+        raise AppError(429, "RESEND_TOO_SOON", "Patientez un instant avant de redemander un code", {"retryAfter": wait})
     p = (await db.execute(select(Profile.displayName).where(Profile.userId == user_id))).scalar_one_or_none()
-    token = await _issue_token(db, u.id, "EMAIL_VERIFY", datetime.timedelta(hours=24))
-    await mail.send_verification(u.email, p or "", token)
+    await send_confirmation(db, u, p or "")
+    return int(RESEND_COOLDOWN.total_seconds())
+
+
+async def verification_state(db: AsyncSession, user_id: str) -> dict:
+    """État de l'étape de confirmation : adresse masquée, délais et date de suppression automatique d'un compte non confirmé."""
+    u = await db.get(User, user_id)
+    cfg = await appsettings.all_values(db)
+    last = (await db.execute(select(EmailCode.createdAt).where(EmailCode.userId == user_id).order_by(EmailCode.createdAt.desc()).limit(1))).scalar_one_or_none()
+    name, _, domain = u.email.partition("@")
+    masked = f"{name[:2]}{'•' * max(len(name) - 2, 1)}@{domain}"
+    wait = max(0, int((RESEND_COOLDOWN - (utcnow() - last)).total_seconds()) + 1) if last else 0
+    purge_at = u.createdAt + datetime.timedelta(hours=cfg["signup.unverified_ttl_hours"])
+    return {"verified": bool(u.emailVerifiedAt), "email": masked, "codeMinutes": cfg["signup.code_ttl_minutes"], "resendIn": wait if wait <= 31 else 0,
+            "devCode": get_settings().fixed_email_code, "deleteAfterHours": cfg["signup.unverified_ttl_hours"], "deleteAt": purge_at.isoformat(timespec="milliseconds") + "Z", "maxAttempts": CODE_MAX_ATTEMPTS}
+
+
+async def purge_unverified(db: AsyncSession, now: datetime.datetime | None = None) -> int:
+    """Supprime les comptes jamais confirmés après la durée réglée par l'administration (`signup.unverified_ttl_hours`). Ne touche ni aux comptes confirmés,
+    ni au personnel, ni aux comptes déjà supprimés ou bannis."""
+    from sqlalchemy import delete as sa_delete
+
+    from app.core import storage
+    from app.core.profile_card import thumb_key
+    from app.models.models import ProfilePhoto, SystemSetting
+
+    now = now or utcnow()
+    hours = await appsettings.get(db, "signup.unverified_ttl_hours")
+    ids = list((await db.execute(select(User.id).where(User.emailVerifiedAt.is_(None), User.status == "ACTIVE", User.role == "USER", User.passwordHash.is_not(None),
+                                                       User.createdAt < now - datetime.timedelta(hours=hours)))).scalars().all())
+    if not ids:
+        return 0
+    keys = list((await db.execute(select(ProfilePhoto.key).join(Profile, Profile.id == ProfilePhoto.profileId).where(Profile.userId.in_(ids)))).scalars().all())
+    await db.execute(sa_delete(User).where(User.id.in_(ids)))  # les clés étrangères en cascade retirent profil, préférences, sessions, codes…
+    total = await db.get(SystemSetting, "stats.unverified_purged")
+    if total:
+        total.value = int(total.value) + len(ids)
+    else:
+        db.add(SystemSetting(key="stats.unverified_purged", value=len(ids)))
+    await db.commit()
+    for k in keys:
+        await storage.delete(k)
+        await storage.delete(thumb_key(k))
+    return len(ids)
 
 
 async def forgot_password(db: AsyncSession, email: str) -> None:

@@ -503,6 +503,24 @@ class DateShare(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class EmailCode(Base):
+    """Code à 6 chiffres de confirmation d'e-mail : seul un HMAC est stocké, nombre d'essais limité, valable peu de temps, un seul code actif par compte."""
+    __tablename__ = 'EmailCode'
+    __table_args__ = (
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='EmailCode_userId_fkey'),
+        PrimaryKeyConstraint('id', name='EmailCode_pkey'),
+        Index('EmailCode_userId_createdAt_idx', 'userId', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    codeHash: Mapped[str] = mapped_column(Text, nullable=False)
+    attempts: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    expiresAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    consumedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
 class SystemSetting(Base):
     __tablename__ = 'SystemSetting'
     __table_args__ = (

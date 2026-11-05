@@ -19,10 +19,11 @@ interface Metrics {
   retention: { d7: { cohort: number; rate: number | null }; d30: { cohort: number; rate: number | null }; definition: string }; premiumConversionRate: number | null;
   dailyPicks: { last30Days: number; actedRate: number | null }; unavailable: string[];
   rhythm: { pausedNow: number; quietHoursUsers: number };
+  signup: { unverifiedPending: number; unverifiedPurgedTotal: number };
   dates: { proposed: number; accepted: number; declined: number; canceled: number; completed: number; acceptRate: number | null; feedbackCount: number; feedbackAverage: number | null };
 }
 const WEIGHT_KEYS = ['intent', 'mutual', 'interests', 'location', 'other'] as const;
-const INT_KEYS = [['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount'], ['dates.min_notice_hours', 'dateMinNotice'], ['dates.max_days_ahead', 'dateMaxDays'], ['dates.max_open', 'dateMaxOpen'], ['dates.max_per_day', 'dateMaxPerDay'], ['dates.share_hours_after', 'dateShareHours'], ['pause.max_days', 'pauseMaxDays'], ['notifications.max_emails_per_day', 'emailCap']] as const;
+const INT_KEYS = [['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount'], ['dates.min_notice_hours', 'dateMinNotice'], ['dates.max_days_ahead', 'dateMaxDays'], ['dates.max_open', 'dateMaxOpen'], ['dates.max_per_day', 'dateMaxPerDay'], ['dates.share_hours_after', 'dateShareHours'], ['pause.max_days', 'pauseMaxDays'], ['signup.code_ttl_minutes', 'codeTtl'], ['signup.unverified_ttl_hours', 'unverifiedTtl'], ['notifications.max_emails_per_day', 'emailCap']] as const;
 const num = (v: string, fb = 0) => (v === '' || Number.isNaN(Number(v)) ? fb : Math.round(Number(v)));
 
 function SettingsTab({ data }: { data: SettingsData }) {
@@ -178,6 +179,7 @@ function MetricsTab() {
     [t('admin.eng.m.retentionD7', { n: m.retention.d7.cohort }), pct(m.retention.d7.rate)], [t('admin.eng.m.retentionD30', { n: m.retention.d30.cohort }), pct(m.retention.d30.rate)],
     [t('admin.eng.m.datesProposed'), m.dates.proposed], [t('admin.eng.m.datesAccepted'), m.dates.accepted], [t('admin.eng.m.datesAcceptRate'), pct(m.dates.acceptRate)], [t('admin.eng.m.datesCompleted'), m.dates.completed],
     [t('admin.eng.m.datesFeedback', { n: m.dates.feedbackCount }), m.dates.feedbackAverage == null ? t('admin.eng.m.none') : `${m.dates.feedbackAverage} / 5`],
+    [t('admin.eng.m.unverifiedPending'), m.signup.unverifiedPending], [t('admin.eng.m.unverifiedPurged'), m.signup.unverifiedPurgedTotal],
     [t('admin.eng.m.pausedNow'), m.rhythm.pausedNow], [t('admin.eng.m.quietUsers'), m.rhythm.quietHoursUsers],
     [t('admin.eng.m.premiumConversionRate'), pct(m.premiumConversionRate)], [t('admin.eng.m.dailyPicks'), `${m.dailyPicks.last30Days} (${pct(m.dailyPicks.actedRate)})`],
   ];

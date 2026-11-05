@@ -68,3 +68,7 @@ class GoogleIn(Body):
     country: CountryT | None = None
     city: Annotated[Trimmed, Field(min_length=2, max_length=80)] | None = None
     acceptTerms: bool | None = None
+
+
+class CodeIn(Body):
+    code: Annotated[str, BeforeValidator(_strip), Field(pattern=r"^\d{6}$")]

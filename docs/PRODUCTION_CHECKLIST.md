@@ -28,3 +28,10 @@ Cocher chaque ligne **avec une preuve** (capture, sortie de commande, lien). Les
 - [ ] `pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:e2e` verts sur l'environnement de pré-production
 - [ ] Parcours complet réel : inscription → e-mail → profil → match → message → paiement réel → facture → annulation → suppression
 - [ ] Documentation à jour (README, STATUS, DEPLOYMENT)
+
+## Confirmation de l'e-mail (obligatoire avant tout usage)
+- [ ] **SMTP réel configuré** : sans lui, aucun nouveau membre ne reçoit son code et ne peut entrer dans l'application.
+- [ ] `DEV_EMAIL_CODE` **absent** de l'environnement de production (le serveur refuse de démarrer sinon) ; `NODE_ENV=production`.
+- [ ] `REQUIRE_EMAIL_VERIFICATION=true` (la garde serveur en dépend).
+- [ ] Durées vérifiées dans Admin › Engagement : validité du code (15 min) et suppression des comptes non confirmés (72 h).
+- [ ] La tâche horaire de purge tourne sur **une seule instance** (sinon cron avec verrou) ; idem pour les rappels de rendez-vous.

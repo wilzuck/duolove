@@ -3,7 +3,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import authsvc
-from app.core.auth import SESSION_COOKIE, AuthUser, current_user, current_user_allow_suspended
+from app.core.auth import SESSION_COOKIE, AuthUser, current_user, current_user_allow_suspended, current_user_allow_unverified
 from app.core.config import get_settings
 from app.core.errors import AppError, not_found
 from app.core.flags import require_flag
@@ -11,7 +11,7 @@ from app.core.ids import utcnow
 from app.core.ratelimit import client_ip, limit
 from app.db.session import get_db
 from app.models.models import Session
-from app.schemas.auth import ChangePasswordIn, EmailIn, GoogleIn, LoginIn, MagicLinkIn, MagicLinkVerifyIn, RegisterIn, ResetIn, TokenIn
+from app.schemas.auth import ChangePasswordIn, EmailIn, GoogleIn, LoginIn, MagicLinkIn, MagicLinkVerifyIn, RegisterIn, ResetIn, TokenIn, CodeIn
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -80,9 +80,19 @@ async def verify(body: TokenIn, db: AsyncSession = Depends(get_db)):
     return {"ok": True}
 
 
-@router.post("/resend-verification", status_code=200, dependencies=[limit(3)])
-async def resend(u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
-    await authsvc.resend_verification(db, u.id)
+@router.post("/resend-verification", status_code=200, dependencies=[limit(10, 600)])
+async def resend(u: AuthUser = Depends(current_user_allow_unverified), db: AsyncSession = Depends(get_db)):
+    return {"ok": True, "resendIn": await authsvc.resend_verification(db, u.id)}
+
+
+@router.get("/verification")
+async def verification(u: AuthUser = Depends(current_user_allow_unverified), db: AsyncSession = Depends(get_db)):
+    return await authsvc.verification_state(db, u.id)
+
+
+@router.post("/verify-code", status_code=200, dependencies=[limit(20, 600)])
+async def verify_code(body: CodeIn, u: AuthUser = Depends(current_user_allow_unverified), db: AsyncSession = Depends(get_db)):
+    await authsvc.verify_code(db, u.id, body.code)
     return {"ok": True}
 
 

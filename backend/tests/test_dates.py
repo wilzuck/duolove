@@ -221,3 +221,19 @@ async def test_flag_blocks_new_proposals_but_never_traps_members(app, db):
     assert code(await w.agent.post(f"/api/dates/{did}/reschedule", json=when(hours=90))) == "FEATURE_DISABLED"
     assert (await w.agent.get(f"/api/conversations/{conv}/dates")).status_code == 200  # on voit toujours ses rendez-vous
     assert (await w.agent.post(f"/api/dates/{did}/cancel")).status_code == 200  # et on peut toujours annuler
+
+
+async def test_public_share_link_is_rate_limited_per_ip_across_tokens(app, db, monkeypatch):
+    """Deviner des jetons ne doit pas être possible : le compteur est commun à tous les jetons essayés depuis une même IP."""
+    from types import SimpleNamespace
+
+    from app.core import ratelimit
+
+    monkeypatch.setattr(ratelimit, "get_settings", lambda: SimpleNamespace(node_env="production"))
+    ratelimit.reset()
+    try:
+        anon = new_agent(app)
+        codes = [(await anon.get(f"/api/dates/shared/{uid()}{uid()}")).status_code for _ in range(34)]
+        assert codes[:30] == [404] * 30 and set(codes[30:]) == {429}
+    finally:
+        ratelimit.reset()

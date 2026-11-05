@@ -33,17 +33,21 @@ export async function signUp(page: Page, request: APIRequestContext, p: Persona,
   await page.getByLabel('Ville').fill(p.city);
   await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Créer mon compte' }).click();
+  // Étape obligatoire : saisir le code à 6 chiffres reçu par e-mail (rien d'autre n'est accessible avant).
+  await expect(page).toHaveURL(/confirm-email/);
+  await expect(page.getByRole('heading', { name: 'Confirmez votre e-mail' })).toBeVisible();
+  const code = await emailCode(request, p.email);
+  await page.getByLabel('Code de confirmation').fill(code);
+  await page.getByRole('button', { name: 'Confirmer', exact: true }).click();
   await expect(page).toHaveURL(/onboarding/);
-  // Message de confirmation d'inscription : le compte est créé et un e-mail de validation est parti
-  await expect(page.getByText(/Votre compte est créé/).first()).toBeVisible();
-  await expect(page.getByText(/Un e-mail de confirmation a été envoyé à/)).toBeVisible();
+}
 
+/** Lit dans la boîte d'envoi de développement le dernier code de confirmation envoyé à `email`. */
+export async function emailCode(request: APIRequestContext, email: string): Promise<string> {
   const box = (await (await request.get('http://localhost:4000/api/dev/outbox')).json()) as { to: string; text: string }[];
-  const mail = [...box].reverse().find((m) => m.to === p.email);
+  const mail = [...box].reverse().find((m) => m.to === email);
   expect(mail, 'e-mail de confirmation reçu').toBeTruthy();
-  const link = /(http\S*verify-email\?token=\S+)/.exec(mail!.text)![1]!;
-  await page.goto(link);
-  await expect(page.getByText('Votre adresse e-mail est confirmée')).toBeVisible();
+  return /code de confirmation : (\d{6})/.exec(mail!.text)![1]!;
 }
 
 /** Scénario 3-4 : complétion du profil et ajout d'une photo recadrée. */

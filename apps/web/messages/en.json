@@ -759,18 +759,163 @@
     },
     "cookies": {
       "title": "Cookie policy",
+      "kicker": "Cookies and storage",
+      "metaDescription": "DuoMatch’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising, no tracking.",
+      "lead": "Let’s talk cookies, without jargon and without hiding anything. DuoMatch only uses the bare minimum to sign you in and remember your preferences: no advertising, no tracking, no selling of data.",
+      "toc": "Contents",
+      "updated": "Last updated: November 2026",
+      "listDo": "To remember",
+      "listDont": "What we do not use",
+      "listInfo": "In plain words",
+      "seeAlso": "Also read",
+      "privacy": "Privacy policy",
+      "terms": "Terms of use",
+      "contact": "A question? Write to us",
+      "glanceTitle": "At a glance",
+      "glance": [
+        {
+          "h": "No advertising",
+          "p": "No advertising cookies and no tracking across sites."
+        },
+        {
+          "h": "No tracking",
+          "p": "No audience-measurement tool, no social-network pixel."
+        },
+        {
+          "h": "Only what is needed",
+          "p": "Staying signed in, remembering your language and preferences."
+        },
+        {
+          "h": "You stay in control",
+          "p": "You can see, block or erase everything from your browser."
+        }
+      ],
+      "table": {
+        "caption": "Cookies and storage used by DuoMatch",
+        "name": "Name",
+        "kind": "Type",
+        "purpose": "What it is for",
+        "duration": "Duration",
+        "need": "Necessary?",
+        "yes": "Yes",
+        "pref": "Preference",
+        "rows": [
+          {
+            "name": "duomatch_sid",
+            "kind": "Cookie, secure (httpOnly)",
+            "purpose": "Keeps you signed in while you use DuoMatch.",
+            "duration": "The browser session, or 30 days if you tick “Stay signed in”.",
+            "need": "yes"
+          },
+          {
+            "name": "NEXT_LOCALE",
+            "kind": "Cookie",
+            "purpose": "Remembers your language (French or English).",
+            "duration": "The browser session.",
+            "need": "pref"
+          },
+          {
+            "name": "duomatch-theme",
+            "kind": "Browser local storage",
+            "purpose": "Remembers your light or dark theme choice.",
+            "duration": "Until you clear it.",
+            "need": "pref"
+          },
+          {
+            "name": "duomatch.enterSends",
+            "kind": "Browser local storage",
+            "purpose": "Remembers whether the Enter key sends your messages.",
+            "duration": "Until you clear it.",
+            "need": "pref"
+          }
+        ]
+      },
       "sections": [
         {
-          "h": "Essential cookies",
-          "p": "A secure (httpOnly) session cookie keeps you signed in. It is essential for the service to work."
+          "id": "essentiel",
+          "h": "In a nutshell",
+          "intro": "A cookie is a small file your browser keeps to remember something between two visits. We use very few, and only so the service works the way you want.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Only essential cookies and storage, or ones tied to a choice you make yourself, are used.",
+                "Nothing stored is used to follow you from site to site or to target you with advertising.",
+                "That is why no consent banner is shown: there is nothing more to accept."
+              ]
+            }
+          ]
         },
         {
-          "h": "Preferences",
-          "p": "Your theme choice (light/dark) is stored locally in your browser."
+          "id": "stockage",
+          "h": "What we store, one by one",
+          "intro": "Here is the complete list. Preferences (language, theme, Enter key) stay in your browser; they are not sent to profile you."
         },
         {
-          "h": "Analytics and advertising",
-          "p": "No advertising tracker is used. Any future analytics tool will ask for your prior consent."
+          "id": "connexion",
+          "h": "Staying signed in",
+          "paras": [
+            "The session cookie is the only essential cookie: without it you would have to type your password on every page. It is “httpOnly” (unreachable by page scripts), sent over a secure connection and limited to our site.",
+            "By default it disappears when you close the browser. If you tick “Stay signed in”, it lasts 30 days: only use this on a device you own. You can see and sign out your devices at any time in Settings › Security."
+          ]
+        },
+        {
+          "id": "preferences",
+          "h": "Your preferences",
+          "paras": [
+            "Your language, your light or dark theme and the “Enter sends” choice are comfort settings. If you clear them, DuoMatch simply starts again with its defaults."
+          ]
+        },
+        {
+          "id": "tiers",
+          "h": "Trusted services you choose to use",
+          "intro": "Two external services are only loaded when you use them. They may set their own cookies, under their own policies, which we do not control.",
+          "lists": [
+            {
+              "kind": "info",
+              "items": [
+                "Sign in with Google: Google’s button is only loaded on the sign-in and sign-up pages, and only if this option is enabled.",
+                "Payment: when you pay for a subscription or a purchase, our secure payment provider’s window loads. We keep no banking data."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "jamais",
+          "h": "What we do not use",
+          "lists": [
+            {
+              "kind": "dont",
+              "items": [
+                "Advertising or targeting cookies.",
+                "Audience-measurement or behaviour-analysis tools.",
+                "Social-network pixels and buttons that follow you.",
+                "Selling or sharing of your browsing data."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "gerer",
+          "h": "See, block or erase",
+          "paras": [
+            "Every browser lets you view, block or delete cookies and local storage (in its privacy settings). Note: blocking the session cookie will prevent you from signing in, and erasing everything signs you out and resets your preferences.",
+            "Signing out from DuoMatch immediately removes the session cookie from the device."
+          ]
+        },
+        {
+          "id": "evolutions",
+          "h": "If this were to change",
+          "paras": [
+            "If we ever added an audience-measurement tool or another tracker, we would ask for your agreement before turning it on, and this page would be updated. You could then refuse without losing access to the service."
+          ]
+        },
+        {
+          "id": "contact",
+          "h": "A question?",
+          "paras": [
+            "Write to us from the Contact page: we gladly answer, even detailed questions."
+          ]
         }
       ]
     },
@@ -1035,7 +1180,7 @@
   },
   "auth": {
     "loginTitle": "Welcome back!",
-    "loginSubtitle": "Good to see you again. Sign in to find your matches and messages.",
+    "loginSubtitle": "Log in to find your matches.",
     "registerTitle": "Create my account",
     "registerSubtitle": "Free, in under two minutes. No credit card.",
     "email": "Email address",
@@ -1093,29 +1238,11 @@
     "strengthDone": "Perfect, this password meets all the rules.",
     "privacyNote": "Your email address never appears on your profile.",
     "adultsNote": "For adults aged 18 and over, at any age.",
-    "side": {
-      "login": {
-        "kicker": "Good to see you again",
-        "title": "Your story is waiting.",
-        "text": "Sincere people, conversations that matter. Pick up where you left off, at your own pace.",
-        "points": [
-          "Your matches and messages are here, just as you left them.",
-          "Your conversations stay private and your location is never precise.",
-          "Forgot something? Forgot password or magic link: in a few seconds."
-        ]
-      },
-      "register": {
-        "kicker": "Welcome to DuoMatch",
-        "title": "Love has no age.",
-        "text": "Join adults aged 18 and over who are looking for a real relationship: sincere, respectful, and willing to take the time to get to know each other.",
-        "points": [
-          "Free to start, no credit card.",
-          "Real profiles: human moderation and a “verified” badge after a real check.",
-          "You stay in control: hideable profile, pause mode, private conversations.",
-          "Your location is never shown precisely."
-        ]
-      }
-    }
+    "reassure": [
+      "Free to start, no credit card.",
+      "Real profiles: human moderation and a “verified” badge.",
+      "You stay in control: hideable profile, pause mode."
+    ]
   },
   "gender": {
     "MAN": "Man",
@@ -1264,7 +1391,11 @@
     "DATE_NOT_RESCHEDULABLE": "This date cannot be rescheduled.",
     "DATE_NOT_ACCEPTED": "Available for an accepted date.",
     "DATE_NOT_FOUND": "Date not found.",
-    "SHARE_NOT_FOUND": "This link is no longer valid."
+    "SHARE_NOT_FOUND": "This link is no longer valid.",
+    "CODE_EXPIRED": "This code has expired. Ask for a new one.",
+    "CODE_LOCKED": "Too many attempts. Ask for a new code.",
+    "RESEND_TOO_SOON": "Please wait a moment before asking for a code again.",
+    "INVALID_CODE": "Wrong code."
   },
   "app": {
     "nav": {
@@ -1282,11 +1413,7 @@
     "upsellTitle": "Go Premium",
     "upsellText": "More likes, see who likes you, advanced filters.",
     "goPremium": "Go Premium",
-    "unread": "{count, plural, one {# unread notification} other {# unread notifications}}",
-    "verifyBanner": "A confirmation email was sent to {email}. Click the link inside to validate your account and be able to like and chat.",
-    "verifyResend": "Resend email",
-    "verifySent": "Confirmation email sent.",
-    "verifyDev": "(dev) open the latest email"
+    "unread": "{count, plural, one {# unread notification} other {# unread notifications}}"
   },
   "suspended": {
     "title": "Your account is suspended",
@@ -2169,7 +2296,9 @@
         "datesFeedback": "Reported satisfaction (average out of 5, {n} answer(s))",
         "datesNote": "Meetings and satisfaction come only from members’ voluntary declarations.",
         "pausedNow": "Members on pause",
-        "quietUsers": "Members with quiet hours"
+        "quietUsers": "Members with quiet hours",
+        "unverifiedPending": "Accounts awaiting confirmation",
+        "unverifiedPurged": "Unconfirmed accounts deleted (total)"
       },
       "unavailableTitle": "Not measured yet",
       "unavailable": {
@@ -2198,7 +2327,9 @@
       "dateShareHours": "Share link validity after the date (hours)",
       "pauseMaxDays": "Maximum length of a pause (days)",
       "emailCap": "Non-essential emails per member per day",
-      "dailyPlansNote": "The number of daily picks is set per plan, in"
+      "dailyPlansNote": "The number of daily picks is set per plan, in",
+      "codeTtl": "Confirmation code validity (minutes)",
+      "unverifiedTtl": "Delete unconfirmed accounts after (hours)"
     }
   },
   "pricingFaq": {
@@ -2580,5 +2711,20 @@
     "interests": "Pick a few more interests ({have} of {target}) to find common ground.",
     "verify": "Get your profile verified: the badge reassures others.",
     "go": "Go"
+  },
+  "confirm": {
+    "title": "Confirm your email",
+    "subtitle": "We sent a 6-digit code to {email}. It is valid for {minutes} minutes.",
+    "codeLabel": "Confirmation code",
+    "codeHint": "Enter the 6 digits you received by email.",
+    "submit": "Confirm",
+    "wrong": "Wrong code. {n, plural, =0 {No attempts left: ask for a new code.} one {# attempt left.} other {# attempts left.}}",
+    "notReceived": "Nothing received? Check your spam folder, then ask for a new code.",
+    "resend": "Resend the code",
+    "resendIn": "Resend the code in {n} s",
+    "resent": "A new code has just been sent.",
+    "deleteNotice": "To avoid unused accounts, an unconfirmed account is deleted automatically after {hours} h (on {date}).",
+    "wrongAddress": "Wrong address? Start sign-up again",
+    "devHint": "Development mode: the code is {code}. It never exists in production."
   }
 }

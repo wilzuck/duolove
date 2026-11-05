@@ -39,7 +39,10 @@ async def compute(db: AsyncSession, now: datetime.datetime) -> dict:
                               'UNION ALL SELECT "inviteeFeedback" FROM "DateProposal" WHERE "inviteeFeedback" IS NOT NULL) t')).one()
     paused_now = (await one('SELECT count(*) FROM "Profile" WHERE "pausedAt" IS NOT NULL AND ("pauseEndsAt" IS NULL OR "pauseEndsAt" > :n)', n=now)).scalar_one()
     quiet_users = (await one('SELECT count(*) FROM "NotificationPreference" WHERE "quietStart" IS NOT NULL')).scalar_one()
+    pending = (await one('SELECT count(*) FROM "User" WHERE "emailVerifiedAt" IS NULL AND status = \'ACTIVE\' AND "passwordHash" IS NOT NULL')).scalar_one()
+    purged = (await one('SELECT COALESCE(max((value)::text::int), 0) FROM "SystemSetting" WHERE key = \'stats.unverified_purged\'')).scalar_one()
     return {
+        "signup": {"unverifiedPending": pending, "unverifiedPurgedTotal": purged},
         "rhythm": {"pausedNow": paused_now, "quietHoursUsers": quiet_users},
         "dates": {"proposed": dtotal, "accepted": accepted, "declined": dstat.get("DECLINED", 0), "canceled": dstat.get("CANCELED", 0), "completed": dstat.get("COMPLETED", 0),
                   "acceptRate": _rate(accepted, answered), "feedbackCount": fb_n, "feedbackAverage": float(fb_avg) if fb_avg is not None else None},

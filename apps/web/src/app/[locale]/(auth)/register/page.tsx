@@ -1,5 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
@@ -42,7 +43,7 @@ function RegisterForm() {
   const done = async (sentTo?: string) => {
     await qc.invalidateQueries();
     if (sentTo) toast('success', t('auth.registered', { email: sentTo }));
-    router.replace('/onboarding');
+    router.replace(sentTo ? '/confirm-email' : '/onboarding'); // e-mail à confirmer d'abord ; un compte Google arrive déjà confirmé
   };
   const reg = useMutation({
     mutationFn: () => post('/auth/register', { displayName: f.displayName, email: f.email, password: f.password, birthDate: f.birthDate, gender: f.gender, country: f.country, city: f.city, acceptTerms: f.acceptTerms, ...(referralCode.trim() ? { referralCode: referralCode.trim() } : {}) }),
@@ -72,7 +73,10 @@ function RegisterForm() {
   };
 
   return (
-    <AuthShell side="register" title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')} footer={<>{t('auth.haveAccount')} <Link href="/login" className="font-semibold text-brand-ink underline">{t('nav.login')}</Link></>}>
+    <AuthShell backdrop="/images/auth-couple.webp" title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')} footer={<>{t('auth.haveAccount')} <Link href="/login" className="font-semibold text-brand-ink underline">{t('nav.login')}</Link></>}>
+      <ul className="-mt-2 mb-6 space-y-1.5 text-sm">
+        {(t.raw('auth.reassure') as string[]).map((r) => <li key={r} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success-ink" aria-hidden /><span>{r}</span></li>)}
+      </ul>
       {!googleToken && <GoogleButton onToken={setGoogleToken} />}
       {googleToken && <p className="mb-5 rounded-2xl bg-soft p-4 text-sm">{t('auth.googleComplete')}</p>}
       <form onSubmit={submit} className="space-y-4" noValidate>

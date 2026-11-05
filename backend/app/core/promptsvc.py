@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core import appsettings
 from app.core.errors import bad_request
 from app.core.ids import utcnow
-from app.models.models import ProfilePrompt, ProfilePromptAnswer
+from app.models.models import ProfilePrompt, ProfilePromptAnswer, SystemSetting
 
 ANSWER_MIN, ANSWER_MAX = 3, 300
 DEFAULT_PROMPTS = [  # (slug, français, anglais)
@@ -21,12 +21,20 @@ DEFAULT_PROMPTS = [  # (slug, français, anglais)
 ]
 
 
+SEEDED_KEY = "catalog.prompts_seeded"
+
+
 async def ensure_defaults(db: AsyncSession) -> None:
-    """Crée le catalogue initial si la table est vide ; ne touche jamais aux questions modifiées ou supprimées par l'administration."""
-    if (await db.execute(select(ProfilePrompt.id).limit(1))).first():
+    """Crée une seule fois les questions initiales manquantes (repérées par leur clé). Ensuite, un marqueur garantit qu'on ne touche plus jamais au catalogue :
+    une question modifiée, désactivée ou supprimée par l'administration n'est jamais recréée. (Une migration peut déjà avoir ajouté une question : on ne se
+    fie donc pas à « la table est vide ».)"""
+    if await db.get(SystemSetting, SEEDED_KEY):
         return
+    have = set((await db.execute(select(ProfilePrompt.slug))).scalars().all())
     for i, (slug, fr, en) in enumerate(DEFAULT_PROMPTS):
-        db.add(ProfilePrompt(slug=slug, textFr=fr, textEn=en, sortOrder=i))
+        if slug not in have:
+            db.add(ProfilePrompt(slug=slug, textFr=fr, textEn=en, sortOrder=i))
+    db.add(SystemSetting(key=SEEDED_KEY, value=True))
     await db.commit()
 
 

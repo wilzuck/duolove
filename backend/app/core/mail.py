@@ -30,10 +30,12 @@ async def send(to: str, subject: str, text: str) -> None:
     log.info("[dev] e-mail à %s : %s", to, subject)
 
 
-async def send_verification(to: str, name: str, token: str) -> None:
-    await send(to, "Confirmez votre adresse e-mail — DuoMatch",
-               f"Bonjour {name},\n\nBienvenue sur DuoMatch ! Confirmez votre adresse : {get_settings().app_url}/verify-email?token={token}\n\n"
-               "Ce lien expire dans 24 h. Si vous n'êtes pas à l'origine de cette inscription, ignorez ce message.")
+async def send_verification(to: str, name: str, token: str, code: str, minutes: int = 15) -> None:
+    await send(to, "Votre code de confirmation — DuoMatch",
+               f"Bonjour {name},\n\nBienvenue sur DuoMatch !\n\nVotre code de confirmation : {code}\n"
+               f"Saisissez-le dans l'application (valable {minutes} minutes).\n\n"
+               f"Vous pouvez aussi confirmer en un clic : {get_settings().app_url}/verify-email?token={token} (lien valable 24 h).\n\n"
+               "Ne communiquez jamais ce code. Si vous n'êtes pas à l'origine de cette inscription, ignorez ce message : le compte sera supprimé automatiquement.")
 
 
 async def send_password_reset(to: str, name: str, token: str) -> None:

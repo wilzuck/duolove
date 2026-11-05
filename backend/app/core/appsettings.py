@@ -22,6 +22,8 @@ INT_SPECS = {  # clé → (défaut, min, max)
     "dates.max_per_day": (5, 1, 20),
     "dates.share_hours_after": (6, 1, 48),
     "pause.max_days": (90, 1, 365),
+    "signup.code_ttl_minutes": (15, 5, 60),
+    "signup.unverified_ttl_hours": (72, 1, 720),
     "notifications.max_emails_per_day": (5, 0, 50),
 }
 WEIGHT_KEY = "matching.weights"

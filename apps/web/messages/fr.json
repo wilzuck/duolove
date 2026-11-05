@@ -759,18 +759,163 @@
     },
     "cookies": {
       "title": "Politique de cookies",
+      "kicker": "Cookies et stockage",
+      "metaDescription": "Les cookies et stockages de DuoMatch, listés un par un : ce qu'ils font, combien de temps ils durent, et comment les gérer. Aucune publicité, aucun traçage.",
+      "lead": "Parlons cookies, sans jargon et sans rien cacher. DuoMatch n’utilise que le strict nécessaire pour vous connecter et retenir vos préférences : pas de publicité, pas de traçage, pas de revente de données.",
+      "toc": "Sommaire",
+      "updated": "Dernière mise à jour : novembre 2026",
+      "listDo": "À retenir",
+      "listDont": "Ce que nous n’utilisons pas",
+      "listInfo": "En clair",
+      "seeAlso": "À lire aussi",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d’utilisation",
+      "contact": "Une question ? Écrivez-nous",
+      "glanceTitle": "En un coup d’œil",
+      "glance": [
+        {
+          "h": "Aucune publicité",
+          "p": "Ni cookie publicitaire, ni suivi entre sites."
+        },
+        {
+          "h": "Aucun traçage",
+          "p": "Pas d’outil de mesure d’audience, pas de pixel de réseau social."
+        },
+        {
+          "h": "Le strict nécessaire",
+          "p": "Rester connecté(e), retenir votre langue et vos préférences."
+        },
+        {
+          "h": "Vous gardez la main",
+          "p": "Vous pouvez tout voir, bloquer ou effacer depuis votre navigateur."
+        }
+      ],
+      "table": {
+        "caption": "Cookies et stockages utilisés par DuoMatch",
+        "name": "Nom",
+        "kind": "Type",
+        "purpose": "À quoi il sert",
+        "duration": "Durée",
+        "need": "Nécessaire ?",
+        "yes": "Oui",
+        "pref": "Préférence",
+        "rows": [
+          {
+            "name": "duomatch_sid",
+            "kind": "Cookie, sécurisé (httpOnly)",
+            "purpose": "Vous garder connecté(e) pendant que vous utilisez DuoMatch.",
+            "duration": "La session du navigateur, ou 30 jours si vous cochez « Restez connecté ».",
+            "need": "yes"
+          },
+          {
+            "name": "NEXT_LOCALE",
+            "kind": "Cookie",
+            "purpose": "Retenir votre langue (français ou anglais).",
+            "duration": "La session du navigateur.",
+            "need": "pref"
+          },
+          {
+            "name": "duomatch-theme",
+            "kind": "Stockage local du navigateur",
+            "purpose": "Retenir votre choix de thème clair ou sombre.",
+            "duration": "Jusqu’à ce que vous l’effaciez.",
+            "need": "pref"
+          },
+          {
+            "name": "duomatch.enterSends",
+            "kind": "Stockage local du navigateur",
+            "purpose": "Retenir si la touche Entrée envoie vos messages.",
+            "duration": "Jusqu’à ce que vous l’effaciez.",
+            "need": "pref"
+          }
+        ]
+      },
       "sections": [
         {
-          "h": "Cookies essentiels",
-          "p": "Un cookie de session sécurisé (httpOnly) vous maintient connecté. Il est indispensable au fonctionnement du service."
+          "id": "essentiel",
+          "h": "En deux mots",
+          "intro": "Un cookie est un petit fichier que votre navigateur garde pour retenir quelque chose entre deux visites. Nous en utilisons très peu, et uniquement pour que le service fonctionne comme vous le souhaitez.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Seuls des cookies et stockages indispensables, ou liés à un choix que vous faites vous-même, sont utilisés.",
+                "Rien de ce qui est stocké ne sert à vous suivre d’un site à l’autre ni à vous cibler par de la publicité.",
+                "C’est pourquoi aucun bandeau de consentement ne s’affiche : il n’y a rien de plus à accepter."
+              ]
+            }
+          ]
         },
         {
-          "h": "Préférences",
-          "p": "Votre choix de thème (clair/sombre) est mémorisé localement dans votre navigateur."
+          "id": "stockage",
+          "h": "Ce que nous stockons, un par un",
+          "intro": "Voici la liste complète. Les préférences (langue, thème, touche Entrée) restent dans votre navigateur ; elles ne sont pas envoyées pour vous profiler."
         },
         {
-          "h": "Mesure d’audience et publicité",
-          "p": "Aucun traceur publicitaire n’est utilisé. Tout futur outil de mesure demandera votre consentement préalable."
+          "id": "connexion",
+          "h": "Rester connecté(e)",
+          "paras": [
+            "Le cookie de session est le seul cookie indispensable : sans lui, il faudrait saisir votre mot de passe à chaque page. Il est « httpOnly » (inaccessible aux scripts de la page), envoyé en connexion sécurisée et limité à notre site.",
+            "Par défaut, il s’efface à la fermeture du navigateur. Si vous cochez « Restez connecté », il dure 30 jours : n’utilisez cette option que sur un appareil qui vous appartient. Vous pouvez à tout moment voir et déconnecter vos appareils dans Paramètres › Sécurité."
+          ]
+        },
+        {
+          "id": "preferences",
+          "h": "Vos préférences",
+          "paras": [
+            "Votre langue, votre thème clair ou sombre et le choix « Entrée envoie » sont des réglages de confort. Si vous les effacez, DuoMatch repart simplement avec ses valeurs par défaut."
+          ]
+        },
+        {
+          "id": "tiers",
+          "h": "Les services de confiance que vous choisissez d’utiliser",
+          "intro": "Deux services externes ne sont chargés que lorsque vous les utilisez. Ils peuvent poser leurs propres cookies, selon leurs propres politiques, que nous ne contrôlons pas.",
+          "lists": [
+            {
+              "kind": "info",
+              "items": [
+                "Connexion avec Google : le bouton de Google n’est chargé que sur les pages de connexion et d’inscription, et seulement si cette option est activée.",
+                "Paiement : lorsque vous réglez un abonnement ou un achat, la fenêtre de notre prestataire de paiement sécurisé se charge. Nous ne conservons aucune donnée bancaire."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "jamais",
+          "h": "Ce que nous n’utilisons pas",
+          "lists": [
+            {
+              "kind": "dont",
+              "items": [
+                "Cookies publicitaires ou de ciblage.",
+                "Outils de mesure d’audience ou d’analyse de comportement.",
+                "Pixels et boutons de réseaux sociaux qui vous suivent.",
+                "Revente ou partage de vos données de navigation."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "gerer",
+          "h": "Voir, bloquer ou effacer",
+          "paras": [
+            "Tous les navigateurs permettent de consulter, bloquer ou supprimer les cookies et le stockage local (dans les réglages de confidentialité). Attention : bloquer le cookie de session vous empêchera de vous connecter, et tout effacer vous déconnecte et réinitialise vos préférences.",
+            "Se déconnecter depuis DuoMatch supprime immédiatement le cookie de session de l’appareil."
+          ]
+        },
+        {
+          "id": "evolutions",
+          "h": "Si cela devait changer",
+          "paras": [
+            "Si nous ajoutions un jour un outil de mesure d’audience ou un autre traceur, nous vous demanderions votre accord avant de l’activer, et cette page serait mise à jour. Vous pourriez alors refuser sans perdre l’accès au service."
+          ]
+        },
+        {
+          "id": "contact",
+          "h": "Une question ?",
+          "paras": [
+            "Écrivez-nous depuis la page Contact : nous répondons avec plaisir, même aux questions de détail."
+          ]
         }
       ]
     },
@@ -1035,7 +1180,7 @@
   },
   "auth": {
     "loginTitle": "Bon retour !",
-    "loginSubtitle": "Content de vous revoir. Connectez-vous pour retrouver vos matchs et vos messages.",
+    "loginSubtitle": "Connectez-vous pour retrouver vos matchs.",
     "registerTitle": "Créer mon compte",
     "registerSubtitle": "Gratuit, en moins de deux minutes. Pas de carte bancaire.",
     "email": "Adresse e-mail",
@@ -1093,29 +1238,11 @@
     "strengthDone": "Parfait, ce mot de passe respecte toutes les règles.",
     "privacyNote": "Votre adresse e-mail n’apparaît jamais sur votre profil.",
     "adultsNote": "Réservé aux adultes de 18 ans et plus, à tout âge.",
-    "side": {
-      "login": {
-        "kicker": "Content de vous revoir",
-        "title": "Votre histoire vous attend.",
-        "text": "Des personnes sincères, des conversations qui comptent. Reprenez là où vous vous étiez arrêté(e), à votre rythme.",
-        "points": [
-          "Vos matchs et vos messages sont là, tels que vous les avez laissés.",
-          "Vos conversations restent privées et votre position n’est jamais précise.",
-          "Un trou de mémoire ? Mot de passe oublié ou lien magique : en quelques secondes."
-        ]
-      },
-      "register": {
-        "kicker": "Bienvenue sur DuoMatch",
-        "title": "L’amour n’a pas d’âge.",
-        "text": "Rejoignez des adultes de 18 ans et plus qui cherchent une vraie relation : sincères, respectueux, et décidés à prendre le temps de se connaître.",
-        "points": [
-          "Gratuit pour commencer, sans carte bancaire.",
-          "De vrais profils : modération humaine et badge « vérifié » après un contrôle réel.",
-          "Vous gardez la main : profil masquable, mode pause, conversations privées.",
-          "Votre position n’est jamais affichée précisément."
-        ]
-      }
-    }
+    "reassure": [
+      "Gratuit pour commencer, sans carte bancaire.",
+      "De vrais profils : modération humaine et badge « vérifié ».",
+      "Vous gardez la main : profil masquable, mode pause."
+    ]
   },
   "gender": {
     "MAN": "Homme",
@@ -1264,7 +1391,11 @@
     "DATE_NOT_RESCHEDULABLE": "Ce rendez-vous ne peut pas être reporté.",
     "DATE_NOT_ACCEPTED": "Disponible pour un rendez-vous accepté.",
     "DATE_NOT_FOUND": "Rendez-vous introuvable.",
-    "SHARE_NOT_FOUND": "Ce lien n’est plus valable."
+    "SHARE_NOT_FOUND": "Ce lien n’est plus valable.",
+    "CODE_EXPIRED": "Ce code a expiré. Demandez-en un nouveau.",
+    "CODE_LOCKED": "Trop d’essais. Demandez un nouveau code.",
+    "RESEND_TOO_SOON": "Patientez un instant avant de redemander un code.",
+    "INVALID_CODE": "Code incorrect."
   },
   "app": {
     "nav": {
@@ -1282,11 +1413,7 @@
     "upsellTitle": "Passez à Premium",
     "upsellText": "Plus de likes, voir qui vous aime, filtres avancés.",
     "goPremium": "Passer Premium",
-    "unread": "{count, plural, one {# notification non lue} other {# notifications non lues}}",
-    "verifyBanner": "Un e-mail de confirmation a été envoyé à {email}. Cliquez sur le lien qu’il contient pour valider votre compte et pouvoir liker et discuter.",
-    "verifyResend": "Renvoyer l’e-mail",
-    "verifySent": "E-mail de confirmation envoyé.",
-    "verifyDev": "(dev) ouvrir le dernier e-mail"
+    "unread": "{count, plural, one {# notification non lue} other {# notifications non lues}}"
   },
   "suspended": {
     "title": "Votre compte est suspendu",
@@ -2169,7 +2296,9 @@
         "datesFeedback": "Satisfaction déclarée (moyenne sur 5, {n} retour(s))",
         "datesNote": "Rencontres et satisfaction proviennent uniquement des déclarations volontaires des membres.",
         "pausedNow": "Membres en pause",
-        "quietUsers": "Membres avec une période de repos"
+        "quietUsers": "Membres avec une période de repos",
+        "unverifiedPending": "Comptes en attente de confirmation",
+        "unverifiedPurged": "Comptes non confirmés supprimés (total)"
       },
       "unavailableTitle": "Pas encore mesuré",
       "unavailable": {
@@ -2198,7 +2327,9 @@
       "dateShareHours": "Validité du lien de partage après le rendez-vous (heures)",
       "pauseMaxDays": "Durée maximale d’une pause (jours)",
       "emailCap": "E-mails non essentiels par membre et par jour",
-      "dailyPlansNote": "Le nombre de découvertes du jour se règle par formule, dans"
+      "dailyPlansNote": "Le nombre de découvertes du jour se règle par formule, dans",
+      "codeTtl": "Validité du code de confirmation (minutes)",
+      "unverifiedTtl": "Suppression des comptes non confirmés après (heures)"
     }
   },
   "pricingFaq": {
@@ -2580,5 +2711,20 @@
     "interests": "Choisissez quelques centres d’intérêt de plus ({have} sur {target}) pour trouver des points communs.",
     "verify": "Faites vérifier votre profil : le badge rassure les autres.",
     "go": "Y aller"
+  },
+  "confirm": {
+    "title": "Confirmez votre e-mail",
+    "subtitle": "Nous avons envoyé un code à 6 chiffres à {email}. Il est valable {minutes} minutes.",
+    "codeLabel": "Code de confirmation",
+    "codeHint": "Saisissez les 6 chiffres reçus par e-mail.",
+    "submit": "Confirmer",
+    "wrong": "Code incorrect. {n, plural, =0 {Plus d’essai : demandez un nouveau code.} one {Il vous reste # essai.} other {Il vous reste # essais.}}",
+    "notReceived": "Rien reçu ? Regardez vos courriers indésirables, puis demandez un nouveau code.",
+    "resend": "Renvoyer le code",
+    "resendIn": "Renvoyer le code dans {n} s",
+    "resent": "Un nouveau code vient d’être envoyé.",
+    "deleteNotice": "Pour éviter les comptes inutilisés, un compte non confirmé est supprimé automatiquement après {hours} h (le {date}).",
+    "wrongAddress": "Mauvaise adresse ? Recommencer l’inscription",
+    "devHint": "Mode développement : le code est {code}. Il n’existe jamais en production."
   }
 }

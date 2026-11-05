@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import datesvc
+from app.core.ratelimit import limit
 from app.core.auth import AuthUser, verified_user
 from app.db.session import get_db
 from app.schemas.dates import DateIn, FeedbackIn, ReminderIn
@@ -11,7 +12,7 @@ router = APIRouter(tags=["dates"])
 U = Depends(verified_user)
 
 
-@router.get("/dates/shared/{token}")
+@router.get("/dates/shared/{token}", dependencies=[limit(30, 60, scope="dates-shared")])
 async def shared(token: str, response: Response, db: AsyncSession = Depends(get_db)):
     """Page publique d'un partage volontaire (sans compte) : jamais indexée, jamais mise en cache."""
     response.headers["Cache-Control"] = "no-store"

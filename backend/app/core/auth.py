@@ -44,7 +44,7 @@ async def resolve_session(db: AsyncSession, token: str | None) -> tuple[Session,
     return s, u
 
 
-async def _authenticate(request: Request, db: AsyncSession, *, allow_suspended: bool) -> AuthUser:
+async def _authenticate(request: Request, db: AsyncSession, *, allow_suspended: bool, allow_unverified: bool = False) -> AuthUser:
     found = await resolve_session(db, request.cookies.get(SESSION_COOKIE))
     if not found:
         raise unauthorized()
@@ -55,6 +55,9 @@ async def _authenticate(request: Request, db: AsyncSession, *, allow_suspended: 
         await db.commit()
     if user.status.value == "SUSPENDED" and not allow_suspended:
         raise forbidden("ACCOUNT_SUSPENDED")
+    # Compte non confirmé : rien d'autre que confirmer son e-mail (ou se déconnecter / supprimer le compte). Appliqué ici, pour TOUTES les routes protégées.
+    if not allow_unverified and get_settings().require_email_verification and not user.emailVerifiedAt:
+        raise forbidden("EMAIL_NOT_VERIFIED")
     # Activité : écriture au plus toutes les 5 min pour ne pas charger la base.
     if utcnow() - session.lastUsedAt > datetime.timedelta(minutes=5):
         now = utcnow()
@@ -69,7 +72,12 @@ async def current_user(request: Request, db: AsyncSession = Depends(get_db)) -> 
 
 
 async def current_user_allow_suspended(request: Request, db: AsyncSession = Depends(get_db)) -> AuthUser:
-    return await _authenticate(request, db, allow_suspended=True)
+    return await _authenticate(request, db, allow_suspended=True, allow_unverified=True)
+
+
+async def current_user_allow_unverified(request: Request, db: AsyncSession = Depends(get_db)) -> AuthUser:
+    """Pour la seule étape de confirmation de l'e-mail (saisie du code, renvoi) et la suppression du compte."""
+    return await _authenticate(request, db, allow_suspended=False, allow_unverified=True)
 
 
 async def verified_user(u: AuthUser = Depends(current_user)) -> AuthUser:

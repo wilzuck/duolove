@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 
-// Les conditions (legal/terms) et la charte (legal/community) ont leur propre page ; ici, les autres documents juridiques.
-const DOCS = ['privacy', 'cookies'] as const;
+// Les conditions, la charte et les cookies ont leur propre page (legal/terms, legal/community, legal/cookies) ; ici, la confidentialité.
+const DOCS = ['privacy'] as const;
 type Doc = (typeof DOCS)[number];
 
 export function generateStaticParams() {

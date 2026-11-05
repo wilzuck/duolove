@@ -103,6 +103,8 @@ test.describe.serial('Rythme et bien-être', () => {
     await page.goto('/admin/engagement');
     await expect(page.getByLabel('Durée maximale d’une pause (jours)')).toHaveValue('90');
     await expect(page.getByLabel('E-mails non essentiels par membre et par jour')).toHaveValue('5');
+    await expect(page.getByLabel('Validité du code de confirmation (minutes)')).toHaveValue('15');
+    await expect(page.getByLabel('Suppression des comptes non confirmés après (heures)')).toHaveValue('72');
     await page.getByLabel('Durée maximale d’une pause (jours)').fill('14');
     await page.getByRole('button', { name: 'Enregistrer les réglages' }).click();
     await expect(page.getByText('Réglages enregistrés.')).toBeVisible();

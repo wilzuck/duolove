@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.inspection import inspect
 
 from app.core import credits, entitlements, rhythm, storage
-from app.core.auth import AuthUser, current_user, current_user_allow_suspended
+from app.core.auth import AuthUser, current_user, current_user_allow_suspended, current_user_allow_unverified
 from app.core.errors import AppError, bad_request, unauthorized
 from app.core.ids import utcnow
 from app.core.profile_card import photo_url, thumb_key
@@ -106,7 +106,7 @@ async def export(res: Response, u: AuthUser = Depends(current_user), db: AsyncSe
 
 
 @router.delete("/me", dependencies=[limit(5, 3600)])
-async def remove(body: DeleteAccountIn, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+async def remove(body: DeleteAccountIn, u: AuthUser = Depends(current_user_allow_unverified), db: AsyncSession = Depends(get_db)):
     """Suppression du compte : anonymisation immédiate, sessions révoquées, photos effacées."""
     user = await db.get(User, u.id)
     if user.passwordHash and not (body.password and await verify_password(user.passwordHash, body.password)):

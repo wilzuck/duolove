@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     cookie_domain: str | None = Field(None, alias="COOKIE_DOMAIN")
     session_ttl_days: int = Field(30, alias="SESSION_TTL_DAYS")
     require_email_verification: bool = Field(True, alias="REQUIRE_EMAIL_VERIFICATION")
+    # Développement local uniquement : code de confirmation d'e-mail fixe (défaut 000000 ; DEV_EMAIL_CODE= vide pour le désactiver). Refusé en production.
+    dev_email_code: str | None = Field(None, alias="DEV_EMAIL_CODE")
     google_client_id: str | None = Field(None, alias="GOOGLE_CLIENT_ID")
     smtp_url: str | None = Field(None, alias="SMTP_URL")
     mail_from: str = Field("DuoMatch <no-reply@duomatch.app>", alias="MAIL_FROM")
@@ -46,6 +48,10 @@ class Settings(BaseSettings):
             self.payment_webhook_secret.startswith("dev-only") or self.ip_hash_salt.startswith("dev-only")
         ):
             raise ValueError("Secrets de développement détectés en production : définissez PAYMENT_WEBHOOK_SECRET et IP_HASH_SALT.")
+        if self.dev_email_code and not (self.dev_email_code.isdigit() and len(self.dev_email_code) == 6):
+            raise ValueError("DEV_EMAIL_CODE doit contenir exactement 6 chiffres.")
+        if self.node_env == "production" and self.dev_email_code:
+            raise ValueError("DEV_EMAIL_CODE est interdit en production : le code de confirmation d'e-mail doit être aléatoire.")
         if self.payment_provider == "kkiapay":
             missing = [k for k, v in {
                 "KKIAPAY_PUBLIC_KEY": self.kkiapay_public_key,
@@ -55,6 +61,13 @@ class Settings(BaseSettings):
             if missing:
                 raise ValueError(f"PAYMENT_PROVIDER=kkiapay : variables manquantes : {', '.join(missing)}")
         return self
+
+    @property
+    def fixed_email_code(self) -> str | None:
+        """Code fixe de confirmation d'e-mail, EN DÉVELOPPEMENT LOCAL SEULEMENT (jamais en test ni en production) : 000000 par défaut."""
+        if self.node_env != "development":
+            return None
+        return (self.dev_email_code if self.dev_email_code is not None else "000000") or None
 
     @property
     def is_prod(self) -> bool:

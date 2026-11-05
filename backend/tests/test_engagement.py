@@ -283,3 +283,33 @@ async def test_metrics_admin_only_and_honest(app, db):
     assert m["likes"] >= m["likesWithComment"] >= 0 and 0 <= (m["matchRate"] or 0) <= 100
     assert m["unavailable"] == [] and {"proposed", "accepted", "completed", "feedbackCount"} <= set(m["dates"])  # mesurés via déclarations volontaires
     assert "d7" in m["retention"] and m["retention"]["definition"]
+
+
+async def test_default_prompts_are_seeded_once_even_after_a_migration_added_one(app, db):
+    """Base neuve : la migration a déjà créé 1 question ; les 8 autres doivent quand même apparaître, une seule fois, sans jamais ressusciter une suppression."""
+    from app.core import promptsvc
+    async with session_maker()() as s:
+        saved = (await s.execute(select(ProfilePrompt))).scalars().all()
+        snapshot = [(p.slug, p.textFr, p.textEn, p.active, p.sortOrder) for p in saved]
+        await s.execute(delete(ProfilePrompt))
+        await s.execute(delete(SystemSetting).where(SystemSetting.key == promptsvc.SEEDED_KEY))
+        s.add(ProfilePrompt(slug="travel-destination", textFr="Si je devais voyager, ma prochaine destination serait…", textEn="If I had to travel, my next destination would be…", sortOrder=8))
+        await s.commit()
+    try:
+        async with session_maker()() as s:
+            await promptsvc.ensure_defaults(s)
+        async with session_maker()() as s:
+            slugs = [x for x in (await s.execute(select(ProfilePrompt.slug))).scalars()]
+            assert sorted(slugs) == sorted(d[0] for d in promptsvc.DEFAULT_PROMPTS) and len(slugs) == 9
+            await s.execute(delete(ProfilePrompt).where(ProfilePrompt.slug == "dream"))  # l'administration en supprime une
+            await s.commit()
+        async with session_maker()() as s:
+            await promptsvc.ensure_defaults(s)  # redémarrage de l'API
+        async with session_maker()() as s:
+            assert "dream" not in (await s.execute(select(ProfilePrompt.slug))).scalars().all()  # jamais recréée
+    finally:  # remet le catalogue d'origine pour les autres tests
+        async with session_maker()() as s:
+            await s.execute(delete(ProfilePrompt))
+            for slug, fr, en, active, order in snapshot:
+                s.add(ProfilePrompt(slug=slug, textFr=fr, textEn=en, active=active, sortOrder=order))
+            await s.commit()

@@ -57,3 +57,6 @@ Cadre : OWASP Top 10 / ASVS, RGPD. Cette page décrit **ce qui est réellement e
 ## 5. Signaler une vulnérabilité
 
 À définir avant production (adresse `security@…`, page `/.well-known/security.txt`).
+
+## Confirmation de l'e-mail par code
+Code à 6 chiffres aléatoire (jamais en clair en base : HMAC lié au compte), 5 essais puis annulation, expiration courte, renvoi plafonné (30 s), limitation de débit par IP, comparaison à temps constant, consommation atomique. Tant que l'e-mail n'est pas confirmé, le **serveur** refuse toute route protégée ; les comptes jamais confirmés sont supprimés après un délai réglé par l'administration. Le code fixe de développement (`DEV_EMAIL_CODE`) est impossible en production par construction (le serveur refuse de démarrer) et en test.
