@@ -17,7 +17,7 @@ from app.core.constants import DATE_REMINDER_MINUTES
 from app.core.errors import AppError, bad_request, forbidden, not_found
 from app.core.ids import utcnow
 from app.core.jsonfmt import iso as _iso
-from app.models.models import Conversation, DateProposal, DateReminder, DateShare, Match, Profile
+from app.models.models import Conversation, DateProposal, DateReminder, DateShare, Match, NotificationPreference, Profile
 
 log = logging.getLogger(__name__)
 OPEN = ("PROPOSED", "ACCEPTED")
@@ -244,6 +244,9 @@ async def run_reminders(db: AsyncSession, now: datetime.datetime | None = None) 
     for r, d in due:
         r.sentAt = now
         await db.commit()
+        prefs = (await db.execute(select(NotificationPreference).where(NotificationPreference.userId == r.userId))).scalar_one_or_none()
+        if prefs is not None and not prefs.dateReminders:
+            continue  # le membre a désactivé les rappels de rendez-vous
         await notifications.create(db, r.userId, "DATE_REMINDER", {"conversationId": d.conversationId, "dateId": d.id, "startsAt": iso(d.startsAt), "minutes": r.minutesBefore})
     stale = await db.execute(update(DateProposal).where(DateProposal.status == "PROPOSED", DateProposal.startsAt < now).values(status="CANCELED", respondedAt=now))
     await db.commit()

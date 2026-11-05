@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CreditCard, Gift, HelpCircle, Image as ImageIcon, Info, MessageSquareHeart, Radio, CalendarHeart, Lightbulb, Reply, Rocket, Smile, Sparkles, Star, UserPlus, Users, type LucideIcon } from 'lucide-react';
+import { CreditCard, Gift, HelpCircle, Image as ImageIcon, Info, MessageSquareHeart, Radio, CalendarHeart, Lightbulb, ListChecks, Moon, Reply, Rocket, Smile, Sparkles, Star, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { FLAG_CATEGORIES, type FlagCategory, type FlagKey } from '@duomatch/types';
@@ -14,7 +14,7 @@ const ICONS: Record<FlagKey, LucideIcon> = {
   registration_open: UserPlus, payments_enabled: CreditCard, promo_codes: Gift, boosts: Rocket,
   live_match: Radio, super_likes: Star, chat_images: ImageIcon, referral_program: Users,
   profile_prompts: HelpCircle, like_comments: MessageSquareHeart, daily_picks: Sparkles,
-  message_reactions: Smile, message_replies: Reply, icebreakers: Lightbulb, date_proposals: CalendarHeart,
+  message_reactions: Smile, message_replies: Reply, icebreakers: Lightbulb, date_proposals: CalendarHeart, pause_mode: Moon, profile_tips: ListChecks,
 };
 
 export default function AdminFlags() {

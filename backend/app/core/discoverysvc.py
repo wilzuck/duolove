@@ -5,7 +5,7 @@ from sqlalchemy import and_, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased
 
-from app.core import appsettings, entitlements
+from app.core import appsettings, entitlements, rhythm
 from app.core.constants import age_from_birth_date
 from app.core.errors import forbidden
 from app.core.ids import utcnow
@@ -52,7 +52,7 @@ def _query(user_id: str, me: Profile, pref: Preference, limits: dict):
         exists().where(ProfilePhoto.profileId == Profile.id, ProfilePhoto.moderationStatus != "REJECTED"),
         # Mode discret (VIP) : visible uniquement des personnes qu'il/elle a likées.
         or_(Profile.incognito.is_(False), exists().where(Swipe.giverId == Profile.userId, Swipe.targetId == user_id, Swipe.action.in_(["LIKE", "SUPER_LIKE"]))),
-        User.id != user_id, User.status == "ACTIVE",
+        User.id != user_id, User.status == "ACTIVE", ~rhythm.paused_expr(now),
         ~exists().where(Swipe.giverId == user_id, Swipe.targetId == Profile.userId),
         ~exists().where(Block.blockerId == Profile.userId, Block.blockedId == user_id),
         ~exists().where(Block.blockerId == user_id, Block.blockedId == Profile.userId),
@@ -125,6 +125,9 @@ def affinity_dict(r) -> dict:
 
 async def feed(db: AsyncSession, user_id: str, limit: int, cursor: str | None) -> dict:
     """Recommandations classées par score ; pagination par décalage dans la liste classée (cursor = offset)."""
+    me_p = (await db.execute(select(Profile).where(Profile.userId == user_id))).scalar_one_or_none()
+    if me_p and rhythm.is_paused(me_p):
+        return {"items": [], "nextCursor": None, "total": 0, "paused": True}  # en pause : rien n'est proposé tant que le membre n'a pas repris
     scored = await ranked(db, user_id)
     mine = await my_slugs(db, user_id)
     try:

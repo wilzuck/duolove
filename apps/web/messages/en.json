@@ -1516,7 +1516,8 @@
       "DATE_UPDATE_COMPLETED": "A date was marked as completed.",
       "DATE_UPDATE_RESCHEDULED": "A date was rescheduled.",
       "DATE_UPDATE": "A date was updated.",
-      "DATE_REMINDER": "Reminder: your date is coming up."
+      "DATE_REMINDER": "Reminder: your date is coming up.",
+      "MESSAGE_MANY": "{count} new messages."
     }
   },
   "premium": {
@@ -1995,6 +1996,20 @@
           "on": "The Dates button is available in conversations.",
           "off": "No new proposals or answers; existing dates stay visible and can still be canceled.",
           "useWhen": "If the feature is abused. A member is never trapped in an already planned date."
+        },
+        "pause_mode": {
+          "name": "Pause mode",
+          "what": "Lets a member pause their account (invisible, no alerts).",
+          "on": "The Pause button is available in settings.",
+          "off": "No new pauses; current pauses can still be ended by the member.",
+          "useWhen": "If the feature is abused. A member can always resume."
+        },
+        "profile_tips": {
+          "name": "Profile tips",
+          "what": "Shows concrete tips to improve one’s profile.",
+          "on": "The tips card appears on the Profile page.",
+          "off": "The card disappears; nothing else changes.",
+          "useWhen": "If the tips have a quality problem."
         }
       }
     },
@@ -2117,7 +2132,9 @@
         "datesAcceptRate": "Acceptance rate (among handled proposals)",
         "datesCompleted": "Dates declared completed",
         "datesFeedback": "Reported satisfaction (average out of 5, {n} answer(s))",
-        "datesNote": "Meetings and satisfaction come only from members’ voluntary declarations."
+        "datesNote": "Meetings and satisfaction come only from members’ voluntary declarations.",
+        "pausedNow": "Members on pause",
+        "quietUsers": "Members with quiet hours"
       },
       "unavailableTitle": "Not measured yet",
       "unavailable": {
@@ -2143,7 +2160,9 @@
       "dateMaxDays": "Maximum horizon (days)",
       "dateMaxOpen": "Dates in progress per conversation",
       "dateMaxPerDay": "Proposals per member per day",
-      "dateShareHours": "Share link validity after the date (hours)"
+      "dateShareHours": "Share link validity after the date (hours)",
+      "pauseMaxDays": "Maximum length of a pause (days)",
+      "emailCap": "Non-essential emails per member per day"
     }
   },
   "pricingFaq": {
@@ -2483,5 +2502,47 @@
       "gone": "This link is no longer valid.",
       "goneText": "It has expired or the person stopped sharing."
     }
+  },
+  "rhythm": {
+    "title": "Your pace",
+    "intro": "Meeting someone is not a race. Set DuoMatch to your own pace: you always stay in control.",
+    "pauseTitle": "Pause mode",
+    "pauseText": "You are invisible in discovery, you stop receiving alerts and you cannot like, while you catch your breath. Your conversations and matches stay right here.",
+    "pauseFor": "Length of the pause",
+    "days": "{n, plural, one {# day} other {# days}}",
+    "pauseUntilMax": "Up to {n} days (maximum)",
+    "pauseStart": "Pause my account",
+    "pauseActive": "Pause active until {date}",
+    "resume": "Resume",
+    "resumed": "Welcome back! Your profile is visible again.",
+    "paused": "Pause on. Take care of yourself.",
+    "pauseOff": "Pause mode is temporarily unavailable.",
+    "quietTitle": "Quiet hours",
+    "quietText": "During this period, alerts and emails are muted; you find everything in the app. Security and subscription alerts are always sent.",
+    "quietStart": "From",
+    "quietEnd": "To",
+    "quietSave": "Save",
+    "quietClear": "Turn off",
+    "quietNow": "Quiet hours in progress",
+    "quietSaved": "Quiet hours saved.",
+    "quietOff": "No quiet hours",
+    "remindersTitle": "Date reminders",
+    "remindersText": "Receive a reminder before a date, when you chose one.",
+    "emailCap": "For your peace of mind, you receive at most {n} emails a day (security and subscription excluded).",
+    "bannerTitle": "Pause mode on",
+    "bannerText": "Your profile is invisible until {date}.",
+    "pausedEmptyTitle": "You are on pause",
+    "pausedEmptyText": "Take the time you need. When you are ready, resume in one tap: everything is waiting for you."
+  },
+  "tips": {
+    "title": "For your profile",
+    "intro": "A few simple ideas, at your own pace. Nothing is mandatory.",
+    "done": "Your profile is already very complete, well done!",
+    "photos": "Add photos ({have} of {target}): they make people want to discover you.",
+    "bio": "A few more lines about you help start the conversation.",
+    "prompts": "Answer 3 personality questions: this is what makes people want to write to you.",
+    "interests": "Pick a few more interests ({have} of {target}) to find common ground.",
+    "verify": "Get your profile verified: the badge reassures others.",
+    "go": "Go"
   }
 }

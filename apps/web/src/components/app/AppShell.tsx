@@ -7,6 +7,7 @@ import { Link, usePathname } from '@/i18n/navigation';
 import type { Me } from '@/lib/types';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { SiteLinks } from '../SiteLinks';
+import { PauseBanner } from './PauseBanner';
 import { ThemeToggle } from '../ThemeToggle';
 
 const NAV = [
@@ -71,6 +72,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
 
       <div className="flex min-h-dvh min-w-0 flex-col">
         {banner}
+        {me.profile?.paused && <PauseBanner endsAt={me.profile.pauseEndsAt} />}
         {/* Barre du haut */}
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-bg/90 px-4 backdrop-blur lg:h-16 lg:px-8">
           <Link href="/discover" className="lg:hidden" aria-label={t('nav.home')}><Logo /></Link>

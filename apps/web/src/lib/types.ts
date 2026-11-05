@@ -7,7 +7,7 @@ export type LikeKind = 'PROFILE' | 'PHOTO' | 'PROMPT' | 'INTEREST';
 export interface Affinity { score: number; reasons: { code: string; n?: number }[]; commonInterests: string[]; intentsCompatible: boolean }
 export interface PromptAnswer { id: string; promptId: string; position: number; question: { fr: string; en: string }; answer: string }
 export interface PromptDef { id: string; slug: string; textFr: string; textEn: string; active: boolean; sortOrder: number }
-export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean; date_proposals: boolean }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[]; dates: { minNoticeHours: number; maxDaysAhead: number } }
+export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean; date_proposals: boolean; pause_mode: boolean; profile_tips: boolean }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[]; dates: { minNoticeHours: number; maxDaysAhead: number } }
 export interface Card {
   id: string; displayName: string; age: number; city: string; country: string; bio: string; occupation: string | null;
   intent: Intent; verified: boolean; languages: string[]; interests: string[]; commonInterests: string[];
@@ -19,7 +19,7 @@ export interface Card {
 export interface Me {
   id: string; email: string; emailVerified: boolean; role: 'USER' | 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN';
   status: 'ACTIVE' | 'SUSPENDED' | 'BANNED' | 'DELETED'; suspendedUntil: string | null; marketingConsent: boolean;
-  profile: { displayName: string; onboarded: boolean; completeness: number; thumbUrl: string | null } | null;
+  profile: { displayName: string; onboarded: boolean; completeness: number; thumbUrl: string | null; paused?: boolean; pauseEndsAt?: string | null } | null;
   entitlement: { plan: PlanCode; validUntil: string | null; credits: Record<CreditType, number>; limits: Limits };
   unreadNotifications: number;
   moderation: { reason: string; appealStatus: 'NONE' | 'PENDING' | 'ACCEPTED' | 'REJECTED'; id: string } | null;
@@ -79,3 +79,10 @@ export interface DateItem {
   proposedByMe: boolean; previousId: string | null; createdAt: string; respondedAt: string | null; reminderMinutes: number | null; shared: boolean; myFeedback: number | null;
 }
 export interface SharedDate { status: DateStatus; startsAt: string; endsAt: string; placeKind: string; placeName: string; sharedBy: string; meeting: string; expiresAt: string }
+
+export interface RhythmState {
+  pause: { active: boolean; endsAt: string | null; maxDays: number; enabled: boolean };
+  quiet: { start: string | null; end: string | null; tzOffsetMinutes: number; activeNow: boolean };
+  dateReminders: boolean; limits: { maxEmailsPerDay: number };
+}
+export interface ProfileTip { code: string; have?: number; target?: number; anchor?: string }

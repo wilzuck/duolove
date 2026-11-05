@@ -14,7 +14,7 @@ Charte respectée : rose `#E91E63` (jetons existants de `packages/ui`), blanc, a
 | Brise-glace | **Livré** | Bouton ampoule du champ de saisie : idées fondées sur l'en commun, « autres idées », insertion modifiable, jamais d'envoi automatique ; FR/EN |
 | Rendez-vous | **Livré** | Bouton calendrier dans la conversation : proposer (jour, heure, durée, lieu public), accepter, refuser, proposer un autre horaire, annuler, rappel (1 h / 24 h), « Nous nous sommes vus », retour facultatif, partage volontaire avec un proche (page publique sans compte, lien expirant et révocable) |
 | Speed dating, appels audio/vidéo | Non démarré | Reste de la phase 3 |
-| Paramètres d'engagement, mode pause | Non démarré | Phase 4 |
+| Paramètres d'engagement, mode pause | **Livré** | Réglages › Notifications › « Votre rythme » : mode pause (durée au choix, plafonnée par l'admin, reprise en un geste, bannière), période de repos, rappels de rendez-vous, plafond d'e-mails expliqué ; conseils de profil sur la page Profil ; messages regroupés dans les notifications |
 
 ## Règles éthiques appliquées
 Pas de faux profils, faux likes, faux messages ni faux compte à rebours ; pas de défilement infini ajouté ; aucune notification inventée ; les fonctions essentielles de sécurité (blocage, signalement) ne sont jamais conditionnées à un abonnement ; Free garde découvertes du jour, questions et likes commentés.

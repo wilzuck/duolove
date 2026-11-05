@@ -5,7 +5,7 @@ import datetime
 from sqlalchemy import and_, delete, exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import appsettings, discoverysvc, entitlements, flags
+from app.core import appsettings, discoverysvc, entitlements, flags, rhythm
 from app.core.ids import utcnow
 from app.core.profile_card import approx_distance_km, load_cards, to_card
 from app.models.models import Block, DailyRecommendation, Profile, Swipe, User
@@ -52,6 +52,7 @@ async def _cards(db: AsyncSession, user_id: str, rows: list[DailyRecommendation]
 
 async def get_today(db: AsyncSession, user_id: str) -> dict:
     await flags.assert_on(db, "daily_picks")
+    await rhythm.assert_not_paused(db, user_id)
     day = today()
     q = select(DailyRecommendation).where(DailyRecommendation.userId == user_id, DailyRecommendation.day == day).order_by(DailyRecommendation.score.desc(), DailyRecommendation.id)
     rows = list((await db.execute(q)).scalars().all())

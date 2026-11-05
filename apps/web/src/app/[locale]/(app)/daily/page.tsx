@@ -9,7 +9,7 @@ import { countryName } from '@/components/app/ProfileCard';
 import { ProfileDetail } from '@/components/app/ProfileDetail';
 import { useApiError } from '@/hooks/useApiError';
 import { useEngagementConfig } from '@/hooks/useQueries';
-import { ApiError, api, post } from '@/lib/api';
+import { ApiError, api, del, post } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { useUi } from '@/lib/store';
 import type { Card as ProfileCardT, SwipeResult } from '@/lib/types';
@@ -69,12 +69,14 @@ export default function DailyPage() {
     try { done(c)(await post<SwipeResult>('/swipes', { targetId: c.id, action })); } catch (e) { toast('error', err(e)); } finally { setBusy(null); }
   };
   const disabled = (today.error instanceof ApiError && today.error.code === 'FEATURE_DISABLED') || cfg?.flags.daily_picks === false;
+  const paused = today.error instanceof ApiError && today.error.code === 'PAUSED';
+  const resume = async () => { try { await del('/engagement/me/pause'); toast('success', t('rhythm.resumed')); await qc.invalidateQueries(); } catch (e) { toast('error', err(e)); } };
   const card = (c: ProfileCardT) => <li key={c.id}><PickCard card={c} busy={busy === c.id} onOpen={() => setOpen(c)} onLike={() => (cfg?.flags.like_comments ? setLiking(c) : void decide(c, 'LIKE'))} onPass={() => void decide(c, 'PASS')} /></li>;
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-5 px-4 py-4">
       <header><h1 className="text-2xl font-extrabold">{t('engagement.daily.title')}</h1><p className="mt-1 text-muted">{t('engagement.daily.subtitle')}</p></header>
-      {disabled ? <EmptyState icon={<Sparkles className="size-8" />} title={t('engagement.daily.disabledTitle')}>{t('engagement.daily.disabledText')}</EmptyState> : (
+      {paused ? <EmptyState icon={<Sparkles className="size-8" />} title={t('rhythm.pausedEmptyTitle')}>{t('rhythm.pausedEmptyText')}<div className="mt-4"><Button onClick={() => void resume()}>{t('rhythm.resume')}</Button></div></EmptyState> : disabled ? <EmptyState icon={<Sparkles className="size-8" />} title={t('engagement.daily.disabledTitle')}>{t('engagement.daily.disabledText')}</EmptyState> : (
         <>
           <Tabs label={t('engagement.daily.title')} value={tab} onChange={setTab} tabs={[{ key: 'today', label: `${t('engagement.daily.tabToday')}${today.data ? ` · ${t('engagement.daily.pending', { n: today.data.pending })}` : ''}` }, { key: 'history', label: t('engagement.daily.tabHistory') }]} />
           {tab === 'today' && (

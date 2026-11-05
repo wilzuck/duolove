@@ -37,7 +37,10 @@ async def compute(db: AsyncSession, now: datetime.datetime) -> dict:
     accepted = dstat.get("ACCEPTED", 0) + dstat.get("COMPLETED", 0)
     fb_n, fb_avg = (await one('SELECT count(r), round(avg(r)::numeric, 2) FROM (SELECT "proposerFeedback" r FROM "DateProposal" WHERE "proposerFeedback" IS NOT NULL '
                               'UNION ALL SELECT "inviteeFeedback" FROM "DateProposal" WHERE "inviteeFeedback" IS NOT NULL) t')).one()
+    paused_now = (await one('SELECT count(*) FROM "Profile" WHERE "pausedAt" IS NOT NULL AND ("pauseEndsAt" IS NULL OR "pauseEndsAt" > :n)', n=now)).scalar_one()
+    quiet_users = (await one('SELECT count(*) FROM "NotificationPreference" WHERE "quietStart" IS NOT NULL')).scalar_one()
     return {
+        "rhythm": {"pausedNow": paused_now, "quietHoursUsers": quiet_users},
         "dates": {"proposed": dtotal, "accepted": accepted, "declined": dstat.get("DECLINED", 0), "canceled": dstat.get("CANCELED", 0), "completed": dstat.get("COMPLETED", 0),
                   "acceptRate": _rate(accepted, answered), "feedbackCount": fb_n, "feedbackAverage": float(fb_avg) if fb_avg is not None else None},
         "profilesCompleted": onboarded, "membersActive": members, "profilesWithPrompts": with_prompts, "profilesWithPromptsRate": _rate(with_prompts, onboarded),

@@ -23,6 +23,8 @@ INT_SPECS = {  # clé → (défaut, min, max)
     "dates.max_open": (2, 1, 5),
     "dates.max_per_day": (5, 1, 20),
     "dates.share_hours_after": (6, 1, 48),
+    "pause.max_days": (90, 1, 365),
+    "notifications.max_emails_per_day": (5, 0, 50),
 }
 WEIGHT_KEY = "matching.weights"
 KEYS = (WEIGHT_KEY, *INT_SPECS)

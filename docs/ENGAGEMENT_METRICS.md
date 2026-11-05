@@ -17,6 +17,7 @@ Source : **Admin › Engagement › Indicateurs** (`GET /api/admin/engagement/me
 | Conversion Premium | part des membres actifs avec une formule autre que FREE |
 | Rendez-vous proposés / acceptés / terminés | `DateProposal` par statut (acceptés = ACCEPTED + COMPLETED) ; taux d'acceptation = acceptés / propositions traitées (acceptées, refusées, reportées) |
 | Satisfaction déclarée | moyenne des retours 1 à 5 donnés **volontairement** après un rendez-vous terminé ; effectif affiché ; jamais déduite |
+| Membres en pause / avec période de repos | profils dont la pause est en cours ; préférences avec une période de repos renseignée (aucune donnée de comportement) |
 | Découvertes du jour (30 j) | sélections générées ; part suivie d'une décision (J'aime ou Passer) |
 
 ## Limites à garder en tête

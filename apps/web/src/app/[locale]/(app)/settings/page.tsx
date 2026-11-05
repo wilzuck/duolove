@@ -9,6 +9,7 @@ import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useApiError } from '@/hooks/useApiError';
 import { keys, useMe, useMyProfile, useSubscription } from '@/hooks/useQueries';
+import { RhythmCard } from '@/components/app/RhythmCard';
 import { Link, useRouter } from '@/i18n/navigation';
 import { api, del, patch, post, put } from '@/lib/api';
 import { formatDate, formatXof, timeAgo } from '@/lib/format';
@@ -30,10 +31,13 @@ function NotificationsTab() {
   const m = useMutation({ mutationFn: (b: Record<string, boolean>) => put<Record<string, boolean>>('/notifications/preferences', b), onSuccess: (d) => qc.setQueryData(['notif-prefs'], d) });
   if (!q.data) return <Skeleton className="h-64" />;
   return (
+    <div className="space-y-8">
     <Card className="divide-y divide-line px-5">
       {NOTIF.map(([k, kind]) => <Row key={k} title={t(`settings.notif.${kind}`)} text={t(k.startsWith('email') ? 'settings.notif.byEmail' : 'settings.notif.inApp')}><Switch checked={!!q.data[k]} onChange={(v) => m.mutate({ [k]: v })} label={`${t(`settings.notif.${kind}`)} — ${t(k.startsWith('email') ? 'settings.notif.byEmail' : 'settings.notif.inApp')}`} /></Row>)}
       <Row title={t('settings.notif.push')} text={t('settings.notif.pushText')}><Badge tone="neutral">{t('common.soon')}</Badge></Row>
     </Card>
+    <section aria-labelledby="rhythm-t"><h2 id="rhythm-t" className="mb-3 text-xl font-extrabold">{t('rhythm.title')}</h2><RhythmCard /></section>
+    </div>
   );
 }
 

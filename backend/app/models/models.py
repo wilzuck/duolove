@@ -778,6 +778,7 @@ class Notification(Base):
     data: Mapped[object] = mapped_column(JSONB, nullable=False, server_default=text("'{}'::jsonb"))
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     readAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    emailedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
 
     User_: Mapped['User'] = relationship('User', back_populates='Notification')
 
@@ -799,6 +800,10 @@ class NotificationPreference(Base):
     emailMatches: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     emailMessages: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'))
     pushEnabled: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'))
+    quietStart: Mapped[Optional[int]] = mapped_column(Integer)
+    quietEnd: Mapped[Optional[int]] = mapped_column(Integer)
+    tzOffsetMinutes: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    dateReminders: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
 
     User_: Mapped['User'] = relationship('User', back_populates='NotificationPreference')
 
@@ -873,6 +878,8 @@ class Profile(Base):
     completeness: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
     readReceipts: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     typingIndicator: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
+    pausedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    pauseEndsAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
     liveOptIn: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))

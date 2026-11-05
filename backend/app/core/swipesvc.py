@@ -5,7 +5,7 @@ from sqlalchemy import and_, delete, exists, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased
 
-from app.core import appsettings, credits, entitlements, flags, notifications, realtime
+from app.core import appsettings, credits, rhythm, entitlements, flags, notifications, realtime
 from app.core.errors import AppError, forbidden, not_found
 from app.core.ids import utcnow
 from app.core.profile_card import load_cards, to_card
@@ -90,6 +90,7 @@ async def swipe(db: AsyncSession, user_id: str, target_id: str, action: str, com
     pour que deux likes simultanés A→B et B→A produisent exactement un match."""
     if target_id == user_id:
         raise AppError(400, "INVALID_TARGET")
+    await rhythm.assert_not_paused(db, user_id)
     target = (await db.execute(
         select(Profile.userId).join(User, User.id == Profile.userId)
         .where(Profile.userId == target_id, Profile.onboardedAt.is_not(None), User.status == "ACTIVE", _no_blocks(user_id, Profile.userId))

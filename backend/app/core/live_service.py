@@ -6,7 +6,7 @@ from sqlalchemy import and_, exists, func, or_, select, text, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import credits, entitlements, notifications, realtime
+from app.core import credits, entitlements, notifications, realtime, rhythm
 from app.core.constants import LIVE
 from app.core.errors import AppError, bad_request, conflict, forbidden, not_found
 from app.core.gift import gift_tokens_if_eligible
@@ -124,6 +124,7 @@ def _no_relation(candidate_id, other_id):
 
 
 async def start(db: AsyncSession, user_id: str, raw: object) -> dict:
+    await rhythm.assert_not_paused(db, user_id)
     """Lance une recherche : valide les critères, verrouille l'accès (formule ou essais) et le délai, invite les personnes en ligne."""
     criteria, errors = parse_criteria(raw)
     if criteria is None:
@@ -169,7 +170,7 @@ async def _invite_pool(db: AsyncSession, search_id: str, seeker_id: str, seeker,
         select(Profile, Preference).join(User, User.id == Profile.userId).outerjoin(Preference, Preference.userId == Profile.userId)
         .where(
             Profile.userId != seeker_id, Profile.onboardedAt.is_not(None), Profile.visibility == "VISIBLE", Profile.incognito.is_(False),
-            Profile.liveOptIn.is_(True),
+            Profile.liveOptIn.is_(True), ~rhythm.paused_expr(utcnow()),
             exists().where(ProfilePhoto.profileId == Profile.id, ProfilePhoto.moderationStatus != "REJECTED"),
             User.status == "ACTIVE", User.emailVerifiedAt.is_not(None), _online_clause(), _no_relation(Profile.userId, seeker_id),
         )
@@ -217,7 +218,7 @@ async def on_presence(user_id: str) -> None:
             row = (await db.execute(
                 select(Profile, Preference).join(User, User.id == Profile.userId).outerjoin(Preference, Preference.userId == Profile.userId)
                 .where(Profile.userId == user_id, Profile.onboardedAt.is_not(None), Profile.visibility == "VISIBLE", Profile.incognito.is_(False),
-                       Profile.liveOptIn.is_(True), User.status == "ACTIVE", User.emailVerifiedAt.is_not(None),
+                       Profile.liveOptIn.is_(True), User.status == "ACTIVE", User.emailVerifiedAt.is_not(None), ~rhythm.paused_expr(utcnow()),
                        exists().where(ProfilePhoto.profileId == Profile.id, ProfilePhoto.moderationStatus != "REJECTED"))
             )).first()
             if not row:

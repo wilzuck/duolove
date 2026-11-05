@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { Badge, Button, Card, Skeleton } from '@duomatch/ui';
 import { PhotoManager } from '@/components/app/PhotoManager';
+import { ProfileTips } from '@/components/app/ProfileTips';
 import { PromptsEditor } from '@/components/app/PromptsEditor';
 import { AboutFields, InterestPicker, LifestyleFields, PreferenceFields, SaveBar, aboutFrom, lifeFrom, prefDefault, type AboutValue, type LifeValue } from '@/components/app/ProfileForms';
 import { useApiError } from '@/hooks/useApiError';
@@ -61,14 +62,15 @@ export default function ProfilePage() {
         {p.completeness < 100 && <p className="text-sm text-muted">{t('profile.completenessTip')}</p>}
       </Card>
 
-      <Card className="space-y-4 p-5"><h2 className="font-bold">{t('profile.photos')}</h2><PhotoManager photos={p.photos} /></Card>
-      <Card className="space-y-4 p-5"><h2 className="font-bold">{t('profile.about')}</h2><AboutFields value={a} onChange={setAbout} withLocation /></Card>
+      <ProfileTips />
+      <Card id="photos" className="scroll-mt-20 space-y-4 p-5"><h2 className="font-bold">{t('profile.photos')}</h2><PhotoManager photos={p.photos} /></Card>
+      <Card id="about" className="scroll-mt-20 space-y-4 p-5"><h2 className="font-bold">{t('profile.about')}</h2><AboutFields value={a} onChange={setAbout} withLocation /></Card>
       <Card className="space-y-4 p-5"><div><h2 className="font-bold">{t('life.title')}</h2><p className="text-sm text-muted">{t('life.hint')}</p></div><LifestyleFields value={lf} onChange={setLife} /></Card>
-      <Card className="space-y-4 p-5"><h2 className="font-bold">{t('profile.interests')}</h2><InterestPicker value={a.interests} onChange={(v) => setAbout({ ...a, interests: v })} /></Card>
+      <Card id="interests" className="scroll-mt-20 space-y-4 p-5"><h2 className="font-bold">{t('profile.interests')}</h2><InterestPicker value={a.interests} onChange={(v) => setAbout({ ...a, interests: v })} /></Card>
       <PromptsEditor />
       <Card id="filters" className="scroll-mt-20 space-y-4 p-5"><h2 className="font-bold">{t('prefs.title')}</h2><PreferenceFields value={pr} onChange={setPref} limits={me.entitlement.limits} /></Card>
 
-      <Card className="space-y-3 p-5">
+      <Card id="verification" className="scroll-mt-20 space-y-3 p-5">
         <h2 className="flex items-center gap-2 font-bold"><BadgeCheck className="size-5 text-sky-500" aria-hidden />{t('profile.verification')}</h2>
         {p.verified ? <Badge tone="success">{t('profile.verified')}</Badge> : p.verificationPending ? <p role="status" className="text-sm text-muted">{t('profile.verifyPending')}</p> : (
           <>

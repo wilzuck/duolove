@@ -1,7 +1,7 @@
 'use client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
-import { Crown, Heart, Info, RotateCcw, SlidersHorizontal, Sparkles, Star, X } from 'lucide-react';
+import { Crown, Heart, Info, PauseCircle, RotateCcw, SlidersHorizontal, Sparkles, Star, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Dialog, EmptyState, Skeleton, cn } from '@duomatch/ui';
@@ -10,7 +10,7 @@ import { ProfileDetail } from '@/components/app/ProfileDetail';
 import { useApiError } from '@/hooks/useApiError';
 import { useMe } from '@/hooks/useQueries';
 import { Link } from '@/i18n/navigation';
-import { ApiError, api, post } from '@/lib/api';
+import { ApiError, api, del, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import type { Card, Paged, SwipeResult } from '@/lib/types';
 
@@ -65,7 +65,7 @@ export default function DiscoverPage() {
   const busy = useRef(false);
 
   const feed = useQuery({
-    queryKey: ['feed'], queryFn: () => api<Paged<Card> & { total: number }>('/discovery?limit=12'),
+    queryKey: ['feed'], queryFn: () => api<Paged<Card> & { total: number; paused?: boolean }>('/discovery?limit=12'),
     refetchOnWindowFocus: false, staleTime: 0, gcTime: 0,
   });
   const usage = useQuery({ queryKey: ['usage'], queryFn: () => api<{ used: { likes: number; superLikesWeek: number }; limits: { dailyLikes: number; unlimitedLikes: boolean; superLikesWeekly: number } }>('/swipes/usage') });
@@ -100,6 +100,7 @@ export default function DiscoverPage() {
     } finally { busy.current = false; }
   }, [leaving, deck, qc, showMatch, toast, err]);
 
+  const resume = async () => { try { await del('/engagement/me/pause'); toast('success', t('rhythm.resumed')); await qc.invalidateQueries(); } catch (e) { toast('error', err(e)); } };
   const rewind = async () => {
     try {
       const r = await post<{ profile: Card | null }>('/swipes/rewind');
@@ -133,7 +134,13 @@ export default function DiscoverPage() {
 
       <div className="relative mx-auto aspect-[3/4] max-h-[62dvh] w-full">
         {feed.isLoading && <Skeleton className="size-full rounded-[2rem]" />}
-        {!feed.isLoading && deck.length === 0 && (
+        {!feed.isLoading && deck.length === 0 && feed.data?.paused && (
+          <EmptyState icon={<PauseCircle className="size-8" />} title={t('rhythm.pausedEmptyTitle')}>
+            <p>{t('rhythm.pausedEmptyText')}</p>
+            <div className="mt-4 flex justify-center"><Button onClick={() => void resume()}>{t('rhythm.resume')}</Button></div>
+          </EmptyState>
+        )}
+        {!feed.isLoading && deck.length === 0 && !feed.data?.paused && (
           <EmptyState icon={<Heart className="size-8" />} title={t('discover.emptyTitle')}>
             <p>{t('discover.emptyText')}</p>
             <div className="mt-4 flex justify-center gap-2"><Button variant="outline" onClick={() => feed.refetch()} loading={feed.isFetching}>{t('discover.refresh')}</Button><Link href="/profile#filters"><Button>{t('discover.editFilters')}</Button></Link></div>

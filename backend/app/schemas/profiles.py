@@ -75,6 +75,17 @@ class PromptAnswerIn(Body):
     answer: Annotated[str, BeforeValidator(lambda v: v.strip() if isinstance(v, str) else v), Field(min_length=3, max_length=300)]
 
 
+class RhythmIn(Body):
+    quietStart: str | None = None
+    quietEnd: str | None = None
+    tzOffsetMinutes: Annotated[int, Field(ge=-720, le=840)] | None = None
+    dateReminders: bool | None = None
+
+
+class PauseIn(Body):
+    days: Annotated[int, Field(ge=1, le=365)] | None = None
+
+
 class PromptAnswersIn(Body):
     items: Annotated[list[PromptAnswerIn], Field(max_length=8)]
 

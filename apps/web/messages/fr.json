@@ -1516,7 +1516,8 @@
       "DATE_UPDATE_COMPLETED": "Un rendez-vous est marqué comme terminé.",
       "DATE_UPDATE_RESCHEDULED": "Un rendez-vous a été reporté.",
       "DATE_UPDATE": "Mise à jour d’un rendez-vous.",
-      "DATE_REMINDER": "Rappel : votre rendez-vous approche."
+      "DATE_REMINDER": "Rappel : votre rendez-vous approche.",
+      "MESSAGE_MANY": "{count} nouveaux messages."
     }
   },
   "premium": {
@@ -1995,6 +1996,20 @@
           "on": "Le bouton Rendez-vous est disponible dans les conversations.",
           "off": "Plus de nouvelle proposition ni de réponse ; les rendez-vous existants restent visibles et peuvent toujours être annulés.",
           "useWhen": "Si la fonction est détournée. On ne piège jamais un membre dans un rendez-vous déjà fixé."
+        },
+        "pause_mode": {
+          "name": "Mode pause",
+          "what": "Permet à un membre de se mettre en pause (invisible, sans alertes).",
+          "on": "Le bouton Pause est disponible dans les réglages.",
+          "off": "Plus de nouvelle pause ; les pauses en cours peuvent toujours être interrompues par le membre.",
+          "useWhen": "Si la fonction est détournée. Un membre peut toujours reprendre."
+        },
+        "profile_tips": {
+          "name": "Conseils de profil",
+          "what": "Affiche des conseils concrets pour améliorer son profil.",
+          "on": "La carte de conseils s’affiche sur la page Profil.",
+          "off": "La carte disparaît ; rien d’autre ne change.",
+          "useWhen": "Si les conseils posent un problème de qualité."
         }
       }
     },
@@ -2117,7 +2132,9 @@
         "datesAcceptRate": "Taux d’acceptation (parmi les propositions traitées)",
         "datesCompleted": "Rendez-vous déclarés terminés",
         "datesFeedback": "Satisfaction déclarée (moyenne sur 5, {n} retour(s))",
-        "datesNote": "Rencontres et satisfaction proviennent uniquement des déclarations volontaires des membres."
+        "datesNote": "Rencontres et satisfaction proviennent uniquement des déclarations volontaires des membres.",
+        "pausedNow": "Membres en pause",
+        "quietUsers": "Membres avec une période de repos"
       },
       "unavailableTitle": "Pas encore mesuré",
       "unavailable": {
@@ -2143,7 +2160,9 @@
       "dateMaxDays": "Horizon maximum (jours)",
       "dateMaxOpen": "Rendez-vous en cours par conversation",
       "dateMaxPerDay": "Propositions par membre et par jour",
-      "dateShareHours": "Validité du lien de partage après le rendez-vous (heures)"
+      "dateShareHours": "Validité du lien de partage après le rendez-vous (heures)",
+      "pauseMaxDays": "Durée maximale d’une pause (jours)",
+      "emailCap": "E-mails non essentiels par membre et par jour"
     }
   },
   "pricingFaq": {
@@ -2483,5 +2502,47 @@
       "gone": "Ce lien n’est plus valable.",
       "goneText": "Il a expiré ou la personne a arrêté le partage."
     }
+  },
+  "rhythm": {
+    "title": "Votre rythme",
+    "intro": "Rencontrer quelqu’un n’est pas une course. Réglez DuoMatch à votre rythme : vous gardez toujours la main.",
+    "pauseTitle": "Mode pause",
+    "pauseText": "Vous êtes invisible dans les découvertes, vous ne recevez plus d’alertes et vous ne pouvez plus liker, le temps de souffler. Vos conversations et vos matchs restent là.",
+    "pauseFor": "Durée de la pause",
+    "days": "{n, plural, one {# jour} other {# jours}}",
+    "pauseUntilMax": "Jusqu’à {n} jours (maximum)",
+    "pauseStart": "Mettre en pause",
+    "pauseActive": "Pause active jusqu’au {date}",
+    "resume": "Reprendre",
+    "resumed": "Bon retour ! Votre profil est de nouveau visible.",
+    "paused": "Pause activée. Prenez soin de vous.",
+    "pauseOff": "Le mode pause est momentanément indisponible.",
+    "quietTitle": "Période de repos",
+    "quietText": "Pendant cette période, les alertes et les e-mails sont mis en sourdine ; vous retrouvez tout dans l’application. Les alertes de sécurité et d’abonnement restent toujours envoyées.",
+    "quietStart": "De",
+    "quietEnd": "À",
+    "quietSave": "Enregistrer",
+    "quietClear": "Désactiver",
+    "quietNow": "Période de repos en cours",
+    "quietSaved": "Période de repos enregistrée.",
+    "quietOff": "Aucune période de repos",
+    "remindersTitle": "Rappels de rendez-vous",
+    "remindersText": "Recevoir un rappel avant un rendez-vous, quand vous en avez choisi un.",
+    "emailCap": "Pour votre tranquillité, vous recevez au plus {n} e-mails par jour (hors sécurité et abonnement).",
+    "bannerTitle": "Mode pause actif",
+    "bannerText": "Votre profil est invisible jusqu’au {date}.",
+    "pausedEmptyTitle": "Vous êtes en pause",
+    "pausedEmptyText": "Prenez le temps qu’il vous faut. Quand vous serez prêt(e), reprenez en un geste : tout vous attend."
+  },
+  "tips": {
+    "title": "Pour votre profil",
+    "intro": "Quelques idées simples, à votre rythme. Rien d’obligatoire.",
+    "done": "Votre profil est déjà très complet, bravo !",
+    "photos": "Ajoutez des photos ({have} sur {target}) : elles donnent envie de vous découvrir.",
+    "bio": "Quelques lignes de plus sur vous aident à engager la conversation.",
+    "prompts": "Répondez à 3 questions de personnalité : c’est ce qui donne envie de vous écrire.",
+    "interests": "Choisissez quelques centres d’intérêt de plus ({have} sur {target}) pour trouver des points communs.",
+    "verify": "Faites vérifier votre profil : le badge rassure les autres.",
+    "go": "Y aller"
   }
 }
