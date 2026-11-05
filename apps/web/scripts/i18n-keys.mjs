@@ -14,6 +14,8 @@ export function walk(dir, out = []) {
   return out;
 }
 
+const SETTING = /^(likes|notifications)\.[a-z]+_[a-z_]+$/;
+
 export function usedKeys(root = 'src') {
   const keys = new Map();
   const re = /\bt(?:\.rich|\.raw|\.has)?\(\s*(['"`])([a-zA-Z0-9_.]+?)\1/g;
@@ -24,7 +26,7 @@ export function usedKeys(root = 'src') {
     for (const m of src.matchAll(re)) keys.set(m[2], file);
     for (const m of src.matchAll(reDyn)) dyn.add(m[1]);
     // clés passées dans des tableaux/objets littéraux : 'nav.how', 'footer.product', etc.
-    for (const m of src.matchAll(/['"]((?:nav|footer|plans|legal|app|common|auth|home|how|about|faq|help|blog|contact|meta|admin|settings|chat|discover|profile|prefs|photos|onboarding|notifications|likes|report|match|card|errors|checkout|premium|suspended|profileView)\.[a-zA-Z0-9_.]+)['"]/g)) keys.set(m[1], file);
+    for (const m of src.matchAll(/['"]((?:nav|footer|plans|legal|app|common|auth|home|how|about|faq|help|blog|contact|meta|admin|settings|chat|discover|profile|prefs|photos|onboarding|notifications|likes|report|match|card|errors|checkout|premium|suspended|profileView)\.[a-zA-Z0-9_.]+)['"]/g)) { if (!SETTING.test(m[1])) keys.set(m[1], file); } // les clés de réglages admin (likes.comment_max…) ne sont pas des clés de traduction
   }
   return { keys, dyn };
 }

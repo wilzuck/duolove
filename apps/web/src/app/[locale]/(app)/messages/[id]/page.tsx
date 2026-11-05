@@ -4,6 +4,7 @@ import { ArrowLeft, Ban, CalendarHeart, Check, CheckCheck, Flag, HeartCrack, Ima
 import { useLocale, useTranslations } from 'next-intl';
 import { use, useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar, Button, Checkbox, cn, Dialog, IconButton, Skeleton, Textarea } from '@duomatch/ui';
+import { CallButtons } from '@/components/app/CallLayer';
 import { DatesPanel } from '@/components/app/DatesPanel';
 import { IcebreakerPanel } from '@/components/app/IcebreakerPanel';
 import { ReportDialog } from '@/components/app/ReportDialog';
@@ -103,6 +104,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         {conv ? (
           <Link href={`/profile/${conv.user.id}`} className="flex min-w-0 flex-1 items-center gap-3"><Avatar src={conv.user.thumbUrl} name={conv.user.displayName} size={42} /><span className="min-w-0"><span className="block truncate font-bold">{conv.user.displayName}</span><span className="block text-xs text-muted" aria-live="polite">{typing ? t('chat.typing') : t('chat.viewProfile')}</span></span></Link>
         ) : <Skeleton className="h-10 flex-1" />}
+        {cfg?.calls.enabled && !closed && conv && <CallButtons conversationId={id} name={conv.user.displayName} />}
         {canDates && conv && <IconButton label={t('dates.open')} tone="plain" onClick={() => setDatesOpen(true)}><CalendarHeart className="size-5" /></IconButton>}
         <div className="relative">
           <IconButton label={t('chat.options')} tone="plain" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="menu"><MoreVertical className="size-5" /></IconButton>

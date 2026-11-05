@@ -8,7 +8,7 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   reporter: [['list']],
-  use: { baseURL: 'http://localhost:3000', locale: 'fr-FR', trace: 'retain-on-failure', screenshot: 'only-on-failure' },
+  use: { baseURL: 'http://localhost:3000', storageState: { cookies: [], origins: [{ origin: 'http://localhost:3000', localStorage: [{ name: 'duomatch.cookiesNotice', value: '1' }] }] }, locale: 'fr-FR', trace: 'retain-on-failure', screenshot: 'only-on-failure' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } } }],
   webServer: [
     // L'API des E2E utilise une base dédiée (duomatch_test) : jamais la base de développement.

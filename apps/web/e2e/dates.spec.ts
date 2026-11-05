@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
-import { completeOnboarding, newMember, persona, signUp, uid } from './helpers';
+import { completeOnboarding, newMember, persona, signUp, uid, NOTICE_SEEN } from './helpers';
 
 // Phase 3 : mode rendez-vous — proposition, réponse, rappel, partage volontaire (sans compte), report, terminaison, retour, contrôle admin.
 const DB = 'postgresql://admin@localhost:5432/duomatch_test';
@@ -78,7 +78,7 @@ test.describe.serial('Mode rendez-vous', () => {
     shareUrl = await card.getByRole('textbox', { name: 'Copier le lien' }).inputValue();
     expect(shareUrl).toMatch(/\/share\/[A-Za-z0-9_-]{20,}$/);
     // La personne de confiance ouvre le lien SANS compte : seules les informations utiles apparaissent.
-    const anon = await browser.newContext({ locale: 'fr-FR' });
+    const anon = await browser.newContext({ locale: 'fr-FR', storageState: NOTICE_SEEN });
     const ap = await anon.newPage();
     await ap.goto(shareUrl.replace(/^https?:\/\/[^/]+/, 'http://localhost:3000'));
     await expect(ap.getByRole('heading', { name: 'Un rendez-vous partagé avec vous' })).toBeVisible();

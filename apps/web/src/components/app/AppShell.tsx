@@ -7,6 +7,7 @@ import { Link, usePathname } from '@/i18n/navigation';
 import type { Me } from '@/lib/types';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { SiteLinks } from '../SiteLinks';
+import { CallLayer } from './CallLayer';
 import { PauseBanner } from './PauseBanner';
 import { ThemeToggle } from '../ThemeToggle';
 
@@ -38,6 +39,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
 
   return (
     <div className="min-h-dvh bg-bg lg:grid lg:grid-cols-[17rem_1fr]">
+      <CallLayer />
       <a href="#main" className="skip-link">{t('common.skipToContent')}</a>
       {/* Barre latérale (desktop) */}
       <aside className="sticky top-0 hidden h-dvh flex-col gap-2 border-r border-line bg-card p-5 lg:flex">

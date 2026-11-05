@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { io, type Socket } from 'socket.io-client';
 import { API_PUBLIC_URL } from '@/lib/site';
 import { useUi } from '@/lib/store';
-import type { ChatMessage, Paged } from '@/lib/types';
-import { keys } from './useQueries';
+import type { CallInfo, ChatMessage, Paged } from '@/lib/types';
+import { callKeys, keys } from './useQueries';
 
 let socket: Socket | null = null;
 export const getSocket = () => socket;
@@ -32,6 +32,12 @@ export function useRealtime(enabled: boolean) {
       qc.setQueryData<{ pages: Paged<ChatMessage>[]; pageParams: unknown[] }>(keys.messages(conversationId), (old) => old && { ...old, pages: old.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === messageId ? { ...x, reactions } : x)) })) });
     });
     s.on('date:update', ({ conversationId }: { conversationId: string }) => { void qc.invalidateQueries({ queryKey: ['dates', conversationId] }); void qc.invalidateQueries({ queryKey: keys.notifications }); });
+    s.on('call:incoming', () => { void qc.invalidateQueries({ queryKey: callKeys.current }); });
+    s.on('call:update', (c: CallInfo) => {
+      void qc.invalidateQueries({ queryKey: callKeys.current });
+      void qc.invalidateQueries({ queryKey: keys.notifications });
+      useUi.getState().setCallOutcome({ id: c.id, status: c.status, direction: c.direction, name: c.other.displayName });
+    });
     s.on('message:read', ({ conversationId }: { conversationId: string }) => void qc.invalidateQueries({ queryKey: keys.messages(conversationId) }));
     s.on('notification:new', () => { void qc.invalidateQueries({ queryKey: keys.notifications }); void qc.invalidateQueries({ queryKey: keys.me }); });
     s.on('match:new', (m: { matchId: string; conversationId: string; userId: string }) => {

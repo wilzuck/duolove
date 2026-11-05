@@ -103,6 +103,7 @@ FEATURE_FLAGS = (
     FlagDef("date_proposals", "social", True, False),
     FlagDef("pause_mode", "social", True, False),
     FlagDef("profile_tips", "social", True, False),
+    FlagDef("calls", "social", True, True),
 )
 FLAG_KEYS = tuple(f.key for f in FEATURE_FLAGS)
 

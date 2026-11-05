@@ -827,6 +827,13 @@
             "purpose": "Remembers whether the Enter key sends your messages.",
             "duration": "Until you clear it.",
             "need": "pref"
+          },
+          {
+            "name": "duomatch.cookiesNotice",
+            "kind": "Browser local storage",
+            "purpose": "Remembers that you have read this notice so it is not shown again.",
+            "duration": "Until you clear it.",
+            "need": "pref"
           }
         ]
       },
@@ -841,7 +848,7 @@
               "items": [
                 "Only essential cookies and storage, or ones tied to a choice you make yourself, are used.",
                 "Nothing stored is used to follow you from site to site or to target you with advertising.",
-                "That is why no consent banner is shown: there is nothing more to accept."
+                "That is why the notice shown on your first visit asks you for no choice: it simply informs you."
               ]
             }
           ]
@@ -1680,6 +1687,7 @@
       "DATE_UPDATE_COMPLETED": "A date was marked as completed.",
       "DATE_UPDATE_RESCHEDULED": "A date was rescheduled.",
       "DATE_UPDATE": "A date was updated.",
+      "CALL_MISSED": "Missed call.",
       "DATE_REMINDER": "Reminder: your date is coming up.",
       "MESSAGE_MANY": "{count} new messages."
     }
@@ -2174,6 +2182,13 @@
           "on": "The tips card appears on the Profile page.",
           "off": "The card disappears; nothing else changes.",
           "useWhen": "If the tips have a quality problem."
+        },
+        "calls": {
+          "name": "Audio and video calls",
+          "what": "Lets two members of an active match call each other (audio or video) through a third-party service. Nothing is recorded.",
+          "on": "Call buttons appear in the conversation.",
+          "off": "No new calls; ongoing calls may finish.",
+          "useWhen": "In case of abuse, unexpected cost or an incident at the video provider."
         }
       }
     },
@@ -2329,7 +2344,10 @@
       "emailCap": "Non-essential emails per member per day",
       "dailyPlansNote": "The number of daily picks is set per plan, in",
       "codeTtl": "Confirmation code validity (minutes)",
-      "unverifiedTtl": "Delete unconfirmed accounts after (hours)"
+      "unverifiedTtl": "Delete unconfirmed accounts after (hours)",
+      "callRing": "Call ring time (seconds)",
+      "callMax": "Maximum call length (minutes)",
+      "callPerDay": "Calls started per member per day"
     }
   },
   "pricingFaq": {
@@ -2590,6 +2608,49 @@
       "disabledTitle": "Daily picks unavailable",
       "disabledText": "This feature is temporarily turned off."
     }
+  },
+  "cookieNotice": {
+    "title": "Cookies and privacy",
+    "text": "DuoMatch only uses cookies and storage that are essential to the service (sign-in, language, theme). No advertising cookies, no tracking.",
+    "more": "Learn more",
+    "ok": "Got it"
+  },
+  "calls": {
+    "audio": "Audio call",
+    "video": "Video call",
+    "incoming": "{name} is calling you",
+    "incomingAudio": "Incoming audio call",
+    "incomingVideo": "Incoming video call",
+    "calling": "Calling {name}…",
+    "accept": "Answer",
+    "decline": "Decline",
+    "cancel": "Cancel",
+    "hangUp": "Hang up",
+    "mute": "Mute microphone",
+    "unmute": "Unmute microphone",
+    "cameraOff": "Turn camera off",
+    "cameraOn": "Turn camera on",
+    "connecting": "Connecting…",
+    "connected": "Call in progress",
+    "simulated": "Simulated call: no video provider is configured, no sound or picture is transmitted.",
+    "privacy": "This call is never recorded. You can hang up at any time.",
+    "safety": "Something inappropriate? Hang up, then report or block from the conversation.",
+    "permission": "Allow the microphone (and camera) in your browser so you can be heard.",
+    "permissionDenied": "Microphone or camera denied: you can listen but not be heard. Change the permission in your browser.",
+    "failed": "Unable to connect right now.",
+    "limit": "Maximum length: {n} min",
+    "ended": "Call ended.",
+    "declined": "{name} is not available right now.",
+    "missed": "{name} did not answer.",
+    "canceled": "Call canceled.",
+    "missedBy": "Missed call from {name}",
+    "busy": "A call is already in progress.",
+    "unavailable": "{name} is not available right now.",
+    "dailyLimit": "You have reached today’s call limit.",
+    "closed": "This conversation is closed.",
+    "paused": "Resume your activity first to place a call.",
+    "disabled": "Calls are temporarily unavailable.",
+    "error": "The call could not start."
   },
   "dates": {
     "open": "Dates",

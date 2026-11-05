@@ -19,7 +19,7 @@ Cadre : OWASP Top 10 / ASVS, RGPD. Cette page décrit **ce qui est réellement e
 | Fichiers privés | selfies de vérification et pièces jointes de chat sous `private/`, servis uniquement à leurs ayants droit ; selfie **supprimé après décision** | admin / chat |
 | Paiements KKiaPay | le navigateur ne fournit qu'un identifiant de transaction : le serveur **re-vérifie** statut et montant exact auprès de KKiaPay ; transaction à usage unique ; webhook authentifié par secret (comparaison à temps constant) puis re-vérifié ; clés privées jamais renvoyées au client | `kkiapay.spec.ts` |
 | Paiements | activation **uniquement** via webhook : signature HMAC-SHA256 du corps brut (comparaison à temps constant), idempotence (`WebhookEvent` unique), droits vérifiés côté serveur | tests paiements |
-| En-têtes | API : Helmet (CSP, HSTS, nosniff…) ; web : `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` | `next.config.ts` |
+| En-têtes | API : Helmet (CSP, HSTS, nosniff…) ; web : `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` (micro et caméra limités à l'application, requis par les appels ; jamais de géolocalisation tierce) | `next.config.ts` |
 | Secrets | `.env` non versionné ; l'API **refuse de démarrer en production** avec les secrets de développement (`PAYMENT_WEBHOOK_SECRET`, `IP_HASH_SALT`) | `config/env.ts` |
 | Journaux | pas de mot de passe/jeton/e-mail dans les logs en production ; IP stockée **hachée (HMAC)** dans les sessions | `crypto.ts` |
 | Audit | toute action de modération/administration écrit un `AuditLog` ; consultation des selfies tracée | `admin.controller.ts` |

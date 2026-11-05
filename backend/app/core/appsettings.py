@@ -23,6 +23,9 @@ INT_SPECS = {  # clé → (défaut, min, max)
     "dates.share_hours_after": (6, 1, 48),
     "pause.max_days": (90, 1, 365),
     "signup.code_ttl_minutes": (15, 5, 60),
+    "calls.ring_seconds": (45, 15, 120),
+    "calls.max_minutes": (60, 5, 240),
+    "calls.max_per_day": (20, 1, 100),
     "signup.unverified_ttl_hours": (72, 1, 720),
     "notifications.max_emails_per_day": (5, 0, 50),
 }

@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
-import { emailCode, newMember, PASSWORD, persona, uid } from './helpers';
+import { emailCode, newMember, PASSWORD, persona, uid, NOTICE_SEEN } from './helpers';
 
 // Confirmation de l'e-mail par code : écran obligatoire après l'inscription, garde de toute l'application, essais limités, renvoi, suppression des comptes non confirmés.
 const DB = 'postgresql://admin@localhost:5432/duomatch_test';
@@ -93,7 +93,7 @@ test.describe.serial('Confirmation de l’e-mail par code', () => {
     await page.goto('/confirm-email');
     await expect(page).not.toHaveURL(/confirm-email/); // déjà confirmé : redirigé vers l'application
     const other = persona('Sam', 'Homme', `Ville${uid()}`);
-    const ctx = await browser.newContext({ locale: 'fr-FR' });
+    const ctx = await browser.newContext({ locale: 'fr-FR', storageState: NOTICE_SEEN });
     const op = await ctx.newPage();
     await fillRegister(op, other);
     await expect(op).toHaveURL(/confirm-email/);

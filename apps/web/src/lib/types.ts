@@ -7,7 +7,7 @@ export type LikeKind = 'PROFILE' | 'PHOTO' | 'PROMPT' | 'INTEREST';
 export interface Affinity { score: number; reasons: { code: string; n?: number }[]; commonInterests: string[]; intentsCompatible: boolean }
 export interface PromptAnswer { id: string; promptId: string; position: number; question: { fr: string; en: string }; answer: string }
 export interface PromptDef { id: string; slug: string; textFr: string; textEn: string; active: boolean; sortOrder: number }
-export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean; date_proposals: boolean; pause_mode: boolean; profile_tips: boolean }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[]; dates: { minNoticeHours: number; maxDaysAhead: number } }
+export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean; date_proposals: boolean; pause_mode: boolean; profile_tips: boolean; calls: boolean }; calls: { enabled: boolean; simulated: boolean; ringSeconds: number; maxMinutes: number }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[]; dates: { minNoticeHours: number; maxDaysAhead: number } }
 export interface Card {
   id: string; displayName: string; age: number; city: string; country: string; bio: string; occupation: string | null;
   intent: Intent; verified: boolean; languages: string[]; interests: string[]; commonInterests: string[];
@@ -86,3 +86,10 @@ export interface RhythmState {
   dateReminders: boolean; limits: { maxEmailsPerDay: number };
 }
 export interface ProfileTip { code: string; have?: number; target?: number; anchor?: string }
+
+export type CallStatus = 'RINGING' | 'ACTIVE' | 'DECLINED' | 'MISSED' | 'CANCELED' | 'ENDED';
+export interface CallInfo {
+  id: string; conversationId: string; kind: 'AUDIO' | 'VIDEO'; status: CallStatus; direction: 'incoming' | 'outgoing';
+  other: { id: string; displayName: string }; ringExpiresAt: string | null; answeredAt: string | null; endedAt: string | null; maxMinutes: number; simulated: boolean;
+}
+export interface CallTicket { provider: 'livekit' | 'mock'; url: string; token: string; callId: string; kind: 'AUDIO' | 'VIDEO'; expiresInSeconds: number }

@@ -112,6 +112,7 @@ class NotificationType(str, enum.Enum):
     REFERRAL_REWARD = 'REFERRAL_REWARD'
     DATE_UPDATE = 'DATE_UPDATE'
     DATE_REMINDER = 'DATE_REMINDER'
+    CALL_MISSED = 'CALL_MISSED'
 
 
 class PaymentKind(str, enum.Enum):
@@ -518,6 +519,32 @@ class EmailCode(Base):
     attempts: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
     expiresAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
     consumedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
+class CallSession(Base):
+    """Appel audio ou vidéo entre deux membres d'un match actif. Statuts : RINGING, ACTIVE, DECLINED, MISSED, CANCELED, ENDED. Jamais enregistré."""
+    __tablename__ = 'CallSession'
+    __table_args__ = (
+        ForeignKeyConstraint(['conversationId'], ['Conversation.id'], ondelete='CASCADE', onupdate='CASCADE', name='CallSession_conversationId_fkey'),
+        ForeignKeyConstraint(['callerId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='CallSession_callerId_fkey'),
+        ForeignKeyConstraint(['calleeId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='CallSession_calleeId_fkey'),
+        PrimaryKeyConstraint('id', name='CallSession_pkey'),
+        Index('CallSession_conversationId_createdAt_idx', 'conversationId', 'createdAt'),
+        Index('CallSession_calleeId_status_idx', 'calleeId', 'status'),
+        Index('CallSession_callerId_createdAt_idx', 'callerId', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    conversationId: Mapped[str] = mapped_column(Text, nullable=False)
+    callerId: Mapped[str] = mapped_column(Text, nullable=False)
+    calleeId: Mapped[str] = mapped_column(Text, nullable=False)
+    kind: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'RINGING'::text"))
+    ringExpiresAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    answeredAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    endedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    endedById: Mapped[Optional[str]] = mapped_column(Text)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 

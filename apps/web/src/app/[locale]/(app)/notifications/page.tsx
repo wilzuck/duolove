@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { BadgeCheck, Bell, CalendarHeart, CreditCard, Heart, MessageCircle, ShieldAlert, Sparkles } from 'lucide-react';
+import { BadgeCheck, Bell, CalendarHeart, CreditCard, Heart, MessageCircle, Phone, ShieldAlert, Sparkles } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Button, EmptyState, Skeleton, cn } from '@duomatch/ui';
@@ -23,6 +23,7 @@ const META: Record<string, { icon: typeof Bell; href: (n: NotificationItem) => s
   LIVE_ACCEPTED: { icon: Sparkles, href: () => '/match' },
   REFERRAL_REWARD: { icon: Sparkles, href: () => '/referral' },
   DATE_UPDATE: { icon: CalendarHeart, href: (n) => (n.data.conversationId ? `/messages/${n.data.conversationId}` : '/messages') },
+  CALL_MISSED: { icon: Phone, href: (n) => (n.data.conversationId ? `/messages/${n.data.conversationId}` : '/messages') },
   DATE_REMINDER: { icon: CalendarHeart, href: (n) => (n.data.conversationId ? `/messages/${n.data.conversationId}` : '/messages') },
 };
 

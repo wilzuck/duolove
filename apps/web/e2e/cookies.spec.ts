@@ -3,6 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { persona, signUp, uid } from './helpers';
 
 // Politique de cookies : la page doit rester VRAIE. Les cookies et stockages réellement posés doivent tous être listés ; aucune requête vers un tiers de mesure ou de publicité.
+test.use({ storageState: { cookies: [], origins: [] } }); // visiteur qui n'a encore rien lu
 const axeOf = async (page: Page) => (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help}`);
 
 test('la page liste exactement ce que l’application stocke (cookies, stockage local, tiers)', async ({ page, context, request }) => {
@@ -10,7 +11,7 @@ test('la page liste exactement ce que l’application stocke (cookies, stockage 
   page.on('request', (r) => hosts.add(new URL(r.url()).hostname));
   await page.goto('/legal/cookies');
   const listed = await page.getByRole('table').getByRole('rowheader').allInnerTexts();
-  expect(listed.sort()).toEqual(['NEXT_LOCALE', 'duomatch-theme', 'duomatch.enterSends', 'duomatch_sid']);
+  expect(listed.sort()).toEqual(['NEXT_LOCALE', 'duomatch-theme', 'duomatch.cookiesNotice', 'duomatch.enterSends', 'duomatch_sid']);
 
   // Visiteur : parcours public, changement de thème → seuls NEXT_LOCALE (cookie) et duomatch-theme (stockage local).
   for (const p of ['/', '/pricing', '/login', '/register', '/help', '/blog', '/en']) await page.goto(p);
@@ -26,7 +27,7 @@ test('la page liste exactement ce que l’application stocke (cookies, stockage 
   expect(sid.httpOnly).toBe(true);
   expect(sid.sameSite).toBe('Lax');
   expect(await page.evaluate(() => document.cookie)).not.toContain('duomatch_sid'); // invisible pour les scripts
-  expect(await page.evaluate(() => Object.keys(localStorage).every((k) => ['duomatch-theme', 'duomatch.enterSends'].includes(k)))).toBe(true);
+  expect(await page.evaluate(() => Object.keys(localStorage).every((k) => ['duomatch-theme', 'duomatch.enterSends', 'duomatch.cookiesNotice'].includes(k)))).toBe(true);
 
   // Aucune requête vers un service de mesure d'audience ou de publicité.
   const external = [...hosts].filter((h) => !['localhost', '127.0.0.1'].includes(h));
@@ -36,7 +37,7 @@ test('la page liste exactement ce que l’application stocke (cookies, stockage 
 test('politique de cookies : 9 rubriques lisibles, tableau accessible, FR/EN, mobile, accessible', async ({ page }) => {
   await page.goto('/legal/cookies');
   await expect(page.getByRole('heading', { level: 1, name: 'Politique de cookies' })).toBeVisible();
-  await expect(page.getByText(/aucun bandeau de consentement ne s’affiche/)).toBeVisible();
+  await expect(page.getByText(/ne vous demande aucun choix : il vous informe/)).toBeVisible();
   await expect(page.getByText(/à faire relire et valider par un juriste/)).toBeVisible();
   await expect(page.locator('main').getByRole('heading', { level: 2 })).toHaveCount(11); // 9 rubriques + « À lire aussi » + titre masqué « En un coup d'œil »
   await expect(page.getByRole('table', { name: 'Cookies et stockages utilisés par DuoMatch' })).toBeVisible();
@@ -52,4 +53,17 @@ test('politique de cookies : 9 rubriques lisibles, tableau accessible, FR/EN, mo
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), p).toBeLessThanOrEqual(0);
   }
   expect(await axeOf(page)).toEqual([]);
+});
+
+test('message d’information sur les cookies : visible à la première visite, mémorisé après « J’ai compris », lien vers la politique', async ({ page }) => {
+  await page.goto('/');
+  const notice = page.getByRole('region', { name: 'Cookies et vie privée' });
+  await expect(notice).toBeVisible();
+  await expect(notice.getByText(/Aucun cookie publicitaire, aucun suivi/)).toBeVisible();
+  expect(await axeOf(page)).toEqual([]);
+  await expect(notice.getByRole('link', { name: 'En savoir plus' })).toHaveAttribute('href', /legal\/cookies/);
+  await notice.getByRole('button', { name: 'J’ai compris' }).click();
+  await expect(notice).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByRole('region', { name: 'Cookies et vie privée' })).toHaveCount(0);
 });

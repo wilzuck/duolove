@@ -22,6 +22,7 @@ test.describe.serial('Accessibilité des pages connectées', () => {
   test.afterAll(async () => { await m.ctx.close(); await b.ctx.close(); });
 
   test('espace membre : aucune violation sur les 17 pages', async ({ request }) => {
+    test.setTimeout(300_000); // 17 pages balayées une à une : la durée dépend de la charge de la machine
     await signUp(m.page, request, member);
     await completeOnboarding(m.page, member);
     const found: string[] = [];

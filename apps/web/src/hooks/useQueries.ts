@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { EngagementConfig, LiveIncoming, LiveState, ConversationItem, Me, MyProfile, NotificationItem, Paged, Catalog, SubscriptionState } from '@/lib/types';
 
+export const callKeys = { current: ['calls', 'current'] as const };
 export const keys = {
   me: ['me'] as const, profile: ['profile'] as const, conversations: (q = '') => ['conversations', q] as const,
   messages: (id: string) => ['messages', id] as const, notifications: ['notifications'] as const, plans: ['plans'] as const,

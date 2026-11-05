@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     mail_from: str = Field("DuoMatch <no-reply@duomatch.app>", alias="MAIL_FROM")
     upload_dir: str = Field("./uploads", alias="UPLOAD_DIR")
     payment_provider: str = Field("mock", alias="PAYMENT_PROVIDER")
+    # Appels audio/vidéo : « mock » (simulé, sans média) ou « livekit » (LiveKit Cloud ou auto-hébergé). Les clés ne servent qu'à signer des jetons d'accès.
+    call_provider: str = Field("mock", alias="CALL_PROVIDER")
+    livekit_url: str | None = Field(None, alias="LIVEKIT_URL")
+    livekit_api_key: str | None = Field(None, alias="LIVEKIT_API_KEY")
+    livekit_api_secret: str | None = Field(None, alias="LIVEKIT_API_SECRET")
     site_name: str = Field("DuoMatch", alias="SITE_NAME")
     kkiapay_public_key: str | None = Field(None, alias="KKIAPAY_PUBLIC_KEY")
     kkiapay_private_key: str | None = Field(None, alias="KKIAPAY_PRIVATE_KEY")
@@ -52,6 +57,12 @@ class Settings(BaseSettings):
             raise ValueError("DEV_EMAIL_CODE doit contenir exactement 6 chiffres.")
         if self.node_env == "production" and self.dev_email_code:
             raise ValueError("DEV_EMAIL_CODE est interdit en production : le code de confirmation d'e-mail doit être aléatoire.")
+        if self.call_provider not in ("mock", "livekit"):
+            raise ValueError("CALL_PROVIDER doit valoir « mock » ou « livekit ».")
+        if self.call_provider == "livekit":
+            missing = [k for k, v in {"LIVEKIT_URL": self.livekit_url, "LIVEKIT_API_KEY": self.livekit_api_key, "LIVEKIT_API_SECRET": self.livekit_api_secret}.items() if not v]
+            if missing:
+                raise ValueError(f"CALL_PROVIDER=livekit : variables manquantes : {', '.join(missing)}")
         if self.payment_provider == "kkiapay":
             missing = [k for k, v in {
                 "KKIAPAY_PUBLIC_KEY": self.kkiapay_public_key,
@@ -61,6 +72,11 @@ class Settings(BaseSettings):
             if missing:
                 raise ValueError(f"PAYMENT_PROVIDER=kkiapay : variables manquantes : {', '.join(missing)}")
         return self
+
+    @property
+    def calls_available(self) -> bool:
+        """Les appels existent si un vrai fournisseur est configuré ; en production le mode simulé n'est JAMAIS proposé (il ne transmet ni son ni image)."""
+        return self.call_provider == "livekit" or self.node_env != "production"
 
     @property
     def fixed_email_code(self) -> str | None:

@@ -10,8 +10,11 @@ export const persona = (name: string, gender: Persona['gender'], city: string): 
   name, email: `${name.toLowerCase()}-${uid()}@e2e.duomatch`, gender, seeks: gender === 'Femme' ? 'Des hommes' : 'Des femmes', city,
 });
 
+/** Le message d'information sur les cookies est déjà lu : il ne masque pas les boutons du bas de page (il est testé à part dans cookies.spec). */
+export const NOTICE_SEEN = { cookies: [], origins: [{ origin: 'http://localhost:3000', localStorage: [{ name: 'duomatch.cookiesNotice', value: '1' }] }] };
+
 export async function newMember(browser: Browser) {
-  const ctx = await browser.newContext({ locale: 'fr-FR', viewport: { width: 1280, height: 900 } });
+  const ctx = await browser.newContext({ locale: 'fr-FR', viewport: { width: 1280, height: 900 }, storageState: NOTICE_SEEN });
   return { ctx, page: await ctx.newPage() };
 }
 

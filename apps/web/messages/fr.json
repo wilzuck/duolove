@@ -827,6 +827,13 @@
             "purpose": "Retenir si la touche Entrée envoie vos messages.",
             "duration": "Jusqu’à ce que vous l’effaciez.",
             "need": "pref"
+          },
+          {
+            "name": "duomatch.cookiesNotice",
+            "kind": "Stockage local du navigateur",
+            "purpose": "Retenir que vous avez pris connaissance de cette information, pour ne plus vous l’afficher.",
+            "duration": "Jusqu’à ce que vous l’effaciez.",
+            "need": "pref"
           }
         ]
       },
@@ -841,7 +848,7 @@
               "items": [
                 "Seuls des cookies et stockages indispensables, ou liés à un choix que vous faites vous-même, sont utilisés.",
                 "Rien de ce qui est stocké ne sert à vous suivre d’un site à l’autre ni à vous cibler par de la publicité.",
-                "C’est pourquoi aucun bandeau de consentement ne s’affiche : il n’y a rien de plus à accepter."
+                "C’est pourquoi le message d’information affiché lors de votre première visite ne vous demande aucun choix : il vous informe, c’est tout."
               ]
             }
           ]
@@ -1680,6 +1687,7 @@
       "DATE_UPDATE_COMPLETED": "Un rendez-vous est marqué comme terminé.",
       "DATE_UPDATE_RESCHEDULED": "Un rendez-vous a été reporté.",
       "DATE_UPDATE": "Mise à jour d’un rendez-vous.",
+      "CALL_MISSED": "Appel manqué.",
       "DATE_REMINDER": "Rappel : votre rendez-vous approche.",
       "MESSAGE_MANY": "{count} nouveaux messages."
     }
@@ -2174,6 +2182,13 @@
           "on": "La carte de conseils s’affiche sur la page Profil.",
           "off": "La carte disparaît ; rien d’autre ne change.",
           "useWhen": "Si les conseils posent un problème de qualité."
+        },
+        "calls": {
+          "name": "Appels audio et vidéo",
+          "what": "Permet à deux membres d’un match actif de s’appeler (audio ou vidéo) via un service tiers. Rien n’est enregistré.",
+          "on": "Les boutons d’appel apparaissent dans la conversation.",
+          "off": "Plus de nouvel appel ; les appels en cours peuvent se terminer.",
+          "useWhen": "En cas d’abus, de coût inattendu ou d’incident chez le fournisseur vidéo."
         }
       }
     },
@@ -2329,7 +2344,10 @@
       "emailCap": "E-mails non essentiels par membre et par jour",
       "dailyPlansNote": "Le nombre de découvertes du jour se règle par formule, dans",
       "codeTtl": "Validité du code de confirmation (minutes)",
-      "unverifiedTtl": "Suppression des comptes non confirmés après (heures)"
+      "unverifiedTtl": "Suppression des comptes non confirmés après (heures)",
+      "callRing": "Durée de sonnerie d’un appel (secondes)",
+      "callMax": "Durée maximale d’un appel (minutes)",
+      "callPerDay": "Appels lancés par membre et par jour"
     }
   },
   "pricingFaq": {
@@ -2590,6 +2608,49 @@
       "disabledTitle": "Découvertes du jour indisponibles",
       "disabledText": "Cette fonction est momentanément désactivée."
     }
+  },
+  "cookieNotice": {
+    "title": "Cookies et vie privée",
+    "text": "DuoMatch n’utilise que des cookies et stockages indispensables au service (connexion, langue, thème). Aucun cookie publicitaire, aucun suivi.",
+    "more": "En savoir plus",
+    "ok": "J’ai compris"
+  },
+  "calls": {
+    "audio": "Appel audio",
+    "video": "Appel vidéo",
+    "incoming": "{name} vous appelle",
+    "incomingAudio": "Appel audio entrant",
+    "incomingVideo": "Appel vidéo entrant",
+    "calling": "Appel de {name}…",
+    "accept": "Répondre",
+    "decline": "Refuser",
+    "cancel": "Annuler",
+    "hangUp": "Raccrocher",
+    "mute": "Couper le micro",
+    "unmute": "Réactiver le micro",
+    "cameraOff": "Couper la caméra",
+    "cameraOn": "Activer la caméra",
+    "connecting": "Connexion…",
+    "connected": "Appel en cours",
+    "simulated": "Appel simulé : aucun fournisseur vidéo n’est configuré, ni son ni image ne sont transmis.",
+    "privacy": "Cet appel n’est jamais enregistré. Vous pouvez raccrocher à tout moment.",
+    "safety": "Un comportement inapproprié ? Raccrochez, puis signalez ou bloquez depuis la conversation.",
+    "permission": "Autorisez le micro (et la caméra) dans votre navigateur pour être entendu·e.",
+    "permissionDenied": "Micro ou caméra refusé : vous pouvez écouter, mais pas être entendu·e. Modifiez l’autorisation dans votre navigateur.",
+    "failed": "Connexion impossible pour le moment.",
+    "limit": "Durée maximale : {n} min",
+    "ended": "Appel terminé.",
+    "declined": "{name} n’est pas disponible pour le moment.",
+    "missed": "{name} n’a pas répondu.",
+    "canceled": "Appel annulé.",
+    "missedBy": "Appel manqué de {name}",
+    "busy": "Un appel est déjà en cours.",
+    "unavailable": "{name} n’est pas disponible pour le moment.",
+    "dailyLimit": "Vous avez atteint le nombre d’appels possibles aujourd’hui.",
+    "closed": "Cette conversation est fermée.",
+    "paused": "Reprenez d’abord votre activité pour appeler.",
+    "disabled": "Les appels sont temporairement indisponibles.",
+    "error": "L’appel n’a pas pu démarrer."
   },
   "dates": {
     "open": "Rendez-vous",

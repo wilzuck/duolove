@@ -31,6 +31,7 @@ Cocher chaque ligne **avec une preuve** (capture, sortie de commande, lien). Les
 
 ## Confirmation de l'e-mail (obligatoire avant tout usage)
 - [ ] **SMTP réel configuré** : sans lui, aucun nouveau membre ne reçoit son code et ne peut entrer dans l'application.
+- [ ] Appels : `CALL_PROVIDER=livekit` avec `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` (sinon les appels sont **indisponibles** en production) ; compte LiveKit **sans enregistrement ni egress** ; test réel à deux appareils (audio puis vidéo, réseaux mobiles) avant d'ouvrir la fonction ; quota/coût fournisseur surveillé (plafonds `calls.*` dans l'admin, drapeau d'urgence `calls`).
 - [ ] `DEV_EMAIL_CODE` **absent** de l'environnement de production (le serveur refuse de démarrer sinon) ; `NODE_ENV=production`.
 - [ ] `REQUIRE_EMAIL_VERIFICATION=true` (la garde serveur en dépend).
 - [ ] Durées vérifiées dans Admin › Engagement : validité du code (15 min) et suppression des comptes non confirmés (72 h).
