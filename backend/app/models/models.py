@@ -548,6 +548,82 @@ class CallSession(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class SpeedEvent(Base):
+    """Session de speed dating en texte, créée par l'admin. Statuts : SCHEDULED, RUNNING, CLOSED, CANCELED (le déroulé des tours est piloté par l'horloge)."""
+    __tablename__ = 'SpeedEvent'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='SpeedEvent_pkey'),
+        Index('SpeedEvent_status_startsAt_idx', 'status', 'startsAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("''::text"))
+    city: Mapped[Optional[str]] = mapped_column(Text)
+    ageMin: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('18'))
+    ageMax: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('99'))
+    intent: Mapped[Optional[str]] = mapped_column(Text)
+    capacity: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('20'))
+    roundSeconds: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('180'))
+    rounds: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('4'))
+    startsAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'SCHEDULED'::text"))
+    cancelReason: Mapped[Optional[str]] = mapped_column(Text)
+    createdById: Mapped[Optional[str]] = mapped_column(Text)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
+class SpeedRegistration(Base):
+    __tablename__ = 'SpeedRegistration'
+    __table_args__ = (
+        ForeignKeyConstraint(['eventId'], ['SpeedEvent.id'], ondelete='CASCADE', onupdate='CASCADE', name='SpeedRegistration_eventId_fkey'),
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='SpeedRegistration_userId_fkey'),
+        PrimaryKeyConstraint('id', name='SpeedRegistration_pkey'),
+        Index('SpeedRegistration_eventId_userId_key', 'eventId', 'userId', unique=True),
+        Index('SpeedRegistration_userId_idx', 'userId'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    eventId: Mapped[str] = mapped_column(Text, nullable=False)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'REGISTERED'::text"))  # REGISTERED, CANCELED, LEFT
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
+class SpeedPair(Base):
+    __tablename__ = 'SpeedPair'
+    __table_args__ = (
+        ForeignKeyConstraint(['eventId'], ['SpeedEvent.id'], ondelete='CASCADE', onupdate='CASCADE', name='SpeedPair_eventId_fkey'),
+        PrimaryKeyConstraint('id', name='SpeedPair_pkey'),
+        Index('SpeedPair_eventId_round_idx', 'eventId', 'round'),
+        Index('SpeedPair_userAId_idx', 'userAId'),
+        Index('SpeedPair_userBId_idx', 'userBId'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    eventId: Mapped[str] = mapped_column(Text, nullable=False)
+    round: Mapped[int] = mapped_column(Integer, nullable=False)
+    userAId: Mapped[str] = mapped_column(Text, nullable=False)
+    userBId: Mapped[str] = mapped_column(Text, nullable=False)
+    decisionA: Mapped[Optional[str]] = mapped_column(Text)  # INTEREST ou PASS ; jamais révélée à l'autre personne
+    decisionB: Mapped[Optional[str]] = mapped_column(Text)
+
+
+class SpeedMessage(Base):
+    __tablename__ = 'SpeedMessage'
+    __table_args__ = (
+        ForeignKeyConstraint(['pairId'], ['SpeedPair.id'], ondelete='CASCADE', onupdate='CASCADE', name='SpeedMessage_pairId_fkey'),
+        PrimaryKeyConstraint('id', name='SpeedMessage_pkey'),
+        Index('SpeedMessage_pairId_createdAt_idx', 'pairId', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    pairId: Mapped[str] = mapped_column(Text, nullable=False)
+    senderId: Mapped[str] = mapped_column(Text, nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
 class SystemSetting(Base):
     __tablename__ = 'SystemSetting'
     __table_args__ = (

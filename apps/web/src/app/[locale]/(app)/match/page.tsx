@@ -10,7 +10,7 @@ import { useApiError } from '@/hooks/useApiError';
 import { keys, useLive, useLiveInvites } from '@/hooks/useQueries';
 import { Link, useRouter } from '@/i18n/navigation';
 import { del, post, put } from '@/lib/api';
-import { formatTime } from '@/lib/format';
+import { formatDate, formatTime } from '@/lib/format';
 import { useUi } from '@/lib/store';
 import type { Card as ProfileCardT, LiveState } from '@/lib/types';
 
@@ -102,6 +102,20 @@ function TokenGuide({ tokensPerChat, giftTokens, completeness }: { tokensPerChat
       <p className="text-xs text-muted">{t('live.guideAvailability')}</p>
     </Card>
   );
+}
+
+const sameDay = (iso: string) => new Date(iso).toDateString() === new Date().toDateString();
+
+/** À l'heure de fin, on relit l'état au lieu d'attendre le prochain rafraîchissement : la recherche s'arrête visiblement. */
+function ExpiryWatcher({ at }: { at: string }) {
+  const qc = useQueryClient();
+  useEffect(() => {
+    const ms = new Date(at).getTime() - Date.now() + 1000;
+    if (ms > 2_000_000_000) return; // setTimeout plafonné à ~24,8 jours : jamais atteint ici (72 h max)
+    const id = setTimeout(() => void qc.invalidateQueries({ queryKey: keys.live }), Math.max(ms, 500));
+    return () => clearTimeout(id);
+  }, [at, qc]);
+  return null;
 }
 
 export default function MatchPage() {
@@ -206,7 +220,7 @@ export default function MatchPage() {
           <Card className="space-y-3 p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 id="srch" className="flex items-center gap-2 font-bold"><span className="relative flex size-2.5"><span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60 motion-reduce:animate-none" /><span className="relative inline-flex size-2.5 rounded-full bg-success" /></span>{t('live.searching')}</h2>
-              <Badge tone="neutral">{t('live.until', { time: formatTime(search.expiresAt, locale) })}</Badge>
+              <ExpiryWatcher at={search.expiresAt} /><Badge tone="neutral">{t('live.until', { time: sameDay(search.expiresAt) ? formatTime(search.expiresAt, locale) : formatDate(search.expiresAt, locale, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) })}</Badge>
             </div>
             <p className="text-sm text-muted" role="status">{t('live.progress', { pending: search.pending, accepted: live.accepted.filter((a) => a.status === 'ACCEPTED').length })}</p>
             <div className="flex flex-wrap items-center gap-2">

@@ -6,7 +6,7 @@ from sqlalchemy import and_, exists, func, or_, select, text, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import credits, entitlements, notifications, realtime, rhythm
+from app.core import appsettings, credits, entitlements, notifications, realtime, rhythm
 from app.core.constants import LIVE
 from app.core.errors import AppError, bad_request, conflict, forbidden, not_found
 from app.core.gift import gift_tokens_if_eligible
@@ -151,7 +151,7 @@ async def start(db: AsyncSession, user_id: str, raw: object) -> dict:
         if active:
             await db.execute(update(LiveInvite).where(LiveInvite.searchId.in_(active), LiveInvite.status == "PENDING").values(status="EXPIRED"))
             await db.execute(update(LiveSearch).where(LiveSearch.id.in_(active)).values(status="CLOSED"))
-        s = LiveSearch(userId=user_id, criteria=criteria, expiresAt=utcnow() + LIVE.SEARCH_HOURS * 60 * MIN)
+        s = LiveSearch(userId=user_id, criteria=criteria, expiresAt=utcnow() + datetime.timedelta(hours=(await appsettings.all_values(db))["live.search_hours"]))
         db.add(s)
         await db.flush()
         search_id = s.id

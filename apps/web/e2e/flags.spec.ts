@@ -15,13 +15,13 @@ test.describe.serial('Fonctionnalités (feature flags)', () => {
   test.beforeAll(async ({ browser }) => { const m = await newMember(browser); page = m.page; close = () => m.ctx.close(); });
   test.afterAll(async () => { sql(`delete from "FeatureFlag"`); await close(); }); // ne laisse aucune fonction coupée
 
-  test('l’administrateur voit les 18 fonctions groupées ; l’icône i explique chacune (accessible)', async ({ request }) => {
+  test('l’administrateur voit les 19 fonctions groupées ; l’icône i explique chacune (accessible)', async ({ request }) => {
     await signUp(page, request, boss);
     sql(`update "User" set role='ADMIN' where email='${boss.email}'`);
     await page.goto('/admin/flags');
     await expect(page.getByRole('heading', { name: 'Fonctionnalités', level: 2 })).toBeVisible();
     for (const cat of ['Accès', 'Argent', 'Rencontres et échanges']) await expect(page.getByRole('heading', { name: cat, level: 3 })).toBeVisible();
-    await expect(page.getByRole('switch')).toHaveCount(18);
+    await expect(page.getByRole('switch')).toHaveCount(19);
     const info = page.getByRole('button', { name: 'À quoi sert « Paiements » ?' });
     await expect(info).toHaveAttribute('aria-expanded', 'false');
     await info.click();

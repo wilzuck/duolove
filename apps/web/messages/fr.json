@@ -1402,7 +1402,22 @@
     "CODE_EXPIRED": "Ce code a expiré. Demandez-en un nouveau.",
     "CODE_LOCKED": "Trop d’essais. Demandez un nouveau code.",
     "RESEND_TOO_SOON": "Patientez un instant avant de redemander un code.",
-    "INVALID_CODE": "Code incorrect."
+    "INVALID_CODE": "Code incorrect.",
+    "CONTACT_INFO": "Pour votre sécurité, gardez vos coordonnées pour après le match.",
+    "NOT_IN_ROUND": "L’échange est terminé.",
+    "RESTING": "Vous vous reposez pendant cet échange.",
+    "PARTNER_LEFT": "Votre binôme a quitté la session.",
+    "INVALID_MESSAGE": "Message vide ou trop long.",
+    "EVENT_FULL": "Cette session est complète.",
+    "REGISTRATION_CLOSED": "Les inscriptions sont closes.",
+    "NOT_ELIGIBLE": "Cette session ne correspond pas à votre profil.",
+    "DECISION_CLOSED": "Les choix sont clos.",
+    "INVALID_DECISION": "Choix invalide.",
+    "CALL_BUSY": "Un appel est déjà en cours.",
+    "CALLEE_UNAVAILABLE": "Cette personne n’est pas disponible pour le moment.",
+    "CALL_LIMIT": "Vous avez atteint le nombre d’appels possibles aujourd’hui.",
+    "CALL_NOT_ACTIVE": "Cet appel n’est plus en cours.",
+    "CALLS_UNAVAILABLE": "Les appels ne sont pas disponibles pour le moment."
   },
   "app": {
     "nav": {
@@ -1415,7 +1430,8 @@
       "admin": "Administration",
       "shop": "Charme+",
       "match": "Match",
-      "daily": "Découvertes du jour"
+      "daily": "Découvertes du jour",
+      "speed": "Speed dating"
     },
     "upsellTitle": "Passez à Premium",
     "upsellText": "Plus de likes, voir qui vous aime, filtres avancés.",
@@ -1883,7 +1899,8 @@
       "refunds": "Remboursements",
       "promos": "Codes promo",
       "blog": "Blog",
-      "engagement": "Engagement"
+      "engagement": "Engagement",
+      "speed": "Speed dating"
     },
     "roles": {
       "MODERATOR": "Modérateur",
@@ -2189,6 +2206,13 @@
           "on": "Les boutons d’appel apparaissent dans la conversation.",
           "off": "Plus de nouvel appel ; les appels en cours peuvent se terminer.",
           "useWhen": "En cas d’abus, de coût inattendu ou d’incident chez le fournisseur vidéo."
+        },
+        "speed_dating": {
+          "name": "Speed dating",
+          "what": "Permet de s’inscrire aux sessions de speed dating en texte publiées par l’équipe.",
+          "on": "La page Speed dating est ouverte aux inscriptions et aux échanges.",
+          "off": "Plus de nouvelle inscription ni de message ; les décisions déjà prises sont conservées.",
+          "useWhen": "En cas d’abus ou pour suspendre toutes les sessions."
         }
       }
     },
@@ -2345,9 +2369,46 @@
       "dailyPlansNote": "Le nombre de découvertes du jour se règle par formule, dans",
       "codeTtl": "Validité du code de confirmation (minutes)",
       "unverifiedTtl": "Suppression des comptes non confirmés après (heures)",
+      "liveHours": "Durée d’une recherche Live Match (heures)",
       "callRing": "Durée de sonnerie d’un appel (secondes)",
       "callMax": "Durée maximale d’un appel (minutes)",
       "callPerDay": "Appels lancés par membre et par jour"
+    },
+    "speed": {
+      "title": "Speed dating",
+      "subtitle": "Publiez des sessions d’échanges écrits. Les binômes sont générés à l’heure de début ; personne ne voit le choix de l’autre.",
+      "new": "Nouvelle session",
+      "name": "Titre",
+      "description": "Description (facultative)",
+      "city": "Ville (facultative)",
+      "intent": "Intention (facultative)",
+      "anyIntent": "Toutes",
+      "ageMin": "Âge minimum",
+      "ageMax": "Âge maximum",
+      "capacity": "Places",
+      "roundSeconds": "Durée d’un échange (secondes)",
+      "rounds": "Nombre d’échanges",
+      "startsAt": "Début",
+      "create": "Publier la session",
+      "created": "Session publiée.",
+      "cancel": "Annuler la session",
+      "cancelled": "Session annulée.",
+      "empty": "Aucune session.",
+      "colTitle": "Session",
+      "colWhen": "Début",
+      "colRegistered": "Inscrits",
+      "colStatus": "État",
+      "colMutual": "Intérêts réciproques",
+      "stats": "{events} sessions · {regs} inscriptions · {mutual} intérêts réciproques sur {pairs} rencontres",
+      "settingsNote": "Réglages (durée de pause, fenêtre de décision, participants minimum, taille des messages) : page Engagement.",
+      "phase": {
+        "UPCOMING": "À venir",
+        "ROUND": "En cours",
+        "BREAK": "Pause",
+        "DECISION": "Choix",
+        "ENDED": "Terminée",
+        "CANCELED": "Annulée"
+      }
     }
   },
   "pricingFaq": {
@@ -2787,5 +2848,67 @@
     "deleteNotice": "Pour éviter les comptes inutilisés, un compte non confirmé est supprimé automatiquement après {hours} h (le {date}).",
     "wrongAddress": "Mauvaise adresse ? Recommencer l’inscription",
     "devHint": "Mode développement : le code est {code}. Il n’existe jamais en production."
+  },
+  "speed": {
+    "title": "Speed dating",
+    "subtitle": "De courtes rencontres par écrit, avec des personnes qui cherchent la même chose que vous. Pas de pression : vous choisissez, en privé, qui vous voulez revoir.",
+    "how": "Comment ça se passe",
+    "h1": "Vous vous inscrivez à une session qui vous correspond.",
+    "h2": "À l’heure dite, vous échangez quelques minutes par écrit avec une personne à la fois.",
+    "h3": "À la fin, vous indiquez en privé qui vous aimeriez revoir. Il y a match seulement si c’est réciproque.",
+    "safe": "Pour votre sécurité : gardez vos coordonnées pour après le match, vous pouvez signaler, bloquer ou quitter à tout moment.",
+    "empty": "Aucune session n’est annoncée pour le moment. Revenez bientôt : de nouvelles sessions sont publiées régulièrement.",
+    "when": "Début : {date}",
+    "spots": "{n} places restantes",
+    "full": "Complet",
+    "rounds": "{n} échanges de {m} min",
+    "ages": "{min}–{max} ans",
+    "anyCity": "Toute ville",
+    "register": "Je m’inscris",
+    "unregister": "Me désinscrire",
+    "enter": "Entrer dans la salle",
+    "registered": "Inscrit·e",
+    "cancelled": "Session annulée",
+    "registeredToast": "Inscription enregistrée. Nous vous attendons !",
+    "unregisteredToast": "Désinscription enregistrée.",
+    "reason": {
+      "PROFILE_INCOMPLETE": "Terminez votre profil pour vous inscrire.",
+      "PAUSED": "Reprenez votre activité pour vous inscrire.",
+      "AGE_OUT_OF_RANGE": "Cette session s’adresse à une autre tranche d’âge.",
+      "INTENT_MISMATCH": "Cette session s’adresse à des personnes qui cherchent autre chose.",
+      "CITY_MISMATCH": "Cette session est réservée à une autre ville."
+    },
+    "cancelReason": {
+      "NOT_ENOUGH_PARTICIPANTS": "Pas assez de participants : la session n’a pas eu lieu. Merci de votre intérêt, une prochaine session arrive.",
+      "ADMIN": "L’équipe a annulé cette session."
+    },
+    "startsIn": "La session commence dans",
+    "waitingText": "Détendez-vous : la salle s’ouvre automatiquement à l’heure. Préparez une première question qui vous ressemble.",
+    "round": "Échange {n} sur {m}",
+    "timeLeft": "Temps restant",
+    "partnerLeft": "Votre binôme a quitté la session. Profitez de ce temps pour souffler.",
+    "rest": "Vous vous reposez pendant cet échange. Respirez, le prochain commence bientôt.",
+    "break": "Pause avant l’échange {n}",
+    "breakText": "Prenez le temps de noter ce que vous avez aimé.",
+    "write": "Écrivez un message…",
+    "send": "Envoyer",
+    "noMessages": "Dites bonjour : une question simple fait souvent un excellent début.",
+    "interested": "Je veux le/la revoir",
+    "passed": "Pas pour moi",
+    "decisionSaved": "Choix enregistré, en privé.",
+    "privateNote": "Votre choix reste privé : l’autre personne ne le saura jamais.",
+    "report": "Signaler",
+    "block": "Bloquer",
+    "leave": "Quitter la session",
+    "leaveConfirm": "Quitter la session ? Votre binôme en sera informé sans détail.",
+    "decisionTitle": "Qui aimeriez-vous revoir ?",
+    "decisionText": "Il y a match seulement si vous vous choisissez mutuellement. Sinon, personne n’en saura rien.",
+    "meetingRound": "Échange {n}",
+    "resultsTitle": "Merci pour cette belle soirée",
+    "matches": "Vous avez un match !",
+    "matchesText": "Vous vous êtes choisis mutuellement. La conversation est ouverte.",
+    "noMatch": "Pas de match cette fois, et c’est normal : une rencontre, ça prend parfois plusieurs essais. Une prochaine session vous attend.",
+    "openChat": "Ouvrir la conversation",
+    "closed": "Les choix sont clos."
   }
 }

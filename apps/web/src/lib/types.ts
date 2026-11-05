@@ -93,3 +93,17 @@ export interface CallInfo {
   other: { id: string; displayName: string }; ringExpiresAt: string | null; answeredAt: string | null; endedAt: string | null; maxMinutes: number; simulated: boolean;
 }
 export interface CallTicket { provider: 'livekit' | 'mock'; url: string; token: string; callId: string; kind: 'AUDIO' | 'VIDEO'; expiresInSeconds: number }
+
+export interface SpeedPerson { id: string; displayName: string; age: number; city: string; bio: string; intent: string; interests: string[]; thumbUrl: string | null; left?: boolean }
+export interface SpeedEventInfo {
+  id: string; title: string; description: string; city: string | null; ageMin: number; ageMax: number; intent: string | null; capacity: number; registered: number; spotsLeft: number;
+  roundSeconds: number; rounds: number; startsAt: string; status: string; cancelReason: string | null; phase: 'UPCOMING' | 'ROUND' | 'BREAK' | 'DECISION' | 'ENDED' | 'CANCELED';
+  round: number; secondsLeft: number; myStatus: string | null; eligible?: string | null;
+}
+export interface SpeedRoom {
+  event: SpeedEventInfo; rest: boolean; partner: SpeedPerson | null; pairId: string | null; myDecision?: string | null; eligible: string | null; messageMax: number;
+  messages: { id: string; mine: boolean; body: string; createdAt: string }[];
+  meetings: { pairId: string; round: number; user: SpeedPerson | null; myDecision: string | null }[];
+  results: { user: SpeedPerson | null; conversationId: string }[];
+}
+export interface AdminSpeedRow extends SpeedEventInfo { pairs: number; mutualInterests: number }

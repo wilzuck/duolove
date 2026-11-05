@@ -38,6 +38,7 @@ export function useRealtime(enabled: boolean) {
       void qc.invalidateQueries({ queryKey: keys.notifications });
       useUi.getState().setCallOutcome({ id: c.id, status: c.status, direction: c.direction, name: c.other.displayName });
     });
+    s.on('speed:message', ({ eventId }: { eventId: string }) => { void qc.invalidateQueries({ queryKey: ['speed', eventId] }); });
     s.on('message:read', ({ conversationId }: { conversationId: string }) => void qc.invalidateQueries({ queryKey: keys.messages(conversationId) }));
     s.on('notification:new', () => { void qc.invalidateQueries({ queryKey: keys.notifications }); void qc.invalidateQueries({ queryKey: keys.me }); });
     s.on('match:new', (m: { matchId: string; conversationId: string; userId: string }) => {

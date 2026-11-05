@@ -1402,7 +1402,22 @@
     "CODE_EXPIRED": "This code has expired. Ask for a new one.",
     "CODE_LOCKED": "Too many attempts. Ask for a new code.",
     "RESEND_TOO_SOON": "Please wait a moment before asking for a code again.",
-    "INVALID_CODE": "Wrong code."
+    "INVALID_CODE": "Wrong code.",
+    "CONTACT_INFO": "For your safety, keep your contact details for after the match.",
+    "NOT_IN_ROUND": "The chat is over.",
+    "RESTING": "You are resting during this chat.",
+    "PARTNER_LEFT": "Your partner left the session.",
+    "INVALID_MESSAGE": "Empty or too long message.",
+    "EVENT_FULL": "This session is full.",
+    "REGISTRATION_CLOSED": "Sign-ups are closed.",
+    "NOT_ELIGIBLE": "This session does not fit your profile.",
+    "DECISION_CLOSED": "Choices are closed.",
+    "INVALID_DECISION": "Invalid choice.",
+    "CALL_BUSY": "A call is already in progress.",
+    "CALLEE_UNAVAILABLE": "This person is not available right now.",
+    "CALL_LIMIT": "You have reached today’s call limit.",
+    "CALL_NOT_ACTIVE": "This call is no longer in progress.",
+    "CALLS_UNAVAILABLE": "Calls are not available right now."
   },
   "app": {
     "nav": {
@@ -1415,7 +1430,8 @@
       "admin": "Administration",
       "shop": "Charm+",
       "match": "Match",
-      "daily": "Daily picks"
+      "daily": "Daily picks",
+      "speed": "Speed dating"
     },
     "upsellTitle": "Go Premium",
     "upsellText": "More likes, see who likes you, advanced filters.",
@@ -1883,7 +1899,8 @@
       "refunds": "Refunds",
       "promos": "Promo codes",
       "blog": "Blog",
-      "engagement": "Engagement"
+      "engagement": "Engagement",
+      "speed": "Speed dating"
     },
     "roles": {
       "MODERATOR": "Moderator",
@@ -2189,6 +2206,13 @@
           "on": "Call buttons appear in the conversation.",
           "off": "No new calls; ongoing calls may finish.",
           "useWhen": "In case of abuse, unexpected cost or an incident at the video provider."
+        },
+        "speed_dating": {
+          "name": "Speed dating",
+          "what": "Lets members sign up for the text speed-dating sessions published by the team.",
+          "on": "The Speed dating page is open for sign-ups and chats.",
+          "off": "No new sign-ups or messages; decisions already made are kept.",
+          "useWhen": "In case of abuse, or to suspend all sessions."
         }
       }
     },
@@ -2345,9 +2369,46 @@
       "dailyPlansNote": "The number of daily picks is set per plan, in",
       "codeTtl": "Confirmation code validity (minutes)",
       "unverifiedTtl": "Delete unconfirmed accounts after (hours)",
+      "liveHours": "Live Match search duration (hours)",
       "callRing": "Call ring time (seconds)",
       "callMax": "Maximum call length (minutes)",
       "callPerDay": "Calls started per member per day"
+    },
+    "speed": {
+      "title": "Speed dating",
+      "subtitle": "Publish written-chat sessions. Pairs are generated at start time; nobody sees the other person’s choice.",
+      "new": "New session",
+      "name": "Title",
+      "description": "Description (optional)",
+      "city": "City (optional)",
+      "intent": "Intent (optional)",
+      "anyIntent": "Any",
+      "ageMin": "Minimum age",
+      "ageMax": "Maximum age",
+      "capacity": "Spots",
+      "roundSeconds": "Length of a chat (seconds)",
+      "rounds": "Number of chats",
+      "startsAt": "Start",
+      "create": "Publish the session",
+      "created": "Session published.",
+      "cancel": "Cancel the session",
+      "cancelled": "Session canceled.",
+      "empty": "No sessions.",
+      "colTitle": "Session",
+      "colWhen": "Start",
+      "colRegistered": "Signed up",
+      "colStatus": "Status",
+      "colMutual": "Mutual interests",
+      "stats": "{events} sessions · {regs} sign-ups · {mutual} mutual interests out of {pairs} meetings",
+      "settingsNote": "Settings (break length, decision window, minimum participants, message size): Engagement page.",
+      "phase": {
+        "UPCOMING": "Upcoming",
+        "ROUND": "Live",
+        "BREAK": "Break",
+        "DECISION": "Choosing",
+        "ENDED": "Finished",
+        "CANCELED": "Canceled"
+      }
     }
   },
   "pricingFaq": {
@@ -2787,5 +2848,67 @@
     "deleteNotice": "To avoid unused accounts, an unconfirmed account is deleted automatically after {hours} h (on {date}).",
     "wrongAddress": "Wrong address? Start sign-up again",
     "devHint": "Development mode: the code is {code}. It never exists in production."
+  },
+  "speed": {
+    "title": "Speed dating",
+    "subtitle": "Short written chats with people who want the same things as you. No pressure: you privately choose who you would like to see again.",
+    "how": "How it works",
+    "h1": "You sign up for a session that suits you.",
+    "h2": "At the set time, you chat in writing for a few minutes with one person at a time.",
+    "h3": "At the end, you privately say who you would like to see again. It is a match only if it is mutual.",
+    "safe": "For your safety: keep your contact details for after the match; you can report, block or leave at any time.",
+    "empty": "No session is announced right now. Come back soon: new sessions are published regularly.",
+    "when": "Starts: {date}",
+    "spots": "{n} spots left",
+    "full": "Full",
+    "rounds": "{n} chats of {m} min",
+    "ages": "Ages {min}–{max}",
+    "anyCity": "Any city",
+    "register": "Sign me up",
+    "unregister": "Cancel my sign-up",
+    "enter": "Enter the room",
+    "registered": "Signed up",
+    "cancelled": "Session canceled",
+    "registeredToast": "You are signed up. See you there!",
+    "unregisteredToast": "Sign-up canceled.",
+    "reason": {
+      "PROFILE_INCOMPLETE": "Finish your profile to sign up.",
+      "PAUSED": "Resume your activity to sign up.",
+      "AGE_OUT_OF_RANGE": "This session is for a different age range.",
+      "INTENT_MISMATCH": "This session is for people looking for something else.",
+      "CITY_MISMATCH": "This session is reserved for another city."
+    },
+    "cancelReason": {
+      "NOT_ENOUGH_PARTICIPANTS": "Not enough participants: the session did not take place. Thank you for your interest, another one is coming.",
+      "ADMIN": "The team canceled this session."
+    },
+    "startsIn": "The session starts in",
+    "waitingText": "Relax: the room opens automatically on time. Think of a first question that feels like you.",
+    "round": "Chat {n} of {m}",
+    "timeLeft": "Time left",
+    "partnerLeft": "Your partner left the session. Take a breather.",
+    "rest": "You are resting during this chat. Breathe, the next one starts soon.",
+    "break": "Break before chat {n}",
+    "breakText": "Take a moment to note what you liked.",
+    "write": "Write a message…",
+    "send": "Send",
+    "noMessages": "Say hello: a simple question is often a great start.",
+    "interested": "I want to see them again",
+    "passed": "Not for me",
+    "decisionSaved": "Choice saved, privately.",
+    "privateNote": "Your choice stays private: the other person will never know.",
+    "report": "Report",
+    "block": "Block",
+    "leave": "Leave the session",
+    "leaveConfirm": "Leave the session? Your partner will be told, without details.",
+    "decisionTitle": "Who would you like to see again?",
+    "decisionText": "It is a match only if you choose each other. Otherwise nobody will know.",
+    "meetingRound": "Chat {n}",
+    "resultsTitle": "Thank you for this lovely evening",
+    "matches": "You have a match!",
+    "matchesText": "You chose each other. The conversation is open.",
+    "noMatch": "No match this time, and that is normal: meeting someone sometimes takes a few tries. Another session awaits you.",
+    "openChat": "Open the conversation",
+    "closed": "Choices are closed."
   }
 }
