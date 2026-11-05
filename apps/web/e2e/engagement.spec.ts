@@ -46,9 +46,12 @@ test.describe.serial('Engagement : phase 1', () => {
     const { page } = a;
     await page.goto('/daily');
     await expect(page.getByRole('heading', { name: 'Tes découvertes du jour', level: 1 })).toBeVisible();
-    const card = page.getByRole('listitem').filter({ hasText: 'Yao' });
+    await expect(page.getByTestId('intention-sentence')).toContainText('Je cherche');
+    await expect(page.getByRole('region', { name: 'À la une aujourd’hui' })).toBeVisible();
+    const card = page.getByRole('article').filter({ hasText: 'Yao' });
     await expect(card).toBeVisible();
-    await expect(card.getByText(/\d+ % d’affinité|\d+ %/).first()).toBeVisible();
+    await expect(card.getByRole('meter')).toHaveCount(4);  // jauge Duo : intention, préférences, centres d'intérêt, proximité
+    await expect(card.getByText('Intention', { exact: true })).toBeVisible();
     await expect(page.getByText(/compte à rebours|expire dans|plus que \d+ (h|min)/i)).toHaveCount(0);
     await card.getByRole('button', { name: 'Voir le profil' }).click();
     const dialog = page.getByRole('dialog');
@@ -77,8 +80,8 @@ test.describe.serial('Engagement : phase 1', () => {
   test('5-6 · Yao répond par un J’aime commenté : match, les deux commentaires deviennent les premiers messages', async () => {
     const { page } = y;
     await page.goto('/daily');
-    const card = page.getByRole('listitem').filter({ hasText: 'Awa' });
-    await card.getByRole('button', { name: 'J’aime', exact: true }).click(); // flag actif : ouvre la fenêtre de commentaire
+    const card = page.getByRole('article').filter({ hasText: 'Awa' });
+    await card.getByRole('button', { name: 'J’aime, avec un mot' }).click(); // flag actif : ouvre la fenêtre de commentaire
     const composer = page.getByRole('dialog');
     await composer.getByLabel('Ajouter un commentaire (facultatif)').fill(REPLY);
     await composer.getByRole('button', { name: 'Envoyer le J’aime' }).click();

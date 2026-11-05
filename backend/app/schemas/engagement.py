@@ -1,4 +1,5 @@
 """Schémas d'entrée de l'administration de l'engagement."""
+import datetime
 from typing import Annotated
 
 from typing import Literal
@@ -6,6 +7,35 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 Text = lambda lo, hi: Annotated[str, StringConstraints(strip_whitespace=True, min_length=lo, max_length=hi)]  # noqa: E731
+
+
+class DailyOptionIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    fr: Text(1, 60)
+    en: Text(1, 60)
+
+
+class DailyQuestionCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    day: datetime.date | None = None
+    textFr: Text(5, 120)
+    textEn: Text(5, 120)
+    options: list[DailyOptionIn] = Field(min_length=2, max_length=4)
+    active: bool = True
+
+
+class DailyQuestionPatch(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    day: datetime.date | None = None
+    textFr: Text(5, 120) | None = None
+    textEn: Text(5, 120) | None = None
+    options: list[DailyOptionIn] | None = Field(None, min_length=2, max_length=4)
+    active: bool | None = None
+
+
+class DailyAnswerIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    optionKey: str = Field(min_length=1, max_length=8)
 
 
 class SettingsPatch(BaseModel):

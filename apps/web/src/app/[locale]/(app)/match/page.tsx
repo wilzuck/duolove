@@ -4,7 +4,7 @@ import { BadgeCheck, Clock, Coins, Crown, Heart, MessageCircle, Radio, Sparkles,
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { COUNTRIES, LIVING, SEEKING, type LiveCriteria } from '@duomatch/types';
-import { Avatar, Badge, Button, Card, EmptyState, Field, Input, Select, Skeleton, Switch } from '@duomatch/ui';
+import { Avatar, Badge, Button, Card, EmptyState, Field, RadioChips, RangeSlider, Select, Skeleton, Switch } from '@duomatch/ui';
 import { countryName } from '@/components/app/ProfileCard';
 import { useApiError } from '@/hooks/useApiError';
 import { keys, useLive, useLiveInvites } from '@/hooks/useQueries';
@@ -33,32 +33,34 @@ function useNow(ms = 1000) {
   return now;
 }
 
+const H_MIN = 120, H_MAX = 230;
+
+/** Critères du moment : choix simples (pastilles radio) et curseurs à deux poignées ; une poignée à l'extrémité signifie « peu importe ». */
 function CriteriaForm({ value, onChange }: { value: Draft; onChange: (d: Draft) => void }) {
   const t = useTranslations();
   const locale = useLocale();
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => onChange({ ...value, [k]: v });
   const tri = (label: string, k: 'hasChildren' | 'likesPets') => (
-    <Field label={label}>{(p) => <Select {...p} value={value[k]} onChange={(e) => set(k, e.target.value as Draft[typeof k])}><option value="ANY">{t('live.any')}</option><option value="YES">{t('life.yes')}</option><option value="NO">{t('life.no')}</option></Select>}</Field>
+    <RadioChips legend={label} value={value[k]} onChange={(v) => set(k, v)} options={[{ value: 'ANY', label: t('live.any') }, { value: 'YES', label: t('life.yes') }, { value: 'NO', label: t('life.no') }]} />
   );
   const countries = COUNTRIES.map((c) => <option key={c.code} value={c.code}>{locale === 'en' ? c.en : c.fr}</option>);
+  const hLo = value.heightMin ? Number(value.heightMin) : H_MIN;
+  const hHi = value.heightMax ? Number(value.heightMax) : H_MAX;
+  const heightText = hLo <= H_MIN && hHi >= H_MAX ? t('live.any') : hLo <= H_MIN ? t('live.heightUpTo', { max: hHi }) : hHi >= H_MAX ? t('live.heightFrom', { min: hLo }) : t('live.heightBetween', { min: hLo, max: hHi });
   return (
-    <div className="space-y-5">
-      <Field label={t('prefs.seeking')}>{(p) => <Select {...p} value={value.seeking} onChange={(e) => set('seeking', e.target.value as Draft['seeking'])}>{SEEKING.map((s) => <option key={s} value={s}>{t(`seeking.${s}`)}</option>)}</Select>}</Field>
-      <div className="grid grid-cols-2 gap-4">
-        <Field label={t('prefs.ageMin')}>{(p) => <Input {...p} type="number" min={18} max={99} value={value.ageMin} onChange={(e) => set('ageMin', Math.min(99, Math.max(18, Number(e.target.value) || 18)))} />}</Field>
-        <Field label={t('prefs.ageMax')}>{(p) => <Input {...p} type="number" min={18} max={99} value={value.ageMax} onChange={(e) => set('ageMax', Math.min(99, Math.max(18, Number(e.target.value) || 18)))} />}</Field>
-      </div>
+    <div className="space-y-6">
+      <RadioChips legend={t('prefs.seeking')} value={value.seeking} onChange={(v) => set('seeking', v)} options={SEEKING.map((s) => ({ value: s, label: t(`seeking.${s}`) }))} />
+      <RangeSlider label={t('live.ageRange')} min={18} max={99} value={[value.ageMin, value.ageMax]} minLabel={t('prefs.ageMin')} maxLabel={t('prefs.ageMax')}
+        valueText={t('live.ageBetween', { min: value.ageMin, max: value.ageMax })} onChange={([a, b]) => onChange({ ...value, ageMin: a, ageMax: b })} />
+      <RangeSlider label={t('live.heightRange')} min={H_MIN} max={H_MAX} value={[hLo, hHi]} minLabel={t('live.heightMin')} maxLabel={t('live.heightMax')}
+        valueText={heightText} onChange={([a, b]) => onChange({ ...value, heightMin: a <= H_MIN ? '' : String(a), heightMax: b >= H_MAX ? '' : String(b) })} />
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t('prefs.country')}>{(p) => <Select {...p} value={value.country} onChange={(e) => set('country', e.target.value)}><option value="">{t('prefs.anyCountry')}</option>{countries}</Select>}</Field>
         <Field label={t('life.origin')}>{(p) => <Select {...p} value={value.originCountry} onChange={(e) => set('originCountry', e.target.value)}><option value="">{t('live.any')}</option>{countries}</Select>}</Field>
-        {tri(t('life.hasChildren'), 'hasChildren')}
-        {tri(t('life.likesPets'), 'likesPets')}
-        <Field label={t('life.living')}>{(p) => <Select {...p} value={value.living} onChange={(e) => set('living', e.target.value as Draft['living'])}><option value="ANY">{t('live.any')}</option>{LIVING.map((l) => <option key={l} value={l}>{t(`life.livingOpt.${l}`)}</option>)}</Select>}</Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label={t('live.heightMin')}>{(p) => <Input {...p} type="number" inputMode="numeric" min={120} max={230} value={value.heightMin} onChange={(e) => set('heightMin', e.target.value)} />}</Field>
-          <Field label={t('live.heightMax')}>{(p) => <Input {...p} type="number" inputMode="numeric" min={120} max={230} value={value.heightMax} onChange={(e) => set('heightMax', e.target.value)} />}</Field>
-        </div>
       </div>
+      {tri(t('life.hasChildren'), 'hasChildren')}
+      {tri(t('life.likesPets'), 'likesPets')}
+      <RadioChips legend={t('life.living')} value={value.living} onChange={(v) => set('living', v)} options={[{ value: 'ANY', label: t('live.any') }, ...LIVING.map((l) => ({ value: l, label: t(`life.livingOpt.${l}`) }))]} />
       <p className="text-xs text-muted">{t('live.strictNote')}</p>
     </div>
   );

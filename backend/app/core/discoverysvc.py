@@ -120,7 +120,7 @@ async def ranked(db: AsyncSession, user_id: str, *, exclude: set[str] | None = N
 
 def affinity_dict(r) -> dict:
     """Explication destinée au membre : estimation d'affinité et raisons, jamais une garantie."""
-    return {"score": r.compatibility, "reasons": r.reasons, "commonInterests": r.common_interests, "intentsCompatible": r.intents_compatible}
+    return {"score": r.compatibility, "reasons": r.reasons, "commonInterests": r.common_interests, "intentsCompatible": r.intents_compatible, "axes": r.axes}
 
 
 async def feed(db: AsyncSession, user_id: str, limit: int, cursor: str | None) -> dict:

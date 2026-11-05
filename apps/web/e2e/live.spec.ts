@@ -8,6 +8,15 @@ const ORIGIN = { Origin: 'http://localhost:3000' }; // contrôle CSRF par l'en-t
 /** Taille tirée au hasard : isole les deux membres de ce test des autres comptes en ligne (critère « Taille » du formulaire). */
 const randomHeight = () => 150 + Math.floor(Math.random() * 80);
 
+/** Règle un curseur natif comme le ferait un utilisateur : valeur + événement `input` (compatible React). */
+async function setRange(page: Page, label: string, value: number) {
+  await page.getByLabel(label, { exact: true }).evaluate((el, v) => {
+    const input = el as HTMLInputElement;
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, String(v));
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }, value);
+}
+
 async function api(page: Page, method: 'post' | 'patch', url: string, data: unknown) {
   const r = await page.request[method](url, { data, headers: ORIGIN });
   expect(r.ok(), `${method} ${url} → ${r.status()}`).toBeTruthy();
@@ -42,8 +51,10 @@ test.describe.serial('Match en direct', () => {
     await page.goto('/match');
     await expect(page.getByRole('heading', { name: 'Match en direct' })).toBeVisible();
     await expect(page.getByRole('link', { name: /5 jetons Match/ })).toBeVisible();
-    await page.getByLabel('Taille min. (cm)').fill(String(height));
-    await page.getByLabel('Taille max. (cm)').fill(String(height));
+    await expect(page.getByRole('radio', { name: 'Des hommes' })).toBeChecked();  // formulaire simplifié : pastilles radio et curseurs
+    await setRange(page, 'Taille min. (cm)', height);
+    await setRange(page, 'Taille max. (cm)', height);
+    await expect(page.getByText(`${height} à ${height} cm`)).toBeVisible();
     const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(axe.violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help}`)).toEqual([]);
     await page.getByRole('button', { name: 'Lancer la recherche' }).click();

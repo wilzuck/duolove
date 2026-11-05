@@ -11,3 +11,5 @@ export * from './alert';
 export * from './icon-button';
 export * from './tabs';
 export * from './data-table';
+export * from './range';
+export * from './radio';

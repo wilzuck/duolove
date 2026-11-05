@@ -4,14 +4,15 @@ export type { Limits };
 
 export interface Photo { id: string; url: string; thumbUrl: string; isPrimary?: boolean; position?: number }
 export type LikeKind = 'PROFILE' | 'PHOTO' | 'PROMPT' | 'INTEREST';
-export interface Affinity { score: number; reasons: { code: string; n?: number }[]; commonInterests: string[]; intentsCompatible: boolean }
+export interface Affinity { score: number; reasons: { code: string; n?: number }[]; commonInterests: string[]; intentsCompatible: boolean; axes?: { intent: number; preferences: number; interests: number; location: number } }
 export interface PromptAnswer { id: string; promptId: string; position: number; question: { fr: string; en: string }; answer: string }
 export interface PromptDef { id: string; slug: string; textFr: string; textEn: string; active: boolean; sortOrder: number }
-export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean; date_proposals: boolean; pause_mode: boolean; profile_tips: boolean; calls: boolean; speed_dating: boolean }; calls: { enabled: boolean; simulated: boolean; ringSeconds: number; maxMinutes: number }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[]; dates: { minNoticeHours: number; maxDaysAhead: number } }
+export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean; date_proposals: boolean; pause_mode: boolean; profile_tips: boolean; calls: boolean; speed_dating: boolean; daily_question: boolean }; calls: { enabled: boolean; simulated: boolean; ringSeconds: number; maxMinutes: number }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[]; dates: { minNoticeHours: number; maxDaysAhead: number } }
 export interface Card {
   id: string; displayName: string; age: number; city: string; country: string; bio: string; occupation: string | null;
   intent: Intent; verified: boolean; languages: string[]; interests: string[]; commonInterests: string[];
   distanceKm: number | null; compatibility: number | null; photos: Photo[];
+  dailyQuestion?: { optionKey: string; same: boolean } | null;
   superLike?: boolean; likedAt?: string; affinity?: Affinity | null; prompts?: PromptAnswer[];
   comment?: string | null; likeTarget?: { kind: LikeKind; ref: string | null } | null; decision?: 'LIKE' | 'PASS' | 'SUPER_LIKE' | null;
   hasChildren?: boolean | null; likesPets?: boolean | null; living?: Living | null; heightCm?: number | null; originCountry?: string | null;
@@ -107,3 +108,6 @@ export interface SpeedRoom {
   results: { user: SpeedPerson | null; conversationId: string }[];
 }
 export interface AdminSpeedRow extends SpeedEventInfo { pairs: number; mutualInterests: number }
+
+export interface DailyQuestionState { enabled: boolean; question: { id: string; text: { fr: string; en: string }; options: { key: string; fr: string; en: string }[] } | null; myAnswer: string | null }
+export interface AdminDailyQuestion { id: string; day: string | null; active: boolean; text: { fr: string; en: string }; options: { key: string; fr: string; en: string }[]; answers: number; perOption: Record<string, number>; isToday: boolean }

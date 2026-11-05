@@ -2214,6 +2214,13 @@
           "on": "The Speed dating page is open for sign-ups and chats.",
           "off": "No new sign-ups or messages; decisions already made are kept.",
           "useWhen": "In case of abuse, or to suspend all sessions."
+        },
+        "daily_question": {
+          "name": "Question of the day",
+          "what": "Shows a question shared by all members; answering reveals the answers of the people in your daily picks.",
+          "on": "The “Question of the day” card appears on the Picks page.",
+          "off": "The card and the answers on cards disappear; answers already given are kept.",
+          "useWhen": "If a question causes a problem, or to pause the feature."
         }
       }
     },
@@ -2345,7 +2352,9 @@
         "callsAverage": "Average length of an answered call",
         "speedEvents": "Speed-dating sessions",
         "speedRegistrations": "Speed-dating sign-ups",
-        "speedMutual": "Mutual interests / meetings"
+        "speedMutual": "Mutual interests / meetings",
+        "dqToday": "Answers to today’s question",
+        "dqTotal": "Answers to the question of the day (total)"
       },
       "unavailableTitle": "Not measured yet",
       "unavailable": {
@@ -2381,7 +2390,34 @@
       "callRing": "Call ring time (seconds)",
       "callMax": "Maximum call length (minutes)",
       "callPerDay": "Calls started per member per day",
-      "speedReminder": "Speed-dating start reminder (minutes before)"
+      "speedReminder": "Speed-dating start reminder (minutes before)",
+      "dq": {
+        "tab": "Question of the day",
+        "help": "One question a day, the same for everyone. A scheduled date wins; without one, the question pool rotates daily. 2 to 4 choices.",
+        "new": "New question",
+        "textFr": "Question (French)",
+        "textEn": "Question (English)",
+        "day": "Scheduled date (optional)",
+        "optFr": "Choice {n} (French)",
+        "optEn": "Choice {n} (English)",
+        "addOption": "Add a choice",
+        "create": "Add the question",
+        "created": "Question added.",
+        "updated": "Question updated.",
+        "deleted": "Question deleted.",
+        "colQuestion": "Question",
+        "colDay": "Date",
+        "colAnswers": "Answers",
+        "colState": "Status",
+        "pool": "Pool (rotation)",
+        "today": "Today",
+        "active": "Active",
+        "inactive": "Disabled",
+        "disable": "Disable",
+        "enable": "Enable",
+        "delete": "Delete",
+        "empty": "No questions."
+      }
     },
     "speed": {
       "title": "Speed dating",
@@ -2564,7 +2600,13 @@
     "guideStep2": "Come back to this page: the “Chat ({n} token)” button appears on the person’s card.",
     "guideStep3": "Without a token you can already tap “Like”: if they like you back, it’s a match and the chat opens for free. “Pass” removes them from your suggestions.",
     "guideAvailability": "Each person stays available until the time shown on their card (2 hours after they answered, or the end of your search).",
-    "availableUntil": "Available until {time}"
+    "availableUntil": "Available until {time}",
+    "ageRange": "Age range",
+    "ageBetween": "{min} to {max} years",
+    "heightRange": "Height",
+    "heightUpTo": "up to {max} cm",
+    "heightFrom": "from {min} cm",
+    "heightBetween": "{min} to {max} cm"
   },
   "promo": {
     "title": "Promo code",
@@ -2677,6 +2719,45 @@
       "error": "Could not load the selection.",
       "disabledTitle": "Daily picks unavailable",
       "disabledText": "This feature is temporarily turned off."
+    },
+    "gauge": {
+      "title": "Your Duo at a glance",
+      "common": "{n} in common",
+      "axis": {
+        "intent": "Intent",
+        "preferences": "Preferences",
+        "interests": "Interests",
+        "location": "Proximity"
+      },
+      "tier": {
+        "strong": "strong",
+        "good": "good",
+        "fair": "fair",
+        "light": "light"
+      }
+    },
+    "sentence": {
+      "ages": "aged {min} to {max},",
+      "place": "around {city}",
+      "count": "{n} picks today, nothing disappears at midnight.",
+      "edit": "Edit my criteria",
+      "intent": {
+        "SERIOUS": "I’m looking for a serious relationship",
+        "MARRIAGE": "I’m looking for marriage",
+        "DATING": "I’m looking to date",
+        "FRIENDSHIP": "I’m looking for friendship",
+        "UNSURE": "I’m looking to get to know people"
+      }
+    },
+    "carousel": {
+      "label": "Today’s highlights",
+      "slide": "Pick {n} of {m}",
+      "photoOf": "Photo of {name}",
+      "prev": "Previous pick",
+      "next": "Next pick",
+      "dots": "Go to a pick",
+      "goTo": "Go to pick {n}",
+      "likeWithWord": "Like, with a word"
     }
   },
   "cookieNotice": {
@@ -2919,5 +3000,15 @@
     "noMatch": "No match this time, and that is normal: meeting someone sometimes takes a few tries. Another session awaits you.",
     "openChat": "Open the conversation",
     "closed": "Choices are closed."
+  },
+  "dailyQuestion": {
+    "label": "Question of the day",
+    "legend": "Your answer",
+    "answer": "Answer",
+    "change": "Change my answer",
+    "saved": "Answer saved.",
+    "hint": "Answer to see the answers of the people in your picks.",
+    "unlocked": "Answers from your picks are shown on the cards.",
+    "same": "You chose the same answer as {name}: a good way to start."
   }
 }

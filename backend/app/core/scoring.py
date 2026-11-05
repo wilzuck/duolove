@@ -45,6 +45,7 @@ class ScoreResult:
     reasons: list[dict] = field(default_factory=list)  # [{code, ...params}] les plus contributives d'abord
     common_interests: list[str] = field(default_factory=list)
     intents_compatible: bool = False
+    axes: dict[str, int] = field(default_factory=dict)  # 0–100 par axe affiché au membre : intention, préférences, centres d'intérêt, proximité
 
 
 def _round(x: float) -> int:
@@ -132,4 +133,5 @@ def score_candidate(viewer: ScoreSubject, cand: ScoreSubject, distance_km: float
         reasons.append((pts["other"] * 0.3, {"code": "verified"}))
     reasons.sort(key=lambda r: r[0], reverse=True)
     boost = BOOST_RANK if cand.boostedUntil and cand.boostedUntil > now else 0
-    return ScoreResult(compat, compat + boost, {k: _round(v) for k, v in pts.items()}, [r for _, r in reasons[:4]], common, parts["intent"] >= 0.4)
+    return ScoreResult(compat, compat + boost, {k: _round(v) for k, v in pts.items()}, [r for _, r in reasons[:4]], common, parts["intent"] >= 0.4,
+                       {"intent": _round(parts["intent"] * 100), "preferences": _round(parts["mutual"] * 100), "interests": _round(parts["interests"] * 100), "location": _round(parts["location"] * 100)})

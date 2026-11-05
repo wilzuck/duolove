@@ -1,13 +1,14 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { INTENTS, INTEREST_SLUGS } from '@duomatch/types';
 import { Badge, Button, Card, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { Link } from '@/i18n/navigation';
-import { api, patch, post } from '@/lib/api';
+import { api, del, patch, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
+import type { AdminDailyQuestion } from '@/lib/types';
 
 type Weights = { intent: number; mutual: number; interests: number; location: number; other: number };
 interface SettingsData { values: Record<string, number | Weights> & { 'matching.weights': Weights }; defaults: Record<string, number | Weights> & { 'matching.weights': Weights }; limits: Record<string, { min: number; max: number }> }
@@ -20,6 +21,7 @@ interface Metrics {
   dailyPicks: { last30Days: number; actedRate: number | null }; unavailable: string[];
   rhythm: { pausedNow: number; quietHoursUsers: number };
   calls: { started: number; answered: number; answerRate: number; missed: number; averageMinutes: number; windowDays: number };
+  dailyQuestion: { todayAnswers: number; totalAnswers: number };
   speed: { events: number; registrations: number; pairs: number; mutualInterests: number; mutualRate: number };
   signup: { unverifiedPending: number; unverifiedPurgedTotal: number };
   dates: { proposed: number; accepted: number; declined: number; canceled: number; completed: number; acceptRate: number | null; feedbackCount: number; feedbackAverage: number | null };
@@ -166,6 +168,69 @@ function IceItem({ r, label, onSave }: { r: IceRow; label: string; onSave: (b: P
   );
 }
 
+function DailyQuestionsTab() {
+  const t = useTranslations();
+  const locale = useLocale();
+  const qc = useQueryClient();
+  const err = useApiError();
+  const toast = useUi((s) => s.toast);
+  const q = useQuery({ queryKey: ['admin', 'daily-questions'], queryFn: () => api<{ items: AdminDailyQuestion[] }>('/admin/daily-questions') });
+  const blank = { day: '', textFr: '', textEn: '', options: [{ fr: '', en: '' }, { fr: '', en: '' }] };
+  const [f, setF] = useState(blank);
+  const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin', 'daily-questions'] }); void qc.invalidateQueries({ queryKey: ['engagement', 'daily-question'] }); };
+  const create = useMutation({ mutationFn: () => post('/admin/daily-questions', { day: f.day || null, textFr: f.textFr, textEn: f.textEn, options: f.options }), onSuccess: () => { toast('success', t('admin.eng.dq.created')); setF(blank); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const update = useMutation({ mutationFn: ({ id, ...b }: { id: string; active: boolean }) => patch(`/admin/daily-questions/${id}`, b), onSuccess: () => { toast('success', t('admin.eng.dq.updated')); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const remove = useMutation({ mutationFn: (id: string) => del(`/admin/daily-questions/${id}`), onSuccess: () => { toast('success', t('admin.eng.dq.deleted')); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const setOpt = (i: number, k: 'fr' | 'en', v: string) => setF({ ...f, options: f.options.map((o, j) => (j === i ? { ...o, [k]: v } : o)) });
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-muted">{t('admin.eng.dq.help')}</p>
+      <Card className="p-5">
+        <h3 className="mb-3 font-bold">{t('admin.eng.dq.new')}</h3>
+        <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); create.mutate(); }}>
+          <Field label={t('admin.eng.dq.textFr')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>
+          <Field label={t('admin.eng.dq.textEn')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textEn} onChange={(e) => setF({ ...f, textEn: e.target.value })} />}</Field>
+          {f.options.map((o, i) => (
+            <div key={i} className="contents">
+              <Field label={t('admin.eng.dq.optFr', { n: i + 1 })}>{(p) => <Input {...p} required maxLength={60} value={o.fr} onChange={(e) => setOpt(i, 'fr', e.target.value)} />}</Field>
+              <Field label={t('admin.eng.dq.optEn', { n: i + 1 })}>{(p) => <Input {...p} required maxLength={60} value={o.en} onChange={(e) => setOpt(i, 'en', e.target.value)} />}</Field>
+            </div>
+          ))}
+          <Field label={t('admin.eng.dq.day')}>{(p) => <Input {...p} type="date" value={f.day} onChange={(e) => setF({ ...f, day: e.target.value })} />}</Field>
+          <div className="flex items-end gap-2">
+            {f.options.length < 4 && <Button type="button" variant="outline" onClick={() => setF({ ...f, options: [...f.options, { fr: '', en: '' }] })}>{t('admin.eng.dq.addOption')}</Button>}
+            <Button type="submit" loading={create.isPending}>{t('admin.eng.dq.create')}</Button>
+          </div>
+        </form>
+      </Card>
+      {q.isLoading && <Skeleton className="h-40" />}
+      {q.data && q.data.items.length === 0 && <p className="text-center text-muted">{t('admin.eng.dq.empty')}</p>}
+      <ul className="space-y-3">
+        {q.data?.items.map((r) => (
+          <li key={r.id}>
+            <Card className="space-y-2 p-4">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <p className="font-semibold">{locale === 'en' ? r.text.en : r.text.fr}</p>
+                <div className="flex flex-wrap gap-2">
+                  {r.isToday && <Badge tone="success">{t('admin.eng.dq.today')}</Badge>}
+                  <Badge tone="neutral">{r.day ?? t('admin.eng.dq.pool')}</Badge>
+                  <Badge tone={r.active ? 'brand' : 'neutral'}>{r.active ? t('admin.eng.dq.active') : t('admin.eng.dq.inactive')}</Badge>
+                </div>
+              </div>
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">{r.options.map((o) => <li key={o.key}>{locale === 'en' ? o.en : o.fr} · {r.perOption[o.key] ?? 0}</li>)}</ul>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs text-muted">{t('admin.eng.dq.colAnswers')} : {r.answers}</span>
+                <Button size="sm" variant="outline" onClick={() => update.mutate({ id: r.id, active: !r.active })}>{r.active ? t('admin.eng.dq.disable') : t('admin.eng.dq.enable')}</Button>
+                <Button size="sm" variant="ghost" onClick={() => remove.mutate(r.id)}>{t('admin.eng.dq.delete')}</Button>
+              </div>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function MetricsTab() {
   const t = useTranslations();
   const q = useQuery({ queryKey: ['admin', 'engagement', 'metrics'], queryFn: () => api<Metrics>('/admin/engagement/metrics') });
@@ -185,6 +250,7 @@ function MetricsTab() {
     [t('admin.eng.m.pausedNow'), m.rhythm.pausedNow], [t('admin.eng.m.quietUsers'), m.rhythm.quietHoursUsers],
     [t('admin.eng.m.callsStarted', { n: m.calls.windowDays }), m.calls.started], [t('admin.eng.m.callsAnswered'), `${m.calls.answered} (${pct(Math.round(m.calls.answerRate * 100))})`], [t('admin.eng.m.callsMissed'), m.calls.missed], [t('admin.eng.m.callsAverage'), `${m.calls.averageMinutes} min`],
     [t('admin.eng.m.speedEvents'), m.speed.events], [t('admin.eng.m.speedRegistrations'), m.speed.registrations], [t('admin.eng.m.speedMutual'), `${m.speed.mutualInterests} / ${m.speed.pairs} (${pct(Math.round(m.speed.mutualRate * 100))})`],
+    [t('admin.eng.m.dqToday'), m.dailyQuestion.todayAnswers], [t('admin.eng.m.dqTotal'), m.dailyQuestion.totalAnswers],
     [t('admin.eng.m.premiumConversionRate'), pct(m.premiumConversionRate)], [t('admin.eng.m.dailyPicks'), `${m.dailyPicks.last30Days} (${pct(m.dailyPicks.actedRate)})`],
   ];
   return (
@@ -202,16 +268,17 @@ function MetricsTab() {
 
 export default function AdminEngagement() {
   const t = useTranslations();
-  const [tab, setTab] = useState<'settings' | 'prompts' | 'icebreakers' | 'metrics'>('settings');
+  const [tab, setTab] = useState<'settings' | 'prompts' | 'icebreakers' | 'dq' | 'metrics'>('settings');
   const settings = useQuery({ queryKey: ['admin', 'settings'], queryFn: () => api<SettingsData>('/admin/settings') });
   return (
     <div className="space-y-6">
       <header><h2 className="text-lg font-bold">{t('admin.eng.title')}</h2><p className="max-w-2xl text-sm text-muted">{t('admin.eng.subtitle')}</p></header>
-      <Tabs label={t('admin.eng.title')} value={tab} onChange={setTab} tabs={[{ key: 'settings', label: t('admin.eng.tabSettings') }, { key: 'prompts', label: t('admin.eng.tabPrompts') }, { key: 'icebreakers', label: t('admin.eng.tabIcebreakers') }, { key: 'metrics', label: t('admin.eng.tabMetrics') }]} />
+      <Tabs label={t('admin.eng.title')} value={tab} onChange={setTab} tabs={[{ key: 'settings', label: t('admin.eng.tabSettings') }, { key: 'prompts', label: t('admin.eng.tabPrompts') }, { key: 'icebreakers', label: t('admin.eng.tabIcebreakers') }, { key: 'dq', label: t('admin.eng.dq.tab') }, { key: 'metrics', label: t('admin.eng.tabMetrics') }]} />
       <div role="tabpanel">
         {tab === 'settings' && (settings.data ? <SettingsTab key={JSON.stringify(settings.data.values)} data={settings.data} /> : <Skeleton className="h-64" />)}
         {tab === 'prompts' && <PromptsTab />}
         {tab === 'icebreakers' && <IcebreakersTab />}
+        {tab === 'dq' && <DailyQuestionsTab />}
         {tab === 'metrics' && <MetricsTab />}
       </div>
     </div>

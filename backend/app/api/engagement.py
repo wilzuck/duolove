@@ -2,10 +2,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import appsettings, callsvc, flags, promptsvc, rhythm
+from app.core import appsettings, callsvc, dailyqsvc, flags, promptsvc, rhythm
 from app.core.constants import REACTION_EMOJIS
 from app.core.auth import AuthUser, verified_user
 from app.db.session import get_db
+from app.schemas.engagement import DailyAnswerIn
 from app.schemas.profiles import PauseIn, PromptAnswersIn, RhythmIn
 
 router = APIRouter(prefix="/engagement", tags=["engagement"])
@@ -15,7 +16,7 @@ router = APIRouter(prefix="/engagement", tags=["engagement"])
 async def config(_: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     cfg = await appsettings.all_values(db)
     fl = await flags.all_flags(db)
-    return {"flags": {k: fl[k] for k in ("profile_prompts", "like_comments", "daily_picks", "message_reactions", "message_replies", "icebreakers", "date_proposals", "pause_mode", "profile_tips", "calls", "speed_dating")},
+    return {"flags": {k: fl[k] for k in ("profile_prompts", "like_comments", "daily_picks", "message_reactions", "message_replies", "icebreakers", "date_proposals", "pause_mode", "profile_tips", "calls", "speed_dating", "daily_question")},
             "prompts": {"min": cfg["prompts.min"], "max": cfg["prompts.max"], "answerMax": promptsvc.ANSWER_MAX}, "commentMax": cfg["likes.comment_max"], "reactionEmojis": list(REACTION_EMOJIS),
             "calls": await callsvc.config(db),
             "dates": {"minNoticeHours": cfg["dates.min_notice_hours"], "maxDaysAhead": cfg["dates.max_days_ahead"]}}
@@ -60,3 +61,13 @@ async def resume(u: AuthUser = Depends(verified_user), db: AsyncSession = Depend
 @router.get("/me/tips")
 async def tips(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     return await rhythm.tips(db, u.id)
+
+
+@router.get("/daily-question")
+async def daily_question(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await dailyqsvc.state(db, u.id)
+
+
+@router.post("/daily-question/answer")
+async def daily_question_answer(body: DailyAnswerIn, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await dailyqsvc.answer(db, u.id, body.optionKey)

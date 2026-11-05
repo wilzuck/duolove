@@ -626,6 +626,40 @@ class SpeedMessage(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class DailyQuestion(Base):
+    """Question du jour partagée par tous les membres, planifiée par l'admin (`day`) ou tirée à tour de rôle dans le fonds sans date. Choix fermés bilingues."""
+    __tablename__ = 'DailyQuestion'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='DailyQuestion_pkey'),
+        Index('DailyQuestion_day_key', 'day', unique=True),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    day: Mapped[Optional[datetime.date]] = mapped_column(Date)
+    textFr: Mapped[str] = mapped_column(Text, nullable=False)
+    textEn: Mapped[str] = mapped_column(Text, nullable=False)
+    options: Mapped[object] = mapped_column(JSONB, nullable=False)  # [{key, fr, en}] de 2 à 4 choix
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
+class DailyQuestionAnswer(Base):
+    __tablename__ = 'DailyQuestionAnswer'
+    __table_args__ = (
+        ForeignKeyConstraint(['questionId'], ['DailyQuestion.id'], ondelete='CASCADE', onupdate='CASCADE', name='DailyQuestionAnswer_questionId_fkey'),
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='DailyQuestionAnswer_userId_fkey'),
+        PrimaryKeyConstraint('id', name='DailyQuestionAnswer_pkey'),
+        Index('DailyQuestionAnswer_questionId_userId_key', 'questionId', 'userId', unique=True),
+        Index('DailyQuestionAnswer_userId_idx', 'userId'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    questionId: Mapped[str] = mapped_column(Text, nullable=False)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    optionKey: Mapped[str] = mapped_column(Text, nullable=False)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
 class SystemSetting(Base):
     __tablename__ = 'SystemSetting'
     __table_args__ = (

@@ -2214,6 +2214,13 @@
           "on": "La page Speed dating est ouverte aux inscriptions et aux échanges.",
           "off": "Plus de nouvelle inscription ni de message ; les décisions déjà prises sont conservées.",
           "useWhen": "En cas d’abus ou pour suspendre toutes les sessions."
+        },
+        "daily_question": {
+          "name": "Question du jour",
+          "what": "Affiche une question partagée par tous les membres ; répondre permet de voir les réponses des personnes de sa sélection du jour.",
+          "on": "La carte « Question du jour » s’affiche sur la page Découvertes.",
+          "off": "La carte et les réponses sur les cartes disparaissent ; les réponses déjà données sont conservées.",
+          "useWhen": "Si une question pose problème ou pour suspendre la fonction."
         }
       }
     },
@@ -2345,7 +2352,9 @@
         "callsAverage": "Durée moyenne d’un appel décroché",
         "speedEvents": "Sessions de speed dating",
         "speedRegistrations": "Inscriptions au speed dating",
-        "speedMutual": "Intérêts réciproques / rencontres"
+        "speedMutual": "Intérêts réciproques / rencontres",
+        "dqToday": "Réponses à la question du jour (aujourd’hui)",
+        "dqTotal": "Réponses à la question du jour (total)"
       },
       "unavailableTitle": "Pas encore mesuré",
       "unavailable": {
@@ -2381,7 +2390,34 @@
       "callRing": "Durée de sonnerie d’un appel (secondes)",
       "callMax": "Durée maximale d’un appel (minutes)",
       "callPerDay": "Appels lancés par membre et par jour",
-      "speedReminder": "Rappel de début de speed dating (minutes avant)"
+      "speedReminder": "Rappel de début de speed dating (minutes avant)",
+      "dq": {
+        "tab": "Question du jour",
+        "help": "Une question par jour, la même pour tous. Une date prévue l’emporte ; sans date, le fonds de questions tourne chaque jour. De 2 à 4 choix.",
+        "new": "Nouvelle question",
+        "textFr": "Question (français)",
+        "textEn": "Question (anglais)",
+        "day": "Date prévue (facultative)",
+        "optFr": "Choix {n} (français)",
+        "optEn": "Choix {n} (anglais)",
+        "addOption": "Ajouter un choix",
+        "create": "Ajouter la question",
+        "created": "Question ajoutée.",
+        "updated": "Question mise à jour.",
+        "deleted": "Question supprimée.",
+        "colQuestion": "Question",
+        "colDay": "Date",
+        "colAnswers": "Réponses",
+        "colState": "État",
+        "pool": "Fonds (rotation)",
+        "today": "Aujourd’hui",
+        "active": "Active",
+        "inactive": "Désactivée",
+        "disable": "Désactiver",
+        "enable": "Activer",
+        "delete": "Supprimer",
+        "empty": "Aucune question."
+      }
     },
     "speed": {
       "title": "Speed dating",
@@ -2564,7 +2600,13 @@
     "guideStep2": "Revenez sur cette page : le bouton « Discuter ({n} jeton) » apparaît sur la carte de la personne.",
     "guideStep3": "Sans jeton, vous pouvez déjà cliquer sur « J’aime » : si la personne vous aime aussi, c’est un match et la conversation s’ouvre gratuitement. « Passer » la retire de vos propositions.",
     "guideAvailability": "Chaque personne reste disponible jusqu’à l’heure indiquée sur sa carte (2 heures après sa réponse, ou la fin de votre recherche).",
-    "availableUntil": "Disponible jusqu’à {time}"
+    "availableUntil": "Disponible jusqu’à {time}",
+    "ageRange": "Tranche d’âge",
+    "ageBetween": "{min} à {max} ans",
+    "heightRange": "Taille",
+    "heightUpTo": "jusqu’à {max} cm",
+    "heightFrom": "à partir de {min} cm",
+    "heightBetween": "{min} à {max} cm"
   },
   "promo": {
     "title": "Code promo",
@@ -2677,6 +2719,45 @@
       "error": "Impossible de charger la sélection.",
       "disabledTitle": "Découvertes du jour indisponibles",
       "disabledText": "Cette fonction est momentanément désactivée."
+    },
+    "gauge": {
+      "title": "Votre Duo en un coup d’œil",
+      "common": "{n} en commun",
+      "axis": {
+        "intent": "Intention",
+        "preferences": "Préférences",
+        "interests": "Centres d’intérêt",
+        "location": "Proximité"
+      },
+      "tier": {
+        "strong": "fort",
+        "good": "bon",
+        "fair": "moyen",
+        "light": "léger"
+      }
+    },
+    "sentence": {
+      "ages": "entre {min} et {max} ans,",
+      "place": "autour de {city}",
+      "count": "{n} découvertes aujourd’hui, rien ne disparaît à minuit.",
+      "edit": "Modifier mes critères",
+      "intent": {
+        "SERIOUS": "Je cherche une relation sérieuse",
+        "MARRIAGE": "Je cherche un mariage",
+        "DATING": "Je cherche des rencontres",
+        "FRIENDSHIP": "Je cherche de l’amitié",
+        "UNSURE": "Je cherche à faire connaissance"
+      }
+    },
+    "carousel": {
+      "label": "À la une aujourd’hui",
+      "slide": "Découverte {n} sur {m}",
+      "photoOf": "Photo de {name}",
+      "prev": "Découverte précédente",
+      "next": "Découverte suivante",
+      "dots": "Aller à une découverte",
+      "goTo": "Aller à la découverte {n}",
+      "likeWithWord": "J’aime, avec un mot"
     }
   },
   "cookieNotice": {
@@ -2919,5 +3000,15 @@
     "noMatch": "Pas de match cette fois, et c’est normal : une rencontre, ça prend parfois plusieurs essais. Une prochaine session vous attend.",
     "openChat": "Ouvrir la conversation",
     "closed": "Les choix sont clos."
+  },
+  "dailyQuestion": {
+    "label": "Question du jour",
+    "legend": "Votre réponse",
+    "answer": "Répondre",
+    "change": "Changer ma réponse",
+    "saved": "Réponse enregistrée.",
+    "hint": "Répondez pour voir les réponses des personnes de votre sélection.",
+    "unlocked": "Les réponses de votre sélection sont visibles sur les cartes.",
+    "same": "Vous avez choisi la même réponse que {name} : un bon sujet pour commencer."
   }
 }

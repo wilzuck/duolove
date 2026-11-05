@@ -4,6 +4,9 @@ import { BadgeCheck, Heart, MapPin, Sparkles, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Avatar, Badge, Button, Card, Dialog, EmptyState, Skeleton, Tabs } from '@duomatch/ui';
+import { DailyQuestionCard, dailyQuestionKey } from '@/components/app/DailyQuestionCard';
+import { HighlightCarousel } from '@/components/app/HighlightCarousel';
+import { IntentionSentence } from '@/components/app/IntentionSentence';
 import { LikeComposer } from '@/components/app/LikeComposer';
 import { countryName } from '@/components/app/ProfileCard';
 import { ProfileDetail } from '@/components/app/ProfileDetail';
@@ -12,7 +15,7 @@ import { useEngagementConfig } from '@/hooks/useQueries';
 import { ApiError, api, del, post } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { useUi } from '@/lib/store';
-import type { Card as ProfileCardT, SwipeResult } from '@/lib/types';
+import type { Card as ProfileCardT, DailyQuestionState, SwipeResult } from '@/lib/types';
 
 interface Today { day: string; items: ProfileCardT[]; pending: number }
 interface History { days: { day: string; items: ProfileCardT[] }[]; nextCursor: string | null }
@@ -84,7 +87,12 @@ export default function DailyPage() {
               {today.isLoading && <><Skeleton className="h-52" /><Skeleton className="h-52" /></>}
               {today.isError && !disabled && <p role="alert" className="text-danger-ink">{t('engagement.daily.error')}</p>}
               {today.data && today.data.items.length === 0 && <EmptyState icon={<Sparkles className="size-8" />} title={t('engagement.daily.emptyTitle')}>{t('engagement.daily.emptyText')}</EmptyState>}
-              <ul className="space-y-4">{today.data?.items.map(card)}</ul>
+              <DailyQuestionCard />
+              {today.data && today.data.items.length > 0 && <IntentionSentence count={today.data.items.length} />}
+              {today.data && today.data.items.length > 0 && (
+                <HighlightCarousel question={qc.getQueryData<DailyQuestionState>(dailyQuestionKey)?.question ?? null} items={today.data.items} busy={busy} likeWithWord={!!cfg?.flags.like_comments} onOpen={setOpen}
+                  onLike={(c) => (cfg?.flags.like_comments ? setLiking(c) : void decide(c, 'LIKE'))} onPass={(c) => void decide(c, 'PASS')} />
+              )}
             </div>
           )}
           {tab === 'history' && (

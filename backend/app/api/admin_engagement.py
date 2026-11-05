@@ -5,13 +5,13 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.admin import ADM, audit
-from app.core import appsettings, icebreakers, promptsvc
+from app.core import appsettings, dailyqsvc, icebreakers, promptsvc
 from app.core.auth import AuthUser
 from app.core.errors import AppError, not_found
 from app.core.ids import utcnow
 from app.db.session import get_db
 from app.models.models import IcebreakerTemplate, ProfilePrompt, ProfilePromptAnswer
-from app.schemas.engagement import IcebreakerCreate, IcebreakerPatch, PromptCreate, PromptPatch, SettingsPatch
+from app.schemas.engagement import DailyQuestionCreate, DailyQuestionPatch, IcebreakerCreate, IcebreakerPatch, PromptCreate, PromptPatch, SettingsPatch
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -100,3 +100,28 @@ async def metrics(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     from app.core.engagement_metrics import compute
 
     return await compute(db, utcnow())
+
+
+@router.get("/daily-questions")
+async def list_daily_questions(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    return {"items": await dailyqsvc.admin_list(db)}
+
+
+@router.post("/daily-questions", status_code=201)
+async def create_daily_question(body: DailyQuestionCreate, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    q = await dailyqsvc.admin_create(db, body.model_dump())
+    await audit(db, a.id, "daily_question.create", "DailyQuestion", q.id, {"day": q.day.isoformat() if q.day else None})
+    return dailyqsvc.question_dict(q)
+
+
+@router.patch("/daily-questions/{question_id}")
+async def patch_daily_question(question_id: str, body: DailyQuestionPatch, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    q = await dailyqsvc.admin_patch(db, question_id, body.model_dump(exclude_unset=True))
+    await audit(db, a.id, "daily_question.update", "DailyQuestion", q.id, {k: str(v) for k, v in body.model_dump(exclude_unset=True).items() if k != "options"})
+    return dailyqsvc.question_dict(q)
+
+
+@router.delete("/daily-questions/{question_id}", status_code=204)
+async def delete_daily_question(question_id: str, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    await dailyqsvc.admin_delete(db, question_id)
+    await audit(db, a.id, "daily_question.delete", "DailyQuestion", question_id)

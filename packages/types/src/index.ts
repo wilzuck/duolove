@@ -300,6 +300,7 @@ export const FEATURE_FLAGS = [
   { key: 'profile_tips', category: 'social', defaultOn: true, emergency: false },
   { key: 'calls', category: 'social', defaultOn: true, emergency: true },
   { key: 'speed_dating', category: 'social', defaultOn: true, emergency: true },
+  { key: 'daily_question', category: 'social', defaultOn: true, emergency: true },
 ] as const satisfies readonly { key: string; category: FlagCategory; defaultOn: boolean; emergency: boolean }[];
 export type FlagKey = (typeof FEATURE_FLAGS)[number]['key'];
 export const FLAG_KEYS = FEATURE_FLAGS.map((f) => f.key) as FlagKey[];

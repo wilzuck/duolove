@@ -104,7 +104,7 @@ def _hsl(h: int, s: float, l: float) -> tuple[int, int, int]:
     return int(r * 255), int(g * 255), int(b * 255)
 
 
-def avatar(name: str, i: int) -> str:
+def avatar(name: str, i: int, key: str | None = None) -> str:
     """Avatar de démonstration : dégradé + initiale (photo plein format et miniature `_t`)."""
     hue = HUES[i % len(HUES)]
     w, h = 800, 1000
@@ -118,7 +118,7 @@ def avatar(name: str, i: int) -> str:
     d.ellipse((230, 250, 570, 590), fill=tuple(int(c * 0.6 + 255 * 0.4) for c in c1))
     d = ImageDraw.Draw(img)
     d.text((400, 420), name[0], fill=(255, 255, 255), font=ImageFont.load_default(size=190), anchor="mm")
-    key = f"photos/5eed{secrets.token_hex(10)}.webp"
+    key = key or f"photos/5eed{secrets.token_hex(10)}.webp"  # `key` fourni : régénère le fichier d'une photo déjà en base
     (ROOT / "photos").mkdir(parents=True, exist_ok=True)
     img.save(ROOT / key, "WEBP", quality=80)
     img.resize((480, 600)).save(ROOT / key.replace(".webp", "_t.webp"), "WEBP", quality=75)

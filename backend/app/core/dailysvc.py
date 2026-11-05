@@ -5,7 +5,7 @@ import datetime
 from sqlalchemy import and_, delete, exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import appsettings, discoverysvc, entitlements, flags, rhythm
+from app.core import appsettings, dailyqsvc, discoverysvc, entitlements, flags, rhythm
 from app.core.ids import utcnow
 from app.core.profile_card import approx_distance_km, load_cards, to_card
 from app.models.models import Block, DailyRecommendation, Profile, Swipe, User
@@ -41,11 +41,13 @@ async def _cards(db: AsyncSession, user_id: str, rows: list[DailyRecommendation]
     mine = await discoverysvc.my_slugs(db, user_id)
     acted = dict((await db.execute(select(Swipe.targetId, Swipe.action).where(Swipe.giverId == user_id, Swipe.targetId.in_(ids)))).all())
     by_target = {r.targetId: r for r in rows}
+    revealed = await dailyqsvc.reveal_for(db, user_id, [p.userId for p in profiles])
     out = {}
     for c in await load_cards(db, profiles):
         r = by_target[c.profile.userId]
         out[c.profile.userId] = {**to_card(c, viewer_interests=mine, distance_km=approx_distance_km(me, c.profile), score=r.score, affinity=r.reasons),
-                                 "decision": getattr(acted.get(c.profile.userId), "value", acted.get(c.profile.userId))}
+                                 "decision": getattr(acted.get(c.profile.userId), "value", acted.get(c.profile.userId)),
+                                 "dailyQuestion": revealed.get(c.profile.userId)}
     return out
 
 
