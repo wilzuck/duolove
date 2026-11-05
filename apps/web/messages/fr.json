@@ -42,7 +42,8 @@
     "company": "DuoMatch",
     "legal": "Légal",
     "adults": "Réservé aux personnes majeures (18 ans et plus).",
-    "rights": "Tous droits réservés."
+    "rights": "Tous droits réservés.",
+    "links": "Liens du site"
   },
   "home": {
     "eyebrow": "Rencontres sérieuses, en toute confiance",
@@ -91,40 +92,89 @@
     }
   },
   "how": {
+    "kicker": "Pas à pas",
     "title": "Comment fonctionne DuoMatch",
-    "subtitle": "De l’inscription à la première conversation, en six étapes simples.",
-    "safetyTitle": "Restez vigilant(e)",
-    "safetyText": "N’envoyez jamais d’argent à quelqu’un que vous n’avez pas rencontré et ne partagez pas vos informations bancaires. Signalez tout comportement suspect : notre équipe intervient.",
+    "subtitle": "Des rencontres sincères, à votre rythme, à tout âge. Voici le chemin, de l’inscription à la première conversation… et jusqu’au premier rendez-vous.",
+    "ctaHelp": "Une question ? Le Centre d’aide",
+    "stepsTitle": "Votre parcours en huit étapes",
     "steps": {
       "signup": {
-        "title": "Inscription",
-        "text": "Créez votre compte avec votre e-mail ou Google, confirmez votre adresse et votre majorité."
+        "title": "Créez votre compte",
+        "text": "Avec votre e-mail (ou Google) et un mot de passe, ou simplement un lien magique. Vous confirmez votre adresse et votre majorité : DuoMatch est réservé aux adultes de 18 ans et plus."
       },
       "profile": {
-        "title": "Profil et photos",
-        "text": "Racontez-vous, choisissez vos centres d’intérêt et ajoutez vos plus belles photos."
+        "title": "Racontez-vous",
+        "text": "Ajoutez vos plus belles photos, quelques mots sur vous, vos centres d’intérêt et votre intention. Répondez à des questions de personnalité : c’est ce qui donne envie de vous écrire."
       },
       "discover": {
-        "title": "Découverte",
-        "text": "Parcourez des profils compatibles, classés selon des critères que vous contrôlez."
+        "title": "Découvrez des personnes compatibles",
+        "text": "Vos critères passent avant tout : âge, ville, intentions. Chaque profil indique une affinité estimée et pourquoi il vous est proposé. Chaque jour, une sélection limitée vous attend, sans pression."
       },
       "like": {
-        "title": "Likes réciproques",
-        "text": "Likez ceux qui vous plaisent. Si l’intérêt est partagé, le lien se crée."
+        "title": "Dites ce qui vous plaît",
+        "text": "Aimez un profil, une photo, une réponse ou un centre d’intérêt, et ajoutez un petit mot si vous le souhaitez. Il deviendra votre premier message en cas de match."
       },
       "match": {
-        "title": "Match",
-        "text": "Un match apparaît quand deux personnes se plaisent. Vous êtes prévenus tous les deux."
+        "title": "C’est un match",
+        "text": "Quand l’intérêt est réciproque, vous êtes prévenus tous les deux et la conversation s’ouvre."
       },
       "chat": {
-        "title": "Messagerie",
-        "text": "Discutez en privé, en temps réel. Bloquez ou signalez à tout moment."
+        "title": "Discutez à l’aise",
+        "text": "Messages privés en temps réel, réactions, réponses ciblées et idées pour commencer fondées sur ce que vous avez en commun. Vous bloquez ou signalez en un geste."
+      },
+      "date": {
+        "title": "Passez à la rencontre, en sécurité",
+        "text": "Proposez un rendez-vous dans un lieu public, choisissez l’horaire, réglez un rappel et partagez les détails avec une personne de confiance, uniquement si vous le décidez."
       },
       "premium": {
-        "title": "Premium / VIP (optionnel)",
-        "text": "Plus de likes, voir qui vous a liké, filtres avancés, boosts de visibilité et mode discret."
+        "title": "Allez plus loin avec Premium / VIP (facultatif)",
+        "text": "Plus de visibilité et d’outils, sans jamais garantir un match. Le blocage, le signalement et la sécurité restent gratuits pour tous."
       }
-    }
+    },
+    "whyTitle": "Ce qui change ici",
+    "why": [
+      {
+        "h": "Des raisons, pas une boîte noire",
+        "p": "Vous savez pourquoi un profil vous est proposé. Votre apparence ne sert jamais à classer les personnes."
+      },
+      {
+        "h": "De vrais profils",
+        "p": "Pas de faux profils, de faux « J’aime » ni de faux messages. Le badge « vérifié » n’est donné qu’après un contrôle humain."
+      },
+      {
+        "h": "À votre rythme",
+        "p": "Pas de compte à rebours ni de défilement sans fin : une sélection limitée, et un profil que vous masquez quand vous voulez."
+      },
+      {
+        "h": "Vous gardez la main",
+        "p": "Vos conversations sont privées, votre position n’est jamais précise, vos données sont exportables."
+      }
+    ],
+    "ageTitle": "L’amour n’a pas d’âge",
+    "ageText": "À 25, 45 ou 70 ans, on mérite une belle rencontre. DuoMatch accueille tous les adultes, avec une seule exigence : le respect. Lisez notre charte de bienveillance.",
+    "ageCta": "Les règles de la communauté",
+    "plansTitle": "Gratuit pour commencer, Premium pour aller plus loin",
+    "plansFree": {
+      "h": "Gratuit",
+      "items": [
+        "Profil, questions de personnalité et découverte",
+        "Découvertes du jour, likes quotidiens, matchs et messagerie",
+        "Blocage et signalement, toujours gratuits"
+      ]
+    },
+    "plansPaid": {
+      "h": "Premium et VIP",
+      "items": [
+        "Plus de likes, voir qui vous a liké, filtres avancés",
+        "Retour sur un profil passé, photos dans les messages, gestion des accusés « vu »",
+        "Boosts et mode discret avec VIP. Détails et tarifs sur la page Tarifs"
+      ]
+    },
+    "plansCta": "Voir les tarifs",
+    "safetyTitle": "Restez vigilant(e)",
+    "safetyText": "N’envoyez jamais d’argent à quelqu’un que vous n’avez pas rencontré et ne partagez pas vos informations bancaires. Signalez tout comportement suspect : notre équipe examine chaque signalement.",
+    "finalTitle": "Prêt(e) à écrire votre histoire ?",
+    "finalText": "L’inscription est gratuite et ne prend que quelques minutes."
   },
   "faq": {
     "age": {
@@ -285,85 +335,228 @@
     "nextCta": "Écrire mon premier chapitre"
   },
   "contact": {
+    "kicker": "Nous sommes là",
     "title": "Nous contacter",
-    "lead": "Une question, un problème, une suggestion ? Écrivez-nous.",
-    "emailLabel": "Écrivez-nous à",
+    "lead": "Une question, un souci, une idée ? Écrivez-nous : une vraie personne vous lira avec attention.",
+    "topicsTitle": "De quoi s’agit-il ?",
+    "topics": {
+      "account": {
+        "h": "Mon compte ou ma connexion",
+        "p": "Accès, e-mail de confirmation, mot de passe.",
+        "subject": "Compte et connexion"
+      },
+      "billing": {
+        "h": "Un paiement ou un remboursement",
+        "p": "Abonnement, facture, double paiement.",
+        "subject": "Paiement ou remboursement"
+      },
+      "safety": {
+        "h": "Sécurité ou signalement",
+        "p": "Un profil ou une situation vous inquiète.",
+        "subject": "Sécurité"
+      },
+      "privacy": {
+        "h": "Mes données personnelles",
+        "p": "Accès, export, suppression.",
+        "subject": "Données personnelles"
+      },
+      "idea": {
+        "h": "Une suggestion",
+        "p": "Une idée pour rendre DuoMatch plus agréable.",
+        "subject": "Suggestion"
+      },
+      "other": {
+        "h": "Autre question",
+        "p": "Tout le reste, nous lisons tout.",
+        "subject": "Question sur DuoMatch"
+      }
+    },
+    "emailLabel": "Ou écrivez-nous directement à",
     "sla": "Nous répondons généralement sous 48 heures ouvrées.",
     "cta": "Envoyer un e-mail",
-    "subject": "Question sur DuoMatch",
-    "urgent": "Pour un comportement dangereux, utilisez plutôt le bouton « Signaler » dans l’application : il est traité en priorité."
+    "tipsTitle": "Pour que nous puissions vous aider plus vite",
+    "tips": [
+      "Indiquez l’adresse e-mail de votre compte.",
+      "Pour un paiement, ajoutez la référence indiquée dans Paramètres → Paiements.",
+      "Décrivez ce que vous attendiez et ce qui s’est passé ; une capture d’écran aide souvent.",
+      "Ne nous envoyez jamais votre mot de passe : nous ne vous le demanderons jamais."
+    ],
+    "urgentTitle": "Un comportement dangereux ou une arnaque ?",
+    "urgent": "Utilisez plutôt le bouton « Signaler » dans l’application : il est confidentiel et examiné par un modérateur. En danger immédiat, contactez d’abord les secours de votre pays.",
+    "helpTitle": "Peut-être une réponse vous attend déjà",
+    "helpCta": "Centre d’aide",
+    "communityCta": "Règles de la communauté",
+    "subject": "Question sur DuoMatch"
   },
   "help": {
-    "title": "Centre d’aide",
-    "lead": "Les réponses aux questions les plus fréquentes.",
-    "more": "Vous ne trouvez pas votre réponse ?",
+    "kicker": "Centre d’aide",
+    "title": "Comment pouvons-nous vous aider ?",
+    "lead": "Les réponses aux questions les plus fréquentes, pour rencontrer en toute sérénité.",
+    "searchLabel": "Rechercher dans l’aide",
+    "searchPlaceholder": "Ex. : paiement, mot de passe, rendez-vous",
+    "results": "{n, plural, =0 {Aucun résultat} one {# résultat} other {# résultats}}",
+    "noResults": "Aucune réponse ne correspond à « {q} ». Essayez un autre mot, ou écrivez-nous : nous sommes là pour vous aider.",
+    "clear": "Effacer la recherche",
+    "categories": "Parcourir par thème",
+    "moreTitle": "Vous ne trouvez pas votre réponse ?",
+    "more": "Notre équipe vous répond avec bienveillance.",
+    "contactCta": "Nous contacter",
+    "communityCta": "Règles de la communauté",
+    "urgentTitle": "Un comportement vous inquiète ?",
+    "urgent": "Utilisez « Signaler » dans l’application : c’est confidentiel et examiné par un modérateur. En danger immédiat, contactez les secours de votre pays.",
     "sections": {
-      "account": "Compte",
+      "start": "Premiers pas",
+      "meet": "Rencontres et Match",
+      "chat": "Messages et rendez-vous",
       "safety": "Sécurité",
       "billing": "Abonnements et paiements",
-      "privacy": "Vie privée"
+      "privacy": "Compte et vie privée"
     },
     "items": {
-      "verify": {
-        "q": "Je n’ai pas reçu l’e-mail de confirmation",
-        "a": "Vérifiez vos courriers indésirables, puis utilisez « Renvoyer » dans le bandeau en haut de l’application."
-      },
-      "password": {
-        "q": "J’ai oublié mon mot de passe",
-        "a": "Depuis la page de connexion, choisissez « Mot de passe oublié » : un lien valable une heure vous est envoyé."
-      },
-      "sessions": {
-        "q": "Comment me déconnecter d’un autre appareil ?",
-        "a": "Paramètres → Sécurité → Appareils connectés, puis « Déconnecter »."
-      },
-      "delete": {
-        "q": "Comment supprimer mon compte ?",
-        "a": "Paramètres → Confidentialité → Supprimer mon compte. L’action est définitive."
-      },
-      "scam": {
-        "q": "Comment reconnaître une arnaque sentimentale ?",
-        "a": "Méfiez-vous de toute demande d’argent, d’un refus systématique de se montrer en vidéo, ou d’une déclaration d’amour très rapide. Signalez le profil."
-      },
-      "report": {
-        "q": "Comment signaler un profil ?",
-        "a": "Ouvrez le profil ou la conversation, puis « Signaler ». Un modérateur examine chaque signalement."
-      },
-      "block": {
-        "q": "Que se passe-t-il si je bloque quelqu’un ?",
-        "a": "Vous ne vous voyez plus mutuellement et la conversation est fermée. Vous pouvez débloquer depuis les paramètres."
-      },
-      "verified": {
-        "q": "Comment obtenir le badge vérifié ?",
-        "a": "Profil → Vérification : envoyez un selfie. Un modérateur le compare à vos photos puis supprime le selfie."
-      },
-      "pay": {
-        "q": "Quels moyens de paiement ?",
-        "a": "Le paiement est branché sur un prestataire sécurisé ; les moyens disponibles dépendent de votre pays."
-      },
-      "cancel": {
-        "q": "Comment annuler mon abonnement ?",
-        "a": "Paramètres → Abonnement → Annuler. Vous gardez vos avantages jusqu’à la fin de la période payée."
-      },
-      "invoice": {
-        "q": "Où trouver mes factures ?",
-        "a": "Paramètres → Paiements : chaque paiement réussi a sa facture."
-      },
-      "failed": {
-        "q": "Mon paiement a échoué",
-        "a": "Aucun avantage n’est activé tant que le paiement n’est pas confirmé. Réessayez depuis la page Premium."
-      },
-      "location": {
-        "q": "Ma position est-elle visible ?",
-        "a": "Jamais précisément : seule une distance arrondie peut apparaître, et uniquement si vous partagez votre position."
-      },
-      "export": {
-        "q": "Puis-je récupérer mes données ?",
-        "a": "Oui : Paramètres → Confidentialité → Exporter mes données (fichier JSON)."
-      },
-      "visibility": {
-        "q": "Comment masquer mon profil ?",
-        "a": "Paramètres → Confidentialité → désactivez « Profil visible ». Le mode discret est réservé à VIP."
-      }
+      "start": [
+        {
+          "q": "Qui peut s’inscrire ?",
+          "a": "Uniquement les personnes de 18 ans et plus. La date de naissance est vérifiée à l’inscription, et DuoMatch accueille les adultes de tout âge."
+        },
+        {
+          "q": "DuoMatch est-il gratuit ?",
+          "a": "Oui pour commencer : profil, découverte, découvertes du jour, matchs et messagerie sont gratuits, avec un nombre de likes quotidien. Premium et VIP ajoutent des fonctions, sans jamais garantir un match."
+        },
+        {
+          "q": "Je n’ai pas reçu l’e-mail de confirmation",
+          "a": "Vérifiez vos courriers indésirables, puis utilisez « Renvoyer » dans le bandeau en haut de l’application."
+        },
+        {
+          "q": "Comment avoir de meilleures rencontres ?",
+          "a": "Complétez votre profil : plusieurs photos, une présentation sincère, vos centres d’intérêt et 3 à 5 questions de personnalité. Les réponses donnent envie de vous écrire."
+        },
+        {
+          "q": "Je ne vois plus de nouveaux profils",
+          "a": "Élargissez vos critères (âge, ville, intentions) dans Profil → Mes critères de rencontre, ou revenez demain : de nouvelles personnes s’inscrivent chaque jour."
+        }
+      ],
+      "meet": [
+        {
+          "q": "Que signifie le pourcentage d’affinité ?",
+          "a": "C’est une estimation fondée sur vos préférences et celles de l’autre personne (intentions, centres d’intérêt, ville…). Elle est accompagnée de ses raisons et ne garantit rien : la vraie compatibilité se découvre en discutant."
+        },
+        {
+          "q": "Qu’est-ce que « Tes découvertes du jour » ?",
+          "a": "Une sélection limitée de vrais profils compatibles, renouvelée chaque jour. Il n’y a pas de compte à rebours : vous pouvez la consulter à votre rythme et retrouver les jours précédents."
+        },
+        {
+          "q": "Comment envoyer un J’aime avec un commentaire ?",
+          "a": "Ouvrez un profil, choisissez ce qui vous plaît (le profil, une photo, une réponse ou un intérêt), ajoutez un mot si vous le souhaitez. En cas de match, ce mot devient votre premier message."
+        },
+        {
+          "q": "Pourquoi n’ai-je plus de likes aujourd’hui ?",
+          "a": "La formule gratuite comprend un nombre de likes par jour. Il se renouvelle chaque jour ; Premium lève cette limite."
+        },
+        {
+          "q": "À quoi sert le menu Match ?",
+          "a": "Il lance une recherche en direct auprès des personnes en ligne qui correspondent à vos critères. Celles qui acceptent apparaissent : discuter avec l’une d’elles coûte un jeton Match, et vous pouvez toujours aimer gratuitement."
+        }
+      ],
+      "chat": [
+        {
+          "q": "Je ne sais pas comment commencer la conversation",
+          "a": "Touchez l’ampoule du champ de saisie : des idées fondées sur ce que vous avez en commun vous sont proposées. Rien n’est envoyé sans votre accord, et vous pouvez modifier le texte."
+        },
+        {
+          "q": "Puis-je réagir à un message ou y répondre ?",
+          "a": "Oui : touchez un message pour réagir avec un emoji ou répondre à ce message précis."
+        },
+        {
+          "q": "Que sont les accusés de lecture ?",
+          "a": "L’indicateur « vu » montre qu’un message a été lu. Les abonnés Premium et VIP peuvent désactiver l’envoi de leurs accusés dans Paramètres → Confidentialité ; l’indicateur de saisie se désactive pour tous."
+        },
+        {
+          "q": "Comment proposer un rendez-vous ?",
+          "a": "Dans la conversation, touchez l’icône Rendez-vous : choisissez un jour, une heure et un lieu public. L’autre personne peut accepter, refuser ou proposer un autre horaire."
+        },
+        {
+          "q": "Comment prévenir un proche de mon rendez-vous ?",
+          "a": "Sur un rendez-vous accepté, « Partager avec un proche » crée un lien que vous envoyez vous-même : il montre le lieu, l’horaire et les prénoms, rien d’autre. Vous pouvez l’arrêter à tout moment."
+        }
+      ],
+      "safety": [
+        {
+          "q": "Comment reconnaître une arnaque sentimentale ?",
+          "a": "Méfiez-vous de toute demande d’argent, d’un refus répété de se montrer en vidéo, d’une déclaration d’amour très rapide ou d’une urgence. Ne versez rien, et signalez le profil."
+        },
+        {
+          "q": "Comment signaler un profil ?",
+          "a": "Ouvrez le profil ou la conversation, puis « Signaler ». Votre signalement est confidentiel et un modérateur examine chaque signalement."
+        },
+        {
+          "q": "Que se passe-t-il si je bloque quelqu’un ?",
+          "a": "Vous ne vous voyez plus mutuellement et la conversation est fermée. Vous pouvez débloquer depuis les paramètres. Bloquer et signaler sont toujours gratuits."
+        },
+        {
+          "q": "Comment obtenir le badge vérifié ?",
+          "a": "Profil → Vérification : envoyez un selfie. Un modérateur le compare à vos photos puis le supprime. Le badge n’est jamais attribué automatiquement et ne garantit pas les intentions de la personne."
+        },
+        {
+          "q": "Mon compte est suspendu : que faire ?",
+          "a": "Une page vous indique le motif de la décision et vous permet de la contester : votre message est examiné par l’équipe."
+        }
+      ],
+      "billing": [
+        {
+          "q": "Quels moyens de paiement ?",
+          "a": "Mobile Money (selon le pays) et carte bancaire via notre prestataire sécurisé. Nous ne stockons aucune donnée bancaire."
+        },
+        {
+          "q": "L’abonnement se renouvelle-t-il automatiquement ?",
+          "a": "Non : chaque période est un paiement ponctuel. Nous vous prévenons avant l’échéance pour que vous puissiez prolonger."
+        },
+        {
+          "q": "Comment annuler mon abonnement ?",
+          "a": "Paramètres → Abonnement → Annuler. Vous gardez vos avantages jusqu’à la fin de la période payée."
+        },
+        {
+          "q": "Où trouver mes factures ?",
+          "a": "Paramètres → Paiements : chaque paiement réussi a sa facture."
+        },
+        {
+          "q": "Mon paiement a échoué",
+          "a": "Aucun avantage n’est activé tant que le paiement n’est pas confirmé. Réessayez depuis la page Premium, ou contactez-nous avec la référence du paiement."
+        },
+        {
+          "q": "Puis-je être remboursé(e) ?",
+          "a": "Écrivez-nous depuis la page Contact avec la référence du paiement : chaque demande est examinée, notamment en cas de double paiement ou d’erreur."
+        },
+        {
+          "q": "Mes boosts et Super Likes expirent-ils ?",
+          "a": "Non : les crédits achetés restent sur votre compte jusqu’à leur utilisation."
+        }
+      ],
+      "privacy": [
+        {
+          "q": "J’ai oublié mon mot de passe",
+          "a": "Depuis la page de connexion, choisissez « Mot de passe oublié » : un lien valable une heure vous est envoyé. Vous pouvez aussi vous connecter avec un lien magique."
+        },
+        {
+          "q": "Comment me déconnecter d’un autre appareil ?",
+          "a": "Paramètres → Sécurité → Appareils connectés, puis « Déconnecter »."
+        },
+        {
+          "q": "Ma position est-elle visible ?",
+          "a": "Jamais précisément : seule une distance arrondie peut apparaître, et uniquement si vous partagez votre position."
+        },
+        {
+          "q": "Qui peut lire mes conversations ?",
+          "a": "Vous et la personne avec qui vous discutez. Nous ne parcourons pas les conversations ; un signalement s’appuie sur votre description et sur le profil signalé."
+        },
+        {
+          "q": "Comment masquer mon profil ou faire une pause ?",
+          "a": "Paramètres → Confidentialité → désactivez « Profil visible ». Vous revenez quand vous voulez. Le mode discret est réservé à VIP."
+        },
+        {
+          "q": "Puis-je récupérer mes données ou supprimer mon compte ?",
+          "a": "Oui : Paramètres → Confidentialité → Exporter mes données (fichier JSON) ou Supprimer mon compte. La suppression est définitive."
+        }
+      ]
     }
   },
   "blog": {
@@ -385,34 +578,152 @@
     "updated": "Dernière mise à jour : novembre 2026",
     "terms": {
       "title": "Conditions générales d’utilisation",
+      "kicker": "Conditions d’utilisation",
+      "metaDescription": "Les conditions d’utilisation de DuoMatch : accès, compte, contenus, offres payantes, modération et responsabilités, expliquées simplement.",
+      "lead": "Ce document explique, simplement et honnêtement, les règles du jeu entre vous et DuoMatch. Nous l’avons voulu lisible : en cas de doute, écrivez-nous.",
+      "toc": "Sommaire",
+      "updated": "Dernière mise à jour : novembre 2026",
+      "listDo": "À retenir",
+      "listDont": "Interdit",
+      "listInfo": "En clair",
+      "seeAlso": "À lire aussi",
+      "community": "Règles de la communauté",
+      "privacy": "Politique de confidentialité",
+      "cookies": "Cookies",
+      "contact": "Nous contacter",
       "sections": [
         {
-          "h": "1. Objet",
-          "p": "DuoMatch est un service de mise en relation entre adultes. Les présentes conditions encadrent son utilisation."
+          "id": "objet",
+          "h": "Objet et acceptation",
+          "paras": [
+            "DuoMatch est un service en ligne de mise en relation entre adultes qui souhaitent faire des rencontres, à tout âge. En créant un compte, vous acceptez les présentes conditions ainsi que nos règles de la communauté.",
+            "Si vous n’êtes pas d’accord avec ces conditions, merci de ne pas utiliser le service."
+          ]
         },
         {
-          "h": "2. Accès et âge minimum",
-          "p": "Le service est réservé aux personnes âgées d’au moins 18 ans. Toute information fausse sur l’âge entraîne la suppression du compte."
+          "id": "acces",
+          "h": "Accès et âge minimum",
+          "paras": [
+            "Le service est réservé aux personnes âgées d’au moins 18 ans. La date de naissance est vérifiée à l’inscription ; toute information fausse sur l’âge entraîne la suppression du compte.",
+            "Chaque personne ne peut avoir qu’un compte et doit fournir des informations exactes."
+          ]
         },
         {
-          "h": "3. Compte",
-          "p": "Vous êtes responsable de la confidentialité de vos identifiants et des informations de votre profil, qui doivent être exactes."
+          "id": "compte",
+          "h": "Votre compte",
+          "paras": [
+            "Vous êtes responsable de la confidentialité de vos identifiants et de l’activité de votre compte. Vous pouvez voir et déconnecter vos appareils dans Paramètres → Sécurité, et nous vous conseillons de choisir un mot de passe unique.",
+            "Prévenez-nous sans attendre si vous pensez que votre compte a été utilisé à votre insu."
+          ]
         },
         {
-          "h": "4. Comportements interdits",
-          "p": "Harcèlement, usurpation d’identité, demandes d’argent, contenus illicites ou à caractère sexuel explicite, démarchage commercial."
+          "id": "conduite",
+          "h": "Comportements attendus et interdits",
+          "intro": "Nous voulons des rencontres heureuses et sûres pour tous. Nos règles de la communauté détaillent ce que cela signifie ; voici l’essentiel.",
+          "lists": [
+            {
+              "kind": "dont",
+              "items": [
+                "Le harcèlement, les menaces, la discrimination et les propos humiliants.",
+                "L’usurpation d’identité et les faux profils.",
+                "Les demandes d’argent, les arnaques et le démarchage commercial.",
+                "Les contenus illicites, violents ou sexuellement explicites, et toute image impliquant un mineur."
+              ]
+            }
+          ]
         },
         {
-          "h": "5. Abonnements",
-          "p": "Les formules Premium et VIP sont mensuelles, sans engagement, annulables à tout moment. Les avantages sont conservés jusqu’à la fin de la période payée."
+          "id": "contenus",
+          "h": "Vos contenus",
+          "paras": [
+            "Les photos, textes, réponses, commentaires et messages que vous publiez restent les vôtres. Vous nous autorisez seulement à les héberger et à les afficher pour faire fonctionner le service, aux personnes concernées et selon vos réglages de visibilité.",
+            "Vous ne devez publier que des contenus dont vous avez le droit de disposer, sans porter atteinte à autrui. Nous pouvons retirer un contenu contraire à ces conditions ou aux règles de la communauté."
+          ]
         },
         {
-          "h": "6. Modération et sanctions",
-          "p": "DuoMatch peut avertir, suspendre ou exclure un compte qui enfreint les règles. Une procédure de contestation est disponible."
+          "id": "offres",
+          "h": "Offres gratuites et payantes",
+          "paras": [
+            "DuoMatch est gratuit pour commencer. Des formules payantes (Premium, VIP) et des achats à l’unité (boosts, Super Likes, jetons Match) donnent accès à des fonctions supplémentaires. Les prix, durées et avantages sont indiqués sur la page Tarifs avant tout paiement."
+          ],
+          "lists": [
+            {
+              "kind": "info",
+              "items": [
+                "Les formules existent pour 1, 3, 6 ou 12 mois. Chaque période est un paiement ponctuel : l’abonnement ne se renouvelle pas automatiquement et nous vous prévenons avant l’échéance.",
+                "Vous pouvez annuler à tout moment : vous gardez vos avantages jusqu’à la fin de la période payée.",
+                "Les crédits achetés (boosts, Super Likes, jetons) restent sur votre compte jusqu’à leur utilisation.",
+                "Aucune offre ne garantit un match ni une relation : elle donne plus de visibilité et d’outils.",
+                "Le blocage, le signalement et les fonctions de sécurité restent gratuits pour tous."
+              ]
+            }
+          ]
         },
         {
-          "h": "7. Responsabilité",
-          "p": "DuoMatch met en relation mais ne garantit pas l’identité ni les intentions des membres. Restez prudent lors d’une rencontre."
+          "id": "paiements",
+          "h": "Paiements, factures et remboursements",
+          "paras": [
+            "Les paiements sont traités par un prestataire sécurisé (Mobile Money selon le pays, carte bancaire) ; nous ne conservons aucune donnée bancaire. Un avantage n’est activé qu’une fois le paiement confirmé, et une facture est disponible dans Paramètres → Paiements.",
+            "Pour une demande de remboursement (double paiement, erreur…), écrivez-nous avec la référence du paiement : chaque demande est examinée."
+          ]
+        },
+        {
+          "id": "moderation",
+          "h": "Modération et sanctions",
+          "paras": [
+            "Nous pouvons retirer un contenu, suspendre temporairement un compte ou l’exclure lorsque les règles ne sont pas respectées, en proportion de la gravité. Le motif de la décision vous est communiqué et vous pouvez la contester depuis votre compte : votre message est examiné par l’équipe.",
+            "Vos conversations ne sont pas parcourues par l’équipe : un signalement s’appuie sur la description du membre et sur le profil signalé."
+          ]
+        },
+        {
+          "id": "rencontres",
+          "h": "Rencontres et responsabilité",
+          "paras": [
+            "DuoMatch met des personnes en relation mais ne peut garantir ni l’identité, ni les intentions, ni le comportement des membres. Le badge « profil vérifié » indique qu’un modérateur a comparé un selfie aux photos du profil ; il ne constitue pas une garantie.",
+            "Pour une première rencontre, choisissez un lieu public, prévenez une personne de confiance et venez par vos propres moyens. Les rencontres se font sous votre seule responsabilité, dans la limite de ce que la loi permet."
+          ]
+        },
+        {
+          "id": "disponibilite",
+          "h": "Disponibilité du service",
+          "paras": [
+            "Nous faisons le maximum pour que le service soit disponible et sûr, mais il peut être interrompu pour maintenance ou incident. Certaines fonctions peuvent être activées, modifiées ou suspendues (par exemple en cas d’abus), sans que cela remette en cause vos avantages payés."
+          ]
+        },
+        {
+          "id": "donnees",
+          "h": "Vos données personnelles",
+          "paras": [
+            "Nous traitons vos données pour faire fonctionner le service et vous protéger. Votre position précise n’est jamais affichée, vous pouvez exporter vos données et supprimer votre compte à tout moment depuis Paramètres → Confidentialité. Le détail figure dans notre politique de confidentialité."
+          ]
+        },
+        {
+          "id": "fin",
+          "h": "Quitter DuoMatch",
+          "paras": [
+            "Vous pouvez supprimer votre compte à tout moment : la suppression est définitive. Nous pouvons de notre côté suspendre ou clôturer un compte en cas de manquement grave ou répété, dans les conditions de la rubrique « Modération et sanctions »."
+          ]
+        },
+        {
+          "id": "evolutions",
+          "h": "Évolution de ces conditions",
+          "paras": [
+            "Nous pouvons faire évoluer ces conditions, par exemple pour ajouter une fonctionnalité ou répondre à une obligation légale. En cas de changement important, nous vous en informerons dans l’application ou par e-mail avant son application."
+          ]
+        },
+        {
+          "id": "droit",
+          "h": "Droit applicable et litiges",
+          "paras": [
+            "Le droit applicable et la juridiction compétente seront précisés ici avant la mise en production, après validation juridique de ce document. En cas de désaccord, écrivez-nous d’abord : nous cherchons toujours une solution amiable."
+          ]
+        },
+        {
+          "id": "contact",
+          "h": "Une question sur ces conditions ?",
+          "paras": [
+            "Écrivez-nous depuis la page Contact : nous vous répondrons avec plaisir."
+          ]
         }
       ]
     },
@@ -464,28 +775,261 @@
     },
     "community": {
       "title": "Règles de la communauté",
+      "metaDescription": "La charte de bienveillance de DuoMatch : respect, sincérité, sécurité et vie privée, pour des rencontres heureuses à tout âge.",
+      "kicker": "Notre charte de bienveillance",
+      "lead": "On peut rencontrer l’amour à tout âge. DuoMatch réunit des adultes de 18 ans et plus qui cherchent une vraie relation, et chacun a le droit de le faire avec respect, sincérité et sérénité. Ces règles sont là pour que vous vous sentiez bien ici.",
+      "ctaHelp": "Centre d’aide",
+      "ctaReport": "Comment signaler",
+      "glanceTitle": "L’essentiel en cinq idées",
+      "glance": [
+        {
+          "h": "Respect",
+          "p": "Chacun est traité avec égard, quel que soit son âge, son parcours ou son apparence."
+        },
+        {
+          "h": "Sincérité",
+          "p": "De vraies photos, de vraies intentions : on construit mieux sur du vrai."
+        },
+        {
+          "h": "Sécurité",
+          "p": "Jamais d’argent, jamais de pression. En cas de doute, on s’arrête et on signale."
+        },
+        {
+          "h": "Vie privée",
+          "p": "Vos conversations et votre position vous appartiennent."
+        },
+        {
+          "h": "Bienveillance",
+          "p": "Un « non » ou un silence est une réponse. Chacun avance à son rythme."
+        }
+      ],
+      "toc": "Sommaire",
+      "updated": "Dernière mise à jour : novembre 2026",
+      "complements": "Ces règles complètent nos",
+      "termsLink": "Conditions d’utilisation",
+      "listDo": "Nous aimons voir",
+      "listDont": "Ce qui n’a pas sa place",
+      "listInfo": "Bon à savoir",
       "sections": [
         {
-          "h": "Soyez respectueux",
-          "p": "Traitez chacun avec courtoisie. Les insultes, la discrimination et le harcèlement sont interdits."
+          "id": "promesse",
+          "h": "L’amour n’a pas d’âge",
+          "intro": "À 25, 40, 55 ou 70 ans, on a toutes les raisons de rêver d’une belle histoire. Ici, l’âge n’est ni une moquerie ni un défaut : c’est un parcours. DuoMatch accueille tous les adultes, quelles que soient leur origine, leur situation, leur façon d’aimer ou leur apparence, à une seule condition : respecter les autres.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Des présentations honnêtes, qui disent qui vous êtes et ce que vous cherchez.",
+                "De la curiosité pour l’autre, ses histoires et son rythme.",
+                "Des compliments sincères, jamais ciblés sur l’âge ou le physique pour rabaisser."
+              ]
+            }
+          ]
         },
         {
-          "h": "Soyez authentique",
-          "p": "Utilisez vos vraies photos et informations. Les faux profils sont supprimés."
+          "id": "respect",
+          "h": "Respect et bienveillance",
+          "intro": "Une rencontre commence par un regard bienveillant. Parlez comme vous aimeriez qu’on vous parle.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Répondre avec courtoisie, même pour dire non, merci.",
+                "Accepter une réponse négative ou un silence sans insister.",
+                "Poser des questions ouvertes plutôt que de juger."
+              ]
+            },
+            {
+              "kind": "dont",
+              "items": [
+                "Les insultes, moqueries, menaces ou propos humiliants.",
+                "Le harcèlement : messages répétés après un refus, pression, insistance.",
+                "Toute discrimination liée à l’âge, l’origine, la religion, l’orientation, le genre, le handicap, la santé ou la situation de famille.",
+                "Les remarques sur le corps ou l’âge d’une personne qui ne les a pas demandées."
+              ]
+            }
+          ]
         },
         {
-          "h": "Pas d’argent",
-          "p": "Ne demandez jamais d’argent ou d’aide financière. Signalez toute demande de ce type."
+          "id": "sincerite",
+          "h": "Sincérité et authenticité",
+          "intro": "On ne construit pas une histoire de couple sur un malentendu. Montrez-vous tel(le) que vous êtes.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Des photos récentes sur lesquelles vous êtes reconnaissable.",
+                "Votre âge réel et vos vraies intentions (relation sérieuse, mariage, amitié, ou « pas encore sûr(e) »).",
+                "Une présentation franche de votre situation personnelle."
+              ]
+            },
+            {
+              "kind": "dont",
+              "items": [
+                "Les faux profils et l’usurpation d’identité.",
+                "Les photos d’une autre personne ou prises sans son accord.",
+                "Les profils créés pour tromper, pour vendre, ou pour collecter des informations."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "Le badge « profil vérifié » n’est accordé qu’après un contrôle réel : un modérateur compare votre selfie à vos photos, puis le selfie est supprimé."
+              ]
+            }
+          ]
         },
         {
-          "h": "Contenus",
-          "p": "Aucun contenu sexuellement explicite, violent ou illégal. Les photos de mineurs sont interdites."
+          "id": "argent",
+          "h": "Pas d’argent, pas d’arnaque",
+          "intro": "Les arnaques sentimentales se ressemblent. Une règle simple nous protège tous : personne n’a besoin de votre argent pour vous aimer.",
+          "lists": [
+            {
+              "kind": "dont",
+              "items": [
+                "Demander ou proposer de l’argent, un virement, une carte prépayée ou un « cadeau » à payer.",
+                "Pousser à investir, à prêter ou à communiquer des codes ou des données bancaires.",
+                "Écrire « je t’aime » très vite pour gagner votre confiance, puis évoquer une urgence."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "Signaux d’alerte : refus répété d’un appel vidéo, histoires trop parfaites, urgence, secret demandé, passage rapide vers une autre application.",
+                "En cas de doute : arrêtez la conversation, ne versez rien, et signalez le profil. Cela protège aussi les autres."
+              ]
+            }
+          ]
         },
         {
-          "h": "Signalement",
-          "p": "Signalez tout comportement contraire à ces règles ; notre équipe examine chaque signalement."
+          "id": "contenus",
+          "h": "Contenus et photos",
+          "intro": "DuoMatch est un lieu de rencontres de tous âges : gardons des contenus qui mettent chacun à l’aise.",
+          "lists": [
+            {
+              "kind": "dont",
+              "items": [
+                "Les contenus sexuellement explicites, violents, choquants ou illégaux.",
+                "Toute image impliquant un mineur : tolérance zéro.",
+                "Les photos de tiers sans leur accord, les captures de conversations privées partagées publiquement.",
+                "La publicité, le démarchage et le spam."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "Gardez vos coordonnées (téléphone, adresse, réseaux) pour le moment où vous vous sentez en confiance, pas avant."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rencontres",
+          "h": "Se rencontrer en toute sécurité",
+          "intro": "Un premier rendez-vous réussi commence par quelques précautions simples. Elles ne gâchent pas la magie : elles vous laissent en profiter l’esprit tranquille.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Choisir un lieu public et fréquenté pour la première rencontre.",
+                "Prévenir une personne de confiance : le mode Rendez-vous permet de lui partager lieu et horaire, uniquement si vous le décidez.",
+                "Venir et repartir par vos propres moyens.",
+                "Faire confiance à votre instinct : vous pouvez annuler ou partir à tout moment, sans vous justifier."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "vie-privee",
+          "h": "Votre vie privée vous appartient",
+          "intro": "Vous décidez de ce que vous montrez, à qui, et jusqu’où.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Votre position n’est jamais affichée précisément : seule une distance approximative est utilisée.",
+                "Vos conversations sont privées : nous ne les parcourons pas. Un signalement s’appuie sur votre description et sur le profil signalé.",
+                "Vous pouvez masquer votre profil, régler les accusés de lecture et l’indicateur de saisie, exporter vos données ou supprimer votre compte à tout moment."
+              ]
+            },
+            {
+              "kind": "dont",
+              "items": [
+                "Partager les informations privées d’une autre personne (photos, coordonnées, conversations) sans son accord.",
+                "Chercher à identifier ou à retrouver quelqu’un qui ne souhaite pas être contacté."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "signaler",
+          "h": "Signaler et bloquer, simplement",
+          "intro": "Quelque chose vous met mal à l’aise ? Vous n’avez pas à vous justifier ni à attendre.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Bloquer : vous ne vous voyez plus mutuellement et la conversation se ferme. C’est immédiat, et vous pouvez débloquer depuis les paramètres.",
+                "Signaler depuis un profil ou une conversation (menu « ⋮ » puis « Signaler ») : faux profil, arnaque, harcèlement, contenu inapproprié, mineur, spam, autre.",
+                "Votre signalement est confidentiel et examiné par un modérateur."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "Bloquer et signaler sont toujours gratuits, quelle que soit votre formule."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sanctions",
+          "h": "Si les règles ne sont pas respectées",
+          "intro": "Nous cherchons d’abord à protéger la communauté, avec mesure et équité.",
+          "lists": [
+            {
+              "kind": "info",
+              "items": [
+                "Selon la gravité : retrait d’un contenu ou d’une photo, suspension temporaire du compte, ou bannissement pour les cas les plus sérieux (arnaque, harcèlement, mineur).",
+                "Le motif de la décision vous est communiqué.",
+                "Vous pouvez contester une suspension depuis votre compte : votre message est examiné par l’équipe.",
+                "Aucune sanction n’est prise sur l’apparence, l’âge ou les opinions, mais sur des comportements."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bien-etre",
+          "h": "Prenez soin de vous, à votre rythme",
+          "intro": "Rencontrer quelqu’un est un chemin, pas une course. Prenez votre temps.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Besoin d’une pause ? Masquez votre profil dans Paramètres › Confidentialité : vous reviendrez quand vous voudrez.",
+                "Une conversation vous pèse ? Vous n’avez aucune obligation de répondre.",
+                "Fixez vos limites dès le début : un partenaire respectueux les accueille avec plaisir."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "Nous évitons les pressions artificielles : pas de faux profils, de faux « J’aime » ni de faux messages, et votre apparence ne sert jamais à classer les profils."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "contact",
+          "h": "Une question, une inquiétude ?",
+          "intro": "Notre équipe est là pour vous écouter. Écrivez-nous depuis la page Contact ou consultez le Centre d’aide : nous prenons chaque message au sérieux.",
+          "lists": []
         }
-      ]
+      ],
+      "finalTitle": "Prêt(e) à écrire votre histoire ?",
+      "finalText": "Rejoignez une communauté qui se respecte, où l’on prend le temps de se connaître.",
+      "finalCta": "Créer mon compte",
+      "finalContact": "Nous contacter"
     }
   },
   "auth": {
@@ -667,7 +1211,23 @@
     "SLUG_TAKEN": "Ce lien (slug) existe déjà dans cette langue.",
     "POST_NOT_FOUND": "Article introuvable.",
     "INVALID_REPLY": "Le message cité n’est plus disponible.",
-    "INVALID_REACTION": "Cette réaction n’est pas autorisée."
+    "INVALID_REACTION": "Cette réaction n’est pas autorisée.",
+    "TOO_SOON": "Prévoyez un peu plus de préavis pour ce rendez-vous.",
+    "TOO_FAR": "Ce rendez-vous est trop éloigné dans le temps.",
+    "INVALID_WINDOW": "La plage horaire doit durer entre 30 minutes et 8 heures.",
+    "INVALID_PLACE": "Indiquez le nom d’un lieu public, sans numéro ni coordonnées.",
+    "TOO_MANY_OPEN_DATES": "Trop de rendez-vous en cours dans cette conversation.",
+    "DATE_LIMIT": "Limite quotidienne de propositions atteinte.",
+    "NOT_INVITEE": "Seule la personne invitée peut répondre.",
+    "USE_DECLINE": "Pour une proposition reçue, utilisez « Refuser ».",
+    "DATE_NOT_PENDING": "Ce rendez-vous n’attend plus de réponse.",
+    "DATE_PAST": "Ce rendez-vous est déjà passé.",
+    "DATE_NOT_STARTED": "Le rendez-vous n’a pas encore commencé.",
+    "DATE_NOT_CANCELABLE": "Ce rendez-vous ne peut plus être annulé.",
+    "DATE_NOT_RESCHEDULABLE": "Ce rendez-vous ne peut pas être reporté.",
+    "DATE_NOT_ACCEPTED": "Disponible pour un rendez-vous accepté.",
+    "DATE_NOT_FOUND": "Rendez-vous introuvable.",
+    "SHARE_NOT_FOUND": "Ce lien n’est plus valable."
   },
   "app": {
     "nav": {
@@ -948,7 +1508,15 @@
       "REFUND_UPDATE_FAILED": "Votre remboursement n’a pas pu aboutir : notre équipe vous recontacte.",
       "LIVE_INVITE": "Quelqu’un souhaite faire connaissance : répondez dans Match.",
       "LIVE_ACCEPTED": "Une personne a accepté votre invitation Match.",
-      "REFERRAL_REWARD": "Un ami parrainé a complété son profil : jetons Match ajoutés."
+      "REFERRAL_REWARD": "Un ami parrainé a complété son profil : jetons Match ajoutés.",
+      "DATE_UPDATE_PROPOSED": "Nouvelle proposition de rendez-vous.",
+      "DATE_UPDATE_ACCEPTED": "Rendez-vous accepté !",
+      "DATE_UPDATE_DECLINED": "Une proposition de rendez-vous a été refusée.",
+      "DATE_UPDATE_CANCELED": "Un rendez-vous a été annulé.",
+      "DATE_UPDATE_COMPLETED": "Un rendez-vous est marqué comme terminé.",
+      "DATE_UPDATE_RESCHEDULED": "Un rendez-vous a été reporté.",
+      "DATE_UPDATE": "Mise à jour d’un rendez-vous.",
+      "DATE_REMINDER": "Rappel : votre rendez-vous approche."
     }
   },
   "premium": {
@@ -1420,6 +1988,13 @@
           "on": "Le bouton « Idées pour commencer » est disponible.",
           "off": "Le bouton disparaît ; rien d’autre ne change.",
           "useWhen": "Si les suggestions posent un problème de qualité."
+        },
+        "date_proposals": {
+          "name": "Rendez-vous",
+          "what": "Permet de proposer, accepter et organiser un rendez-vous dans une conversation.",
+          "on": "Le bouton Rendez-vous est disponible dans les conversations.",
+          "off": "Plus de nouvelle proposition ni de réponse ; les rendez-vous existants restent visibles et peuvent toujours être annulés.",
+          "useWhen": "Si la fonction est détournée. On ne piège jamais un membre dans un rendez-vous déjà fixé."
         }
       }
     },
@@ -1536,7 +2111,13 @@
         "retentionD30": "Rétention J30 (cohorte : {n})",
         "premiumConversionRate": "Conversion Premium",
         "dailyPicks": "Découvertes du jour (30 j) : suivies d’une décision",
-        "none": "—"
+        "none": "—",
+        "datesProposed": "Rendez-vous proposés",
+        "datesAccepted": "Rendez-vous acceptés",
+        "datesAcceptRate": "Taux d’acceptation (parmi les propositions traitées)",
+        "datesCompleted": "Rendez-vous déclarés terminés",
+        "datesFeedback": "Satisfaction déclarée (moyenne sur 5, {n} retour(s))",
+        "datesNote": "Rencontres et satisfaction proviennent uniquement des déclarations volontaires des membres."
       },
       "unavailableTitle": "Pas encore mesuré",
       "unavailable": {
@@ -1557,7 +2138,12 @@
         "kindGENERIC": "Neutre",
         "key": "Élément concerné",
         "noKey": "—"
-      }
+      },
+      "dateMinNotice": "Préavis minimum d’un rendez-vous (heures)",
+      "dateMaxDays": "Horizon maximum (jours)",
+      "dateMaxOpen": "Rendez-vous en cours par conversation",
+      "dateMaxPerDay": "Propositions par membre et par jour",
+      "dateShareHours": "Validité du lien de partage après le rendez-vous (heures)"
     }
   },
   "pricingFaq": {
@@ -1817,6 +2403,85 @@
       "error": "Impossible de charger la sélection.",
       "disabledTitle": "Découvertes du jour indisponibles",
       "disabledText": "Cette fonction est momentanément désactivée."
+    }
+  },
+  "dates": {
+    "open": "Rendez-vous",
+    "title": "Rendez-vous avec {name}",
+    "propose": "Proposer un rendez-vous",
+    "reschedule": "Proposer un autre horaire",
+    "empty": "Aucun rendez-vous pour le moment. Quand vous vous sentez à l’aise, proposez un lieu public.",
+    "safetyTitle": "Pour une rencontre sereine",
+    "safety": [
+      "Choisissez un lieu public et fréquenté.",
+      "Prévenez une personne de confiance : le bouton « Partager » lui envoie le lieu et l’horaire, uniquement si vous le décidez.",
+      "Venez et repartez par vos propres moyens.",
+      "Vous pouvez annuler à tout moment, sans vous justifier."
+    ],
+    "date": "Jour",
+    "time": "Heure de début",
+    "duration": "Durée prévue",
+    "minutes": "{n} min",
+    "hours": "{n} h",
+    "placeKind": "Type de lieu public",
+    "placeName": "Nom du lieu",
+    "placeHint": "Un lieu public : nom et quartier, sans numéro de téléphone ni adresse privée.",
+    "note": "Un mot (facultatif)",
+    "send": "Envoyer la proposition",
+    "kind": {
+      "CAFE": "Café",
+      "RESTAURANT": "Restaurant",
+      "PARK": "Parc ou jardin",
+      "MALL": "Centre commercial",
+      "CULTURE": "Lieu culturel",
+      "OTHER_PUBLIC": "Autre lieu public"
+    },
+    "status": {
+      "PROPOSED": "Proposé",
+      "ACCEPTED": "Accepté",
+      "DECLINED": "Refusé",
+      "RESCHEDULED": "Reporté",
+      "CANCELED": "Annulé",
+      "COMPLETED": "Terminé"
+    },
+    "fromMe": "Proposé par vous",
+    "fromThem": "Proposé par {name}",
+    "waiting": "En attente de la réponse de {name}.",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "cancel": "Annuler",
+    "complete": "Nous nous sommes vus",
+    "completeHint": "Votre déclaration reste volontaire et privée.",
+    "reminder": "Rappel",
+    "reminderNone": "Aucun rappel",
+    "reminder60": "1 h avant",
+    "reminder1440": "24 h avant",
+    "share": "Partager avec un proche",
+    "shareDone": "Lien de partage créé. Envoyez-le vous-même à une personne de confiance : il montre le lieu, l’horaire et les prénoms, rien d’autre. Il expire après le rendez-vous.",
+    "shareCopy": "Copier le lien",
+    "shareCopied": "Lien copié.",
+    "shareStop": "Arrêter le partage",
+    "shareActive": "Partagé avec un proche",
+    "feedbackTitle": "Comment s’est passé ce rendez-vous ?",
+    "feedbackHint": "Facultatif et privé : personne ne voit votre réponse.",
+    "feedbackRate": "{n} sur 5",
+    "feedbackThanks": "Merci pour votre retour.",
+    "toast": {
+      "proposed": "Proposition envoyée.",
+      "updated": "Rendez-vous mis à jour."
+    },
+    "shared": {
+      "title": "Un rendez-vous partagé avec vous",
+      "intro": "{who} a choisi de partager ce rendez-vous avec vous, pour plus de sécurité.",
+      "meeting": "Rencontre avec",
+      "when": "Quand",
+      "where": "Où",
+      "status": "Statut",
+      "canceledNote": "Ce rendez-vous a été annulé.",
+      "safety": "Prenez des nouvelles après l’heure prévue. Si vous êtes inquiet(ète), contactez la personne directement, et les secours locaux en cas d’urgence.",
+      "expires": "Ce lien expire le {date}.",
+      "gone": "Ce lien n’est plus valable.",
+      "goneText": "Il a expiré ou la personne a arrêté le partage."
     }
   }
 }

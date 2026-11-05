@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Bell, CreditCard, Heart, MessageCircle, ShieldAlert, Sparkles, BadgeCheck } from 'lucide-react';
+import { BadgeCheck, Bell, CalendarHeart, CreditCard, Heart, MessageCircle, ShieldAlert, Sparkles } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Button, EmptyState, Skeleton, cn } from '@duomatch/ui';
@@ -22,6 +22,8 @@ const META: Record<string, { icon: typeof Bell; href: (n: NotificationItem) => s
   LIVE_INVITE: { icon: Sparkles, href: () => '/match' },
   LIVE_ACCEPTED: { icon: Sparkles, href: () => '/match' },
   REFERRAL_REWARD: { icon: Sparkles, href: () => '/referral' },
+  DATE_UPDATE: { icon: CalendarHeart, href: (n) => (n.data.conversationId ? `/messages/${n.data.conversationId}` : '/messages') },
+  DATE_REMINDER: { icon: CalendarHeart, href: (n) => (n.data.conversationId ? `/messages/${n.data.conversationId}` : '/messages') },
 };
 
 export default function NotificationsPage() {
@@ -32,7 +34,7 @@ export default function NotificationsPage() {
   const refresh = () => { void qc.invalidateQueries({ queryKey: keys.notifications }); void qc.invalidateQueries({ queryKey: keys.me }); };
   const readAll = useMutation({ mutationFn: () => post('/notifications/read-all'), onSuccess: refresh });
   const readOne = useMutation({ mutationFn: (id: string) => post(`/notifications/${id}/read`), onSuccess: refresh });
-  const body = (n: NotificationItem): ReactNode => t(`notifications.types.${n.type}${n.type === 'SUBSCRIPTION_EXPIRING' && n.data.reason ? '_FAILED' : n.type === 'SUBSCRIPTION_ACTIVATED' && n.data.product ? '_PURCHASE' : n.type === 'REFUND_UPDATE' ? `_${String(n.data.status ?? 'COMPLETED')}` : ''}` as never, { plan: String(n.data.plan ?? ''), event: String(n.data.event ?? ''), product: String(n.data.product ?? '') } as never);
+  const body = (n: NotificationItem): ReactNode => t(`notifications.types.${n.type}${n.type === 'SUBSCRIPTION_EXPIRING' && n.data.reason ? '_FAILED' : n.type === 'SUBSCRIPTION_ACTIVATED' && n.data.product ? '_PURCHASE' : n.type === 'REFUND_UPDATE' ? `_${String(n.data.status ?? 'COMPLETED')}` : n.type === 'DATE_UPDATE' ? `_${String(n.data.status ?? '')}` : ''}` as never, { plan: String(n.data.plan ?? ''), event: String(n.data.event ?? ''), product: String(n.data.product ?? '') } as never);
   return (
     <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-4">
       <div className="flex items-center justify-between"><h1 className="text-2xl font-extrabold">{t('app.nav.notifications')}</h1>{data?.items.some((n) => !n.readAt) && <Button variant="ghost" size="sm" onClick={() => readAll.mutate()}>{t('notifications.readAll')}</Button>}</div>

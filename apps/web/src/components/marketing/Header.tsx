@@ -19,7 +19,7 @@ export function MarketingHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4">
         <Link href="/" aria-label={t('nav.home')}><Logo /></Link>
         <nav aria-label={t('nav.main')} className="hidden items-center gap-1 lg:flex">
           {LINKS.map(([href, key]) => (

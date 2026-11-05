@@ -7,7 +7,7 @@ export type LikeKind = 'PROFILE' | 'PHOTO' | 'PROMPT' | 'INTEREST';
 export interface Affinity { score: number; reasons: { code: string; n?: number }[]; commonInterests: string[]; intentsCompatible: boolean }
 export interface PromptAnswer { id: string; promptId: string; position: number; question: { fr: string; en: string }; answer: string }
 export interface PromptDef { id: string; slug: string; textFr: string; textEn: string; active: boolean; sortOrder: number }
-export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[] }
+export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean; date_proposals: boolean }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[]; dates: { minNoticeHours: number; maxDaysAhead: number } }
 export interface Card {
   id: string; displayName: string; age: number; city: string; country: string; bio: string; occupation: string | null;
   intent: Intent; verified: boolean; languages: string[]; interests: string[]; commonInterests: string[];
@@ -72,3 +72,10 @@ export interface BlogCard { id: string; slug: string; locale: string; title: str
 export interface BlogPostFull extends BlogCard { body: string }
 export interface AdminBlogRow extends BlogCard { status: 'DRAFT' | 'PUBLISHED'; coverKey: string | null; createdAt: string; updatedAt: string }
 export interface AdminBlogPost extends AdminBlogRow { body: string }
+
+export type DateStatus = 'PROPOSED' | 'ACCEPTED' | 'DECLINED' | 'RESCHEDULED' | 'CANCELED' | 'COMPLETED';
+export interface DateItem {
+  id: string; conversationId: string; status: DateStatus; startsAt: string; endsAt: string; placeKind: string; placeName: string; note: string | null;
+  proposedByMe: boolean; previousId: string | null; createdAt: string; respondedAt: string | null; reminderMinutes: number | null; shared: boolean; myFeedback: number | null;
+}
+export interface SharedDate { status: DateStatus; startsAt: string; endsAt: string; placeKind: string; placeName: string; sharedBy: string; meeting: string; expiresAt: string }

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Logo } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import { LocaleSwitcher } from '../LocaleSwitcher';
+import { SiteLinks } from '../SiteLinks';
 import { ThemeToggle } from '../ThemeToggle';
 
 export function AuthShell({ title, subtitle, children, footer }: { title: string; subtitle?: string; children: ReactNode; footer?: ReactNode }) {
@@ -19,6 +20,7 @@ export function AuthShell({ title, subtitle, children, footer }: { title: string
         </div>
         {footer && <p className="mt-6 text-center text-sm text-muted">{footer}</p>}
       </main>
+      <SiteLinks />
     </div>
   );
 }

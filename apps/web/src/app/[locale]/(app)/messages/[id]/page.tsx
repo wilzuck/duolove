@@ -1,9 +1,10 @@
 'use client';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Ban, Check, CheckCheck, Flag, HeartCrack, ImagePlus, Lightbulb, Lock, MoreVertical, Reply, Send, ShieldAlert, Smile, SmilePlus, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Ban, CalendarHeart, Check, CheckCheck, Flag, HeartCrack, ImagePlus, Lightbulb, Lock, MoreVertical, Reply, Send, ShieldAlert, Smile, SmilePlus, Trash2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { use, useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar, Button, Checkbox, cn, Dialog, IconButton, Skeleton, Textarea } from '@duomatch/ui';
+import { DatesPanel } from '@/components/app/DatesPanel';
 import { IcebreakerPanel } from '@/components/app/IcebreakerPanel';
 import { ReportDialog } from '@/components/app/ReportDialog';
 import { useApiError } from '@/hooks/useApiError';
@@ -43,6 +44,8 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const canReact = !!cfg?.flags.message_reactions;
   const canReply = !!cfg?.flags.message_replies;
   const canIdeas = !!cfg?.flags.icebreakers;
+  const canDates = !!cfg?.flags.date_proposals;
+  const [datesOpen, setDatesOpen] = useState(false);
   const area = useRef<HTMLTextAreaElement>(null);
   // Préférence « Entrée envoie » : mémorisée sur cet appareil uniquement (aucune donnée envoyée au serveur).
   const [enterSends, toggleEnter] = useLocalPref('duomatch.enterSends', true);
@@ -100,6 +103,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         {conv ? (
           <Link href={`/profile/${conv.user.id}`} className="flex min-w-0 flex-1 items-center gap-3"><Avatar src={conv.user.thumbUrl} name={conv.user.displayName} size={42} /><span className="min-w-0"><span className="block truncate font-bold">{conv.user.displayName}</span><span className="block text-xs text-muted" aria-live="polite">{typing ? t('chat.typing') : t('chat.viewProfile')}</span></span></Link>
         ) : <Skeleton className="h-10 flex-1" />}
+        {canDates && conv && <IconButton label={t('dates.open')} tone="plain" onClick={() => setDatesOpen(true)}><CalendarHeart className="size-5" /></IconButton>}
         <div className="relative">
           <IconButton label={t('chat.options')} tone="plain" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="menu"><MoreVertical className="size-5" /></IconButton>
           {menu && conv && (
@@ -202,6 +206,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         <p className="text-sm">{t('chat.imagePlanText')}</p>
         <div className="mt-4 flex justify-end gap-2"><Button variant="ghost" onClick={() => setUpsell(false)}>{t('common.close')}</Button><Link href="/premium"><Button>{t('chat.seePlans')}</Button></Link></div>
       </Dialog>
+      {conv && <DatesPanel conversationId={id} name={conv.user.displayName} open={datesOpen} onClose={() => setDatesOpen(false)} />}
       {conv && <ReportDialog userId={conv.user.id} open={report} onClose={() => setReport(false)} />}
     </div>
   );

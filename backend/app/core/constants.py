@@ -100,6 +100,7 @@ FEATURE_FLAGS = (
     FlagDef("message_reactions", "social", True, False),
     FlagDef("message_replies", "social", True, False),
     FlagDef("icebreakers", "social", True, False),
+    FlagDef("date_proposals", "social", True, False),
 )
 FLAG_KEYS = tuple(f.key for f in FEATURE_FLAGS)
 
@@ -131,3 +132,8 @@ def price_for_duration(monthly_xof: int, months: int, discount_percent: int, amo
 
 # Jeu fermé de réactions aux messages (côté serveur : un emoji hors liste est refusé).
 REACTION_EMOJIS = ("❤️", "😂", "😮", "😢", "👍", "🔥")
+
+# Rendez-vous : catégories de lieux PUBLICS (jeu fermé) et statuts.
+DATE_PLACE_KINDS = ("CAFE", "RESTAURANT", "PARK", "MALL", "CULTURE", "OTHER_PUBLIC")
+DATE_STATUSES = ("PROPOSED", "ACCEPTED", "DECLINED", "RESCHEDULED", "CANCELED", "COMPLETED")
+DATE_REMINDER_MINUTES = (60, 1440)

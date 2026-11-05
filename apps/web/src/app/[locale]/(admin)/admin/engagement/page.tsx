@@ -17,9 +17,10 @@ interface Metrics {
   matches: number; matchRate: number | null; conversations: number; firstResponseRate: number | null; reciprocalConversations: number; reports: number; reportsOpen: number;
   retention: { d7: { cohort: number; rate: number | null }; d30: { cohort: number; rate: number | null }; definition: string }; premiumConversionRate: number | null;
   dailyPicks: { last30Days: number; actedRate: number | null }; unavailable: string[];
+  dates: { proposed: number; accepted: number; declined: number; canceled: number; completed: number; acceptRate: number | null; feedbackCount: number; feedbackAverage: number | null };
 }
 const WEIGHT_KEYS = ['intent', 'mutual', 'interests', 'location', 'other'] as const;
-const INT_KEYS = [['daily.count_free', 'dailyFree'], ['daily.count_premium', 'dailyPremium'], ['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount']] as const;
+const INT_KEYS = [['daily.count_free', 'dailyFree'], ['daily.count_premium', 'dailyPremium'], ['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount'], ['dates.min_notice_hours', 'dateMinNotice'], ['dates.max_days_ahead', 'dateMaxDays'], ['dates.max_open', 'dateMaxOpen'], ['dates.max_per_day', 'dateMaxPerDay'], ['dates.share_hours_after', 'dateShareHours']] as const;
 const num = (v: string, fb = 0) => (v === '' || Number.isNaN(Number(v)) ? fb : Math.round(Number(v)));
 
 function SettingsTab({ data }: { data: SettingsData }) {
@@ -172,6 +173,8 @@ function MetricsTab() {
     [t('admin.eng.m.conversations'), m.conversations], [t('admin.eng.m.firstResponseRate'), pct(m.firstResponseRate)], [t('admin.eng.m.reciprocalConversations'), m.reciprocalConversations],
     [t('admin.eng.m.reports', { open: m.reportsOpen }), m.reports],
     [t('admin.eng.m.retentionD7', { n: m.retention.d7.cohort }), pct(m.retention.d7.rate)], [t('admin.eng.m.retentionD30', { n: m.retention.d30.cohort }), pct(m.retention.d30.rate)],
+    [t('admin.eng.m.datesProposed'), m.dates.proposed], [t('admin.eng.m.datesAccepted'), m.dates.accepted], [t('admin.eng.m.datesAcceptRate'), pct(m.dates.acceptRate)], [t('admin.eng.m.datesCompleted'), m.dates.completed],
+    [t('admin.eng.m.datesFeedback', { n: m.dates.feedbackCount }), m.dates.feedbackAverage == null ? t('admin.eng.m.none') : `${m.dates.feedbackAverage} / 5`],
     [t('admin.eng.m.premiumConversionRate'), pct(m.premiumConversionRate)], [t('admin.eng.m.dailyPicks'), `${m.dailyPicks.last30Days} (${pct(m.dailyPicks.actedRate)})`],
   ];
   return (
@@ -179,9 +182,10 @@ function MetricsTab() {
       <p className="text-sm text-muted">{t('admin.eng.metricsHelp')}</p>
       <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{cards.map(([label, value]) => <Card key={label} className="p-4"><dt className="text-sm text-muted">{label}</dt><dd className="mt-1 font-display text-2xl font-extrabold">{value}</dd></Card>)}</dl>
       <p className="text-xs text-muted">{m.retention.definition}</p>
-      <Card className="space-y-2 p-4"><h3 className="font-bold">{t('admin.eng.unavailableTitle')}</h3>
+      <p className="text-xs text-muted">{t('admin.eng.m.datesNote')}</p>
+      {m.unavailable.length > 0 && <Card className="space-y-2 p-4"><h3 className="font-bold">{t('admin.eng.unavailableTitle')}</h3>
         <ul className="list-disc space-y-1 pl-5 text-sm text-muted">{m.unavailable.map((k) => <li key={k}>{t(`admin.eng.unavailable.${k}` as never)}</li>)}</ul>
-        <p className="text-xs text-muted">{t('admin.eng.unavailableNote')}</p></Card>
+        <p className="text-xs text-muted">{t('admin.eng.unavailableNote')}</p></Card>}
     </div>
   );
 }

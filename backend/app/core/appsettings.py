@@ -18,6 +18,11 @@ INT_SPECS = {  # clé → (défaut, min, max)
     "prompts.max": (5, 3, 8),
     "likes.comment_max": (200, 20, 500),
     "icebreakers.count": (3, 1, 5),
+    "dates.min_notice_hours": (2, 0, 72),
+    "dates.max_days_ahead": (30, 1, 90),
+    "dates.max_open": (2, 1, 5),
+    "dates.max_per_day": (5, 1, 20),
+    "dates.share_hours_after": (6, 1, 48),
 }
 WEIGHT_KEY = "matching.weights"
 KEYS = (WEIGHT_KEY, *INT_SPECS)

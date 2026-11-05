@@ -122,8 +122,8 @@ test.describe.serial('Engagement : phase 1', () => {
     // Indicateurs : chiffres réels et liste de ce qui n'est pas encore mesuré.
     await page.getByRole('tab', { name: 'Indicateurs' }).click();
     await expect(page.getByText('J’aime avec commentaire')).toBeVisible();
-    await expect(page.getByText('Pas encore mesuré')).toBeVisible();
-    await expect(page.getByText('Rencontres réelles (uniquement sur déclaration volontaire)')).toBeVisible();
+    await expect(page.getByText('Rendez-vous proposés')).toBeVisible();
+    await expect(page.getByText(/uniquement des déclarations volontaires/)).toBeVisible();
   });
 
   test('admin · la limite de commentaire s’applique, et couper « Likes avec commentaire » retire la fonction', async () => {

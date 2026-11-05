@@ -45,7 +45,7 @@ function LoginForm() {
         {magicSent && <Alert tone="success">{t('auth.magicSent')}</Alert>}
         {!magic && <Field label={t('auth.password')}>{(p) => <Input {...p} type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />}</Field>}
         <Checkbox label={t('auth.remember')} hint={t('auth.rememberHint')} checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-        {!magic && <div className="text-right text-sm"><Link href="/forgot-password" className="font-medium text-brand-ink underline">{t('auth.forgot')}</Link></div>}
+        {!magic && <div className="text-center text-sm"><Link href="/forgot-password" className="font-medium text-brand-ink underline">{t('auth.forgot')}</Link></div>}
         <Button type="submit" size="lg" className="w-full" loading={login.isPending || sendLink.isPending}>{magic ? t('auth.magicSend') : t('nav.login')}</Button>
         <button type="button" className="w-full text-center text-sm font-medium text-brand-ink underline" onClick={() => { setMagic(!magic); setError(null); setMagicSent(false); }}>{magic ? t('auth.magicBack') : t('auth.magicLink')}</button>
       </form>

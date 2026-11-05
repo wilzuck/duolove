@@ -6,6 +6,7 @@ import { Avatar, Button, Logo, cn } from '@duomatch/ui';
 import { Link, usePathname } from '@/i18n/navigation';
 import type { Me } from '@/lib/types';
 import { LocaleSwitcher } from '../LocaleSwitcher';
+import { SiteLinks } from '../SiteLinks';
 import { ThemeToggle } from '../ThemeToggle';
 
 const NAV = [
@@ -84,7 +85,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
             <Link href="/settings" className="lg:hidden" aria-label={t('app.nav.settings')}><Avatar src={me.profile?.thumbUrl} name={me.profile?.displayName ?? '?'} size={34} /></Link>
           </div>
         </header>
-        <main id="main" className={cn('min-w-0 flex-1', !inChat && 'pb-24 lg:pb-8')}>{children}</main>
+        <main id="main" className={cn('min-w-0 flex-1', !inChat && 'pb-24 lg:pb-8')}>{children}{!inChat && <SiteLinks />}</main>
       </div>
 
       {/* Barre d'onglets (mobile) */}

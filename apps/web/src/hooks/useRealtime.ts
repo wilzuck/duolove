@@ -31,6 +31,7 @@ export function useRealtime(enabled: boolean) {
     s.on('message:reaction', ({ conversationId, messageId, reactions }: { conversationId: string; messageId: string; reactions: ChatMessage['reactions'] }) => {
       qc.setQueryData<{ pages: Paged<ChatMessage>[]; pageParams: unknown[] }>(keys.messages(conversationId), (old) => old && { ...old, pages: old.pages.map((p) => ({ ...p, items: p.items.map((x) => (x.id === messageId ? { ...x, reactions } : x)) })) });
     });
+    s.on('date:update', ({ conversationId }: { conversationId: string }) => { void qc.invalidateQueries({ queryKey: ['dates', conversationId] }); void qc.invalidateQueries({ queryKey: keys.notifications }); });
     s.on('message:read', ({ conversationId }: { conversationId: string }) => void qc.invalidateQueries({ queryKey: keys.messages(conversationId) }));
     s.on('notification:new', () => { void qc.invalidateQueries({ queryKey: keys.notifications }); void qc.invalidateQueries({ queryKey: keys.me }); });
     s.on('match:new', (m: { matchId: string; conversationId: string; userId: string }) => {

@@ -42,7 +42,8 @@
     "company": "DuoMatch",
     "legal": "Legal",
     "adults": "For adults only (18 and over).",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "links": "Site links"
   },
   "home": {
     "eyebrow": "Serious dating, with confidence",
@@ -91,40 +92,89 @@
     }
   },
   "how": {
+    "kicker": "Step by step",
     "title": "How DuoMatch works",
-    "subtitle": "From signing up to your first conversation, in six simple steps.",
-    "safetyTitle": "Stay vigilant",
-    "safetyText": "Never send money to someone you haven’t met and never share your banking details. Report anything suspicious: our team steps in.",
+    "subtitle": "Sincere connections, at your own pace, at any age. Here is the path, from signing up to your first conversation… and your first date.",
+    "ctaHelp": "A question? The Help centre",
+    "stepsTitle": "Your journey in eight steps",
     "steps": {
       "signup": {
-        "title": "Sign up",
-        "text": "Create your account with your email or Google, then confirm your address and that you’re an adult."
+        "title": "Create your account",
+        "text": "With your email (or Google) and a password, or simply a magic link. You confirm your address and that you are an adult: DuoMatch is for people aged 18 and over."
       },
       "profile": {
-        "title": "Profile and photos",
-        "text": "Tell your story, pick your interests and add your best photos."
+        "title": "Tell your story",
+        "text": "Add your best photos, a few words about you, your interests and your intention. Answer personality questions: this is what makes people want to write to you."
       },
       "discover": {
-        "title": "Discovery",
-        "text": "Browse compatible profiles, ranked using criteria you control."
+        "title": "Discover compatible people",
+        "text": "Your criteria come first: age, city, intentions. Each profile shows an estimated affinity and why it is suggested to you. Every day, a limited selection awaits you, with no pressure."
       },
       "like": {
-        "title": "Mutual likes",
-        "text": "Like the people you fancy. When the interest is mutual, the connection is made."
+        "title": "Say what you like",
+        "text": "Like a profile, a photo, an answer or an interest, and add a short note if you wish. It becomes your first message if you match."
       },
       "match": {
-        "title": "Match",
-        "text": "A match appears when two people like each other. You’re both notified."
+        "title": "It’s a match",
+        "text": "When interest is mutual, you are both notified and the conversation opens."
       },
       "chat": {
-        "title": "Messaging",
-        "text": "Chat privately, in real time. Block or report at any time."
+        "title": "Chat comfortably",
+        "text": "Private real-time messages, reactions, targeted replies and conversation starters based on what you have in common. You can block or report in one tap."
+      },
+      "date": {
+        "title": "Meet in person, safely",
+        "text": "Suggest a date in a public place, pick the time, set a reminder and share the details with someone you trust, only if you decide to."
       },
       "premium": {
-        "title": "Premium / VIP (optional)",
-        "text": "More likes, see who liked you, advanced filters, visibility boosts and incognito mode."
+        "title": "Go further with Premium / VIP (optional)",
+        "text": "More visibility and tools, never a guaranteed match. Blocking, reporting and safety stay free for everyone."
       }
-    }
+    },
+    "whyTitle": "What is different here",
+    "why": [
+      {
+        "h": "Reasons, not a black box",
+        "p": "You know why a profile is suggested to you. Your looks are never used to rank people."
+      },
+      {
+        "h": "Real profiles",
+        "p": "No fake profiles, fake Likes or fake messages. The “verified” badge is only given after a human check."
+      },
+      {
+        "h": "At your own pace",
+        "p": "No countdowns or endless scrolling: a limited selection, and a profile you can hide whenever you like."
+      },
+      {
+        "h": "You stay in control",
+        "p": "Your conversations are private, your location is never precise, your data can be exported."
+      }
+    ],
+    "ageTitle": "Love has no age",
+    "ageText": "At 25, 45 or 70, you deserve a lovely encounter. DuoMatch welcomes all adults, with one requirement: respect. Read our code of kindness.",
+    "ageCta": "Community guidelines",
+    "plansTitle": "Free to start, Premium to go further",
+    "plansFree": {
+      "h": "Free",
+      "items": [
+        "Profile, personality questions and discovery",
+        "Daily picks, daily likes, matches and messaging",
+        "Blocking and reporting, always free"
+      ]
+    },
+    "plansPaid": {
+      "h": "Premium and VIP",
+      "items": [
+        "More likes, see who liked you, advanced filters",
+        "Go back to a passed profile, photos in messages, control of “seen” receipts",
+        "Boosts and incognito mode with VIP. Details and prices on the Pricing page"
+      ]
+    },
+    "plansCta": "See pricing",
+    "safetyTitle": "Stay vigilant",
+    "safetyText": "Never send money to someone you have not met and never share your banking details. Report any suspicious behaviour: our team reviews every report.",
+    "finalTitle": "Ready to write your story?",
+    "finalText": "Signing up is free and takes just a few minutes."
   },
   "faq": {
     "age": {
@@ -285,85 +335,228 @@
     "nextCta": "Write my first chapter"
   },
   "contact": {
+    "kicker": "We are here",
     "title": "Contact us",
-    "lead": "A question, a problem, a suggestion? Write to us.",
-    "emailLabel": "Write to us at",
-    "sla": "We usually reply within 48 business hours.",
+    "lead": "A question, a problem, an idea? Write to us: a real person will read you with care.",
+    "topicsTitle": "What is it about?",
+    "topics": {
+      "account": {
+        "h": "My account or sign-in",
+        "p": "Access, confirmation email, password.",
+        "subject": "Account and sign-in"
+      },
+      "billing": {
+        "h": "A payment or a refund",
+        "p": "Subscription, invoice, double payment.",
+        "subject": "Payment or refund"
+      },
+      "safety": {
+        "h": "Safety or a report",
+        "p": "A profile or a situation worries you.",
+        "subject": "Safety"
+      },
+      "privacy": {
+        "h": "My personal data",
+        "p": "Access, export, deletion.",
+        "subject": "Personal data"
+      },
+      "idea": {
+        "h": "A suggestion",
+        "p": "An idea to make DuoMatch nicer.",
+        "subject": "Suggestion"
+      },
+      "other": {
+        "h": "Another question",
+        "p": "Anything else, we read everything.",
+        "subject": "Question about DuoMatch"
+      }
+    },
+    "emailLabel": "Or write to us directly at",
+    "sla": "We usually reply within 48 working hours.",
     "cta": "Send an email",
-    "subject": "Question about DuoMatch",
-    "urgent": "For dangerous behavior, please use the “Report” button in the app instead: it is handled first."
+    "tipsTitle": "To help us help you faster",
+    "tips": [
+      "Tell us your account email address.",
+      "For a payment, add the reference shown in Settings → Payments.",
+      "Describe what you expected and what happened; a screenshot often helps.",
+      "Never send us your password: we will never ask for it."
+    ],
+    "urgentTitle": "Dangerous behaviour or a scam?",
+    "urgent": "Please use the “Report” button in the app instead: it is confidential and reviewed by a moderator. In immediate danger, contact your country’s emergency services first.",
+    "helpTitle": "An answer may already be waiting",
+    "helpCta": "Help centre",
+    "communityCta": "Community guidelines",
+    "subject": "Question about DuoMatch"
   },
   "help": {
-    "title": "Help center",
-    "lead": "Answers to the most common questions.",
-    "more": "Can’t find your answer?",
+    "kicker": "Help centre",
+    "title": "How can we help you?",
+    "lead": "Answers to the most common questions, so you can meet with peace of mind.",
+    "searchLabel": "Search the help",
+    "searchPlaceholder": "E.g. payment, password, date",
+    "results": "{n, plural, =0 {No results} one {# result} other {# results}}",
+    "noResults": "No answer matches “{q}”. Try another word, or write to us: we are here to help.",
+    "clear": "Clear search",
+    "categories": "Browse by topic",
+    "moreTitle": "Can’t find your answer?",
+    "more": "Our team replies with kindness.",
+    "contactCta": "Contact us",
+    "communityCta": "Community guidelines",
+    "urgentTitle": "Worried about someone’s behaviour?",
+    "urgent": "Use “Report” in the app: it is confidential and reviewed by a moderator. In immediate danger, contact your country’s emergency services.",
     "sections": {
-      "account": "Account",
+      "start": "Getting started",
+      "meet": "Dating and Match",
+      "chat": "Messages and dates",
       "safety": "Safety",
       "billing": "Subscriptions and payments",
-      "privacy": "Privacy"
+      "privacy": "Account and privacy"
     },
     "items": {
-      "verify": {
-        "q": "I didn’t receive the confirmation email",
-        "a": "Check your spam folder, then use “Resend” in the banner at the top of the app."
-      },
-      "password": {
-        "q": "I forgot my password",
-        "a": "On the login page, choose “Forgot password”: a link valid for one hour is emailed to you."
-      },
-      "sessions": {
-        "q": "How do I log out of another device?",
-        "a": "Settings → Security → Connected devices, then “Log out”."
-      },
-      "delete": {
-        "q": "How do I delete my account?",
-        "a": "Settings → Privacy → Delete my account. This is permanent."
-      },
-      "scam": {
-        "q": "How do I spot a romance scam?",
-        "a": "Beware of any request for money, a constant refusal to appear on video, or a very fast declaration of love. Report the profile."
-      },
-      "report": {
-        "q": "How do I report a profile?",
-        "a": "Open the profile or conversation, then “Report”. A moderator reviews every report."
-      },
-      "block": {
-        "q": "What happens if I block someone?",
-        "a": "You no longer see each other and the conversation is closed. You can unblock from settings."
-      },
-      "verified": {
-        "q": "How do I get the verified badge?",
-        "a": "Profile → Verification: send a selfie. A moderator compares it to your photos, then deletes the selfie."
-      },
-      "pay": {
-        "q": "Which payment methods?",
-        "a": "Payment goes through a secure provider; the available methods depend on your country."
-      },
-      "cancel": {
-        "q": "How do I cancel my subscription?",
-        "a": "Settings → Subscription → Cancel. You keep your benefits until the end of the paid period."
-      },
-      "invoice": {
-        "q": "Where are my invoices?",
-        "a": "Settings → Payments: every successful payment has an invoice."
-      },
-      "failed": {
-        "q": "My payment failed",
-        "a": "No benefit is activated until the payment is confirmed. Try again from the Premium page."
-      },
-      "location": {
-        "q": "Is my location visible?",
-        "a": "Never precisely: only a rounded distance may appear, and only if you share your location."
-      },
-      "export": {
-        "q": "Can I get my data back?",
-        "a": "Yes: Settings → Privacy → Export my data (JSON file)."
-      },
-      "visibility": {
-        "q": "How do I hide my profile?",
-        "a": "Settings → Privacy → turn off “Visible profile”. Incognito mode is reserved for VIP."
-      }
+      "start": [
+        {
+          "q": "Who can sign up?",
+          "a": "Only people aged 18 and over. Your date of birth is checked at sign-up, and DuoMatch welcomes adults of every age."
+        },
+        {
+          "q": "Is DuoMatch free?",
+          "a": "Yes to get started: profile, discovery, daily picks, matches and messaging are free, with a daily number of likes. Premium and VIP add features, without ever guaranteeing a match."
+        },
+        {
+          "q": "I did not receive the confirmation email",
+          "a": "Check your spam folder, then use “Resend” in the banner at the top of the app."
+        },
+        {
+          "q": "How do I get better matches?",
+          "a": "Complete your profile: several photos, an honest introduction, your interests and 3 to 5 personality questions. Answers make people want to write to you."
+        },
+        {
+          "q": "I no longer see new profiles",
+          "a": "Widen your criteria (age, city, intentions) in Profile → My dating criteria, or come back tomorrow: new people join every day."
+        }
+      ],
+      "meet": [
+        {
+          "q": "What does the affinity percentage mean?",
+          "a": "It is an estimate based on your preferences and theirs (intentions, interests, city…). It comes with its reasons and guarantees nothing: real compatibility is discovered by talking."
+        },
+        {
+          "q": "What are “Your picks of the day”?",
+          "a": "A limited selection of real compatible profiles, refreshed every day. There is no countdown: browse at your own pace and revisit previous days."
+        },
+        {
+          "q": "How do I send a Like with a comment?",
+          "a": "Open a profile, pick what you like (the profile, a photo, an answer or an interest) and add a note if you wish. If you match, the note becomes your first message."
+        },
+        {
+          "q": "Why have I run out of likes today?",
+          "a": "The free plan includes a number of likes per day. It resets every day; Premium removes the limit."
+        },
+        {
+          "q": "What is the Match menu for?",
+          "a": "It starts a live search among online people who fit your criteria. Those who accept appear: chatting with one costs a Match token, and you can always like for free."
+        }
+      ],
+      "chat": [
+        {
+          "q": "I don’t know how to start the conversation",
+          "a": "Tap the light bulb in the message box: ideas based on what you have in common are suggested. Nothing is sent without your approval, and you can edit the text."
+        },
+        {
+          "q": "Can I react or reply to a message?",
+          "a": "Yes: tap a message to react with an emoji or reply to that specific message."
+        },
+        {
+          "q": "What are read receipts?",
+          "a": "The “seen” indicator shows that a message was read. Premium and VIP members can turn off sending their receipts in Settings → Privacy; the typing indicator can be turned off by everyone."
+        },
+        {
+          "q": "How do I suggest a date?",
+          "a": "In the conversation, tap the Dates icon: choose a day, a time and a public place. The other person can accept, decline or suggest another time."
+        },
+        {
+          "q": "How do I tell someone I trust about my date?",
+          "a": "On an accepted date, “Share with someone I trust” creates a link you send yourself: it shows the place, time and first names, nothing else. You can stop it at any time."
+        }
+      ],
+      "safety": [
+        {
+          "q": "How do I spot a romance scam?",
+          "a": "Be wary of any request for money, repeated refusal of a video call, a very fast declaration of love or an emergency. Send nothing, and report the profile."
+        },
+        {
+          "q": "How do I report a profile?",
+          "a": "Open the profile or the conversation, then “Report”. Your report is confidential and a moderator reviews every report."
+        },
+        {
+          "q": "What happens if I block someone?",
+          "a": "You no longer see each other and the conversation is closed. You can unblock from settings. Blocking and reporting are always free."
+        },
+        {
+          "q": "How do I get the verified badge?",
+          "a": "Profile → Verification: send a selfie. A moderator compares it with your photos, then deletes it. The badge is never granted automatically and does not guarantee a person’s intentions."
+        },
+        {
+          "q": "My account is suspended: what can I do?",
+          "a": "A page shows the reason for the decision and lets you appeal: your message is reviewed by the team."
+        }
+      ],
+      "billing": [
+        {
+          "q": "Which payment methods?",
+          "a": "Mobile Money (depending on your country) and bank card through our secure provider. We store no banking data."
+        },
+        {
+          "q": "Does the subscription renew automatically?",
+          "a": "No: each period is a one-off payment. We warn you before it ends so you can extend it."
+        },
+        {
+          "q": "How do I cancel my subscription?",
+          "a": "Settings → Subscription → Cancel. You keep your benefits until the end of the paid period."
+        },
+        {
+          "q": "Where can I find my invoices?",
+          "a": "Settings → Payments: every successful payment has its invoice."
+        },
+        {
+          "q": "My payment failed",
+          "a": "No benefit is activated until the payment is confirmed. Try again from the Premium page, or contact us with the payment reference."
+        },
+        {
+          "q": "Can I get a refund?",
+          "a": "Write to us from the Contact page with the payment reference: every request is reviewed, especially for double payments or errors."
+        },
+        {
+          "q": "Do my boosts and Super Likes expire?",
+          "a": "No: purchased credits stay on your account until you use them."
+        }
+      ],
+      "privacy": [
+        {
+          "q": "I forgot my password",
+          "a": "From the login page, choose “Forgot password”: a link valid for one hour is sent to you. You can also sign in with a magic link."
+        },
+        {
+          "q": "How do I sign out of another device?",
+          "a": "Settings → Security → Connected devices, then “Sign out”."
+        },
+        {
+          "q": "Is my location visible?",
+          "a": "Never precisely: only a rounded distance may appear, and only if you share your location."
+        },
+        {
+          "q": "Who can read my conversations?",
+          "a": "You and the person you are talking to. We do not browse conversations; a report relies on your description and the reported profile."
+        },
+        {
+          "q": "How do I hide my profile or take a break?",
+          "a": "Settings → Privacy → turn off “Visible profile”. Come back whenever you like. Incognito mode is reserved for VIP."
+        },
+        {
+          "q": "Can I get my data or delete my account?",
+          "a": "Yes: Settings → Privacy → Export my data (JSON file) or Delete my account. Deletion is permanent."
+        }
+      ]
     }
   },
   "blog": {
@@ -385,34 +578,152 @@
     "updated": "Last updated: November 2026",
     "terms": {
       "title": "Terms of use",
+      "kicker": "Terms of use",
+      "metaDescription": "DuoMatch’s terms of use: access, account, content, paid plans, moderation and responsibilities, explained simply.",
+      "lead": "This document explains, simply and honestly, the rules between you and DuoMatch. We wanted it to be readable: if in doubt, write to us.",
+      "toc": "Contents",
+      "updated": "Last updated: November 2026",
+      "listDo": "To remember",
+      "listDont": "Not allowed",
+      "listInfo": "In plain words",
+      "seeAlso": "Also read",
+      "community": "Community guidelines",
+      "privacy": "Privacy policy",
+      "cookies": "Cookies",
+      "contact": "Contact us",
       "sections": [
         {
-          "h": "1. Purpose",
-          "p": "DuoMatch is a matchmaking service between adults. These terms govern its use."
+          "id": "objet",
+          "h": "Purpose and acceptance",
+          "paras": [
+            "DuoMatch is an online service that connects adults who want to meet people, at any age. By creating an account, you accept these terms and our community guidelines.",
+            "If you do not agree with these terms, please do not use the service."
+          ]
         },
         {
-          "h": "2. Access and minimum age",
-          "p": "The service is reserved for people aged at least 18. False age information leads to account deletion."
+          "id": "acces",
+          "h": "Access and minimum age",
+          "paras": [
+            "The service is reserved for people aged at least 18. Your date of birth is checked at sign-up; any false information about your age leads to the deletion of the account.",
+            "Each person may have only one account and must provide accurate information."
+          ]
         },
         {
-          "h": "3. Account",
-          "p": "You are responsible for keeping your credentials confidential and your profile information accurate."
+          "id": "compte",
+          "h": "Your account",
+          "paras": [
+            "You are responsible for keeping your credentials confidential and for the activity of your account. You can see and sign out your devices in Settings → Security, and we advise choosing a unique password.",
+            "Tell us without delay if you think your account has been used without your knowledge."
+          ]
         },
         {
-          "h": "4. Prohibited behavior",
-          "p": "Harassment, impersonation, requests for money, unlawful or sexually explicit content, commercial solicitation."
+          "id": "conduite",
+          "h": "Expected and forbidden behaviour",
+          "intro": "We want happy, safe encounters for everyone. Our community guidelines detail what this means; here is the essentials.",
+          "lists": [
+            {
+              "kind": "dont",
+              "items": [
+                "Harassment, threats, discrimination and humiliating remarks.",
+                "Identity theft and fake profiles.",
+                "Requests for money, scams and commercial solicitation.",
+                "Illegal, violent or sexually explicit content, and any image involving a minor."
+              ]
+            }
+          ]
         },
         {
-          "h": "5. Subscriptions",
-          "p": "Premium and VIP plans are monthly, with no commitment, and can be cancelled at any time. Benefits remain until the end of the paid period."
+          "id": "contenus",
+          "h": "Your content",
+          "paras": [
+            "The photos, texts, answers, comments and messages you publish remain yours. You only authorise us to host and display them to make the service work, to the people concerned and according to your visibility settings.",
+            "You may only publish content you have the right to use, without harming others. We may remove content that breaches these terms or the community guidelines."
+          ]
         },
         {
-          "h": "6. Moderation and sanctions",
-          "p": "DuoMatch may warn, suspend or remove an account that breaks the rules. An appeal procedure is available."
+          "id": "offres",
+          "h": "Free and paid offers",
+          "paras": [
+            "DuoMatch is free to start. Paid plans (Premium, VIP) and one-off purchases (boosts, Super Likes, Match tokens) unlock extra features. Prices, durations and benefits are shown on the Pricing page before any payment."
+          ],
+          "lists": [
+            {
+              "kind": "info",
+              "items": [
+                "Plans exist for 1, 3, 6 or 12 months. Each period is a one-off payment: the subscription does not renew automatically and we warn you before it ends.",
+                "You can cancel at any time: you keep your benefits until the end of the paid period.",
+                "Purchased credits (boosts, Super Likes, tokens) stay on your account until used.",
+                "No offer guarantees a match or a relationship: it gives more visibility and tools.",
+                "Blocking, reporting and safety features stay free for everyone."
+              ]
+            }
+          ]
         },
         {
-          "h": "7. Liability",
-          "p": "DuoMatch connects members but does not guarantee their identity or intentions. Stay cautious when meeting."
+          "id": "paiements",
+          "h": "Payments, invoices and refunds",
+          "paras": [
+            "Payments are processed by a secure provider (Mobile Money depending on the country, bank card); we keep no banking data. A benefit is only activated once the payment is confirmed, and an invoice is available in Settings → Payments.",
+            "For a refund request (double payment, error…), write to us with the payment reference: every request is reviewed."
+          ]
+        },
+        {
+          "id": "moderation",
+          "h": "Moderation and sanctions",
+          "paras": [
+            "We may remove content, temporarily suspend an account or exclude it when the rules are not respected, in proportion to severity. The reason for the decision is shared with you and you can appeal from your account: your message is reviewed by the team.",
+            "Your conversations are not browsed by the team: a report relies on the member’s description and the reported profile."
+          ]
+        },
+        {
+          "id": "rencontres",
+          "h": "Meetings and responsibility",
+          "paras": [
+            "DuoMatch connects people but cannot guarantee the identity, intentions or behaviour of members. The “verified profile” badge means a moderator compared a selfie with the profile’s photos; it is not a guarantee.",
+            "For a first meeting, choose a public place, tell someone you trust and arrive by your own means. Meetings take place under your own responsibility, to the extent the law allows."
+          ]
+        },
+        {
+          "id": "disponibilite",
+          "h": "Availability of the service",
+          "paras": [
+            "We do our best to keep the service available and safe, but it may be interrupted for maintenance or incidents. Some features may be enabled, changed or suspended (for example in case of abuse), without affecting the benefits you paid for."
+          ]
+        },
+        {
+          "id": "donnees",
+          "h": "Your personal data",
+          "paras": [
+            "We process your data to run the service and protect you. Your precise location is never shown, you can export your data and delete your account at any time from Settings → Privacy. Details are in our privacy policy."
+          ]
+        },
+        {
+          "id": "fin",
+          "h": "Leaving DuoMatch",
+          "paras": [
+            "You can delete your account at any time: deletion is permanent. We may suspend or close an account in case of serious or repeated breach, under the conditions of the “Moderation and sanctions” section."
+          ]
+        },
+        {
+          "id": "evolutions",
+          "h": "Changes to these terms",
+          "paras": [
+            "We may update these terms, for example to add a feature or meet a legal obligation. In case of an important change, we will inform you in the app or by email before it applies."
+          ]
+        },
+        {
+          "id": "droit",
+          "h": "Governing law and disputes",
+          "paras": [
+            "The governing law and competent jurisdiction will be specified here before launch, after legal review of this document. In case of disagreement, write to us first: we always look for an amicable solution."
+          ]
+        },
+        {
+          "id": "contact",
+          "h": "A question about these terms?",
+          "paras": [
+            "Write to us from the Contact page: we will gladly answer."
+          ]
         }
       ]
     },
@@ -463,29 +774,262 @@
       ]
     },
     "community": {
-      "title": "Community rules",
+      "title": "Community guidelines",
+      "metaDescription": "DuoMatch’s code of kindness: respect, sincerity, safety and privacy, for happy relationships at any age.",
+      "kicker": "Our code of kindness",
+      "lead": "You can find love at any age. DuoMatch brings together adults aged 18 and over who are looking for a real relationship, and everyone has the right to do so with respect, sincerity and peace of mind. These rules are here so you feel good here.",
+      "ctaHelp": "Help centre",
+      "ctaReport": "How to report",
+      "glanceTitle": "The essentials in five ideas",
+      "glance": [
+        {
+          "h": "Respect",
+          "p": "Everyone is treated with consideration, whatever their age, background or appearance."
+        },
+        {
+          "h": "Sincerity",
+          "p": "Real photos, real intentions: it is easier to build on what is true."
+        },
+        {
+          "h": "Safety",
+          "p": "Never money, never pressure. When in doubt, stop and report."
+        },
+        {
+          "h": "Privacy",
+          "p": "Your conversations and your location belong to you."
+        },
+        {
+          "h": "Kindness",
+          "p": "A “no” or a silence is an answer. Everyone goes at their own pace."
+        }
+      ],
+      "toc": "Contents",
+      "updated": "Last updated: November 2026",
+      "complements": "These rules complement our",
+      "termsLink": "Terms of use",
+      "listDo": "We love to see",
+      "listDont": "What has no place here",
+      "listInfo": "Good to know",
       "sections": [
         {
-          "h": "Be respectful",
-          "p": "Treat everyone with courtesy. Insults, discrimination and harassment are prohibited."
+          "id": "promesse",
+          "h": "Love has no age",
+          "intro": "At 25, 40, 55 or 70, you have every reason to dream of a beautiful story. Here, age is neither a joke nor a flaw: it is a journey. DuoMatch welcomes all adults, whatever their origin, situation, way of loving or appearance, on one condition: respect others.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Honest introductions that say who you are and what you are looking for.",
+                "Curiosity about the other person, their stories and their pace.",
+                "Sincere compliments, never aimed at age or looks to put someone down."
+              ]
+            }
+          ]
         },
         {
-          "h": "Be authentic",
-          "p": "Use your real photos and information. Fake profiles are removed."
+          "id": "respect",
+          "h": "Respect and kindness",
+          "intro": "A meeting starts with a kind look. Speak the way you would like to be spoken to.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Reply politely, even to say no, thank you.",
+                "Accept a negative answer or a silence without insisting.",
+                "Ask open questions rather than judge."
+              ]
+            },
+            {
+              "kind": "dont",
+              "items": [
+                "Insults, mockery, threats or humiliating remarks.",
+                "Harassment: repeated messages after a refusal, pressure, insistence.",
+                "Any discrimination based on age, origin, religion, orientation, gender, disability, health or family situation.",
+                "Unrequested remarks about someone’s body or age."
+              ]
+            }
+          ]
         },
         {
-          "h": "No money",
-          "p": "Never ask for money or financial help. Report any such request."
+          "id": "sincerite",
+          "h": "Sincerity and authenticity",
+          "intro": "A couple’s story is not built on a misunderstanding. Show yourself as you are.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Recent photos in which you are recognisable.",
+                "Your real age and real intentions (serious relationship, marriage, friendship, or “not sure yet”).",
+                "A frank description of your personal situation."
+              ]
+            },
+            {
+              "kind": "dont",
+              "items": [
+                "Fake profiles and identity theft.",
+                "Photos of someone else or taken without their consent.",
+                "Profiles created to deceive, to sell, or to collect information."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "The “verified profile” badge is only granted after a real check: a moderator compares your selfie with your photos, then the selfie is deleted."
+              ]
+            }
+          ]
         },
         {
-          "h": "Content",
-          "p": "No sexually explicit, violent or illegal content. Photos of minors are forbidden."
+          "id": "argent",
+          "h": "No money, no scams",
+          "intro": "Romance scams all look alike. One simple rule protects us all: nobody needs your money to love you.",
+          "lists": [
+            {
+              "kind": "dont",
+              "items": [
+                "Asking for or offering money, a transfer, a prepaid card or a “gift” to pay for.",
+                "Pushing you to invest, lend, or share codes or banking details.",
+                "Saying “I love you” very quickly to win your trust, then mentioning an emergency."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "Warning signs: repeated refusal of a video call, stories that are too perfect, urgency, secrecy, a quick move to another app.",
+                "When in doubt: stop the conversation, send nothing, and report the profile. It protects others too."
+              ]
+            }
+          ]
         },
         {
-          "h": "Reporting",
-          "p": "Report any behavior that breaks these rules; our team reviews every report."
+          "id": "contenus",
+          "h": "Content and photos",
+          "intro": "DuoMatch is a dating place for all ages: let’s keep content that makes everyone comfortable.",
+          "lists": [
+            {
+              "kind": "dont",
+              "items": [
+                "Sexually explicit, violent, shocking or illegal content.",
+                "Any image involving a minor: zero tolerance.",
+                "Photos of third parties without consent, private conversation screenshots shared publicly.",
+                "Advertising, solicitation and spam."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "Keep your contact details (phone, address, social media) for when you feel confident, not before."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rencontres",
+          "h": "Meeting safely",
+          "intro": "A successful first date starts with a few simple precautions. They do not spoil the magic: they let you enjoy it with peace of mind.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Choose a public, busy place for the first meeting.",
+                "Tell someone you trust: Dates mode lets you share the place and time with them, only if you decide to.",
+                "Arrive and leave by your own means.",
+                "Trust your instinct: you can cancel or leave at any time without explaining."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "vie-privee",
+          "h": "Your privacy is yours",
+          "intro": "You decide what you show, to whom, and how far.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Your location is never shown precisely: only an approximate distance is used.",
+                "Your conversations are private: we do not browse them. A report relies on your description and the reported profile.",
+                "You can hide your profile, adjust read receipts and the typing indicator, export your data or delete your account at any time."
+              ]
+            },
+            {
+              "kind": "dont",
+              "items": [
+                "Sharing another person’s private information (photos, contact details, conversations) without consent.",
+                "Trying to identify or track down someone who does not wish to be contacted."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "signaler",
+          "h": "Reporting and blocking, simply",
+          "intro": "Something makes you uncomfortable? You do not have to justify yourself or wait.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Block: you no longer see each other and the conversation closes. It is immediate, and you can unblock from settings.",
+                "Report from a profile or a conversation (“⋮” menu then “Report”): fake profile, scam, harassment, inappropriate content, minor, spam, other.",
+                "Your report is confidential and reviewed by a moderator."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "Blocking and reporting are always free, whatever your plan."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sanctions",
+          "h": "If the rules are not respected",
+          "intro": "Our first aim is to protect the community, with proportion and fairness.",
+          "lists": [
+            {
+              "kind": "info",
+              "items": [
+                "Depending on severity: removal of content or a photo, temporary suspension, or a ban for the most serious cases (scam, harassment, minor).",
+                "The reason for the decision is shared with you.",
+                "You can appeal a suspension from your account: your message is reviewed by the team.",
+                "No sanction is taken over appearance, age or opinions, only over behaviour."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bien-etre",
+          "h": "Look after yourself, at your own pace",
+          "intro": "Meeting someone is a path, not a race. Take your time.",
+          "lists": [
+            {
+              "kind": "do",
+              "items": [
+                "Need a break? Hide your profile in Settings › Privacy: come back whenever you like.",
+                "A conversation weighs on you? You are under no obligation to reply.",
+                "Set your limits from the start: a respectful partner welcomes them gladly."
+              ]
+            },
+            {
+              "kind": "info",
+              "items": [
+                "We avoid artificial pressure: no fake profiles, fake Likes or fake messages, and your looks are never used to rank profiles."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "contact",
+          "h": "A question, a concern?",
+          "intro": "Our team is here to listen. Write to us from the Contact page or browse the Help centre: we take every message seriously.",
+          "lists": []
         }
-      ]
+      ],
+      "finalTitle": "Ready to write your story?",
+      "finalText": "Join a community that respects itself, where people take the time to get to know each other.",
+      "finalCta": "Create my account",
+      "finalContact": "Contact us"
     }
   },
   "auth": {
@@ -667,7 +1211,23 @@
     "SLUG_TAKEN": "This link (slug) already exists in this language.",
     "POST_NOT_FOUND": "Article not found.",
     "INVALID_REPLY": "The quoted message is no longer available.",
-    "INVALID_REACTION": "This reaction is not allowed."
+    "INVALID_REACTION": "This reaction is not allowed.",
+    "TOO_SOON": "Allow a bit more notice for this date.",
+    "TOO_FAR": "This date is too far ahead.",
+    "INVALID_WINDOW": "The time window must last between 30 minutes and 8 hours.",
+    "INVALID_PLACE": "Enter the name of a public place, with no number or contact details.",
+    "TOO_MANY_OPEN_DATES": "Too many dates in progress in this conversation.",
+    "DATE_LIMIT": "Daily limit of proposals reached.",
+    "NOT_INVITEE": "Only the invited person can answer.",
+    "USE_DECLINE": "For a received proposal, use “Decline”.",
+    "DATE_NOT_PENDING": "This date no longer awaits an answer.",
+    "DATE_PAST": "This date has already passed.",
+    "DATE_NOT_STARTED": "The date has not started yet.",
+    "DATE_NOT_CANCELABLE": "This date can no longer be canceled.",
+    "DATE_NOT_RESCHEDULABLE": "This date cannot be rescheduled.",
+    "DATE_NOT_ACCEPTED": "Available for an accepted date.",
+    "DATE_NOT_FOUND": "Date not found.",
+    "SHARE_NOT_FOUND": "This link is no longer valid."
   },
   "app": {
     "nav": {
@@ -948,7 +1508,15 @@
       "REFUND_UPDATE_FAILED": "Your refund could not be completed: our team will contact you.",
       "LIVE_INVITE": "Someone would like to meet you: reply in Match.",
       "LIVE_ACCEPTED": "Someone accepted your Match invitation.",
-      "REFERRAL_REWARD": "A friend you referred completed their profile: Match tokens added."
+      "REFERRAL_REWARD": "A friend you referred completed their profile: Match tokens added.",
+      "DATE_UPDATE_PROPOSED": "New date proposal.",
+      "DATE_UPDATE_ACCEPTED": "Date accepted!",
+      "DATE_UPDATE_DECLINED": "A date proposal was declined.",
+      "DATE_UPDATE_CANCELED": "A date was canceled.",
+      "DATE_UPDATE_COMPLETED": "A date was marked as completed.",
+      "DATE_UPDATE_RESCHEDULED": "A date was rescheduled.",
+      "DATE_UPDATE": "A date was updated.",
+      "DATE_REMINDER": "Reminder: your date is coming up."
     }
   },
   "premium": {
@@ -1420,6 +1988,13 @@
           "on": "The “Ideas to get started” button is available.",
           "off": "The button disappears; nothing else changes.",
           "useWhen": "If suggestions have a quality problem."
+        },
+        "date_proposals": {
+          "name": "Dates",
+          "what": "Lets members propose, accept and organise a date inside a conversation.",
+          "on": "The Dates button is available in conversations.",
+          "off": "No new proposals or answers; existing dates stay visible and can still be canceled.",
+          "useWhen": "If the feature is abused. A member is never trapped in an already planned date."
         }
       }
     },
@@ -1536,7 +2111,13 @@
         "retentionD30": "D30 retention (cohort: {n})",
         "premiumConversionRate": "Premium conversion",
         "dailyPicks": "Daily picks (30 d) followed by a decision",
-        "none": "—"
+        "none": "—",
+        "datesProposed": "Dates proposed",
+        "datesAccepted": "Dates accepted",
+        "datesAcceptRate": "Acceptance rate (among handled proposals)",
+        "datesCompleted": "Dates declared completed",
+        "datesFeedback": "Reported satisfaction (average out of 5, {n} answer(s))",
+        "datesNote": "Meetings and satisfaction come only from members’ voluntary declarations."
       },
       "unavailableTitle": "Not measured yet",
       "unavailable": {
@@ -1557,7 +2138,12 @@
         "kindGENERIC": "Neutral",
         "key": "Item",
         "noKey": "—"
-      }
+      },
+      "dateMinNotice": "Minimum notice for a date (hours)",
+      "dateMaxDays": "Maximum horizon (days)",
+      "dateMaxOpen": "Dates in progress per conversation",
+      "dateMaxPerDay": "Proposals per member per day",
+      "dateShareHours": "Share link validity after the date (hours)"
     }
   },
   "pricingFaq": {
@@ -1817,6 +2403,85 @@
       "error": "Could not load the selection.",
       "disabledTitle": "Daily picks unavailable",
       "disabledText": "This feature is temporarily turned off."
+    }
+  },
+  "dates": {
+    "open": "Dates",
+    "title": "Date with {name}",
+    "propose": "Propose a date",
+    "reschedule": "Suggest another time",
+    "empty": "No dates yet. When you feel comfortable, suggest a public place.",
+    "safetyTitle": "For a relaxed first meeting",
+    "safety": [
+      "Choose a public, busy place.",
+      "Tell someone you trust: the “Share” button sends them the place and time, only if you decide to.",
+      "Arrive and leave by your own means.",
+      "You can cancel at any time without explaining."
+    ],
+    "date": "Day",
+    "time": "Start time",
+    "duration": "Planned duration",
+    "minutes": "{n} min",
+    "hours": "{n} h",
+    "placeKind": "Type of public place",
+    "placeName": "Name of the place",
+    "placeHint": "A public place: name and area, no phone number or private address.",
+    "note": "A short note (optional)",
+    "send": "Send the proposal",
+    "kind": {
+      "CAFE": "Café",
+      "RESTAURANT": "Restaurant",
+      "PARK": "Park or garden",
+      "MALL": "Shopping centre",
+      "CULTURE": "Cultural venue",
+      "OTHER_PUBLIC": "Other public place"
+    },
+    "status": {
+      "PROPOSED": "Proposed",
+      "ACCEPTED": "Accepted",
+      "DECLINED": "Declined",
+      "RESCHEDULED": "Rescheduled",
+      "CANCELED": "Canceled",
+      "COMPLETED": "Completed"
+    },
+    "fromMe": "Proposed by you",
+    "fromThem": "Proposed by {name}",
+    "waiting": "Waiting for {name}’s answer.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "cancel": "Cancel",
+    "complete": "We met",
+    "completeHint": "Your declaration is voluntary and private.",
+    "reminder": "Reminder",
+    "reminderNone": "No reminder",
+    "reminder60": "1 h before",
+    "reminder1440": "24 h before",
+    "share": "Share with someone I trust",
+    "shareDone": "Share link created. Send it yourself to someone you trust: it shows the place, time and first names, nothing else. It expires after the date.",
+    "shareCopy": "Copy the link",
+    "shareCopied": "Link copied.",
+    "shareStop": "Stop sharing",
+    "shareActive": "Shared with someone you trust",
+    "feedbackTitle": "How did this date go?",
+    "feedbackHint": "Optional and private: nobody sees your answer.",
+    "feedbackRate": "{n} out of 5",
+    "feedbackThanks": "Thanks for your feedback.",
+    "toast": {
+      "proposed": "Proposal sent.",
+      "updated": "Date updated."
+    },
+    "shared": {
+      "title": "A date shared with you",
+      "intro": "{who} chose to share this date with you, for safety.",
+      "meeting": "Meeting",
+      "when": "When",
+      "where": "Where",
+      "status": "Status",
+      "canceledNote": "This date has been canceled.",
+      "safety": "Check in after the planned time. If you are worried, contact the person directly, and local emergency services if urgent.",
+      "expires": "This link expires on {date}.",
+      "gone": "This link is no longer valid.",
+      "goneText": "It has expired or the person stopped sharing."
     }
   }
 }

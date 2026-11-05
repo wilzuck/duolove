@@ -110,6 +110,8 @@ class NotificationType(str, enum.Enum):
     LIVE_INVITE = 'LIVE_INVITE'
     LIVE_ACCEPTED = 'LIVE_ACCEPTED'
     REFERRAL_REWARD = 'REFERRAL_REWARD'
+    DATE_UPDATE = 'DATE_UPDATE'
+    DATE_REMINDER = 'DATE_REMINDER'
 
 
 class PaymentKind(str, enum.Enum):
@@ -428,6 +430,76 @@ class IcebreakerTemplate(Base):
     textEn: Mapped[str] = mapped_column(Text, nullable=False)
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     sortOrder: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
+class DateProposal(Base):
+    """Proposition de rendez-vous dans une conversation. Statuts : PROPOSED, ACCEPTED, DECLINED, RESCHEDULED, CANCELED, COMPLETED.
+    Lieu public uniquement (catégorie fermée + nom du lieu) : aucune localisation précise de membre n'est stockée."""
+    __tablename__ = 'DateProposal'
+    __table_args__ = (
+        ForeignKeyConstraint(['conversationId'], ['Conversation.id'], ondelete='CASCADE', onupdate='CASCADE', name='DateProposal_conversationId_fkey'),
+        ForeignKeyConstraint(['proposerId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='DateProposal_proposerId_fkey'),
+        ForeignKeyConstraint(['inviteeId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='DateProposal_inviteeId_fkey'),
+        ForeignKeyConstraint(['previousId'], ['DateProposal.id'], ondelete='SET NULL', onupdate='CASCADE', name='DateProposal_previousId_fkey'),
+        PrimaryKeyConstraint('id', name='DateProposal_pkey'),
+        Index('DateProposal_conversationId_createdAt_idx', 'conversationId', 'createdAt'),
+        Index('DateProposal_status_startsAt_idx', 'status', 'startsAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    conversationId: Mapped[str] = mapped_column(Text, nullable=False)
+    proposerId: Mapped[str] = mapped_column(Text, nullable=False)
+    inviteeId: Mapped[str] = mapped_column(Text, nullable=False)
+    startsAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    endsAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    placeKind: Mapped[str] = mapped_column(Text, nullable=False)
+    placeName: Mapped[str] = mapped_column(Text, nullable=False)
+    note: Mapped[Optional[str]] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'PROPOSED'::text"))
+    previousId: Mapped[Optional[str]] = mapped_column(Text)
+    proposerFeedback: Mapped[Optional[int]] = mapped_column(Integer)
+    inviteeFeedback: Mapped[Optional[int]] = mapped_column(Integer)
+    respondedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
+
+
+class DateReminder(Base):
+    """Rappel choisi par un membre avant un rendez-vous (une ligne par membre et par rendez-vous)."""
+    __tablename__ = 'DateReminder'
+    __table_args__ = (
+        ForeignKeyConstraint(['dateId'], ['DateProposal.id'], ondelete='CASCADE', onupdate='CASCADE', name='DateReminder_dateId_fkey'),
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='DateReminder_userId_fkey'),
+        PrimaryKeyConstraint('id', name='DateReminder_pkey'),
+        Index('DateReminder_dateId_userId_key', 'dateId', 'userId', unique=True),
+        Index('DateReminder_sentAt_idx', 'sentAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    dateId: Mapped[str] = mapped_column(Text, nullable=False)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    minutesBefore: Mapped[int] = mapped_column(Integer, nullable=False)
+    sentAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+
+
+class DateShare(Base):
+    """Partage VOLONTAIRE des détails d'un rendez-vous avec une personne de confiance : lien secret (seul le hash est stocké), expirant, révocable."""
+    __tablename__ = 'DateShare'
+    __table_args__ = (
+        ForeignKeyConstraint(['dateId'], ['DateProposal.id'], ondelete='CASCADE', onupdate='CASCADE', name='DateShare_dateId_fkey'),
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='DateShare_userId_fkey'),
+        PrimaryKeyConstraint('id', name='DateShare_pkey'),
+        Index('DateShare_tokenHash_key', 'tokenHash', unique=True),
+        Index('DateShare_dateId_userId_idx', 'dateId', 'userId'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    dateId: Mapped[str] = mapped_column(Text, nullable=False)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    tokenHash: Mapped[str] = mapped_column(Text, nullable=False)
+    expiresAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    revokedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 

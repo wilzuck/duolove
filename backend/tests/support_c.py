@@ -50,3 +50,12 @@ async def buy(a: Member, body: dict) -> dict:
 
 async def plan_of(a: Member) -> str:
     return (await a.agent.get("/api/subscriptions/me")).json()["plan"]
+
+
+async def matched(app, db) -> tuple[Member, Member, str]:
+    """Deux membres de la même ville avec un match réciproque ; retourne (femme, homme, id de conversation)."""
+    city = f"C-{uid()}"
+    w, m = await member(app, db, city=city), await member(app, db, city=city, gender="MAN")
+    await w.agent.post("/api/swipes", json={"targetId": m.id, "action": "LIKE"})
+    r = await m.agent.post("/api/swipes", json={"targetId": w.id, "action": "LIKE"})
+    return w, m, r.json()["match"]["conversationId"]

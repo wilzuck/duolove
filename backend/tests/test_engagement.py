@@ -275,5 +275,5 @@ async def test_metrics_admin_only_and_honest(app, db):
     assert (await u.agent.get("/api/admin/engagement/metrics")).status_code == 403
     m = (await a.agent.get("/api/admin/engagement/metrics")).json()
     assert m["likes"] >= m["likesWithComment"] >= 0 and 0 <= (m["matchRate"] or 0) <= 100
-    assert set(m["unavailable"]) == {"dateProposals", "datesAccepted", "satisfaction", "realMeetings"}
+    assert m["unavailable"] == [] and {"proposed", "accepted", "completed", "feedbackCount"} <= set(m["dates"])  # mesurés via déclarations volontaires
     assert "d7" in m["retention"] and m["retention"]["definition"]

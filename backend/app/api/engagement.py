@@ -15,8 +15,9 @@ router = APIRouter(prefix="/engagement", tags=["engagement"])
 async def config(_: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     cfg = await appsettings.all_values(db)
     fl = await flags.all_flags(db)
-    return {"flags": {k: fl[k] for k in ("profile_prompts", "like_comments", "daily_picks", "message_reactions", "message_replies", "icebreakers")},
-            "prompts": {"min": cfg["prompts.min"], "max": cfg["prompts.max"], "answerMax": promptsvc.ANSWER_MAX}, "commentMax": cfg["likes.comment_max"], "reactionEmojis": list(REACTION_EMOJIS)}
+    return {"flags": {k: fl[k] for k in ("profile_prompts", "like_comments", "daily_picks", "message_reactions", "message_replies", "icebreakers", "date_proposals")},
+            "prompts": {"min": cfg["prompts.min"], "max": cfg["prompts.max"], "answerMax": promptsvc.ANSWER_MAX}, "commentMax": cfg["likes.comment_max"], "reactionEmojis": list(REACTION_EMOJIS),
+            "dates": {"minNoticeHours": cfg["dates.min_notice_hours"], "maxDaysAhead": cfg["dates.max_days_ahead"]}}
 
 
 @router.get("/prompts", dependencies=[flags.require_flag("profile_prompts")])
