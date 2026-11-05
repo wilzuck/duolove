@@ -41,7 +41,11 @@ async def compute(db: AsyncSession, now: datetime.datetime) -> dict:
     quiet_users = (await one('SELECT count(*) FROM "NotificationPreference" WHERE "quietStart" IS NOT NULL')).scalar_one()
     pending = (await one('SELECT count(*) FROM "User" WHERE "emailVerifiedAt" IS NULL AND status = \'ACTIVE\' AND "passwordHash" IS NOT NULL')).scalar_one()
     purged = (await one('SELECT COALESCE(max((value)::text::int), 0) FROM "SystemSetting" WHERE key = \'stats.unverified_purged\'')).scalar_one()
+    from app.core import callsvc, speedsvc
+    calls = await callsvc.stats(db, now - datetime.timedelta(days=30))
+    speed = await speedsvc.stats(db)
     return {
+        "calls": {**calls, "windowDays": 30}, "speed": speed,
         "signup": {"unverifiedPending": pending, "unverifiedPurgedTotal": purged},
         "rhythm": {"pausedNow": paused_now, "quietHoursUsers": quiet_users},
         "dates": {"proposed": dtotal, "accepted": accepted, "declined": dstat.get("DECLINED", 0), "canceled": dstat.get("CANCELED", 0), "completed": dstat.get("COMPLETED", 0),

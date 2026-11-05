@@ -1705,7 +1705,8 @@
       "DATE_UPDATE": "A date was updated.",
       "CALL_MISSED": "Missed call.",
       "DATE_REMINDER": "Reminder: your date is coming up.",
-      "MESSAGE_MANY": "{count} new messages."
+      "MESSAGE_MANY": "{count} new messages.",
+      "SPEED_REMINDER": "Reminder: your speed-dating session is about to start."
     }
   },
   "premium": {
@@ -2337,7 +2338,14 @@
         "pausedNow": "Members on pause",
         "quietUsers": "Members with quiet hours",
         "unverifiedPending": "Accounts awaiting confirmation",
-        "unverifiedPurged": "Unconfirmed accounts deleted (total)"
+        "unverifiedPurged": "Unconfirmed accounts deleted (total)",
+        "callsStarted": "Calls started (last {n} days)",
+        "callsAnswered": "Calls answered",
+        "callsMissed": "Missed calls",
+        "callsAverage": "Average length of an answered call",
+        "speedEvents": "Speed-dating sessions",
+        "speedRegistrations": "Speed-dating sign-ups",
+        "speedMutual": "Mutual interests / meetings"
       },
       "unavailableTitle": "Not measured yet",
       "unavailable": {
@@ -2372,7 +2380,8 @@
       "liveHours": "Live Match search duration (hours)",
       "callRing": "Call ring time (seconds)",
       "callMax": "Maximum call length (minutes)",
-      "callPerDay": "Calls started per member per day"
+      "callPerDay": "Calls started per member per day",
+      "speedReminder": "Speed-dating start reminder (minutes before)"
     },
     "speed": {
       "title": "Speed dating",

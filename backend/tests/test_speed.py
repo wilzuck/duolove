@@ -205,3 +205,23 @@ async def test_blocked_people_never_meet_and_flag(app, db):
     flags_core.invalidate()
     assert code(await w1.agent.get("/api/speed-events")) == "FEATURE_DISABLED"
     assert code(await w2.agent.post(f"/api/speed-events/{ev['id']}/register")) == "FEATURE_DISABLED"
+
+
+async def test_reminder_sent_once_to_registered_only_and_metrics(app, db):
+    from app.models.models import Notification
+    adm = await admin(app, db)
+    ms, city = await four(app, db)
+    ev = (await create(adm, city=city)).json()
+    for m in ms[:3]:
+        await m.agent.post(f"/api/speed-events/{ev['id']}/register")
+    await ms[2].agent.delete(f"/api/speed-events/{ev['id']}/register")  # désinscrit : pas de rappel
+    async with session_maker()() as s:
+        assert await speedsvc.send_reminders(s, utcnow()) == 0  # trop tôt (début dans 1 h, rappel à 15 min)
+    await shift(ev["id"], datetime.timedelta(minutes=10))
+    async with session_maker()() as s:
+        assert await speedsvc.send_reminders(s, utcnow()) == 2
+        assert await speedsvc.send_reminders(s, utcnow()) == 0  # une seule fois
+        got = (await s.execute(select(Notification.userId).where(Notification.type == "SPEED_REMINDER", Notification.data["eventId"].astext == ev["id"]))).scalars().all()
+    assert sorted(got) == sorted([ms[0].id, ms[1].id])
+    stats = (await adm.agent.get("/api/admin/engagement/metrics")).json()
+    assert stats["speed"]["events"] >= 1 and stats["calls"]["windowDays"] == 30 and "answerRate" in stats["calls"]

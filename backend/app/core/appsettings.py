@@ -29,6 +29,7 @@ INT_SPECS = {  # clé → (défaut, min, max)
     "speed.min_participants": (4, 2, 50),
     "speed.decision_seconds": (180, 30, 900),
     "speed.gap_seconds": (20, 5, 120),
+    "speed.reminder_minutes": (15, 5, 120),
     "calls.max_minutes": (60, 5, 240),
     "calls.max_per_day": (20, 1, 100),
     "signup.unverified_ttl_hours": (72, 1, 720),

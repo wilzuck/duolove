@@ -113,6 +113,7 @@ class NotificationType(str, enum.Enum):
     DATE_UPDATE = 'DATE_UPDATE'
     DATE_REMINDER = 'DATE_REMINDER'
     CALL_MISSED = 'CALL_MISSED'
+    SPEED_REMINDER = 'SPEED_REMINDER'
 
 
 class PaymentKind(str, enum.Enum):
@@ -569,6 +570,7 @@ class SpeedEvent(Base):
     startsAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
     status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'SCHEDULED'::text"))
     cancelReason: Mapped[Optional[str]] = mapped_column(Text)
+    remindedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
     createdById: Mapped[Optional[str]] = mapped_column(Text)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 

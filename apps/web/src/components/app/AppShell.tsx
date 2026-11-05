@@ -8,6 +8,7 @@ import type { Me } from '@/lib/types';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { SiteLinks } from '../SiteLinks';
 import { CallLayer } from './CallLayer';
+import { useEngagementConfig } from '@/hooks/useQueries';
 import { PauseBanner } from './PauseBanner';
 import { ThemeToggle } from '../ThemeToggle';
 
@@ -24,6 +25,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
   const path = usePathname();
   const active = (href: string) => path === href || path.startsWith(`${href}/`);
   const staff = me.role !== 'USER';
+  const speedOn = useEngagementConfig().data?.flags.speed_dating !== false;
   const inChat = /^\/messages\/.+/.test(path);
 
   // Onboarding : parcours guidé sans navigation (on ne s'échappe pas d'un profil à moitié rempli).
@@ -81,6 +83,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
           <Link href="/discover" className="lg:hidden" aria-label={t('nav.home')}><Logo /></Link>
           <div className="hidden lg:block" />
           <div className="flex items-center gap-1">
+            {speedOn && <Link href="/speed" aria-label={t('app.nav.speed')} className="rounded-full p-2.5 text-muted hover:bg-soft hover:text-fg lg:hidden"><Hourglass className="size-5" /></Link>}
             {me.entitlement.plan === 'FREE' && <Link href="/premium" aria-label={t('app.goPremium')} className="rounded-full bg-soft p-2.5 text-brand-ink hover:bg-brand/15 sm:hidden"><Crown className="size-5" /></Link>}
             {me.entitlement.plan === 'FREE' && <Link href="/premium" className="hidden sm:block"><Button size="sm" variant="secondary"><Crown className="size-4" aria-hidden />{t('app.goPremium')}</Button></Link>}
             <Link href="/notifications" aria-label={t('app.nav.notifications')} className="relative rounded-full p-2.5 text-muted hover:bg-soft hover:text-fg">

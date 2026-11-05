@@ -205,7 +205,25 @@ async def sweep(db: AsyncSession) -> int:
     rows = (await db.execute(select(SpeedEvent).where(SpeedEvent.status.in_(["SCHEDULED", "RUNNING"]), SpeedEvent.startsAt <= now))).scalars().all()
     for ev in rows:
         await advance(db, ev)
+    await send_reminders(db, now)
     return len(rows)
+
+
+async def send_reminders(db: AsyncSession, now: datetime.datetime) -> int:
+    """Un seul rappel par session et par inscrit, `speed.reminder_minutes` avant le début (silencieux en pause ou période de repos)."""
+    cfg = await appsettings.all_values(db)
+    horizon = now + datetime.timedelta(minutes=cfg["speed.reminder_minutes"])
+    due = (await db.execute(select(SpeedEvent).where(SpeedEvent.status == "SCHEDULED", SpeedEvent.remindedAt.is_(None), SpeedEvent.startsAt > now, SpeedEvent.startsAt <= horizon)
+                            .with_for_update(skip_locked=True))).scalars().all()
+    sent = 0
+    for ev in due:
+        ev.remindedAt = now
+        await db.commit()  # marqué avant l'envoi : au pire un rappel manqué, jamais un doublon
+        uids = (await db.execute(select(SpeedRegistration.userId).where(SpeedRegistration.eventId == ev.id, SpeedRegistration.status == "REGISTERED"))).scalars().all()
+        for uid in uids:
+            await notifications.create(db, uid, "SPEED_REMINDER", {"eventId": ev.id, "title": ev.title, "startsAt": iso(ev.startsAt)})
+            sent += 1
+    return sent
 
 
 # ───────── présentation ─────────

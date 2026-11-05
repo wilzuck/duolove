@@ -88,4 +88,18 @@ test.describe.serial('Speed dating', () => {
     await expect(none.getByText(/Pas de match cette fois/)).toBeVisible();
     expect(sql(`select count(*) from "Match"`)).not.toBe('0');
   });
+
+  test('finitions : lien Speed dating dans l’en-tête mobile, rappel dans les notifications, métriques admin', async () => {
+    const a = m[0]!.page;
+    await a.setViewportSize({ width: 390, height: 800 });
+    await a.goto('/discover');
+    await expect(a.getByRole('link', { name: 'Speed dating' }).first()).toBeVisible();
+    sql(`insert into "Notification" (id, "userId", type, data) select 'rem' || substr(md5(random()::text), 1, 10), id, 'SPEED_REMINDER', '{"eventId":"${eventId}","title":"x"}'::jsonb from "User" where email='${people[0]!.email}'`);
+    await a.goto('/notifications');
+    await expect(a.getByText('Rappel : votre session de speed dating approche.')).toBeVisible();
+    await b.page.goto('/admin/engagement');
+    await b.page.getByRole('tab', { name: /Indicateurs/ }).click();
+    await expect(b.page.getByText('Sessions de speed dating')).toBeVisible();
+    await expect(b.page.getByText(/Appels lancés/)).toBeVisible();
+  });
 });
