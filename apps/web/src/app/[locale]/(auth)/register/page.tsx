@@ -7,6 +7,8 @@ import { COUNTRIES, GENDERS, MIN_AGE, registerSchema } from '@duomatch/types';
 import { Alert, Button, Checkbox, DatePicker, Field, Input, Select } from '@duomatch/ui';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { GoogleButton } from '@/components/auth/GoogleButton';
+import { PasswordInput } from '@/components/auth/PasswordInput';
+import { PasswordStrength } from '@/components/auth/PasswordStrength';
 import { useApiError } from '@/hooks/useApiError';
 import { Link, useRouter } from '@/i18n/navigation';
 import { ApiError, post } from '@/lib/api';
@@ -70,7 +72,7 @@ function RegisterForm() {
   };
 
   return (
-    <AuthShell title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')} footer={<>{t('auth.haveAccount')} <Link href="/login" className="font-semibold text-brand-ink underline">{t('nav.login')}</Link></>}>
+    <AuthShell side="register" title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')} footer={<>{t('auth.haveAccount')} <Link href="/login" className="font-semibold text-brand-ink underline">{t('nav.login')}</Link></>}>
       {!googleToken && <GoogleButton onToken={setGoogleToken} />}
       {googleToken && <p className="mb-5 rounded-2xl bg-soft p-4 text-sm">{t('auth.googleComplete')}</p>}
       <form onSubmit={submit} className="space-y-4" noValidate>
@@ -79,7 +81,7 @@ function RegisterForm() {
           <>
             <Field label={t('auth.displayName')} error={errors.displayName}>{(p) => <Input {...p} autoComplete="given-name" value={f.displayName} onChange={(e) => set('displayName', e.target.value)} />}</Field>
             <Field label={t('auth.email')} error={errors.email}>{(p) => <Input {...p} type="email" autoComplete="email" value={f.email} onChange={(e) => set('email', e.target.value)} />}</Field>
-            <Field label={t('auth.password')} hint={t('auth.passwordHint')} error={errors.password}>{(p) => <Input {...p} type="password" autoComplete="new-password" value={f.password} onChange={(e) => set('password', e.target.value)} />}</Field>
+            <Field label={t('auth.password')} hint={t('auth.passwordHint')} error={errors.password}>{(p) => <><PasswordInput {...p} autoComplete="new-password" value={f.password} onChange={(e) => set('password', e.target.value)} /><PasswordStrength value={f.password} /></>}</Field>
           </>
         )}
         <Field label={t('auth.birthDate')} hint={t('auth.birthHint', { age: MIN_AGE })} error={errors.birthDate}>{(p) => <DatePicker id={p.id} aria-describedby={p['aria-describedby']} invalid={!!errors.birthDate} dropdowns locale={locale} max={maxBirth} value={f.birthDate} onChange={(v) => set('birthDate', v)} labels={{ placeholder: t('common.pickDate'), clear: t('common.clearDate') }} />}</Field>
@@ -101,11 +103,12 @@ function RegisterForm() {
         <div className="space-y-3 pt-1 text-sm">
           <Checkbox
             checked={f.acceptTerms} onChange={(e) => set('acceptTerms', e.target.checked)} aria-invalid={!!errors.acceptTerms}
-            label={t.rich('auth.acceptTerms', { terms: (c) => <Link href="/legal/terms" className="text-brand-ink underline" target="_blank">{c}</Link>, privacy: (c) => <Link href="/legal/privacy" className="text-brand-ink underline" target="_blank">{c}</Link> })}
+            label={t.rich('auth.acceptTerms', { terms: (c) => <Link href="/legal/terms" className="text-brand-ink underline" target="_blank">{c}</Link>, privacy: (c) => <Link href="/legal/privacy" className="text-brand-ink underline" target="_blank">{c}</Link>, community: (c) => <Link href="/legal/community" className="text-brand-ink underline" target="_blank">{c}</Link> })}
           />
           {errors.acceptTerms && <Alert variant="text">{errors.acceptTerms}</Alert>}
         </div>
         <Button type="submit" size="lg" className="w-full" loading={reg.isPending || google.isPending}>{t('auth.createAccount')}</Button>
+        <p className="text-center text-xs text-muted">{t('auth.adultsNote')} {t('auth.privacyNote')}</p>
       </form>
     </AuthShell>
   );

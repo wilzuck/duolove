@@ -7,7 +7,7 @@
 | 2 — Communication | réactions, réponses ciblées, brise-glace par modèles FR/EN, accusés de lecture réservés aux abonnés, indicateur de saisie facultatif, emoji au curseur | **Terminé et vérifié** (pytest 145, Playwright 47). **Non fait** : messages vocaux, GIF contrôlés |
 | 3 — Rencontres | proposition de rendez-vous (statuts proposé/accepté/refusé/reporté/annulé/terminé), speed dating textuel puis audio/vidéo, appels WebRTC | **Partiel** : mode rendez-vous **terminé et vérifié** (pytest 154, Playwright 62). **Non démarrés** : speed dating, appels audio/vidéo |
 | 4 — Fidélisation | préférences d'engagement, mode pause, notifications regroupées et heures de repos, conseils de profil | **Terminé et vérifié** (pytest 166, Playwright 68). Non fait : e-mail récapitulatif quotidien, notifications push |
-| 5 — Administration et monétisation | quotas Premium des nouvelles fonctions, analytics rencontres/satisfaction (sur déclaration volontaire) | Partiel : réglages et indicateurs de la phase 1 |
+| 5 — Administration et monétisation | quotas Premium des nouvelles fonctions, analytics rencontres/satisfaction (sur déclaration volontaire) | **Terminé** : réglages, 17 drapeaux, indicateurs réels, quota de découvertes du jour **par formule** (système de droits existant). Non applicable tant que le speed dating et les appels n'existent pas : leur paramétrage |
 | 6 — Qualité | performance, accessibilité, sécurité, préparation production | Continu |
 
 ## Ordre recommandé pour la suite

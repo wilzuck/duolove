@@ -126,3 +126,6 @@ KKiaPay (clés bac à sable puis production, à valider — voir DEPLOYMENT.md) 
 
 ## Gestion des accusés de lecture (« vu »)
 Fonctionnalité de formule `read_receipts_control` : **Premium et VIP** peuvent désactiver l'envoi de leurs accusés ; le gratuit les envoie toujours (le réglage est affiché verrouillé avec un lien vers Premium). Réglable par plan dans Admin › Offres et tarifs. Appliquée par le serveur : après une résiliation, les accusés redeviennent actifs sans perdre le réglage de la personne. Aucun prix n'a été modifié.
+
+## Découvertes du jour par formule
+Fonctionnalité de formule `daily_picks_count` (1 à 30) : **Gratuit 5, Premium 10, VIP 10** par défaut, réglable par plan dans Admin › Offres et tarifs et affichée sur la page Tarifs (« N découvertes du jour »). Elle remplace les anciens réglages `daily.count_free` et `daily.count_premium`, retirés pour ne pas dupliquer la source de vérité ; l'historique et le délai avant reproposition restent des réglages d'engagement. Les bases existantes reçoivent la clé au démarrage sans écraser une modification d'administrateur. La sélection reste la même pour tous les niveaux (jamais de classement payant).

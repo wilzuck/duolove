@@ -17,7 +17,11 @@ export function Popover({ open, anchorRef, onClose, children, className, align =
     const margin = 12;
     const w = panel.current?.offsetWidth ?? 288;
     const left = Math.min(Math.max(align === 'end' ? a.right - w : a.left, margin), window.innerWidth - w - margin);
-    setPos({ top: a.bottom + 8, left });
+    // Vertical : sous le champ s'il y a la place, sinon au-dessus, et dans tous les cas dans la fenêtre (le panneau est fixe : on ne peut pas défiler jusqu'à lui).
+    const h = panel.current?.offsetHeight ?? 340;
+    const below = window.innerHeight - a.bottom - margin;
+    const top = h + 8 <= below ? a.bottom + 8 : a.top - h - 8 >= margin ? a.top - h - 8 : Math.max(margin, window.innerHeight - h - margin);
+    setPos({ top, left });
   }, [anchorRef, align]);
 
   useLayoutEffect(() => { if (open) place(); }, [open, place]);

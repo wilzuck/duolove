@@ -27,7 +27,7 @@ Valeurs initiales à évaluer avec des données réelles ; ce ne sont pas des v�
 
 ## Découvertes du jour
 - Générées à la première consultation de la journée (`dailysvc`) à partir de la même file éligible que la découverte.
-- Taille : `daily.count_free` / `daily.count_premium` (réglages admin). Pas de reproposition avant `daily.cooldown_days`. Historique conservé `daily.retention_days` puis purgé.
+- Taille : fonctionnalité de formule `daily_picks_count` (Gratuit 5, Premium et VIP 10 par défaut), réglable par plan dans Admin › Offres et tarifs. Pas de reproposition avant `daily.cooldown_days`. Historique conservé `daily.retention_days` puis purgé.
 - Uniquement de vrais comptes ; un profil devenu inéligible (blocage, suspension) disparaît à l'affichage. Aucun compte à rebours.
 
 ## Données privées

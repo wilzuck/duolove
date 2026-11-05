@@ -135,3 +135,15 @@ Principe retenu : **ce qui existait est amélioré, pas refait**. Déjà présen
 - **Tests** : pytest 166/166 (`test_rhythm.py` : 12 tests — pause et ses effets, plafond admin, reprise jamais bloquée, Match en direct, repos et fenêtre à cheval sur minuit, notification silencieuse, regroupement, plafond d'e-mails, e-mail unique par heure, rappels, conseils, indicateurs) ; Playwright 68/68 (`rhythm.spec.ts`).
 - **Non implémenté** : e-mail récapitulatif quotidien (le plafond et le regroupement le remplacent pour l'instant), notifications push (déjà « bientôt » dans les réglages), « nouveaux événements » (aucun événement n'existe), recommandations actualisées par notification (les découvertes du jour sont calculées à la première visite ; pré-calculer pour tous les membres exigerait un traitement planifié). Aucune notification inventée ni minuterie artificielle.
 - **Limite connue** : le plafond d'e-mails ne compte que les e-mails liés à une ligne de notification dans l'application.
+
+## Engagement, phase 5 : administration et monétisation (livré)
+- **Constat** : la majeure partie de la phase était livrée au fil des phases précédentes (réglages de matching, quotas, questions, brise-glace, rendez-vous, pause, e-mails ; 17 feature flags ; indicateurs réels ; audit de chaque changement).
+- **Terminé** : intégration au **système de droits existant** : le nombre de découvertes du jour est une fonctionnalité de formule (`daily_picks_count`), éditable par plan dans Offres et tarifs, affichée sur la page Tarifs ; ancien réglage séparé retiré (source unique). Aucun prix modifié.
+- **Non applicable / non fait** : paramétrage du speed dating, des durées de session et de l'activation des appels (ces fonctions n'existent pas).
+- **Tests** : pytest 166/166 ; Playwright 73/73 (`auth-pages.spec.ts`, page Tarifs).
+
+## Pages de connexion et d'inscription (livré)
+- **Terminé** : panneau d'accueil chaleureux sur grand écran (« Votre histoire vous attend. » / « L'amour n'a pas d'âge. » avec quatre réassurances vérifiables : gratuit, vrais profils, vous gardez la main, position jamais précise) ; **afficher/masquer la saisie** du mot de passe ; **règles du mot de passe affichées en positif et en direct** (mêmes règles que le serveur) ; acceptation incluant les **règles de la communauté** ; rappel « réservé aux adultes de 18 ans et plus, à tout âge » et « votre e-mail n'apparaît jamais sur votre profil » ; connexion plus accueillante ; mobile sans débordement ; FR/EN ; axe vérifié. Libellés des champs conservés (les parcours d'inscription existants passent).
+- **Corrigé au passage** : le calendrier de date de naissance (composant `Popover` partagé) s'ouvrait toujours sous le champ et pouvait sortir de l'écran ; il se place maintenant au-dessus si besoin et reste toujours dans la fenêtre (test de non-régression sur écran bas et mobile).
+- **Hygiène des tests** : le test des découvertes du jour restaure désormais les quotas de formule qu'il modifie (ils fuyaient vers la base de test partagée).
+- **Remarque** : les adresses `/legal/login` et `/legal/register` n'existent pas ; les pages sont `/login` et `/register`.

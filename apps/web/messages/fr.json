@@ -269,7 +269,8 @@
       "liveMatchTrials": "Menu Match : {n} essais gratuits",
       "matchTokensMonthly": "{n} jetons Match par mois",
       "chatImages": "Envoi de photos dans les messages",
-      "readReceipts": "Gestion des accusés de lecture (« vu »)"
+      "readReceipts": "Gestion des accusés de lecture (« vu »)",
+      "dailyPicks": "{n, plural, one {# découverte du jour} other {# découvertes du jour}}"
     },
     "boostLabel": "Boost de visibilité",
     "boostDuration": "de mise en avant",
@@ -1034,9 +1035,9 @@
   },
   "auth": {
     "loginTitle": "Bon retour !",
-    "loginSubtitle": "Connectez-vous pour retrouver vos matchs.",
+    "loginSubtitle": "Content de vous revoir. Connectez-vous pour retrouver vos matchs et vos messages.",
     "registerTitle": "Créer mon compte",
-    "registerSubtitle": "Gratuit, en moins de deux minutes.",
+    "registerSubtitle": "Gratuit, en moins de deux minutes. Pas de carte bancaire.",
     "email": "Adresse e-mail",
     "password": "Mot de passe",
     "newPassword": "Nouveau mot de passe",
@@ -1050,7 +1051,7 @@
     "gender": "Genre",
     "country": "Pays",
     "city": "Ville",
-    "acceptTerms": "J’accepte les <terms>conditions générales</terms> et la <privacy>politique de confidentialité</privacy>.",
+    "acceptTerms": "J’accepte les <terms>conditions d’utilisation</terms>, la <privacy>politique de confidentialité</privacy> et les <community>règles de la communauté</community>.",
     "registered": "Votre compte est créé ! Un e-mail de confirmation vient d’être envoyé à {email} : cliquez sur le lien pour valider votre compte.",
     "createAccount": "Créer mon compte",
     "google": "Continuer avec Google",
@@ -1078,7 +1079,43 @@
     "magicBack": "Utiliser mon mot de passe",
     "magicVerifying": "Connexion en cours…",
     "magicBad": "Ce lien est invalide, déjà utilisé ou expiré. Demandez-en un nouveau depuis la page de connexion.",
-    "magicOk": "Vous êtes connecté(e)."
+    "magicOk": "Vous êtes connecté(e).",
+    "showInput": "Afficher la saisie",
+    "hideInput": "Masquer la saisie",
+    "rule": {
+      "length": "10 caractères ou plus",
+      "upper": "Une majuscule",
+      "lower": "Une minuscule",
+      "digit": "Un chiffre"
+    },
+    "ruleOk": "validé",
+    "ruleTodo": "à compléter",
+    "strengthDone": "Parfait, ce mot de passe respecte toutes les règles.",
+    "privacyNote": "Votre adresse e-mail n’apparaît jamais sur votre profil.",
+    "adultsNote": "Réservé aux adultes de 18 ans et plus, à tout âge.",
+    "side": {
+      "login": {
+        "kicker": "Content de vous revoir",
+        "title": "Votre histoire vous attend.",
+        "text": "Des personnes sincères, des conversations qui comptent. Reprenez là où vous vous étiez arrêté(e), à votre rythme.",
+        "points": [
+          "Vos matchs et vos messages sont là, tels que vous les avez laissés.",
+          "Vos conversations restent privées et votre position n’est jamais précise.",
+          "Un trou de mémoire ? Mot de passe oublié ou lien magique : en quelques secondes."
+        ]
+      },
+      "register": {
+        "kicker": "Bienvenue sur DuoMatch",
+        "title": "L’amour n’a pas d’âge.",
+        "text": "Rejoignez des adultes de 18 ans et plus qui cherchent une vraie relation : sincères, respectueux, et décidés à prendre le temps de se connaître.",
+        "points": [
+          "Gratuit pour commencer, sans carte bancaire.",
+          "De vrais profils : modération humaine et badge « vérifié » après un contrôle réel.",
+          "Vous gardez la main : profil masquable, mode pause, conversations privées.",
+          "Votre position n’est jamais affichée précisément."
+        ]
+      }
+    }
   },
   "gender": {
     "MAN": "Homme",
@@ -2082,8 +2119,6 @@
         "other": "Autres critères (langues, activité, profil complet, vérifié)"
       },
       "quotasTitle": "Découvertes du jour et limites",
-      "dailyFree": "Profils par jour (gratuit)",
-      "dailyPremium": "Profils par jour (Premium et VIP)",
       "cooldown": "Ne pas reproposer avant (jours)",
       "retention": "Conserver l’historique (jours)",
       "promptsMin": "Questions minimum par profil",
@@ -2162,7 +2197,8 @@
       "dateMaxPerDay": "Propositions par membre et par jour",
       "dateShareHours": "Validité du lien de partage après le rendez-vous (heures)",
       "pauseMaxDays": "Durée maximale d’une pause (jours)",
-      "emailCap": "E-mails non essentiels par membre et par jour"
+      "emailCap": "E-mails non essentiels par membre et par jour",
+      "dailyPlansNote": "Le nombre de découvertes du jour se règle par formule, dans"
     }
   },
   "pricingFaq": {

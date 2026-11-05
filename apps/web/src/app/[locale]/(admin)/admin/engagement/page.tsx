@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { INTENTS, INTEREST_SLUGS } from '@duomatch/types';
 import { Badge, Button, Card, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
+import { Link } from '@/i18n/navigation';
 import { api, patch, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 
@@ -21,7 +22,7 @@ interface Metrics {
   dates: { proposed: number; accepted: number; declined: number; canceled: number; completed: number; acceptRate: number | null; feedbackCount: number; feedbackAverage: number | null };
 }
 const WEIGHT_KEYS = ['intent', 'mutual', 'interests', 'location', 'other'] as const;
-const INT_KEYS = [['daily.count_free', 'dailyFree'], ['daily.count_premium', 'dailyPremium'], ['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount'], ['dates.min_notice_hours', 'dateMinNotice'], ['dates.max_days_ahead', 'dateMaxDays'], ['dates.max_open', 'dateMaxOpen'], ['dates.max_per_day', 'dateMaxPerDay'], ['dates.share_hours_after', 'dateShareHours'], ['pause.max_days', 'pauseMaxDays'], ['notifications.max_emails_per_day', 'emailCap']] as const;
+const INT_KEYS = [['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount'], ['dates.min_notice_hours', 'dateMinNotice'], ['dates.max_days_ahead', 'dateMaxDays'], ['dates.max_open', 'dateMaxOpen'], ['dates.max_per_day', 'dateMaxPerDay'], ['dates.share_hours_after', 'dateShareHours'], ['pause.max_days', 'pauseMaxDays'], ['notifications.max_emails_per_day', 'emailCap']] as const;
 const num = (v: string, fb = 0) => (v === '' || Number.isNaN(Number(v)) ? fb : Math.round(Number(v)));
 
 function SettingsTab({ data }: { data: SettingsData }) {
@@ -52,6 +53,7 @@ function SettingsTab({ data }: { data: SettingsData }) {
           {INT_KEYS.map(([key, label]) => <Field key={key} label={t(`admin.eng.${label}`)} hint={`${data.limits[key]!.min} – ${data.limits[key]!.max}`}>{(p) => <Input {...p} type="number" min={data.limits[key]!.min} max={data.limits[key]!.max} value={v[key] as number} onChange={(e) => setV({ ...v, [key]: num(e.target.value, data.defaults[key] as number) })} />}</Field>)}
         </div>
         <p className="text-xs text-muted">{t('admin.eng.flagsNote')}</p>
+        <p className="text-xs text-muted">{t('admin.eng.dailyPlansNote')} <Link href="/admin/plans" className="font-semibold text-brand-ink underline">{t('admin.nav.plans')}</Link></p>
       </Card>
       <div className="flex flex-wrap gap-3">
         <Button type="submit" loading={save.isPending} disabled={total !== 100}>{t('admin.eng.save')}</Button>

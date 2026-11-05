@@ -17,8 +17,7 @@ def today() -> datetime.date:
 
 async def _generate(db: AsyncSession, user_id: str, day: datetime.date) -> None:
     cfg = await appsettings.all_values(db)
-    paid = (await entitlements.get(db, user_id))["plan"] != "FREE"
-    n = cfg["daily.count_premium" if paid else "daily.count_free"]
+    n = (await entitlements.get(db, user_id))["limits"]["dailyPicksCount"]  # quota de la formule du membre, réglé par l'admin (Offres et tarifs)
     await db.execute(delete(DailyRecommendation).where(DailyRecommendation.userId == user_id, DailyRecommendation.day < day - datetime.timedelta(days=cfg["daily.retention_days"])))
     recent = set((await db.execute(select(DailyRecommendation.targetId).where(
         DailyRecommendation.userId == user_id, DailyRecommendation.day >= day - datetime.timedelta(days=cfg["daily.cooldown_days"])))).scalars().all())

@@ -2,9 +2,9 @@
 import datetime
 
 import pytest
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, select, text, update
 
-from app.core import appsettings, dailysvc, flags as flags_core
+from app.core import appsettings, dailysvc, flags as flags_core, plan_config
 from app.core.scoring import DEFAULT_WEIGHTS, ScoreSubject, SoftPrefs, score_candidate
 from app.db.session import session_maker
 from app.models.models import AuditLog, DailyRecommendation, FeatureFlag, Message, ProfilePrompt, SystemSetting, User
@@ -18,9 +18,12 @@ async def _clean(app):
         async with session_maker()() as s:
             await s.execute(delete(SystemSetting).where(SystemSetting.key.in_(appsettings.KEYS)))
             await s.execute(delete(FeatureFlag))
+            for code_, n in (("FREE", 5), ("PREMIUM", 10), ("VIP", 10)):  # les quotas de formule réglés par un test ne doivent jamais fuiter vers les autres suites
+                await s.execute(text("UPDATE \"SubscriptionPlan\" SET features = jsonb_set(features, '{daily_picks_count}', to_jsonb(CAST(:n AS int))) WHERE code = CAST(:c AS \"PlanCode\")"), {"n": n, "c": code_})
             await s.commit()
         appsettings.invalidate()
         flags_core.invalidate()
+        plan_config.invalidate()
 
     await wipe()
     yield
@@ -52,15 +55,15 @@ async def pair(app, db, *, men: int = 1):
 async def test_settings_admin_only_validated_and_audited(app, db):
     a, u = await admin(app, db), await member(app, db)
     assert (await u.agent.get("/api/admin/settings")).status_code == 403
-    assert (await new_agent(app).patch("/api/admin/settings", json={"values": {"daily.count_free": 3}})).status_code == 401
+    assert (await new_agent(app).patch("/api/admin/settings", json={"values": {"daily.cooldown_days": 3}})).status_code == 401
     cur = (await a.agent.get("/api/admin/settings")).json()
-    assert cur["values"]["matching.weights"] == DEFAULT_WEIGHTS and cur["values"]["daily.count_free"] == 5
+    assert cur["values"]["matching.weights"] == DEFAULT_WEIGHTS and cur["values"]["daily.cooldown_days"] == 14
     assert code(await a.agent.patch("/api/admin/settings", json={"values": {"matching.weights": {**DEFAULT_WEIGHTS, "intent": 40}}})) == "WEIGHTS_SUM"
-    assert code(await a.agent.patch("/api/admin/settings", json={"values": {"daily.count_free": 0}})) == "INVALID_SETTING"
+    assert code(await a.agent.patch("/api/admin/settings", json={"values": {"daily.cooldown_days": 91}})) == "INVALID_SETTING"
     assert code(await a.agent.patch("/api/admin/settings", json={"values": {"inconnu": 1}})) == "UNKNOWN_SETTING"
     assert code(await a.agent.patch("/api/admin/settings", json={"values": {"prompts.min": 5, "prompts.max": 3}})) == "INVALID_SETTING"
-    ok = await a.agent.patch("/api/admin/settings", json={"values": {"daily.count_free": 3, "matching.weights": {"intent": 10, "mutual": 10, "interests": 40, "location": 30, "other": 10}}})
-    assert ok.status_code == 200 and ok.json()["values"]["daily.count_free"] == 3
+    ok = await a.agent.patch("/api/admin/settings", json={"values": {"daily.cooldown_days": 3, "matching.weights": {"intent": 10, "mutual": 10, "interests": 40, "location": 30, "other": 10}}})
+    assert ok.status_code == 200 and ok.json()["values"]["daily.cooldown_days"] == 3
     assert (await a.agent.get("/api/admin/settings")).json()["values"]["matching.weights"]["interests"] == 40
     async with session_maker()() as s:
         assert (await s.execute(select(AuditLog.id).where(AuditLog.actorId == a.id, AuditLog.action == "settings.update"))).first()
@@ -221,7 +224,10 @@ async def test_like_comments_flag_and_length_setting(app, db):
 async def test_daily_picks_limited_stable_real_and_plan_aware(app, db):
     a = await admin(app, db)
     w, men = await pair(app, db, men=7)
-    await a.agent.patch("/api/admin/settings", json={"values": {"daily.count_free": 3, "daily.count_premium": 6}})
+    plans = {p["code"]: p for p in (await a.agent.get("/api/admin/plans")).json()["plans"]}
+    saved = {c: plans[c]["features"] for c in ("FREE", "PREMIUM")}
+    for code_, n in (("FREE", 3), ("PREMIUM", 6)):  # le quota se règle PAR FORMULE, dans Offres et tarifs
+        assert (await a.agent.patch(f"/api/admin/plans/{code_}", json={"features": {**saved[code_], "daily_picks_count": n}})).status_code == 200
     first = (await w.agent.get("/api/discovery/daily")).json()
     assert len(first["items"]) == 3 and first["pending"] == 3 and first["day"] == datetime.datetime.now(datetime.timezone.utc).date().isoformat()
     ids = {m.id for m in men}

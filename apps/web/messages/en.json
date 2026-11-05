@@ -269,7 +269,8 @@
       "liveMatchTrials": "Live Match: {n} free tries",
       "matchTokensMonthly": "{n} Match tokens per month",
       "chatImages": "Send photos in messages",
-      "readReceipts": "Read receipts control (“seen”)"
+      "readReceipts": "Read receipts control (“seen”)",
+      "dailyPicks": "{n, plural, one {# daily pick} other {# daily picks}}"
     },
     "boostLabel": "Visibility boost",
     "boostDuration": "in the spotlight",
@@ -1034,9 +1035,9 @@
   },
   "auth": {
     "loginTitle": "Welcome back!",
-    "loginSubtitle": "Log in to find your matches.",
+    "loginSubtitle": "Good to see you again. Sign in to find your matches and messages.",
     "registerTitle": "Create my account",
-    "registerSubtitle": "Free, in under two minutes.",
+    "registerSubtitle": "Free, in under two minutes. No credit card.",
     "email": "Email address",
     "password": "Password",
     "newPassword": "New password",
@@ -1050,7 +1051,7 @@
     "gender": "Gender",
     "country": "Country",
     "city": "City",
-    "acceptTerms": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
+    "acceptTerms": "I accept the <terms>terms of use</terms>, the <privacy>privacy policy</privacy> and the <community>community guidelines</community>.",
     "registered": "Your account is created! A confirmation email has just been sent to {email}: click the link to validate your account.",
     "createAccount": "Create my account",
     "google": "Continue with Google",
@@ -1078,7 +1079,43 @@
     "magicBack": "Use my password",
     "magicVerifying": "Signing you in…",
     "magicBad": "This link is invalid, already used or expired. Request a new one from the sign-in page.",
-    "magicOk": "You are signed in."
+    "magicOk": "You are signed in.",
+    "showInput": "Show what I type",
+    "hideInput": "Hide what I type",
+    "rule": {
+      "length": "10 characters or more",
+      "upper": "An uppercase letter",
+      "lower": "A lowercase letter",
+      "digit": "A digit"
+    },
+    "ruleOk": "done",
+    "ruleTodo": "to do",
+    "strengthDone": "Perfect, this password meets all the rules.",
+    "privacyNote": "Your email address never appears on your profile.",
+    "adultsNote": "For adults aged 18 and over, at any age.",
+    "side": {
+      "login": {
+        "kicker": "Good to see you again",
+        "title": "Your story is waiting.",
+        "text": "Sincere people, conversations that matter. Pick up where you left off, at your own pace.",
+        "points": [
+          "Your matches and messages are here, just as you left them.",
+          "Your conversations stay private and your location is never precise.",
+          "Forgot something? Forgot password or magic link: in a few seconds."
+        ]
+      },
+      "register": {
+        "kicker": "Welcome to DuoMatch",
+        "title": "Love has no age.",
+        "text": "Join adults aged 18 and over who are looking for a real relationship: sincere, respectful, and willing to take the time to get to know each other.",
+        "points": [
+          "Free to start, no credit card.",
+          "Real profiles: human moderation and a “verified” badge after a real check.",
+          "You stay in control: hideable profile, pause mode, private conversations.",
+          "Your location is never shown precisely."
+        ]
+      }
+    }
   },
   "gender": {
     "MAN": "Man",
@@ -2082,8 +2119,6 @@
         "other": "Other criteria (languages, activity, complete profile, verified)"
       },
       "quotasTitle": "Daily picks and limits",
-      "dailyFree": "Profiles per day (free)",
-      "dailyPremium": "Profiles per day (Premium and VIP)",
       "cooldown": "Don’t suggest again before (days)",
       "retention": "Keep history for (days)",
       "promptsMin": "Minimum questions per profile",
@@ -2162,7 +2197,8 @@
       "dateMaxPerDay": "Proposals per member per day",
       "dateShareHours": "Share link validity after the date (hours)",
       "pauseMaxDays": "Maximum length of a pause (days)",
-      "emailCap": "Non-essential emails per member per day"
+      "emailCap": "Non-essential emails per member per day",
+      "dailyPlansNote": "The number of daily picks is set per plan, in"
     }
   },
   "pricingFaq": {

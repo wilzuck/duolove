@@ -24,7 +24,7 @@ def valid_features(raw: object) -> dict | None:
         return None
     out = {}
     for k, default in PLAN_FEATURE_DEFAULTS.items():
-        v = raw.get(k, default if k in ("live_match_enabled", "live_match_trials", "match_tokens_monthly", "chat_images_enabled", "read_receipts_control") else None)
+        v = raw.get(k, default if k in ("live_match_enabled", "live_match_trials", "match_tokens_monthly", "chat_images_enabled", "read_receipts_control", "daily_picks_count") else None)
         if isinstance(default, bool):
             if not isinstance(v, bool):
                 return None
@@ -32,7 +32,7 @@ def valid_features(raw: object) -> dict | None:
             if isinstance(v, bool) or not isinstance(v, int):
                 return None
             lo, hi = {"daily_likes_limit": (-1, 100_000), "super_likes_weekly": (0, 1000), "boosts_monthly": (0, 100),
-                      "live_match_trials": (0, 20), "match_tokens_monthly": (0, 500)}[k]
+                      "live_match_trials": (0, 20), "match_tokens_monthly": (0, 500), "daily_picks_count": (1, 30)}[k]
             if not lo <= v <= hi:
                 return None
         out[k] = v

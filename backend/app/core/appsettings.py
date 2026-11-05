@@ -10,8 +10,6 @@ from app.core.scoring import DEFAULT_WEIGHTS
 from app.models.models import SystemSetting
 
 INT_SPECS = {  # clé → (défaut, min, max)
-    "daily.count_free": (5, 1, 30),
-    "daily.count_premium": (10, 1, 30),
     "daily.cooldown_days": (14, 0, 90),
     "daily.retention_days": (90, 7, 365),
     "prompts.min": (3, 1, 5),
