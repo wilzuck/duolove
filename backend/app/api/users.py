@@ -28,20 +28,23 @@ def row_dict(o, exclude: tuple[str, ...] = ()) -> dict:
 @router.get("/me")
 async def me(u: AuthUser = Depends(current_user_allow_suspended), db: AsyncSession = Depends(get_db)):
     user = await db.get(User, u.id)
-    profile = (await db.execute(select(Profile).where(Profile.userId == u.id))).scalar_one_or_none()
-    photo = None
-    if profile:
-        photo = (await db.execute(select(ProfilePhoto).where(ProfilePhoto.profileId == profile.id, ProfilePhoto.moderationStatus != "REJECTED").order_by(ProfilePhoto.position).limit(1))).scalar_one_or_none()
+    # Profil et première photo en une seule requête (sous-requête scalaire).
+    first_photo = (select(ProfilePhoto.key).where(ProfilePhoto.profileId == Profile.id, ProfilePhoto.moderationStatus != "REJECTED")
+                   .order_by(ProfilePhoto.position).limit(1).scalar_subquery())
+    row = (await db.execute(select(Profile, first_photo).where(Profile.userId == u.id))).first()
+    profile, photo_key = (row[0], row[1]) if row else (None, None)
     e = await entitlements.get(db, u.id)
     unread = (await db.execute(select(func.count()).select_from(Notification).where(Notification.userId == u.id, Notification.readAt.is_(None)))).scalar_one()
-    moderation = (await db.execute(select(ModerationAction).where(ModerationAction.targetUserId == u.id, ModerationAction.type.in_(["SUSPEND", "BAN"])).order_by(ModerationAction.createdAt.desc()).limit(1))).scalar_one_or_none()
     suspended = user.status.value == "SUSPENDED"
+    moderation = None
+    if suspended:  # inutile (et coûteux) pour un compte en règle
+        moderation = (await db.execute(select(ModerationAction).where(ModerationAction.targetUserId == u.id, ModerationAction.type.in_(["SUSPEND", "BAN"])).order_by(ModerationAction.createdAt.desc()).limit(1))).scalar_one_or_none()
     return {
         "id": user.id, "email": user.email, "emailVerified": bool(user.emailVerifiedAt), "role": user.role.value, "status": user.status.value,
         "suspendedUntil": user.suspendedUntil, "marketingConsent": user.marketingConsent,
         "profile": None if not profile else {"displayName": profile.displayName, "onboarded": bool(profile.onboardedAt), "completeness": profile.completeness,
                                               "paused": rhythm.is_paused(profile), "pauseEndsAt": profile.pauseEndsAt if rhythm.is_paused(profile) else None,
-                                              "thumbUrl": photo_url(thumb_key(photo.key)) if photo else None},
+                                              "thumbUrl": photo_url(thumb_key(photo_key)) if photo_key else None},
         "entitlement": {"plan": e["plan"], "validUntil": e["validUntil"], "limits": e["limits"], "credits": await credits.balances(db, u.id)},
         "unreadNotifications": unread,
         "moderation": {"reason": moderation.reason, "appealStatus": moderation.appealStatus.value, "id": moderation.id} if suspended and moderation else None,

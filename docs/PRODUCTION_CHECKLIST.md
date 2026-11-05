@@ -31,6 +31,7 @@ Cocher chaque ligne **avec une preuve** (capture, sortie de commande, lien). Les
 
 ## Confirmation de l'e-mail (obligatoire avant tout usage)
 - [ ] **SMTP réel configuré** : sans lui, aucun nouveau membre ne reçoit son code et ne peut entrer dans l'application.
+- [ ] **Plusieurs processus ou instances = Redis obligatoire** : limiteur de débit (`app/core/ratelimit.py`), présence et diffusion Socket.IO (`python-socketio` avec gestionnaire Redis), boucles de fond (expiration, rappels, appels, speed dating) sur une seule instance ou sous verrou. Non implémenté ni testé (aucun Redis sur la machine de développement). Mesure de référence dans `docs/STATUS.md` (≈ 40 requêtes/s par processus, limité par le processeur) ; refaire `backend/scripts/loadtest.py` sur l'environnement cible avant l'ouverture.
 - [ ] Appels : `CALL_PROVIDER=livekit` avec `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` (sinon les appels sont **indisponibles** en production) ; compte LiveKit **sans enregistrement ni egress** ; test réel à deux appareils (audio puis vidéo, réseaux mobiles) avant d'ouvrir la fonction ; quota/coût fournisseur surveillé (plafonds `calls.*` dans l'admin, drapeau d'urgence `calls`).
 - [ ] `DEV_EMAIL_CODE` **absent** de l'environnement de production (le serveur refuse de démarrer sinon) ; `NODE_ENV=production`.
 - [ ] `REQUIRE_EMAIL_VERIFICATION=true` (la garde serveur en dépend).
