@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { COUNTRIES, GENDERS, MIN_AGE, registerSchema } from '@duomatch/types';
 import { Alert, Button, Checkbox, DatePicker, Field, Input, Select } from '@duomatch/ui';
 import { AuthShell } from '@/components/auth/AuthShell';
@@ -33,7 +33,8 @@ function RegisterForm() {
   const [f, setF] = useState<Form>(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
-  const [googleToken, setGoogleToken] = useState<string | null>(null);
+  const [googleToken, setGoogleToken] = useState<string | null>(() => useUi.getState().googleToken);
+  useEffect(() => { useUi.getState().setGoogleToken(null); }, []);  // le jeton ne reste pas en mémoire plus longtemps que nécessaire
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((s) => ({ ...s, [k]: v }));
   // Lien d'invitation : /register?ref=CODE pré-remplit le code ; la saisie du membre prend le dessus (valeur dérivée, pas d'effet).
   const urlRef = (useSearchParams().get('ref') ?? '').trim().toUpperCase().slice(0, 32);
@@ -56,7 +57,8 @@ function RegisterForm() {
   });
   const google = useMutation({
     mutationFn: () => post('/auth/google', { idToken: googleToken, birthDate: f.birthDate, gender: f.gender, country: f.country, city: f.city, acceptTerms: f.acceptTerms }),
-    onSuccess: () => done(), onError: (e) => setFormError(err(e)),
+    onSuccess: () => done(),
+    onError: (e) => { if (e instanceof Error && 'code' in e && (e as { code: string }).code === 'INVALID_OAUTH_TOKEN') setGoogleToken(null); setFormError(err(e)); },  // jeton expiré : on redonne le bouton Google
   });
 
   const submit = (e: React.FormEvent) => {

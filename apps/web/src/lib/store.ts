@@ -4,6 +4,9 @@ import type { Card } from './types';
 export interface Toast { id: number; kind: 'success' | 'error' | 'info'; text: string }
 interface UiState {
   toasts: Toast[];
+  /** Jeton Google d'un visiteur sans compte, transmis en mémoire de la connexion à l'inscription (jamais stocké sur l'appareil). */
+  googleToken: string | null;
+  setGoogleToken: (t: string | null) => void;
   callOutcome: { id: string; status: string; direction: 'incoming' | 'outgoing'; name: string } | null;
   setCallOutcome: (o: { id: string; status: string; direction: 'incoming' | 'outgoing'; name: string } | null) => void;
   toast: (kind: Toast['kind'], text: string) => void;
@@ -17,6 +20,8 @@ let seq = 0;
 
 export const useUi = create<UiState>((set, get) => ({
   toasts: [],
+  googleToken: null,
+  setGoogleToken: (googleToken) => set({ googleToken }),
   callOutcome: null,
   setCallOutcome: (callOutcome) => set({ callOutcome }),
   toast: (kind, text) => {

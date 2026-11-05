@@ -3,7 +3,7 @@ import datetime
 from dataclasses import dataclass
 
 import httpx
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -299,7 +299,8 @@ async def google(db: AsyncSession, id_token: str, extra, ctx: ReqCtx):
     if r.status_code != 200:
         raise unauthorized("INVALID_OAUTH_TOKEN")
     p = r.json()
-    if p.get("aud") != client_id or not p.get("sub") or not p.get("email") or str(p.get("email_verified")).lower() != "true":
+    if (p.get("aud") != client_id or p.get("iss") not in ("accounts.google.com", "https://accounts.google.com") or not p.get("sub") or not p.get("email")
+            or str(p.get("email_verified")).lower() != "true" or int(p.get("exp") or 0) < int(utcnow().replace(tzinfo=datetime.timezone.utc).timestamp())):
         raise unauthorized("INVALID_OAUTH_TOKEN")
     email = p["email"].lower()
     linked = (await db.execute(select(Account).where(Account.provider == "google", Account.providerAccountId == p["sub"]))).scalar_one_or_none()
@@ -307,17 +308,22 @@ async def google(db: AsyncSession, id_token: str, extra, ctx: ReqCtx):
     if user and not linked:
         db.add(Account(userId=user.id, provider="google", providerAccountId=p["sub"]))
         if not user.emailVerifiedAt:
+            # Compte créé avec cette adresse mais jamais confirmé : quelqu'un d'autre a pu choisir le mot de passe (pré-détournement).
+            # Google prouve que l'adresse appartient à la personne qui se connecte : on retire l'ancien mot de passe et toutes les sessions.
             user.emailVerifiedAt = utcnow()
+            user.passwordHash = None
+            await db.execute(delete(Session).where(Session.userId == user.id))
         await db.commit()
     if not user:
         await flags.assert_on(db, "registration_open")  # la connexion d'un compte existant reste possible, pas la création
         if not (extra.birthDate and extra.gender and extra.country and extra.city and extra.acceptTerms):
             raise AppError(409, "PROFILE_DETAILS_REQUIRED", "Informations complémentaires requises")
         user = await _create_user_with_profile(db, email=email, password_hash=None, email_verified=True, account=("google", p["sub"]), profile=dict(
-            displayName=(p.get("name") or email.split("@")[0])[:40], birthDate=extra.birthDate, gender=extra.gender, country=extra.country, city=extra.city))
+            displayName=(p.get("name") or email.split("@")[0])[:40], birthDate=extra.birthDate, gender=extra.gender, country=extra.country, city=extra.city,
+            completeness=compute_completeness(bio="", occupation=None, interest_count=0, photo_count=0, intent="UNSURE")))
     if _st(user) in ("DELETED", "BANNED"):
         raise unauthorized("INVALID_CREDENTIALS")
-    return user, await create_session(db, user.id, ctx)
+    return user, await create_session(db, user.id, ctx, extra.remember)
 
 
 async def request_magic_link(db: AsyncSession, email: str, remember: bool = True) -> None:

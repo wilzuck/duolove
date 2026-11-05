@@ -8,6 +8,7 @@ import { AuthShell } from '@/components/auth/AuthShell';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { useApiError } from '@/hooks/useApiError';
 import { Link, useRouter } from '@/i18n/navigation';
+import { useUi } from '@/lib/store';
 import { post } from '@/lib/api';
 
 function LoginForm() {
@@ -33,7 +34,10 @@ function LoginForm() {
   const google = useMutation({
     mutationFn: (idToken: string) => post('/auth/google', { idToken }),
     onSuccess: done,
-    onError: (e) => setError(e instanceof Error && 'code' in e && (e as { code: string }).code === 'PROFILE_DETAILS_REQUIRED' ? t('auth.googleNeedsSignup') : err(e)),
+    onError: (e, idToken) => {
+      if (e instanceof Error && 'code' in e && (e as { code: string }).code === 'PROFILE_DETAILS_REQUIRED') { useUi.getState().setGoogleToken(idToken); router.push('/register'); return; }  // nouveau sur DuoMatch : on complète l'inscription
+      setError(err(e));
+    },
   });
 
   return (

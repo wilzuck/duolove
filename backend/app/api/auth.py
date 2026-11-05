@@ -57,7 +57,7 @@ async def magic_link_verify(body: MagicLinkVerifyIn, req: Request, res: Response
 @router.post("/google", status_code=200, dependencies=[limit(10)])
 async def google(body: GoogleIn, req: Request, res: Response, db: AsyncSession = Depends(get_db)):
     user, (token, expires) = await authsvc.google(db, body.idToken, body, ctx_of(req))
-    set_session_cookie(res, token, expires)
+    set_session_cookie(res, token, expires, body.remember)
     return {"id": user.id, "email": user.email, "role": user.role.value, "emailVerified": True}
 
 

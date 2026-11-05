@@ -62,12 +62,13 @@ class ChangePasswordIn(Body):
 
 
 class GoogleIn(Body):
-    idToken: Annotated[str, Field(min_length=10)]
-    birthDate: DateTime | None = None
+    idToken: Annotated[str, Field(min_length=10, max_length=4096)]
+    remember: bool = True
+    birthDate: BirthDate | None = None  # 18 ans révolus, comme l'inscription classique
     gender: GenderT | None = None
     country: CountryT | None = None
     city: Annotated[Trimmed, Field(min_length=2, max_length=80)] | None = None
-    acceptTerms: bool | None = None
+    acceptTerms: Annotated[bool, AfterValidator(_terms)] | None = None
 
 
 class CodeIn(Body):
