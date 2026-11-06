@@ -2550,6 +2550,12 @@
     "heightMin": "Min height (cm)",
     "heightMax": "Max height (cm)",
     "strictNote": "A specific criterion only matches profiles that filled in that information: nothing is assumed.",
+    "critIntro": "Describe the person you’d like to meet. These criteria are about the other person, not you.",
+    "crit": {
+      "MEN": {"country": "He lives in", "origin": "He comes from", "children": "Does he have children?", "pets": "Does he like pets?", "living": "He lives…", "livingOpt": {"ALONE": "Alone", "FAMILY": "With family", "ROOMMATES": "With roommates"}},
+      "WOMEN": {"country": "She lives in", "origin": "She comes from", "children": "Does she have children?", "pets": "Does she like pets?", "living": "She lives…", "livingOpt": {"ALONE": "Alone", "FAMILY": "With family", "ROOMMATES": "With roommates"}},
+      "EVERYONE": {"country": "Country of residence", "origin": "Country of origin", "children": "Has children?", "pets": "Likes pets?", "living": "Living situation", "livingOpt": {"ALONE": "Alone", "FAMILY": "With family", "ROOMMATES": "With roommates"}}
+    },
     "criteriaTitle": "My criteria right now",
     "editTitle": "Edit my criteria",
     "trialsLeft": "{n} free try(ies) left",

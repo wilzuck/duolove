@@ -2550,6 +2550,12 @@
     "heightMin": "Taille min. (cm)",
     "heightMax": "Taille max. (cm)",
     "strictNote": "Un critère précis n’affiche que les profils qui ont renseigné l’information : rien n’est supposé.",
+    "critIntro": "Décrivez la personne que vous aimeriez rencontrer. Ces critères concernent l’autre personne, pas vous.",
+    "crit": {
+      "MEN": {"country": "Il vit en", "origin": "Il est originaire de", "children": "Il a des enfants ?", "pets": "Il aime les animaux ?", "living": "Il vit…", "livingOpt": {"ALONE": "Seul", "FAMILY": "En famille", "ROOMMATES": "En colocation"}},
+      "WOMEN": {"country": "Elle vit en", "origin": "Elle est originaire de", "children": "Elle a des enfants ?", "pets": "Elle aime les animaux ?", "living": "Elle vit…", "livingOpt": {"ALONE": "Seule", "FAMILY": "En famille", "ROOMMATES": "En colocation"}},
+      "EVERYONE": {"country": "Pays de résidence", "origin": "Pays d’origine", "children": "A des enfants ?", "pets": "Aime les animaux ?", "living": "Vie quotidienne", "livingOpt": {"ALONE": "Seul(e)", "FAMILY": "En famille", "ROOMMATES": "En colocation"}}
+    },
     "criteriaTitle": "Mes critères du moment",
     "editTitle": "Modifier mes critères",
     "trialsLeft": "{n} essai(s) gratuit(s) restant(s)",
