@@ -9,7 +9,7 @@
 | PostgreSQL 15+ | sauvegardes quotidiennes + test de restauration, connexion TLS |
 | Domaine + HTTPS | terminaison TLS au reverse proxy (HSTS déjà envoyé par l'API) |
 | Stockage fichiers | **volume persistant** monté sur `UPLOAD_DIR` (pilote local) — ou pilote S3/R2 (à implémenter, interface `StorageService`) |
-| SMTP | `SMTP_URL` + SPF/DKIM/DMARC |
+| E-mail | `BREVO_API_KEY` (API HTTP Brevo, prioritaire) ou `SMTP_URL` (SMTP sortant : forfait Railway Pro) ; `MAIL_FROM` avec un expéditeur validé chez Brevo ; SPF/DKIM/DMARC |
 | Secrets | `PAYMENT_WEBHOOK_SECRET`, `IP_HASH_SALT` (`openssl rand -hex 32`) — l'API **refuse de démarrer** avec les valeurs de dev |
 | Fournisseur de paiement | adaptateur réel (voir ROADMAP) ; `PAYMENT_PROVIDER` |
 

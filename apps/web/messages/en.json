@@ -2734,6 +2734,7 @@
     "limit": "Reward limited to {n} friends per referrer.",
     "referredBy": "You were referred by a member.",
     "link": "Refer friends, earn tokens",
+    "registerToggle": "I have a referral code",
     "registerLabel": "Referral code (optional)",
     "registerHint": "If a friend invited you, enter their code to receive tokens."
   },

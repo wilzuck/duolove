@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     dev_email_code: str | None = Field(None, alias="DEV_EMAIL_CODE")
     google_client_id: str | None = Field(None, alias="GOOGLE_CLIENT_ID")
     smtp_url: str | None = Field(None, alias="SMTP_URL")
+    # E-mail par l'API HTTP de Brevo (prioritaire sur SMTP_URL) : fonctionne sur tous les forfaits Railway, sans port SMTP.
+    brevo_api_key: str | None = Field(None, alias="BREVO_API_KEY")
     mail_from: str = Field("DuoMatch <no-reply@duomatch.app>", alias="MAIL_FROM")
     upload_dir: str = Field("./uploads", alias="UPLOAD_DIR")
     payment_provider: str = Field("mock", alias="PAYMENT_PROVIDER")

@@ -39,6 +39,8 @@ function RegisterForm() {
   // Lien d'invitation : /register?ref=CODE pré-remplit le code ; la saisie du membre prend le dessus (valeur dérivée, pas d'effet).
   const urlRef = (useSearchParams().get('ref') ?? '').trim().toUpperCase().slice(0, 32);
   const referralCode = f.referralCode || urlRef;
+  const [refOpen, setRefOpen] = useState(false);
+  const showRef = refOpen || !!referralCode;  // champ masqué par défaut : visible avec ?ref=, une saisie, ou après un clic
   const maxBirth = new Date(); maxBirth.setFullYear(maxBirth.getFullYear() - MIN_AGE);
 
   const done = async (sentTo?: string) => {
@@ -105,7 +107,9 @@ function RegisterForm() {
           </Field>
           <Field label={t('auth.city')} error={errors.city}>{(p) => <Input {...p} autoComplete="address-level2" value={f.city} onChange={(e) => set('city', e.target.value)} />}</Field>
         </div>
-        {!googleToken && <Field label={t('referral.registerLabel')} hint={t('referral.registerHint')}>{(p) => <Input {...p} autoComplete="off" autoCapitalize="characters" maxLength={32} value={referralCode} onChange={(e) => set('referralCode', e.target.value.toUpperCase())} />}</Field>}
+        {!googleToken && (showRef
+          ? <Field label={t('referral.registerLabel')} hint={t('referral.registerHint')}>{(p) => <Input {...p} autoComplete="off" autoCapitalize="characters" maxLength={32} value={referralCode} onChange={(e) => set('referralCode', e.target.value.toUpperCase())} />}</Field>
+          : <button type="button" aria-expanded={false} onClick={() => setRefOpen(true)} className="text-sm font-semibold text-brand-ink underline">{t('referral.registerToggle')}</button>)}
         <div className="space-y-3 pt-1 text-sm">
           <Checkbox
             checked={f.acceptTerms} onChange={(e) => set('acceptTerms', e.target.checked)} aria-invalid={!!errors.acceptTerms}

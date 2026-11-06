@@ -1,7 +1,10 @@
-"""E-mails : SMTP si SMTP_URL est défini ; sinon journal + boîte d'envoi mémoire (dev/tests uniquement)."""
+"""E-mails : API HTTP Brevo si BREVO_API_KEY est défini, sinon SMTP si SMTP_URL est défini, sinon journal + boîte d'envoi mémoire (dev/tests uniquement)."""
 import logging
 from email.message import EmailMessage
-from urllib.parse import urlsplit
+from email.utils import parseaddr
+from urllib.parse import unquote, urlsplit
+
+import httpx
 
 from app.core.config import get_settings
 from app.core.ids import utcnow
@@ -10,8 +13,33 @@ log = logging.getLogger("mail")
 outbox: list[dict] = []
 
 
-async def send(to: str, subject: str, text: str) -> None:
+BREVO_URL = "https://api.brevo.com/v3/smtp/email"
+
+
+async def _send_brevo(to: str, subject: str, text: str) -> None:
     s = get_settings()
+    name, addr = parseaddr(s.mail_from)
+    sender = {"email": addr, **({"name": name} if name else {})}
+    async with httpx.AsyncClient(timeout=15) as c:
+        r = await c.post(BREVO_URL, headers={"api-key": s.brevo_api_key or "", "accept": "application/json"},
+                         json={"sender": sender, "to": [{"email": to}], "subject": subject, "textContent": text})
+    if r.status_code >= 400:  # la clé n'est jamais journalisée ; le corps de Brevo dit pourquoi (expéditeur non validé, clé refusée…)
+        raise RuntimeError(f"Brevo HTTP {r.status_code}: {r.text[:300]}")
+
+
+async def send(to: str, subject: str, text: str) -> None:
+    """Un échec d'envoi est journalisé sans jamais faire échouer l'inscription ou la connexion de l'utilisateur."""
+    try:
+        await _send(to, subject, text)
+    except Exception:
+        log.exception("Envoi d'e-mail impossible (%s)", subject)
+
+
+async def _send(to: str, subject: str, text: str) -> None:
+    s = get_settings()
+    if s.brevo_api_key:
+        await _send_brevo(to, subject, text)
+        return
     if s.smtp_url:
         import aiosmtplib
 
@@ -19,7 +47,8 @@ async def send(to: str, subject: str, text: str) -> None:
         msg = EmailMessage()
         msg["From"], msg["To"], msg["Subject"] = s.mail_from, to, subject
         msg.set_content(text)
-        await aiosmtplib.send(msg, hostname=u.hostname, port=u.port or 587, username=u.username, password=u.password,
+        await aiosmtplib.send(msg, hostname=u.hostname, port=u.port or 587, username=unquote(u.username) if u.username else None,
+                              password=unquote(u.password) if u.password else None,
                               start_tls=u.scheme != "smtps", use_tls=u.scheme == "smtps")
         return
     if s.is_prod:

@@ -2734,6 +2734,7 @@
     "limit": "Récompense limitée à {n} amis par parrain.",
     "referredBy": "Vous avez été parrainé(e).",
     "link": "Parrainez vos amis, gagnez des jetons",
+    "registerToggle": "J’ai un code de parrainage",
     "registerLabel": "Code de parrainage (facultatif)",
     "registerHint": "Si un ami vous a invité(e), saisissez son code pour recevoir des jetons."
   },
