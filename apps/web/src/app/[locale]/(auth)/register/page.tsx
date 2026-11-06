@@ -75,7 +75,7 @@ function RegisterForm() {
   };
 
   return (
-    <AuthShell backdrop="/images/auth-couple.webp" title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')} footer={<>{t('auth.haveAccount')} <Link href="/login" className="font-semibold text-brand-ink underline">{t('nav.login')}</Link></>}>
+    <AuthShell title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')} footer={<>{t('auth.haveAccount')} <Link href="/login" className="font-semibold text-brand-ink underline">{t('nav.login')}</Link></>}>
       <ul className="-mt-2 mb-6 space-y-1.5 text-sm">
         {(t.raw('auth.reassure') as string[]).map((r) => <li key={r} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success-ink" aria-hidden /><span>{r}</span></li>)}
       </ul>

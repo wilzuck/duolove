@@ -13,7 +13,9 @@ const CARDS = [
 export function HeroVisual() {
   const t = useTranslations();
   return (
-    <div className="relative mx-auto h-[26rem] w-full max-w-md sm:h-[30rem]" aria-hidden>
+    <div className="relative mx-auto h-[19.5rem] w-full max-w-md sm:h-[30rem]" aria-hidden>
+      {/* Sur mobile, l'empilement est réduit : les cartes inclinées et décalées ne doivent jamais dépasser de l'écran. */}
+      <div className="absolute inset-0 origin-top scale-[.68] sm:scale-100">
       {CARDS.map((c, i) => (
         <motion.div key={c.name} initial={{ opacity: 0, y: 30, rotate: 0 }} animate={{ opacity: 1, y: 0, rotate: c.rot, x: c.x }} transition={{ delay: 0.1 * i, type: 'spring', stiffness: 80, damping: 14 }}
           className="absolute top-6 left-1/2 h-[21rem] w-60 -translate-x-1/2 overflow-hidden rounded-[2rem] shadow-pop sm:h-[24rem] sm:w-64"
@@ -25,6 +27,7 @@ export function HeroVisual() {
           </div>
         </motion.div>
       ))}
+      </div>
       <div className="absolute inset-x-0 bottom-0 z-10 flex justify-center gap-5">
         <span className="flex size-14 items-center justify-center rounded-full bg-card shadow-pop"><X className="size-6 text-muted" /></span>
         <span className="flex size-16 items-center justify-center rounded-full bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-pop"><Heart className="size-7 fill-current" /></span>
