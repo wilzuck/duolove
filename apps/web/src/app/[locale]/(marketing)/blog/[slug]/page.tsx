@@ -37,7 +37,7 @@ export default async function Post({ params }: { params: Promise<{ locale: strin
       <aside className="mt-14 rounded-3xl bg-linear-to-br from-brand-strong to-brand-strong-2 p-8 text-center text-white shadow-pop">
         <h2 className="text-2xl font-extrabold">{t('blog.ctaTitle')}</h2>
         <p className="mx-auto mt-2 max-w-md text-white/90">{t('blog.ctaText')}</p>
-        <Link href="/register" className="mt-6 inline-block"><Button size="lg" className="bg-white text-brand-ink hover:bg-white/90" variant="ghost">{t('blog.ctaButton')}</Button></Link>
+        <Link href="/register" className="mt-6 inline-block"><Button size="lg" className="bg-white text-[#c2185b] hover:bg-white/90" variant="ghost">{t('blog.ctaButton')}</Button></Link>
       </aside>
     </article>
   );

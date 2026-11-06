@@ -45,7 +45,7 @@ export function MatchOverlay() {
             <p className="mt-2 text-lg text-white/90">{o?.displayName ? t('match.text', { name: o.displayName }) : t('match.textGeneric')}</p>
           </div>
           <div className="flex w-full max-w-xs flex-col gap-3">
-            <Button size="lg" className="bg-white text-brand-ink hover:bg-white/90" variant="ghost" onClick={() => { const id = match.conversationId; close(); router.push(`/messages/${id}`); }}>{t('match.chat')}</Button>
+            <Button size="lg" className="bg-white text-[#c2185b] hover:bg-white/90" variant="ghost" onClick={() => { const id = match.conversationId; close(); router.push(`/messages/${id}`); }}>{t('match.chat')}</Button>
             <button onClick={close} className="py-2 font-semibold underline underline-offset-4">{t('match.keep')}</button>
           </div>
         </motion.div>

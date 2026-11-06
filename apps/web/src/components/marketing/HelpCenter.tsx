@@ -65,7 +65,7 @@ export function HelpCenter() {
         <div className="rounded-3xl bg-linear-to-br from-brand-strong to-brand-strong-2 p-7 text-white shadow-pop">
           <h2 id="more" className="text-xl font-extrabold">{t('help.moreTitle')}</h2>
           <p className="mt-2 text-white/90">{t('help.more')}</p>
-          <Link href="/contact" className="mt-5 inline-block"><Button className="bg-white text-brand-ink hover:bg-white/90" variant="ghost">{t('help.contactCta')}</Button></Link>
+          <Link href="/contact" className="mt-5 inline-block"><Button className="bg-white text-[#c2185b] hover:bg-white/90" variant="ghost">{t('help.contactCta')}</Button></Link>
         </div>
         <div className="rounded-3xl bg-gold/15 p-7">
           <h2 className="flex items-center gap-2 text-xl font-extrabold"><ShieldCheck className="size-5 text-gold-ink" aria-hidden />{t('help.urgentTitle')}</h2>

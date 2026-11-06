@@ -64,7 +64,7 @@ export default async function CommunityPage({ params }: { params: Promise<{ loca
         <div className="mx-auto max-w-4xl rounded-[2rem] bg-linear-to-br from-brand-strong to-brand-strong-2 px-6 py-14 text-center text-white shadow-pop">
           <h2 className="text-3xl font-extrabold md:text-4xl">{t('legal.community.finalTitle')}</h2>
           <p className="mx-auto mt-3 max-w-xl text-white/90">{t('legal.community.finalText')}</p>
-          <Link href="/register" className="mt-8 inline-block"><Button size="lg" className="bg-white text-brand-ink hover:bg-white/90" variant="ghost">{t('legal.community.finalCta')}</Button></Link>
+          <Link href="/register" className="mt-8 inline-block"><Button size="lg" className="bg-white text-[#c2185b] hover:bg-white/90" variant="ghost">{t('legal.community.finalCta')}</Button></Link>
         </div>
       </section>
     </>
