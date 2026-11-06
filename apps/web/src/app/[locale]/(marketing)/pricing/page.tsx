@@ -1,6 +1,9 @@
-import { Rocket, Star, Coins } from 'lucide-react';
+import { Coins, Rocket, Star } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BOOST_MINUTES } from '@duomatch/types';
+import { Button } from '@duomatch/ui';
+import { Link } from '@/i18n/navigation';
+import { PageToc } from '@/components/marketing/PageToc';
 import { PricingTable } from '@/components/marketing/PricingTable';
 import { fetchCatalog } from '@/lib/catalog';
 import { formatXof } from '@/lib/format';
@@ -15,6 +18,7 @@ const groups = [
   { kind: 'SUPER_LIKE_PACK', icon: Star, title: 'shop.groupSuperLikes', text: 'shop.groupSuperLikesText' },
   { kind: 'TOKEN_PACK', icon: Coins, title: 'shop.groupTokens', text: 'shop.groupTokensText' },
 ] as const;
+const NEEDS = ['liked', 'filters', 'photos', 'visible', 'safe'] as const;
 const FAQ = ['renew', 'cancel', 'momo', 'refund', 'guarantee', 'credits'] as const;
 
 export default async function Pricing({ params }: { params: Promise<{ locale: string }> }) {
@@ -22,13 +26,34 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
   setRequestLocale(locale);
   const [t, catalog] = await Promise.all([getTranslations(), fetchCatalog()]);
   return (
-    <div className="mx-auto max-w-6xl px-4 py-16">
+    <>
+    <div className="mx-auto max-w-6xl px-4 pt-16">
       <h1 className="text-center text-4xl font-extrabold md:text-5xl">{t('home.plansTitle')}</h1>
       <p className="mx-auto mt-4 max-w-xl text-center text-lg text-muted">{t('home.plansSubtitle')}</p>
-      <div className="mt-10"><PricingTable initial={catalog} /></div>
+    </div>
+    <PageToc items={[{ id: 'tiers', label: t('toc.tiers') }, { id: 'needs', label: t('toc.needs') }, { id: 'shop', label: t('toc.shop') }, { id: 'faqp', label: t('toc.faq') }]} />
+    <div className="mx-auto max-w-6xl px-4 pt-10 pb-16">
+      <div id="tiers" className="scroll-mt-24"><PricingTable initial={catalog} /></div>
 
-      <section className="mx-auto mt-16 max-w-4xl" aria-labelledby="shop">
-        <h2 id="shop" className="text-2xl font-bold">{t('plans.shopTitle')}</h2>
+      <section className="mx-auto mt-16 max-w-4xl scroll-mt-24" aria-labelledby="needs-title" id="needs">
+        <h2 id="needs-title" className="text-2xl font-bold">{t('needs.title')}</h2>
+        <p className="mt-2 text-muted">{t('needs.lead')}</p>
+        <ul className="mt-6 divide-y divide-line rounded-3xl border border-line bg-card shadow-soft">
+          {NEEDS.map((k) => {
+            const who = t(`needs.items.${k}.who` as never) as string;
+            return (
+              <li key={k} className="grid gap-2 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_8rem] md:items-center md:gap-6">
+                <h3 className="font-bold">{t(`needs.items.${k}.h` as never)}</h3>
+                <p className="text-muted">{t(`needs.items.${k}.p` as never)}</p>
+                <span className="w-fit rounded-full bg-soft px-3 py-1 text-sm font-semibold text-brand-ink md:justify-self-end">{t(`needs.${who}` as never)}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section className="mx-auto mt-16 max-w-4xl scroll-mt-24" aria-labelledby="shop-title" id="shop">
+        <h2 id="shop-title" className="text-2xl font-bold">{t('plans.shopTitle')}</h2>
         <p className="mt-2 text-muted">{t('plans.shopText')}</p>
         {groups.map((g) => {
           const items = catalog.products.filter((p) => p.kind === g.kind);
@@ -59,14 +84,21 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
         })}
       </section>
 
-      <section className="mx-auto mt-16 max-w-3xl" aria-labelledby="faqp">
-        <h2 id="faqp" className="text-2xl font-bold">{t('home.faqTitle')}</h2>
+      <section className="mx-auto mt-16 max-w-3xl scroll-mt-24" aria-labelledby="faqp-title" id="faqp">
+        <h2 id="faqp-title" className="text-2xl font-bold">{t('home.faqTitle')}</h2>
         <div className="mt-5 space-y-3">
           {FAQ.map((k) => (
             <details key={k} className="rounded-2xl border border-line bg-card px-5 py-4 open:shadow-soft"><summary className="cursor-pointer list-none font-semibold marker:hidden">{t(`pricingFaq.${k}.q`)}</summary><p className="mt-3 text-muted">{t(`pricingFaq.${k}.a`)}</p></details>
           ))}
         </div>
       </section>
+
+      <section className="mx-auto mt-16 max-w-4xl rounded-[2rem] bg-linear-to-br from-brand-strong to-brand-strong-2 px-6 py-12 text-center text-white shadow-pop" aria-labelledby="pricing-cta">
+        <h2 id="pricing-cta" className="text-3xl font-extrabold">{t('how.finalTitle')}</h2>
+        <p className="mx-auto mt-3 max-w-xl text-white/90">{t('how.finalText')}</p>
+        <Link href="/register" className="mt-6 inline-block"><Button size="lg" className="bg-white text-[#c2185b] hover:bg-white/90" variant="ghost">{t('home.ctaRegister')}</Button></Link>
+      </section>
     </div>
+    </>
   );
 }

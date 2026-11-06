@@ -2,6 +2,7 @@ import { ArrowRight, BadgeCheck, CalendarHeart, Camera, Check, Compass, Crown, H
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
+import { PageToc } from '@/components/marketing/PageToc';
 
 const STEPS: [string, LucideIcon][] = [
   ['signup', UserPlus], ['profile', Camera], ['discover', Compass], ['like', Heart], ['match', Sparkles], ['chat', MessageCircleHeart], ['date', CalendarHeart], ['premium', Crown],
@@ -34,13 +35,25 @@ export default async function HowItWorks({ params }: { params: Promise<{ locale:
         </div>
       </section>
 
-      <section aria-labelledby="steps" className="mx-auto max-w-4xl px-4 py-14">
-        <h2 id="steps" className="text-center text-2xl font-extrabold md:text-3xl">{t('how.stepsTitle')}</h2>
-        <ol className="relative mt-10 space-y-5 before:absolute before:top-4 before:bottom-4 before:left-[1.65rem] before:w-px before:bg-line md:before:left-[1.9rem]">
+      <PageToc items={[{ id: 'steps', label: t('toc.steps') }, { id: 'why', label: t('toc.why') }, { id: 'plans', label: t('toc.plans') }, { id: 'safe', label: t('toc.safety') }]} />
+
+      <section aria-labelledby="steps-title" id="steps" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-14">
+        <h2 id="steps-title" className="text-center text-2xl font-extrabold md:text-3xl">{t('how.stepsTitle')}</h2>
+        <div className="mt-10 grid gap-10 lg:grid-cols-[17rem_minmax(0,1fr)]">
+        <nav aria-label={t('how.stepsTitle')} className="hidden lg:block">
+          <div className="sticky top-24 rounded-3xl border border-line bg-card p-5 shadow-soft">
+            <ol className="space-y-1 text-sm">
+              {STEPS.map(([key], i) => (
+                <li key={key}><a href={`#step-${key}`} className="flex gap-3 rounded-xl px-2 py-1.5 text-muted hover:bg-soft hover:text-brand-ink"><span className="font-bold text-brand-ink" aria-hidden>{i + 1}</span>{t(`how.steps.${key}.title`)}</a></li>
+              ))}
+            </ol>
+          </div>
+        </nav>
+        <ol className="relative space-y-5 before:absolute before:top-4 before:bottom-4 before:left-[1.65rem] before:w-px before:bg-line md:before:left-[1.9rem]">
           {STEPS.map(([key, Icon], i) => {
             const optional = key === 'premium';
             return (
-              <li key={key} className="relative flex gap-4 md:gap-6">
+              <li key={key} id={`step-${key}`} className="relative flex scroll-mt-24 gap-4 md:gap-6">
                 <span className={`z-10 flex size-14 shrink-0 items-center justify-center rounded-full shadow-soft md:size-16 ${optional ? 'bg-gold text-navy' : 'bg-brand-strong text-white'}`}><Icon className="size-6 md:size-7" aria-hidden /><span className="sr-only">{i + 1}</span></span>
                 <div className={`flex-1 rounded-3xl border bg-card p-5 shadow-soft md:p-6 ${optional ? 'border-dashed border-brand/40 bg-soft' : 'border-line'}`}>
                   <p className="text-xs font-bold tracking-wide text-brand-ink uppercase" aria-hidden>{String(i + 1).padStart(2, '0')}</p>
@@ -51,11 +64,12 @@ export default async function HowItWorks({ params }: { params: Promise<{ locale:
             );
           })}
         </ol>
+        </div>
       </section>
 
-      <section aria-labelledby="why" className="bg-soft/50 py-14">
+      <section aria-labelledby="why-title" id="why" className="scroll-mt-24 bg-soft/50 py-14">
         <div className="mx-auto max-w-6xl px-4">
-          <h2 id="why" className="text-center text-2xl font-extrabold md:text-3xl">{t('how.whyTitle')}</h2>
+          <h2 id="why-title" className="text-center text-2xl font-extrabold md:text-3xl">{t('how.whyTitle')}</h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {why.map((w, i) => {
               const Icon = WHY_ICONS[i] ?? Heart;
@@ -74,8 +88,8 @@ export default async function HowItWorks({ params }: { params: Promise<{ locale:
         </div>
       </section>
 
-      <section aria-labelledby="plans" className="mx-auto max-w-5xl px-4 pb-14">
-        <h2 id="plans" className="text-center text-2xl font-extrabold md:text-3xl">{t('how.plansTitle')}</h2>
+      <section aria-labelledby="plans-title" id="plans" className="mx-auto max-w-5xl scroll-mt-24 px-4 pb-14">
+        <h2 id="plans-title" className="text-center text-2xl font-extrabold md:text-3xl">{t('how.plansTitle')}</h2>
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           {([['plansFree', free], ['plansPaid', paid]] as const).map(([k, items]) => (
             <div key={k} className="rounded-3xl border border-line bg-card p-6 shadow-soft">
@@ -87,10 +101,10 @@ export default async function HowItWorks({ params }: { params: Promise<{ locale:
         <div className="mt-6 text-center"><Link href="/pricing"><Button variant="outline">{t('how.plansCta')}</Button></Link></div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-4 pb-14">
-        <aside className="flex gap-4 rounded-3xl bg-gold/15 p-6" aria-labelledby="safe">
+      <section id="safe" className="mx-auto max-w-4xl scroll-mt-24 px-4 pb-14">
+        <aside className="flex gap-4 rounded-3xl bg-gold/15 p-6" aria-label={t('how.safetyTitle')}>
           <ShieldAlert className="mt-1 size-6 shrink-0 text-gold-ink" aria-hidden />
-          <div><h2 id="safe" className="font-bold">{t('how.safetyTitle')}</h2><p className="mt-1 leading-relaxed text-muted">{t('how.safetyText')}</p></div>
+          <div><h2 className="font-bold">{t('how.safetyTitle')}</h2><p className="mt-1 leading-relaxed text-muted">{t('how.safetyText')}</p></div>
         </aside>
       </section>
 

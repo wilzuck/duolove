@@ -89,9 +89,18 @@
         "title": "Local payment",
         "text": "A payment experience designed for francophone Africa, with Mobile Money integration in preparation."
       },
-      "daily": {"title": "Daily picks and daily question", "text": "Every day, a limited selection of compatible profiles and one icebreaker question: answers are revealed only once you have both answered."},
-      "live": {"title": "Live Match", "text": "Set your criteria for the moment: we invite people who are online. Those who accept show up, and you choose who to talk to."},
-      "speed": {"title": "Text speed dating", "text": "Scheduled evenings: short written chats with several people, then a private decision. It’s a match only if the interest is mutual."}
+      "daily": {
+        "title": "Daily picks and daily question",
+        "text": "Every day, a limited selection of compatible profiles and one icebreaker question: answers are revealed only once you have both answered."
+      },
+      "live": {
+        "title": "Live Match",
+        "text": "Set your criteria for the moment: we invite people who are online. Those who accept show up, and you choose who to talk to."
+      },
+      "speed": {
+        "title": "Text speed dating",
+        "text": "Scheduled evenings: short written chats with several people, then a private decision. It’s a match only if the interest is mutual."
+      }
     }
   },
   "how": {
@@ -561,6 +570,12 @@
           "a": "Yes: Settings → Privacy → Export my data (JSON file) or Delete my account. Deletion is permanent."
         }
       ]
+    },
+    "resources": {
+      "title": "Other resources",
+      "how": "How it works",
+      "pricing": "Plans and pricing",
+      "community": "Community rules"
     }
   },
   "blog": {
@@ -2555,9 +2570,42 @@
     "strictNote": "A specific criterion only matches profiles that filled in that information: nothing is assumed.",
     "critIntro": "Describe the person you’d like to meet. These criteria are about the other person, not you.",
     "crit": {
-      "MEN": {"country": "He lives in", "origin": "He comes from", "children": "Does he have children?", "pets": "Does he like pets?", "living": "He lives…", "livingOpt": {"ALONE": "Alone", "FAMILY": "With family", "ROOMMATES": "With roommates"}},
-      "WOMEN": {"country": "She lives in", "origin": "She comes from", "children": "Does she have children?", "pets": "Does she like pets?", "living": "She lives…", "livingOpt": {"ALONE": "Alone", "FAMILY": "With family", "ROOMMATES": "With roommates"}},
-      "EVERYONE": {"country": "Country of residence", "origin": "Country of origin", "children": "Has children?", "pets": "Likes pets?", "living": "Living situation", "livingOpt": {"ALONE": "Alone", "FAMILY": "With family", "ROOMMATES": "With roommates"}}
+      "MEN": {
+        "country": "He lives in",
+        "origin": "He comes from",
+        "children": "Does he have children?",
+        "pets": "Does he like pets?",
+        "living": "He lives…",
+        "livingOpt": {
+          "ALONE": "Alone",
+          "FAMILY": "With family",
+          "ROOMMATES": "With roommates"
+        }
+      },
+      "WOMEN": {
+        "country": "She lives in",
+        "origin": "She comes from",
+        "children": "Does she have children?",
+        "pets": "Does she like pets?",
+        "living": "She lives…",
+        "livingOpt": {
+          "ALONE": "Alone",
+          "FAMILY": "With family",
+          "ROOMMATES": "With roommates"
+        }
+      },
+      "EVERYONE": {
+        "country": "Country of residence",
+        "origin": "Country of origin",
+        "children": "Has children?",
+        "pets": "Likes pets?",
+        "living": "Living situation",
+        "livingOpt": {
+          "ALONE": "Alone",
+          "FAMILY": "With family",
+          "ROOMMATES": "With roommates"
+        }
+      }
     },
     "criteriaTitle": "My criteria right now",
     "editTitle": "Edit my criteria",
@@ -3019,5 +3067,52 @@
     "hint": "Answer to see the answers of the people in your picks.",
     "unlocked": "Answers from your picks are shown on the cards.",
     "same": "You chose the same answer as {name}: a good way to start."
+  },
+  "toc": {
+    "onPage": "On this page",
+    "steps": "Your journey",
+    "why": "What’s different",
+    "plans": "Free or Premium",
+    "safety": "Your safety",
+    "tiers": "Plans",
+    "needs": "What do I need?",
+    "shop": "The shop",
+    "faq": "Frequently asked questions"
+  },
+  "needs": {
+    "title": "What do I need?",
+    "lead": "Start from what you want to do: we tell you which plan allows it.",
+    "free": "Free",
+    "premium": "Premium or VIP",
+    "vip": "VIP",
+    "shop": "Shop",
+    "items": {
+      "liked": {
+        "h": "See who liked me",
+        "p": "Received likes are blurred on Free and visible with Premium.",
+        "who": "premium"
+      },
+      "filters": {
+        "h": "Refine my search",
+        "p": "Advanced filters to target precisely, on top of your basic criteria.",
+        "who": "premium"
+      },
+      "photos": {
+        "h": "Send photos in messages",
+        "p": "Not available on Free: an invitation to subscribe shows instead.",
+        "who": "premium"
+      },
+      "visible": {
+        "h": "Be more visible",
+        "p": "Boosts one at a time in the shop, and discreet mode with VIP.",
+        "who": "vip"
+      },
+      "safe": {
+        "h": "Protect myself",
+        "p": "Blocking, reporting and closing a conversation are free for everyone.",
+        "who": "free"
+      }
+    },
+    "cta": "See the plans"
   }
 }

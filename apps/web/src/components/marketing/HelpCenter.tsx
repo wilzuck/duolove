@@ -1,5 +1,5 @@
 'use client';
-import { BookOpen, CalendarHeart, CreditCard, HeartHandshake, Lock, Search, ShieldCheck, Sparkles, X, type LucideIcon } from 'lucide-react';
+import { ArrowRight, BookOpen, CalendarHeart, CreditCard, HeartHandshake, Lock, Search, ShieldCheck, Sparkles, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { Button, Input } from '@duomatch/ui';
@@ -61,7 +61,16 @@ export function HelpCenter() {
         </section>
       ))}
 
-      <section aria-labelledby="more" className="mt-14 grid gap-4 md:grid-cols-2">
+      <nav aria-labelledby="resources" className="mt-14">
+        <h2 id="resources" className="text-sm font-semibold text-muted">{t('help.resources.title')}</h2>
+        <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+          {([['/how-it-works', 'how'], ['/pricing', 'pricing'], ['/legal/community', 'community']] as const).map(([href, k]) => (
+            <li key={href}><Link href={href} className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-card px-4 py-3 text-sm font-semibold shadow-soft transition hover:border-brand-ink hover:text-brand-ink">{t(`help.resources.${k}`)}<ArrowRight className="size-4 shrink-0" aria-hidden /></Link></li>
+          ))}
+        </ul>
+      </nav>
+
+      <section aria-labelledby="more" className="mt-10 grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl bg-linear-to-br from-brand-strong to-brand-strong-2 p-7 text-white shadow-pop">
           <h2 id="more" className="text-xl font-extrabold">{t('help.moreTitle')}</h2>
           <p className="mt-2 text-white/90">{t('help.more')}</p>

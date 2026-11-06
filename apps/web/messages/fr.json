@@ -89,9 +89,18 @@
         "title": "Paiement local",
         "text": "Une expérience de paiement pensée pour l’Afrique francophone, avec l’intégration Mobile Money en préparation."
       },
-      "daily": {"title": "Découvertes et question du jour", "text": "Chaque jour, une sélection limitée de profils compatibles et une question pour briser la glace : les réponses ne se révèlent que si vous avez tous les deux répondu."},
-      "live": {"title": "Match en direct", "text": "Choisissez vos critères du moment : nous proposons une rencontre aux personnes connectées. Celles qui acceptent s’affichent, vous choisissez avec qui discuter."},
-      "speed": {"title": "Speed dating en texte", "text": "Des soirées à heure fixe : de courtes conversations écrites avec plusieurs personnes, puis une décision privée. Il n’y a match que si l’intérêt est réciproque."}
+      "daily": {
+        "title": "Découvertes et question du jour",
+        "text": "Chaque jour, une sélection limitée de profils compatibles et une question pour briser la glace : les réponses ne se révèlent que si vous avez tous les deux répondu."
+      },
+      "live": {
+        "title": "Match en direct",
+        "text": "Choisissez vos critères du moment : nous proposons une rencontre aux personnes connectées. Celles qui acceptent s’affichent, vous choisissez avec qui discuter."
+      },
+      "speed": {
+        "title": "Speed dating en texte",
+        "text": "Des soirées à heure fixe : de courtes conversations écrites avec plusieurs personnes, puis une décision privée. Il n’y a match que si l’intérêt est réciproque."
+      }
     }
   },
   "how": {
@@ -561,6 +570,12 @@
           "a": "Oui : Paramètres → Confidentialité → Exporter mes données (fichier JSON) ou Supprimer mon compte. La suppression est définitive."
         }
       ]
+    },
+    "resources": {
+      "title": "Autres ressources",
+      "how": "Comment ça marche",
+      "pricing": "Tarifs et formules",
+      "community": "Règles de la communauté"
     }
   },
   "blog": {
@@ -2555,9 +2570,42 @@
     "strictNote": "Un critère précis n’affiche que les profils qui ont renseigné l’information : rien n’est supposé.",
     "critIntro": "Décrivez la personne que vous aimeriez rencontrer. Ces critères concernent l’autre personne, pas vous.",
     "crit": {
-      "MEN": {"country": "Il vit en", "origin": "Il est originaire de", "children": "Il a des enfants ?", "pets": "Il aime les animaux ?", "living": "Il vit…", "livingOpt": {"ALONE": "Seul", "FAMILY": "En famille", "ROOMMATES": "En colocation"}},
-      "WOMEN": {"country": "Elle vit en", "origin": "Elle est originaire de", "children": "Elle a des enfants ?", "pets": "Elle aime les animaux ?", "living": "Elle vit…", "livingOpt": {"ALONE": "Seule", "FAMILY": "En famille", "ROOMMATES": "En colocation"}},
-      "EVERYONE": {"country": "Pays de résidence", "origin": "Pays d’origine", "children": "A des enfants ?", "pets": "Aime les animaux ?", "living": "Vie quotidienne", "livingOpt": {"ALONE": "Seul(e)", "FAMILY": "En famille", "ROOMMATES": "En colocation"}}
+      "MEN": {
+        "country": "Il vit en",
+        "origin": "Il est originaire de",
+        "children": "Il a des enfants ?",
+        "pets": "Il aime les animaux ?",
+        "living": "Il vit…",
+        "livingOpt": {
+          "ALONE": "Seul",
+          "FAMILY": "En famille",
+          "ROOMMATES": "En colocation"
+        }
+      },
+      "WOMEN": {
+        "country": "Elle vit en",
+        "origin": "Elle est originaire de",
+        "children": "Elle a des enfants ?",
+        "pets": "Elle aime les animaux ?",
+        "living": "Elle vit…",
+        "livingOpt": {
+          "ALONE": "Seule",
+          "FAMILY": "En famille",
+          "ROOMMATES": "En colocation"
+        }
+      },
+      "EVERYONE": {
+        "country": "Pays de résidence",
+        "origin": "Pays d’origine",
+        "children": "A des enfants ?",
+        "pets": "Aime les animaux ?",
+        "living": "Vie quotidienne",
+        "livingOpt": {
+          "ALONE": "Seul(e)",
+          "FAMILY": "En famille",
+          "ROOMMATES": "En colocation"
+        }
+      }
     },
     "criteriaTitle": "Mes critères du moment",
     "editTitle": "Modifier mes critères",
@@ -3019,5 +3067,52 @@
     "hint": "Répondez pour voir les réponses des personnes de votre sélection.",
     "unlocked": "Les réponses de votre sélection sont visibles sur les cartes.",
     "same": "Vous avez choisi la même réponse que {name} : un bon sujet pour commencer."
+  },
+  "toc": {
+    "onPage": "Sur cette page",
+    "steps": "Votre parcours",
+    "why": "Ce qui change",
+    "plans": "Gratuit ou Premium",
+    "safety": "Votre sécurité",
+    "tiers": "Les formules",
+    "needs": "De quoi ai-je besoin ?",
+    "shop": "La boutique",
+    "faq": "Questions fréquentes"
+  },
+  "needs": {
+    "title": "De quoi ai-je besoin ?",
+    "lead": "Partez de ce que vous voulez faire : nous vous disons quelle formule le permet.",
+    "free": "Gratuit",
+    "premium": "Premium ou VIP",
+    "vip": "VIP",
+    "shop": "Boutique",
+    "items": {
+      "liked": {
+        "h": "Voir qui m’a liké",
+        "p": "Les likes reçus sont floutés en gratuit et visibles en clair avec Premium.",
+        "who": "premium"
+      },
+      "filters": {
+        "h": "Affiner ma recherche",
+        "p": "Filtres avancés pour cibler précisément, en plus de vos critères de base.",
+        "who": "premium"
+      },
+      "photos": {
+        "h": "Envoyer des photos en message",
+        "p": "Refusées en gratuit : une invitation à s’abonner s’affiche à la place.",
+        "who": "premium"
+      },
+      "visible": {
+        "h": "Être plus visible",
+        "p": "Des boosts à l’unité dans la boutique, et le mode discret avec VIP.",
+        "who": "vip"
+      },
+      "safe": {
+        "h": "Me protéger",
+        "p": "Bloquer, signaler et fermer une conversation sont gratuits pour tout le monde.",
+        "who": "free"
+      }
+    },
+    "cta": "Voir les formules"
   }
 }
