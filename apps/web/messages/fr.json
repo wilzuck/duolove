@@ -1513,8 +1513,8 @@
     "limitText": "Vous avez utilisé tous vos likes du jour. Revenez demain ou passez Premium pour en avoir davantage.",
     "planTitle": "Fonction Premium",
     "planText": "Cette fonction fait partie des formules Premium et VIP.",
-    "noSuperTitle": "Plus de Super Likes",
-    "noSuperText": "Vous avez utilisé vos Super Likes inclus. Achetez un pack ou passez Premium pour en avoir chaque semaine.",
+    "noSuperTitle": "Pas de Super Like disponible",
+    "noSuperText": "Vous n’avez aucun Super Like disponible. Achetez un pack ou passez Premium pour en recevoir chaque semaine.",
     "buyPack": "Acheter un pack"
   },
   "match": {
@@ -1671,7 +1671,8 @@
     "hint": "Jusqu’à {max} photos. JPEG, PNG ou WebP. Les métadonnées (position GPS comprise) sont supprimées.",
     "cropTitle": "Recadrer la photo",
     "zoom": "Zoom",
-    "cropDone": "Utiliser cette photo"
+    "cropDone": "Utiliser cette photo",
+    "cropError": "Ce fichier n’est pas une image lisible. Choisissez une photo JPEG, PNG ou WebP."
   },
   "onboarding": {
     "progress": "Étape {n} sur {total}",
@@ -1879,6 +1880,7 @@
   "admin": {
     "title": "Administration",
     "empty": "Aucune donnée.",
+    "forbidden": "Cette page est réservée aux administrateurs. Votre rôle ne permet pas d’y accéder.",
     "more": "Charger plus",
     "done": "Action effectuée.",
     "search": "Rechercher un membre",

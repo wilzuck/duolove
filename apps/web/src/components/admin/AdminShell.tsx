@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
+import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
 import { useMe } from '@/hooks/useQueries';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { ApiError, api, post } from '@/lib/api';
@@ -56,6 +56,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   if (!me || !allowed) return <div className="mx-auto max-w-md space-y-4 p-6"><Skeleton className="h-12" /><Skeleton className="h-80" /></div>;
 
+  // Page réservée à un rôle supérieur (ex. un modérateur sur /admin/payments) : message clair plutôt qu'un tableau vide.
+  const required = SECTIONS.flatMap((x) => x.items).filter((i) => (i.href === '/admin' ? path === '/admin' : path.startsWith(i.href))).sort((a, b) => b.href.length - a.href.length)[0];
+  const forbidden = !!required && RANK[me.role] < RANK[required.min];
   const active = (href: string) => (href === '/admin' ? path === '/admin' : path.startsWith(href));
   const nav = (
     <nav aria-label={t('admin.menu')} className="flex flex-1 flex-col gap-5 overflow-y-auto py-2">
@@ -106,7 +109,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <p className="hidden text-sm font-semibold text-muted lg:block">{t('admin.title')}</p>
           <div className="flex items-center gap-1"><LocaleSwitcher /><ThemeToggle /></div>
         </header>
-        <main id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-5 px-4 py-6 lg:px-8">{children}</main>
+        <main id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-5 px-4 py-6 lg:px-8">{forbidden ? <Alert variant="text">{t('admin.forbidden')}</Alert> : children}</main>
       </div>
     </div>
   );

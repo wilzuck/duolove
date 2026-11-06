@@ -21,7 +21,7 @@ Messages, émojis et photos. ⋮ → *Mettre fin au match*, *Bloquer* ou *Signal
 - Obtenez le **badge vérifié** (Profil → Vérification) : un modérateur compare un selfie à vos photos puis le supprime.
 
 ## Abonnements
-*Premium* (2 500 FCFA/mois) : 100 likes/jour, 3 Super Likes, voir qui vous a liké, filtres avancés, retour arrière. *VIP* (5 000 FCFA/mois) : tout Premium + 10 Super Likes, 4 boosts/mois, mode discret. Annulable à tout moment (*Paramètres → Abonnement*) : vos avantages durent jusqu'à la fin de la période payée. Aucun avantage n'est activé tant que le paiement n'est pas confirmé. Factures : *Paramètres → Paiements*.
+*Premium* (2 500 FCFA/mois) : likes illimités, 5 Super Likes par semaine, voir qui vous a liké, filtres avancés, retour arrière. *VIP* (5 000 FCFA/mois) : tout Premium + 15 Super Likes par semaine, 2 boosts/mois, mode discret. Annulable à tout moment (*Paramètres → Abonnement*) : vos avantages durent jusqu'à la fin de la période payée. Aucun avantage n'est activé tant que le paiement n'est pas confirmé. Factures : *Paramètres → Paiements*.
 
 ## Vos données
 *Paramètres → Confidentialité* : masquer le profil, partager (ou non) une position **arrondie**, **exporter** vos données (JSON), **supprimer** votre compte. *Sécurité* : changer le mot de passe, déconnecter un appareil. *Comptes bloqués* : débloquer.

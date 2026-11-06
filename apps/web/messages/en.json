@@ -1513,8 +1513,8 @@
     "limitText": "You’ve used all your likes for today. Come back tomorrow or go Premium for more.",
     "planTitle": "Premium feature",
     "planText": "This feature is part of the Premium and VIP plans.",
-    "noSuperTitle": "Out of Super Likes",
-    "noSuperText": "You’ve used your included Super Likes. Buy a pack or go Premium to get some every week.",
+    "noSuperTitle": "No Super Like available",
+    "noSuperText": "You have no Super Like available. Buy a pack or go Premium to get some every week.",
     "buyPack": "Buy a pack"
   },
   "match": {
@@ -1671,7 +1671,8 @@
     "hint": "Up to {max} photos. JPEG, PNG or WebP. Metadata (including GPS location) is removed.",
     "cropTitle": "Crop photo",
     "zoom": "Zoom",
-    "cropDone": "Use this photo"
+    "cropDone": "Use this photo",
+    "cropError": "This file is not a readable image. Choose a JPEG, PNG or WebP photo."
   },
   "onboarding": {
     "progress": "Step {n} of {total}",
@@ -1879,6 +1880,7 @@
   "admin": {
     "title": "Administration",
     "empty": "No data.",
+    "forbidden": "This page is reserved for administrators. Your role cannot access it.",
     "more": "Load more",
     "done": "Action done.",
     "search": "Search a member",

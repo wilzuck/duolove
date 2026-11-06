@@ -163,6 +163,13 @@ for (const role of ['moderator', 'admin', 'super'] as const) {
       for (const p of pages) { const pr = await visit(s.page, p); all.push(...pr.map((x) => `${p} → ${x}`)); }
       expect(all).toEqual([]);
     });
+    if (role === 'moderator') {
+      test('QA-MODERATOR-04 page réservée aux administrateurs : message d’accès refusé, pas de tableau vide', async () => {
+        await s.page.goto('/admin/payments');
+        await expect(s.page.getByText('Cette page est réservée aux administrateurs')).toBeVisible();
+        await expect(s.page.getByRole('table')).toHaveCount(0);
+      });
+    }
     test(`QA-${role.toUpperCase()}-02 droits serveur : ${role === 'moderator' ? 'refus des réglages, offres, indicateurs' : 'accès complet'}`, async () => {
       const codes = await Promise.all(['/api/admin/users', '/api/admin/reports', '/api/admin/plans', '/api/admin/settings', '/api/admin/feature-flags', '/api/admin/engagement/metrics']
         .map(async (u) => [u, (await s.page.request.get(u)).status()] as const));
