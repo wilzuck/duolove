@@ -14,7 +14,7 @@ export function AuthShell({ title, subtitle, children, footer, backdrop }: { tit
         <Link href="/"><Logo /></Link>
         <div className={`flex items-center gap-1${backdrop ? ' rounded-full bg-card/80 px-1 backdrop-blur' : ''}`}><LocaleSwitcher /><ThemeToggle /></div>
       </header>
-      <main className={`mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 pb-12${backdrop ? ' lg:mx-0 lg:ml-[max(2rem,7vw)]' : ''}`}>
+      <main className={`mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 pb-16 sm:pb-24${backdrop ? ' lg:mx-0 lg:ml-[max(2rem,7vw)]' : ''}`}>
         <div className="rounded-[2rem] border border-line bg-card p-7 shadow-pop sm:p-9">
           <h1 className="text-3xl font-extrabold">{title}</h1>
           {subtitle && <p className="mt-2 text-muted">{subtitle}</p>}

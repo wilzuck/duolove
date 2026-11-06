@@ -16,6 +16,8 @@
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-field: var(--field);
+  --color-field-line: var(--field-line);
   --color-navy: var(--navy);
   --color-success: var(--success);
   --color-success-ink: var(--success-ink);
