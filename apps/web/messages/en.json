@@ -88,7 +88,10 @@
       "momo": {
         "title": "Local payment",
         "text": "A payment experience designed for francophone Africa, with Mobile Money integration in preparation."
-      }
+      },
+      "daily": {"title": "Daily picks and daily question", "text": "Every day, a limited selection of compatible profiles and one icebreaker question: answers are revealed only once you have both answered."},
+      "live": {"title": "Live Match", "text": "Set your criteria for the moment: we invite people who are online. Those who accept show up, and you choose who to talk to."},
+      "speed": {"title": "Text speed dating", "text": "Scheduled evenings: short written chats with several people, then a private decision. It’s a match only if the interest is mutual."}
     }
   },
   "how": {

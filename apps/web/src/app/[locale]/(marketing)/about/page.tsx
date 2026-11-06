@@ -28,7 +28,7 @@ export default async function About({ params }: { params: Promise<{ locale: stri
       <article className="mx-auto max-w-3xl space-y-14 px-4 py-14">
         {CHAPTERS.map((c, i) => (
           <section key={c} aria-labelledby={`chapter-${c}`} className="grid gap-4 md:grid-cols-[4rem_1fr]">
-            <span aria-hidden className="text-5xl font-extrabold text-brand-ink/30">{String(i + 1).padStart(2, '0')}</span>
+            <span aria-hidden className="text-5xl font-extrabold text-brand-ink/70">{String(i + 1).padStart(2, '0')}</span>
             <div className="space-y-4">
               <h2 id={`chapter-${c}`} className="text-2xl font-bold md:text-3xl">{t(`about.chapters.${c}.title`)}</h2>
               <p className="text-lg leading-relaxed">{t(`about.chapters.${c}.p1`)}</p>

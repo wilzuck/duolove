@@ -1,4 +1,4 @@
-import { BadgeCheck, CreditCard, HeartHandshake, Lock, MessageCircleHeart, ShieldCheck, Smartphone, Sparkles } from 'lucide-react';
+import { BadgeCheck, CalendarHeart, CreditCard, HeartHandshake, Lock, MessageCircleHeart, Radio, ShieldCheck, Smartphone, Sparkles, Timer } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button, Card } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
@@ -7,7 +7,7 @@ import { fetchCatalog } from '@/lib/catalog';
 import { HeroVisual } from '@/components/marketing/HeroVisual';
 
 const BENEFITS = [
-  [Sparkles, 'matching'], [BadgeCheck, 'verified'], [MessageCircleHeart, 'chat'], [ShieldCheck, 'safety'], [Smartphone, 'mobile'], [CreditCard, 'momo'],
+  [Sparkles, 'matching'], [BadgeCheck, 'verified'], [MessageCircleHeart, 'chat'], [ShieldCheck, 'safety'], [Smartphone, 'mobile'], [CalendarHeart, 'daily'], [Radio, 'live'], [Timer, 'speed'], [CreditCard, 'momo'],
 ] as const;
 const STEPS = ['signup', 'profile', 'discover', 'like', 'match', 'chat'] as const;
 const FAQ = ['age', 'free', 'safety', 'payment', 'delete', 'verify'] as const;
