@@ -61,13 +61,13 @@ export function PricingTable({ initial, current, action, defaultMonths = 1 }: { 
           ))}
         </div>
       )}
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid justify-items-center gap-5 lg:grid-cols-3">
         {plans.map((p) => {
           const Icon = ICON[p.code];
           const price = p.prices.find((x) => x.months === months) ?? p.prices[0];
           const lines = [...(p.code === 'FREE' ? BASE.map((k) => t(k)) : []), ...featureLines(p, t as never)];
           return (
-            <Card key={p.code} className={cn('relative flex flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
+            <Card key={p.code} className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
               {p.featured && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-strong text-white">{t('plans.popular')}</Badge>}
               <div className="flex items-center gap-3">
                 <span className="flex size-11 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-5" aria-hidden /></span>

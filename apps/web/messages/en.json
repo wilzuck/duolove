@@ -399,7 +399,26 @@
     "helpTitle": "An answer may already be waiting",
     "helpCta": "Help centre",
     "communityCta": "Community guidelines",
-    "subject": "Question about DuoMatch"
+    "subject": "Question about DuoMatch",
+    "form": {
+      "title": "Write to us directly",
+      "name": "Your name",
+      "email": "Your email",
+      "topic": "Topic",
+      "message": "Your message",
+      "hint": "Describe your situation (10 characters minimum). Never share a password.",
+      "send": "Send message",
+      "sending": "Sending…",
+      "sentTitle": "Message sent",
+      "sentText": "Thank you, we received your message. We will reply by email.",
+      "again": "Send another message",
+      "privacy": "Your email is only used to reply to you.",
+      "errors": {
+        "name": "Enter your name.",
+        "email": "Enter a valid email address.",
+        "message": "Write at least 10 characters."
+      }
+    }
   },
   "help": {
     "kicker": "Help centre",
@@ -1919,7 +1938,8 @@
       "promos": "Promo codes",
       "blog": "Blog",
       "engagement": "Engagement",
-      "speed": "Speed dating"
+      "speed": "Speed dating",
+      "contact": "Contact messages"
     },
     "roles": {
       "MODERATOR": "Moderator",
@@ -2472,6 +2492,21 @@
         "ENDED": "Finished",
         "CANCELED": "Canceled"
       }
+    },
+    "contactBox": {
+      "empty": "No messages.",
+      "reply": "Reply by email",
+      "statuses": {
+        "NEW": "New",
+        "READ": "Read",
+        "ANSWERED": "Answered",
+        "ARCHIVED": "Archived"
+      },
+      "markRead": "Mark as read",
+      "answered": "Answered",
+      "archive": "Archive",
+      "restore": "Move back to new",
+      "from": "From {name}"
     }
   },
   "pricingFaq": {

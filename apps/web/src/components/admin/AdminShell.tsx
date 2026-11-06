@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -23,6 +23,7 @@ const SECTIONS: { id: string; items: Item[] }[] = [
   { id: 'members', items: [
     { href: '/admin/users', key: 'users', icon: Users, min: 'MODERATOR' },
     { href: '/admin/reports', key: 'reports', icon: Flag, min: 'MODERATOR', badge: 'reports' },
+    { href: '/admin/contact', key: 'contact', icon: Inbox, min: 'ADMIN' },
   ] },
   { id: 'revenue', items: [
     { href: '/admin/subscriptions', key: 'subscriptions', icon: CreditCard, min: 'ADMIN' },

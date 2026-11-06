@@ -1,6 +1,7 @@
 import { CreditCard, HeartHandshake, Lightbulb, LifeBuoy, Lock, Mail, MessageCircleQuestion, ShieldAlert, UserCog, type LucideIcon } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button } from '@duomatch/ui';
+import { ContactForm } from '@/components/marketing/ContactForm';
 import { Link } from '@/i18n/navigation';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -41,6 +42,11 @@ export default async function Contact({ params }: { params: Promise<{ locale: st
               </li>
             ))}
           </ul>
+        </section>
+
+        <section aria-labelledby="write-title" id="write" className="scroll-mt-24">
+          <h2 id="write-title" className="mb-5 text-2xl font-extrabold">{t('contact.form.title')}</h2>
+          <ContactForm />
         </section>
 
         <section aria-labelledby="mail" className="grid gap-5 md:grid-cols-2">

@@ -33,9 +33,9 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
     </div>
     <PageToc items={[{ id: 'tiers', label: t('toc.tiers') }, { id: 'needs', label: t('toc.needs') }, { id: 'shop', label: t('toc.shop') }, { id: 'faqp', label: t('toc.faq') }]} />
     <div className="mx-auto max-w-6xl px-4 pt-10 pb-16">
-      <div id="tiers" className="scroll-mt-24"><PricingTable initial={catalog} /></div>
+      <div id="tiers" className="scroll-mt-36"><PricingTable initial={catalog} /></div>
 
-      <section className="mx-auto mt-16 max-w-4xl scroll-mt-24" aria-labelledby="needs-title" id="needs">
+      <section className="mx-auto mt-16 max-w-4xl scroll-mt-36" aria-labelledby="needs-title" id="needs">
         <h2 id="needs-title" className="text-2xl font-bold">{t('needs.title')}</h2>
         <p className="mt-2 text-muted">{t('needs.lead')}</p>
         <ul className="mt-6 divide-y divide-line rounded-3xl border border-line bg-card shadow-soft">
@@ -52,7 +52,7 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
         </ul>
       </section>
 
-      <section className="mx-auto mt-16 max-w-4xl scroll-mt-24" aria-labelledby="shop-title" id="shop">
+      <section className="mx-auto mt-16 max-w-4xl scroll-mt-36" aria-labelledby="shop-title" id="shop">
         <h2 id="shop-title" className="text-2xl font-bold">{t('plans.shopTitle')}</h2>
         <p className="mt-2 text-muted">{t('plans.shopText')}</p>
         {groups.map((g) => {
@@ -84,7 +84,7 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
         })}
       </section>
 
-      <section className="mx-auto mt-16 max-w-3xl scroll-mt-24" aria-labelledby="faqp-title" id="faqp">
+      <section className="mx-auto mt-16 max-w-3xl scroll-mt-36" aria-labelledby="faqp-title" id="faqp">
         <h2 id="faqp-title" className="text-2xl font-bold">{t('home.faqTitle')}</h2>
         <div className="mt-5 space-y-3">
           {FAQ.map((k) => (

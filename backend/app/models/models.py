@@ -643,6 +643,26 @@ class DailyQuestion(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class ContactMessage(Base):
+    """Message envoyé depuis la page Contact (public, sans compte). Statut : NEW, READ, ANSWERED, ARCHIVED."""
+    __tablename__ = 'ContactMessage'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='ContactMessage_pkey'),
+        Index('ContactMessage_status_createdAt_idx', 'status', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    name: Mapped[str] = mapped_column(Text, nullable=False)
+    email: Mapped[str] = mapped_column(Text, nullable=False)
+    topic: Mapped[str] = mapped_column(Text, nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    locale: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'fr'"))
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'NEW'"))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    handledById: Mapped[Optional[str]] = mapped_column(Text)
+    handledAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+
+
 class DailyQuestionAnswer(Base):
     __tablename__ = 'DailyQuestionAnswer'
     __table_args__ = (
