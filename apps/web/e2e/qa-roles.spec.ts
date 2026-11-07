@@ -163,10 +163,31 @@ for (const role of ['moderator', 'admin', 'super'] as const) {
       for (const p of pages) { const pr = await visit(s.page, p); all.push(...pr.map((x) => `${p} → ${x}`)); }
       expect(all).toEqual([]);
     });
+    if (role === 'admin') {
+      test('QA-ADMIN-07 stockage des fichiers : réservé au super administrateur (message d’accès refusé)', async () => {
+        await s.page.goto('/admin/storage');
+        await expect(s.page.getByText('Cette page est réservée à un rôle supérieur')).toBeVisible();
+        await expect(s.page.getByLabel('Clé secrète')).toHaveCount(0);
+      });
+    }
+    if (role === 'super') {
+      test('QA-SUPER-04 stockage des fichiers : page, test de connexion refusé pour une adresse non https, clé secrète masquée', async () => {
+        expect(await visit(s.page, '/admin/storage')).toEqual([]);
+        await expect(s.page.getByRole('heading', { name: 'Stockage des fichiers' })).toBeVisible();
+        await s.page.getByLabel('Adresse du stockage').fill('http://exemple.invalid');
+        await s.page.getByLabel('Nom du bucket').fill('mon-bucket');
+        await s.page.getByLabel('Identifiant de la clé d’accès').fill('AKIAEXAMPLE12345678');
+        const secret = s.page.getByLabel('Clé secrète');
+        await secret.fill('une-cle-secrete-de-test-0123456789');
+        await expect(secret).toHaveAttribute('type', 'password');
+        await s.page.getByRole('button', { name: 'Tester la connexion' }).click();
+        await expect(s.page.getByText('Adresse du stockage invalide')).toBeVisible();
+      });
+    }
     if (role === 'moderator') {
       test('QA-MODERATOR-04 page réservée aux administrateurs : message d’accès refusé, pas de tableau vide', async () => {
         await s.page.goto('/admin/payments');
-        await expect(s.page.getByText('Cette page est réservée aux administrateurs')).toBeVisible();
+        await expect(s.page.getByText('Cette page est réservée à un rôle supérieur')).toBeVisible();
         await expect(s.page.getByRole('table')).toHaveCount(0);
       });
     }

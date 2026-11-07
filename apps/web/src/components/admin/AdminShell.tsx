@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, CloudUpload, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -11,7 +11,7 @@ import { LocaleSwitcher } from '../LocaleSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 
 const RANK = { USER: 0, MODERATOR: 1, ADMIN: 2, SUPER_ADMIN: 3 } as const;
-type Item = { href: string; key: string; icon: LucideIcon; min: 'MODERATOR' | 'ADMIN'; badge?: 'reports' | 'moderation' };
+type Item = { href: string; key: string; icon: LucideIcon; min: 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN'; badge?: 'reports' | 'moderation' };
 
 /** Rubriques de la console (même logique que WaMarcket : on cherche d'abord un domaine, puis la page). */
 const SECTIONS: { id: string; items: Item[] }[] = [
@@ -37,6 +37,7 @@ const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/speed', key: 'speed', icon: Hourglass, min: 'ADMIN' },
     { href: '/admin/blog', key: 'blog', icon: Newspaper, min: 'ADMIN' },
     { href: '/admin/flags', key: 'flags', icon: ToggleRight, min: 'ADMIN' },
+    { href: '/admin/storage', key: 'storage', icon: CloudUpload, min: 'SUPER_ADMIN' },
   ] },
 ];
 

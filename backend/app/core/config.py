@@ -28,6 +28,16 @@ class Settings(BaseSettings):
     brevo_api_key: str | None = Field(None, alias="BREVO_API_KEY")
     mail_from: str = Field("DuoMatch <no-reply@duomatch.app>", alias="MAIL_FROM")
     upload_dir: str = Field("./uploads", alias="UPLOAD_DIR")
+    # Stockage des fichiers : « local » (dossier UPLOAD_DIR, volume) ou « s3 » (stockage objet compatible S3 : Railway Buckets, Cloudflare R2, AWS).
+    storage_driver: str = Field("local", alias="STORAGE_DRIVER")
+    s3_endpoint: str | None = Field(None, alias="S3_ENDPOINT")
+    s3_bucket: str | None = Field(None, alias="S3_BUCKET")
+    s3_access_key_id: str | None = Field(None, alias="S3_ACCESS_KEY_ID")
+    s3_secret_access_key: str | None = Field(None, alias="S3_SECRET_ACCESS_KEY")
+    s3_region: str = Field("auto", alias="S3_REGION")
+    s3_prefix: str = Field("", alias="S3_PREFIX")
+    # Chiffre les secrets saisis dans la console d'administration (ex. clé secrète R2). Sans elle, la console refuse d'enregistrer un secret.
+    settings_encryption_key: str | None = Field(None, alias="SETTINGS_ENCRYPTION_KEY")
     payment_provider: str = Field("mock", alias="PAYMENT_PROVIDER")
     # Appels audio/vidéo : « mock » (simulé, sans média) ou « livekit » (LiveKit Cloud ou auto-hébergé). Les clés ne servent qu'à signer des jetons d'accès.
     call_provider: str = Field("mock", alias="CALL_PROVIDER")

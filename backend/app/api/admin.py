@@ -1,23 +1,26 @@
 """Administration : modération, finances, offres, codes promo, flags, audit. Rôle minimal MODERATOR ; ADMIN / SUPER_ADMIN selon la route."""
 from __future__ import annotations
 
+import asyncio
 import datetime
 
 from fastapi import APIRouter, Depends, Query, Response
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy import and_, distinct, func, inspect as sa_inspect, or_, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import flags as flagsvc
-from app.core import notifications, payments, plan_config, promo, refunds, storage
+from app.core import notifications, payments, plan_config, promo, refunds, storage, storage_config
 from app.core.auth import AuthUser, has_role, require_role
 from app.core.constants import FEATURE_FLAGS
-from app.core.errors import AppError, forbidden, not_found
+from app.core.config import get_settings
+from app.core.errors import AppError, bad_request, forbidden, not_found
 from app.core.ids import utcnow
 from app.core.profile_card import thumb_key
 from app.db.session import get_db
 from app.models.models import (
     AuditLog, Conversation, Entitlement, FeatureFlag, Match, ModerationAction, Payment, PlanPrice, Product, Profile, ProfilePhoto,
-    PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, User, VerificationRequest,
+    PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, SystemSetting, User, VerificationRequest,
 )
 from app.schemas.admin import (
     FlagSet, PlanPatch, ProductPatch, PromoCreate, PromoPatch, ReasonOnly, RefundApprove, RefundCreate, RefundReject, ResolveReport,
@@ -526,6 +529,85 @@ async def set_flag(key: str, body: FlagSet, a: AuthUser = ADM, db: AsyncSession 
     flagsvc.invalidate()
     await audit(db, a.id, "flag.set", "FeatureFlag", key, {"before": before, "enabled": body.enabled})
     return {"key": key, "enabled": row.enabled}
+
+
+# ───────── Stockage des fichiers (SUPER_ADMIN) ─────────
+class StorageSet(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    driver: str
+    endpoint: str | None = None
+    bucket: str | None = None
+    region: str | None = None
+    prefix: str | None = None
+    accessKeyId: str | None = None
+    secretAccessKey: str | None = None  # écriture seule : jamais renvoyée
+
+
+async def _storage_view(db: AsyncSession) -> dict:
+    cfg = await storage_config.effective()
+    return {**storage_config.public_view(cfg), "localFiles": len(await asyncio.to_thread(storage.local_keys)),
+            "encryptionKeyConfigured": bool(get_settings().settings_encryption_key), "envDriver": storage_config.from_env().driver}
+
+
+def _candidate(body: StorageSet, existing: storage_config.Effective) -> storage_config.Effective:
+    v = storage_config.validate(body.model_dump(), existing)
+    if v["driver"] == "local":
+        return storage_config.Effective(driver="local", source="db")
+    secret = storage_config.check_secret(body.secretAccessKey) if body.secretAccessKey else existing.secret
+    if not secret:
+        raise bad_request("SECRET_REQUIRED", "La clé secrète est obligatoire")
+    return storage_config.Effective(driver="s3", endpoint=v["endpoint"], bucket=v["bucket"], region=v["region"], prefix=v["prefix"],
+                                    access_key_id=v["accessKeyId"], secret=secret, source="db")
+
+
+@router.get("/storage")
+async def storage_get(_: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
+    return await _storage_view(db)
+
+
+@router.post("/storage/test")
+async def storage_test(body: StorageSet, a: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
+    """Teste la configuration saisie (sans l'enregistrer) : écriture, relecture et suppression d'un fichier d'essai."""
+    cand = _candidate(body, await storage_config.effective())
+    if cand.driver == "s3":
+        await storage.probe(cand)
+    return {"ok": True}
+
+
+@router.put("/storage")
+async def storage_set(body: StorageSet, a: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
+    """Enregistre la configuration. Un stockage objet n'est enregistré que si le test d'écriture réussit avec les identifiants fournis."""
+    before = await storage_config.effective()
+    cand = _candidate(body, before)
+    if cand.driver == "s3":
+        await storage.probe(cand)
+    row = (await db.execute(select(SystemSetting).where(SystemSetting.key == storage_config.KEY))).scalar_one_or_none()
+    value: dict = {"driver": cand.driver}
+    if cand.driver == "s3":
+        value.update(endpoint=cand.endpoint, bucket=cand.bucket, region=cand.region, prefix=cand.prefix, accessKeyId=cand.access_key_id,
+                     secretEnc=storage_config.encrypt(cand.secret or ""))
+    if row:
+        row.value = value
+    else:
+        db.add(SystemSetting(key=storage_config.KEY, value=value))
+    await db.commit()
+    storage_config.invalidate()
+    await audit(db, a.id, "storage.update", "SystemSetting", storage_config.KEY,
+                {"before": {"driver": before.driver, "bucket": before.bucket, "endpoint": before.endpoint, "prefix": before.prefix},
+                 "after": {"driver": cand.driver, "bucket": cand.bucket, "endpoint": cand.endpoint, "prefix": cand.prefix},
+                 "secretChanged": bool(body.secretAccessKey)})  # jamais la clé elle-même
+    return await _storage_view(db)
+
+
+@router.post("/storage/migrate")
+async def storage_migrate(a: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
+    """Copie les photos du disque vers le bucket par lots de ~20 s ; à rappeler tant que « remaining » > 0. Ne supprime rien."""
+    cfg = await storage_config.effective()
+    if cfg.driver != "s3":
+        raise bad_request("STORAGE_NOT_S3", "Activez d'abord le stockage objet")
+    r = await storage.migrate_local(cfg)
+    await audit(db, a.id, "storage.migrate", "SystemSetting", storage_config.KEY, r)
+    return r
 
 
 @router.get("/audit-logs")

@@ -8,7 +8,7 @@
 |---|---|
 | PostgreSQL 15+ | sauvegardes quotidiennes + test de restauration, connexion TLS |
 | Domaine + HTTPS | terminaison TLS au reverse proxy (HSTS déjà envoyé par l'API) |
-| Stockage fichiers | **volume persistant** monté sur `UPLOAD_DIR` (pilote local) — ou pilote S3/R2 (à implémenter, interface `StorageService`) |
+| Stockage fichiers | **volume persistant** monté sur `UPLOAD_DIR` (pilote local) — ou stockage objet S3/Cloudflare R2 (livré : voir « Photos sur Cloudflare R2 » ci-dessous) |
 | E-mail | `BREVO_API_KEY` (API HTTP Brevo, prioritaire) ou `SMTP_URL` (SMTP sortant : forfait Railway Pro) ; `MAIL_FROM` avec un expéditeur validé chez Brevo ; SPF/DKIM/DMARC |
 | Secrets | `PAYMENT_WEBHOOK_SECRET`, `IP_HASH_SALT` (`openssl rand -hex 32`) — l'API **refuse de démarrer** avec les valeurs de dev |
 | Fournisseur de paiement | adaptateur réel (voir ROADMAP) ; `PAYMENT_PROVIDER` |
@@ -61,3 +61,36 @@ Le service `migrate` applique `alembic upgrade head` puis s'arrête ; l'API dém
 ## Multi-instances
 
 Avant de passer à plusieurs instances API : Redis (limiteur de débit, anti-spam, adaptateur Socket.IO), job d'expiration des abonnements unique (BullMQ/cron avec verrou), stockage objet partagé.
+
+## Sauvegardes sur Railway et restauration (procédure choisie)
+
+Projet `joyful-prosperity` : deux volumes à protéger — `postgres-volume` (service `DB`, la base) et `api-volume` (service `api`, les photos dans `/data/uploads`).
+
+**Activer** (tableau de bord Railway, par volume : onglet des sauvegardes) : planification quotidienne et hebdomadaire, éventuellement mensuelle. Rétention annoncée par Railway : quotidiennes 6 jours, hebdomadaires 27 jours, mensuelles 89 jours. Une sauvegarde peut aussi être créée à la main et verrouillée (elle n'expire plus) avant une opération risquée (migration, mise à jour de version de PostgreSQL).
+
+**Limites à connaître**
+- Les sauvegardes restent chez Railway : effacer (« wipe ») un volume supprime toutes ses sauvegardes. Ne jamais supprimer le volume ou le service pour « réparer » : restaurer à la place.
+- Elles sont dans la même région que le volume (sfo). Ce n'est pas une copie hors de Railway.
+- RGPD : un compte supprimé reste dans les sauvegardes jusqu'à leur expiration (89 jours au plus avec le mensuel) ; à écrire dans la politique de confidentialité, ou ne pas activer le mensuel.
+- La restauration d'un volume ramène aussi les comptes supprimés entre-temps : après toute restauration, rejouer les suppressions de comptes demandées depuis la date de la sauvegarde.
+
+**Restaurer** : la restauration crée un volume neuf et laisse l'ancien volume dans le projet, démonté. Marche à suivre : prévenir (mode maintenance : couper les drapeaux), restaurer la sauvegarde choisie, redémarrer le service concerné, vérifier `/api/health`, une connexion, une photo et le nombre de comptes, puis seulement supprimer l'ancien volume démonté.
+
+**Test de restauration** (à faire une fois avant l'ouverture, puis chaque trimestre) : restaurer la dernière sauvegarde de la base dans un projet ou un environnement de test, lancer `alembic current` et compter les membres. Noter la date et le résultat dans `docs/STATUS.md`.
+
+**Option plus fine pour la base** : la restauration à un instant précis (PITR) de PostgreSQL existe chez Railway (`railway postgres pitr`) ; fenêtre d'environ 4 semaines d'après leur documentation. À étudier si la perte de quelques heures de données est inacceptable.
+
+## Photos sur Cloudflare R2 (livré, désactivé par défaut)
+
+Par défaut les photos restent sur le volume (`UPLOAD_DIR`). Le stockage objet se règle **dans la console** : Administration → Stockage des fichiers (super administrateur uniquement), ou par les variables `STORAGE_DRIVER=s3` et `S3_*` (voir `.env.example`). La console l'emporte si elle est configurée.
+
+**Mise en route**
+1. Cloudflare → R2 : créer un bucket **privé** (les photos passent par l'API, le bucket n'est jamais public) et un jeton API R2 avec lecture, écriture et suppression sur ce bucket. Noter l'adresse `https://<identifiant>.r2.cloudflarestorage.com`, l'identifiant et la clé secrète.
+2. Railway, service `api` : définir `SETTINGS_ENCRYPTION_KEY` (chaîne aléatoire longue, par exemple `openssl rand -base64 48`). Elle chiffre la clé secrète enregistrée en base ; **la perdre rend la clé secrète inutilisable** (il faudra la ressaisir), la changer aussi.
+3. Console → Stockage des fichiers : saisir adresse, bucket, identifiant et clé secrète, puis « Tester puis enregistrer ». Rien n'est enregistré si le test d'écriture, de relecture et de suppression échoue.
+4. « Copier les photos du disque vers le bucket » : copie par lots, relançable ; ne supprime rien du disque.
+5. Pendant la migration, une photo absente du bucket est servie depuis le disque (aucune photo ne disparaît). Vérifier quelques photos, garder le volume et ses sauvegardes un temps, puis seulement le retirer.
+
+**Sécurité** : la clé secrète est chiffrée (Fernet), jamais renvoyée au navigateur ni écrite dans le journal d'audit (qui note seulement qu'elle a changé) ; l'adresse doit être en https et ne peut pas viser une adresse interne ; chaque modification et chaque migration sont tracées. Revenir au disque est possible mais les photos déjà dans le bucket ne s'affichent plus tant qu'il n'est pas réactivé.
+
+**Limite connue** : l'adresse est validée sans résolution DNS (un nom pointant vers une adresse interne n'est pas détecté) ; l'accès est réservé au super administrateur.

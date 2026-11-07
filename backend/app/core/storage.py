@@ -1,12 +1,14 @@
-"""Stockage local des fichiers (dev/CI) et assainissement des images (format réel, EXIF appliqué puis supprimé, ré-encodage WebP)."""
+"""Stockage des fichiers (dossier local ou stockage objet S3, selon STORAGE_DRIVER) et assainissement des images (format réel, EXIF appliqué puis supprimé, ré-encodage WebP)."""
 import asyncio
 import io
 import re
+import secrets
 from dataclasses import dataclass
 from pathlib import Path
 
 from PIL import Image, ImageOps, UnidentifiedImageError
 
+from app.core import storage_config
 from app.core.config import get_settings
 from app.core.errors import bad_request
 
@@ -25,7 +27,43 @@ def _resolve(key: str) -> Path:
     return _root() / key
 
 
+_clients: dict = {}
+
+
+def _s3_client(cfg: storage_config.Effective):
+    """Client S3 mis en cache par configuration ; échoue clairement si elle est incomplète (jamais de repli silencieux vers le disque en écriture)."""
+    missing = [n for n, v in (("bucket", cfg.bucket), ("clé d'accès", cfg.access_key_id), ("clé secrète", cfg.secret)) if not v]
+    if missing:
+        raise RuntimeError("Stockage objet : configuration incomplète (" + ", ".join(missing) + ")")
+    k = (cfg.endpoint, cfg.region, cfg.access_key_id, cfg.secret)
+    if k not in _clients:
+        import boto3
+        from botocore.config import Config
+
+        _clients.clear()  # une seule configuration active à la fois
+        _clients[k] = boto3.client("s3", endpoint_url=cfg.endpoint or None, region_name=cfg.region, aws_access_key_id=cfg.access_key_id,
+                                   aws_secret_access_key=cfg.secret, config=Config(signature_version="s3v4", retries={"max_attempts": 3, "mode": "standard"},
+                                                                                    connect_timeout=5, read_timeout=20))
+    return _clients[k]
+
+
+def _s3_key(cfg: storage_config.Effective, key: str) -> str:
+    if not KEY_RE.match(key) or ".." in key:
+        raise bad_request("INVALID_KEY")
+    prefix = cfg.prefix.strip("/")
+    return f"{prefix}/{key}" if prefix else key
+
+
+def _is_missing(e) -> bool:
+    return e.response.get("Error", {}).get("Code") in ("NoSuchKey", "404", "NotFound")
+
+
 async def put(key: str, data: bytes) -> None:
+    cfg = await storage_config.effective()
+    if cfg.driver == "s3":
+        k = _s3_key(cfg, key)
+        await asyncio.to_thread(lambda: _s3_client(cfg).put_object(Bucket=cfg.bucket, Key=k, Body=data, ContentType="image/webp"))
+        return
     f = _resolve(key)
 
     def _w() -> None:
@@ -35,17 +73,104 @@ async def put(key: str, data: bytes) -> None:
     await asyncio.to_thread(_w)
 
 
-async def get(key: str) -> bytes | None:
-    f = _resolve(key)
+def _read_local(key: str) -> bytes | None:
     try:
-        return await asyncio.to_thread(f.read_bytes)
+        return _resolve(key).read_bytes()
     except FileNotFoundError:
-        return None  # Silence assumé : un fichier absent se traduit par un 404 chez l'appelant.
+        return None
+
+
+def _s3_get(cfg: storage_config.Effective, key: str) -> bytes | None:
+    from botocore.exceptions import ClientError
+
+    try:
+        return _s3_client(cfg).get_object(Bucket=cfg.bucket, Key=_s3_key(cfg, key))["Body"].read()
+    except ClientError as e:
+        if _is_missing(e):
+            # Migration : une photo pas encore copiée dans le bucket reste servie depuis le disque.
+            return _read_local(key)
+        raise
+
+
+async def get(key: str) -> bytes | None:
+    cfg = await storage_config.effective()
+    if cfg.driver == "s3":
+        return await asyncio.to_thread(_s3_get, cfg, key)
+    return await asyncio.to_thread(_read_local, key)  # None : un fichier absent se traduit par un 404 chez l'appelant
 
 
 async def delete(key: str) -> None:
-    f = _resolve(key)
+    cfg = await storage_config.effective()
+    if cfg.driver == "s3":
+        k = _s3_key(cfg, key)
+        await asyncio.to_thread(lambda: _s3_client(cfg).delete_object(Bucket=cfg.bucket, Key=k))  # idempotent
+    f = _resolve(key)  # supprime aussi une éventuelle copie locale non migrée
     await asyncio.to_thread(lambda: f.unlink(missing_ok=True))
+
+
+async def probe(cfg: storage_config.Effective) -> None:
+    """Écrit, relit puis supprime un fichier d'essai avec CETTE configuration. Lève AppError avec un message clair (jamais le secret)."""
+    from botocore.exceptions import BotoCoreError, ClientError
+
+    key = f"healthcheck/probe-{secrets.token_hex(6)}.webp"
+    payload = secrets.token_bytes(32)
+
+    def _run() -> None:
+        c = _s3_client(cfg)
+        k = _s3_key(cfg, key)
+        c.put_object(Bucket=cfg.bucket, Key=k, Body=payload, ContentType="image/webp")
+        got = c.get_object(Bucket=cfg.bucket, Key=k)["Body"].read()
+        c.delete_object(Bucket=cfg.bucket, Key=k)
+        if got != payload:
+            raise RuntimeError("relecture différente")
+
+    try:
+        await asyncio.to_thread(_run)
+    except ClientError as e:
+        code = e.response.get("Error", {}).get("Code", "")
+        msgs = {"NoSuchBucket": "Le bucket n'existe pas", "InvalidAccessKeyId": "Identifiant de clé d'accès refusé", "SignatureDoesNotMatch": "Clé secrète refusée",
+                "AccessDenied": "Droits insuffisants : la clé doit pouvoir lire, écrire et supprimer dans ce bucket", "403": "Accès refusé"}
+        raise bad_request("STORAGE_TEST_FAILED", msgs.get(code, f"Le stockage a refusé la requête ({code or 'erreur'})")) from None
+    except RuntimeError:
+        raise bad_request("STORAGE_TEST_FAILED", "Le test d'écriture a échoué") from None
+    except (BotoCoreError, OSError):
+        raise bad_request("STORAGE_TEST_FAILED", "Connexion impossible : vérifiez l'adresse du stockage") from None
+
+
+def local_keys() -> list[str]:
+    root = _root()
+    if not root.exists():
+        return []
+    keys = [f.relative_to(root).as_posix() for f in root.rglob("*.webp") if f.is_file()]
+    return sorted(k for k in keys if KEY_RE.match(k) and not k.startswith("healthcheck/"))
+
+
+async def migrate_local(cfg: storage_config.Effective, budget_seconds: float = 20.0) -> dict:
+    """Copie vers le bucket les fichiers du disque qui n'y sont pas encore, dans la limite du temps imparti (rappelable jusqu'à remaining = 0).
+    Les fichiers locaux ne sont jamais supprimés ici : la suppression du volume reste une décision humaine, après vérification."""
+    import time
+
+    def _run() -> dict:
+        c = _s3_client(cfg)
+        prefix = cfg.prefix.strip("/")
+        present: set[str] = set()
+        for page in c.get_paginator("list_objects_v2").paginate(Bucket=cfg.bucket, Prefix=(prefix + "/") if prefix else ""):
+            for o in page.get("Contents", []):
+                present.add(o["Key"][len(prefix) + 1:] if prefix else o["Key"])
+        todo = [k for k in local_keys() if k not in present]
+        deadline = time.monotonic() + budget_seconds
+        copied = errors = 0
+        for k in todo:
+            if time.monotonic() > deadline:
+                break
+            try:
+                c.put_object(Bucket=cfg.bucket, Key=_s3_key(cfg, k), Body=_resolve(k).read_bytes(), ContentType="image/webp")
+                copied += 1
+            except Exception:  # un fichier en échec n'arrête pas les autres ; il est recompté dans « remaining »
+                errors += 1
+        return {"copied": copied, "errors": errors, "remaining": len(todo) - copied, "localTotal": len(local_keys()), "inBucket": len(present) + copied}
+
+    return await asyncio.to_thread(_run)
 
 
 @dataclass
