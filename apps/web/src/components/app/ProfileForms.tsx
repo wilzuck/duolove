@@ -1,9 +1,9 @@
 'use client';
-import { Crown } from 'lucide-react';
+import { Compass, Crown, Diamond, HeartHandshake, Smile, Users } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { COUNTRIES, INTENTS, INTEREST_SLUGS, LIVING, SEEKING, type Intent, type Living } from '@duomatch/types';
-import { Button, Checkbox, cn, Field, Input, Select, Textarea } from '@duomatch/ui';
+import { Button, ChoiceCards, Checkbox, cn, Field, Input, Select, Textarea } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Limits, MyProfile } from '@/lib/types';
 
@@ -20,6 +20,8 @@ export function Chips<T extends string>({ options, value, onChange, max, label, 
     </div>
   );
 }
+
+const INTENT_ICONS: Record<Intent, React.ReactNode> = { SERIOUS: <HeartHandshake />, MARRIAGE: <Diamond />, DATING: <Users />, FRIENDSHIP: <Smile />, UNSURE: <Compass /> };
 
 export interface AboutValue { bio: string; occupation: string; languages: string[]; intent: Intent; interests: string[]; city: string; country: string }
 export const aboutFrom = (p: MyProfile): AboutValue => ({ bio: p.bio, occupation: p.occupation ?? '', languages: p.languages, intent: p.intent, interests: p.interests, city: p.city, country: p.country });
@@ -62,16 +64,7 @@ export function AboutFields({ value, onChange, withLocation }: { value: AboutVal
           <Field label={t('auth.city')}>{(p) => <Input {...p} value={value.city} onChange={(e) => set('city', e.target.value)} />}</Field>
         </div>
       )}
-      <fieldset className="space-y-2"><legend className="text-sm font-medium">{t('profile.intent')}</legend>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {INTENTS.map((i) => (
-            <label key={i} className={cn('flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition has-[:checked]:border-brand-strong has-[:checked]:bg-soft', 'border-line')}>
-              <input type="radio" name="intent" className="mt-1 accent-brand-strong" checked={value.intent === i} onChange={() => set('intent', i)} />
-              <span><span className="block font-semibold">{t(`intent.${i}`)}</span><span className="text-sm text-muted">{t(`intentHint.${i}`)}</span></span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      <ChoiceCards legend={t('profile.intent')} value={value.intent} onChange={(v) => set('intent', v)} options={INTENTS.map((i) => ({ value: i, label: t(`intent.${i}`), hint: t(`intentHint.${i}`), icon: INTENT_ICONS[i] }))} />
       <div className="space-y-2"><p className="text-sm font-medium">{t('profile.languages')}</p><Chips label={t('profile.languages')} options={LANGS} value={value.languages as (typeof LANGS)[number][]} onChange={(v) => set('languages', v)} max={8} render={(l) => t(`lang.${l}`)} /></div>
     </div>
   );
