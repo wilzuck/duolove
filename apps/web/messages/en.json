@@ -46,6 +46,57 @@
     "links": "Site links"
   },
   "home": {
+    "v2": {
+      "badge": "Dating site for adults (18+)",
+      "h1a": "Two hearts,",
+      "h1b": "one beautiful story.",
+      "lead": "A serious, warm and safe space for meaningful encounters, in Africa and beyond.",
+      "chips": {
+        "verified": "Verified profiles",
+        "serious": "Serious dating",
+        "data": "Protected data"
+      },
+      "ctaCreate": "Create my free account",
+      "ctaDiscover": "Discover DuoMatch",
+      "heroAlt": "A smiling couple, cheek to cheek, in front of a large pink heart, with the “It’s a match!” card.",
+      "strip": {
+        "community": {
+          "title": "A respectful community",
+          "text": "Kind members and clear rules."
+        },
+        "security": {
+          "title": "Security and privacy",
+          "text": "Your data and your conversations are protected."
+        },
+        "profiles": {
+          "title": "Authentic profiles",
+          "text": "Real people, with verified profiles."
+        },
+        "simple": {
+          "title": "Simple and effective",
+          "text": "Sign up in minutes and start chatting."
+        }
+      },
+      "how3": {
+        "title": "How it works",
+        "s1": {
+          "title": "Create your profile",
+          "text": "Sign up for free and fill in your details."
+        },
+        "s2": {
+          "title": "Find common ground",
+          "text": "Discover compatible profiles based on your preferences."
+        },
+        "s3": {
+          "title": "Chat and meet",
+          "text": "Talk with confidence and let a beautiful story begin."
+        }
+      },
+      "final": {
+        "title": "Ready for a great encounter?",
+        "cta": "Sign up now"
+      }
+    },
     "eyebrow": "Serious dating, with confidence",
     "title": "Two hearts, one beautiful story.",
     "subtitle": "DuoMatch helps you meet compatible people: same intentions, same values, same city or close. Simple, elegant and secure.",

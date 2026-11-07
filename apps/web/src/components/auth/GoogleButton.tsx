@@ -44,7 +44,7 @@ export function GoogleButton({ onToken }: { onToken: (idToken: string) => void }
   if (!CLIENT_ID) return null;
   return (
     <div className="space-y-4">
-      <div ref={ref} className="flex justify-center [color-scheme:light]" aria-label={t('auth.google')} />
+      <div ref={ref} role="group" className="flex justify-center [color-scheme:light]" aria-label={t('auth.google')} />
       <p className="flex items-center gap-3 text-xs text-muted before:h-px before:flex-1 before:bg-line after:h-px after:flex-1 after:bg-line">{t('auth.or')}</p>
     </div>
   );

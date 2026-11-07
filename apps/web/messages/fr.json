@@ -46,6 +46,57 @@
     "links": "Liens du site"
   },
   "home": {
+    "v2": {
+      "badge": "Site de rencontres pour adultes (18+)",
+      "h1a": "Deux cœurs, une",
+      "h1b": "belle histoire.",
+      "lead": "Un espace sérieux, chaleureux et sûr pour faire de belles rencontres, en Afrique et partout ailleurs.",
+      "chips": {
+        "verified": "Profils vérifiés",
+        "serious": "Rencontres sérieuses",
+        "data": "Données protégées"
+      },
+      "ctaCreate": "Créer mon compte gratuitement",
+      "ctaDiscover": "Découvrir DuoMatch",
+      "heroAlt": "Un couple souriant, joue contre joue, devant un grand cœur rose, avec la carte « C’est un match ! ».",
+      "strip": {
+        "community": {
+          "title": "Une communauté respectueuse",
+          "text": "Des membres bienveillants et un cadre clair."
+        },
+        "security": {
+          "title": "Sécurité et confidentialité",
+          "text": "Vos données et vos échanges sont protégés."
+        },
+        "profiles": {
+          "title": "Des profils authentiques",
+          "text": "Des personnes réelles, avec des profils vérifiés."
+        },
+        "simple": {
+          "title": "Simple et efficace",
+          "text": "Inscrivez-vous en quelques minutes et commencez à échanger."
+        }
+      },
+      "how3": {
+        "title": "Comment ça marche ?",
+        "s1": {
+          "title": "Créez votre profil",
+          "text": "Inscrivez-vous gratuitement et renseignez vos informations."
+        },
+        "s2": {
+          "title": "Trouvez des affinités",
+          "text": "Découvrez des profils compatibles selon vos préférences."
+        },
+        "s3": {
+          "title": "Échangez et rencontrez",
+          "text": "Discutez en toute confiance et laissez naître une belle histoire."
+        }
+      },
+      "final": {
+        "title": "Prêt(e) à faire une belle rencontre ?",
+        "cta": "S’inscrire maintenant"
+      }
+    },
     "eyebrow": "Rencontres sérieuses, en toute confiance",
     "title": "Deux cœurs, une belle histoire.",
     "subtitle": "DuoMatch vous aide à rencontrer des personnes compatibles : mêmes intentions, mêmes valeurs, même ville ou presque. Simple, élégant et sécurisé.",

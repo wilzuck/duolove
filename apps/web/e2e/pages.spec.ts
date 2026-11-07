@@ -8,7 +8,8 @@ const overflow = (page: Page) => page.evaluate(() => document.documentElement.sc
 test('Comment ça marche : huit étapes, ce qui change, tous âges, tarifs, accessible', async ({ page }) => {
   await page.goto('/how-it-works');
   await expect(page.getByRole('heading', { level: 1, name: 'Comment fonctionne DuoMatch' })).toBeVisible();
-  await expect(page.getByRole('region', { name: 'Votre parcours en huit étapes' }).getByRole('listitem')).toHaveCount(8);
+  // La section contient aussi le sommaire latéral (même libellé, huit liens) : on compte les cartes d'étapes, la dernière liste ordonnée.
+  await expect(page.getByRole('region', { name: 'Votre parcours en huit étapes' }).locator('ol').last().locator(':scope > li')).toHaveCount(8);
   await expect(page.getByRole('heading', { level: 3, name: 'Passez à la rencontre, en sécurité' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Ce qui change ici' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'L’amour n’a pas d’âge' })).toBeVisible();
