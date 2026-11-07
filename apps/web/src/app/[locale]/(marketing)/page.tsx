@@ -1,3 +1,4 @@
+import { FloatingHearts } from '@/components/marketing/FloatingHearts';
 import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, Heart, HeartHandshake, MessageCircle, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus, Users, Zap } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button, Card } from '@duomatch/ui';
@@ -19,6 +20,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const t = await getTranslations();
   return (
     <>
+      <FloatingHearts />
       <section className="hero-glow relative overflow-hidden pb-24 md:pb-28">
         <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-4 pt-6 sm:px-6 md:pt-10 lg:grid-cols-2 lg:gap-0">
           <div className="min-w-0 space-y-7 text-center lg:pb-10 lg:text-left">

@@ -47,6 +47,14 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .skip-link { position: absolute; left: 1rem; top: -4rem; z-index: 100; background: var(--card); padding: .75rem 1rem; border-radius: 9999px; box-shadow: var(--shadow-pop); }
 .skip-link:focus { top: 1rem; }
 .hero-glow { background: radial-gradient(60% 60% at 20% 10%, rgb(255 107 129 / .35), transparent 60%), radial-gradient(50% 50% at 90% 30%, rgb(233 30 99 / .22), transparent 60%), var(--soft); }
+.heart-float { position: absolute; bottom: -2.5rem; opacity: 0; animation: heart-float linear forwards; will-change: transform, opacity; }
+@keyframes heart-float {
+  0% { transform: translate(0, 0) scale(.6); opacity: 0; }
+  12% { opacity: .85; }
+  60% { opacity: .7; }
+  100% { transform: translate(var(--drift, 0), -105vh) scale(1.1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .heart-float { display: none; } }
 .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), .25rem); }
 .scrollbar-none { scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
