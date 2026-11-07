@@ -56,3 +56,14 @@ async def test_echec_envoi_ne_leve_pas_et_ne_journalise_pas_la_cle(monkeypatch, 
     monkeypatch.setattr(get_settings(), "brevo_api_key", "xkeysib-secret")
     await mail.send("a@b.test", "Sujet", "Corps")  # ne lève pas
     assert "Brevo HTTP 401" in caplog.text and "xkeysib-secret" not in caplog.text
+
+
+def test_mail_from_avec_guillemets_saisis_par_erreur(monkeypatch):
+    st = get_settings()
+    for raw in ('DuoMatch <no-reply@duomatch.test>', '"DuoMatch <no-reply@duomatch.test>"', "'DuoMatch <no-reply@duomatch.test>'", "  no-reply@duomatch.test "):
+        monkeypatch.setattr(st, "mail_from", raw)
+        name, addr = mail.sender()
+        assert addr == "no-reply@duomatch.test", raw
+    monkeypatch.setattr(st, "mail_from", "DuoMatch")
+    with pytest.raises(RuntimeError, match="MAIL_FROM invalide"):
+        mail.sender()

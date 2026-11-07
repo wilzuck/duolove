@@ -16,13 +16,23 @@ outbox: list[dict] = []
 BREVO_URL = "https://api.brevo.com/v3/smtp/email"
 
 
+def sender() -> tuple[str, str]:
+    """(nom, adresse) tirés de MAIL_FROM. Tolère des guillemets saisis par erreur autour de toute la valeur dans Railway ;
+    une adresse introuvable lève une erreur claire plutôt qu'un refus obscur du fournisseur."""
+    raw = get_settings().mail_from.strip().strip("\"'").strip()
+    name, addr = parseaddr(raw)
+    if "@" not in addr:
+        raise RuntimeError("MAIL_FROM invalide : attendu « DuoMatch <no-reply@votre-domaine> »")
+    return name, addr
+
+
 async def _send_brevo(to: str, subject: str, text: str) -> None:
     s = get_settings()
-    name, addr = parseaddr(s.mail_from)
-    sender = {"email": addr, **({"name": name} if name else {})}
+    name, addr = sender()
+    who = {"email": addr, **({"name": name} if name else {})}
     async with httpx.AsyncClient(timeout=15) as c:
         r = await c.post(BREVO_URL, headers={"api-key": s.brevo_api_key or "", "accept": "application/json"},
-                         json={"sender": sender, "to": [{"email": to}], "subject": subject, "textContent": text})
+                         json={"sender": who, "to": [{"email": to}], "subject": subject, "textContent": text})
     if r.status_code >= 400:  # la clé n'est jamais journalisée ; le corps de Brevo dit pourquoi (expéditeur non validé, clé refusée…)
         raise RuntimeError(f"Brevo HTTP {r.status_code}: {r.text[:300]}")
 
@@ -45,7 +55,8 @@ async def _send(to: str, subject: str, text: str) -> None:
 
         u = urlsplit(s.smtp_url)
         msg = EmailMessage()
-        msg["From"], msg["To"], msg["Subject"] = s.mail_from, to, subject
+        name, addr = sender()
+        msg["From"], msg["To"], msg["Subject"] = (f"{name} <{addr}>" if name else addr), to, subject
         msg.set_content(text)
         await aiosmtplib.send(msg, hostname=u.hostname, port=u.port or 587, username=unquote(u.username) if u.username else None,
                               password=unquote(u.password) if u.password else None,
