@@ -1597,7 +1597,8 @@
     "heading": "Likes",
     "tab": {
       "received": "Liked you",
-      "sent": "You liked"
+      "sent": "You liked",
+      "visitors": "Viewed your profile"
     },
     "sentEmptyTitle": "You haven’t liked anyone yet",
     "sentEmptyText": "Browse profiles and like the ones you fancy: they will appear here.",
@@ -1606,7 +1607,13 @@
     "commentLabel": "Comment:",
     "aboutAnswer": "About your answer",
     "aboutPhoto": "About one of your photos",
-    "aboutInterest": "About: {name}"
+    "aboutInterest": "About: {name}",
+    "visitorsLockedTitle": "{count, plural, =0 {No visits yet} one {# person visited your profile} other {# people visited your profile}}",
+    "visitorsLockedText": "Go Premium to see who viewed your profile in the last 30 days.",
+    "visitorsEmptyTitle": "No recent visits",
+    "visitorsEmptyText": "People who view your profile will show up here for 30 days.",
+    "visitedAgo": "Last visit: {when}",
+    "visitCount": "{n, plural, one {# visit} other {# visits}}"
   },
   "chat": {
     "title": "Messages",

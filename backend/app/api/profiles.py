@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import discoverysvc, profilesvc
+from app.core import discoverysvc, profilesvc, visitsvc
 from app.core.auth import AuthUser, current_user
 from app.core.errors import AppError, bad_request, not_found
 from app.core.profile_card import load_card, to_card
@@ -88,6 +88,12 @@ async def verification(file: UploadFile | None = File(None), u: AuthUser = Depen
     return await profilesvc.request_verification(db, u.id, await read_upload(file))
 
 
+@router.get("/me/visitors")
+async def visitors(cursor: str | None = None, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    """Qui a consulté mon profil (30 derniers jours). Gratuit : compteur seulement ; Premium / VIP : liste."""
+    return await visitsvc.list_visitors(db, u.id, cursor)
+
+
 @router.get("/{user_id}")
 async def view(user_id: str, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
     """Profil complet d'un autre membre. Refusé si bloqué (dans un sens ou l'autre), suspendu ou masqué."""
@@ -97,5 +103,6 @@ async def view(user_id: str, u: AuthUser = Depends(current_user), db: AsyncSessi
         raise not_found("PROFILE_NOT_FOUND")
     mine = (await db.execute(select(Interest.slug).join(t_UserInterest, t_UserInterest.c.interestId == Interest.id).where(t_UserInterest.c.userId == u.id))).scalars().all()
     card = await load_card(db, p)
+    await visitsvc.record(db, u.id, user_id)
     affinity = await discoverysvc.explain_for(db, u.id, p, [card]) if user_id != u.id else None
     return to_card(card, viewer_interests=list(mine), affinity=affinity, score=affinity["score"] if affinity else None)

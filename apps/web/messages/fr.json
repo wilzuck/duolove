@@ -1597,7 +1597,8 @@
     "heading": "Likes",
     "tab": {
       "received": "Ils vous ont liké",
-      "sent": "Vous avez liké"
+      "sent": "Vous avez liké",
+      "visitors": "Ils ont vu votre profil"
     },
     "sentEmptyTitle": "Vous n’avez encore liké personne",
     "sentEmptyText": "Parcourez des profils et likez ceux qui vous plaisent : ils apparaîtront ici.",
@@ -1606,7 +1607,13 @@
     "commentLabel": "Commentaire :",
     "aboutAnswer": "À propos de votre réponse",
     "aboutPhoto": "À propos d’une de vos photos",
-    "aboutInterest": "À propos de : {name}"
+    "aboutInterest": "À propos de : {name}",
+    "visitorsLockedTitle": "{count, plural, =0 {Aucune visite pour l’instant} one {# personne a visité votre profil} other {# personnes ont visité votre profil}}",
+    "visitorsLockedText": "Passez Premium pour voir qui a consulté votre profil ces 30 derniers jours.",
+    "visitorsEmptyTitle": "Aucune visite récente",
+    "visitorsEmptyText": "Les personnes qui consultent votre profil apparaîtront ici pendant 30 jours.",
+    "visitedAgo": "Dernière visite : {when}",
+    "visitCount": "{n, plural, one {# visite} other {# visites}}"
   },
   "chat": {
     "title": "Messages",

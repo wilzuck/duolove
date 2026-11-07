@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { BadgeCheck, Crown, Heart, MessageCircle, Star, X } from 'lucide-react';
+import { BadgeCheck, Crown, Eye, Heart, MessageCircle, Star, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Avatar, Badge, Button, Card, EmptyState, Skeleton, Tabs } from '@duomatch/ui';
@@ -12,6 +12,7 @@ import { useUi } from '@/lib/store';
 import type { Card as ProfileCardT, Paged, SwipeResult } from '@/lib/types';
 
 type Received = Paged<ProfileCardT> & { locked: boolean; count: number };
+type Visitors = Paged<ProfileCardT & { visitedAt: string; visits: number }> & { locked: boolean; count: number };
 type Sent = Paged<ProfileCardT & { matched: boolean; conversationId: string | null }>;
 
 export default function LikesPage() {
@@ -21,9 +22,10 @@ export default function LikesPage() {
   const err = useApiError();
   const toast = useUi((s) => s.toast);
   const showMatch = useUi((s) => s.showMatch);
-  const [tab, setTab] = useState<'received' | 'sent'>('received');
+  const [tab, setTab] = useState<'received' | 'sent' | 'visitors'>('received');
   const q = useQuery({ queryKey: ['received'], queryFn: () => api<Received>('/swipes/received') });
   const sent = useQuery({ queryKey: ['sent'], queryFn: () => api<Sent>('/swipes/sent'), enabled: tab === 'sent' });
+  const visitors = useQuery({ queryKey: ['visitors'], queryFn: () => api<Visitors>('/profiles/me/visitors'), enabled: tab === 'visitors' });
   const act = useMutation({
     mutationFn: ({ id, action }: { id: string; action: 'LIKE' | 'PASS' }) => post<SwipeResult>('/swipes', { targetId: id, action }),
     onSuccess: (r) => { void qc.invalidateQueries({ queryKey: ['received'] }); if (r.matched && r.match) showMatch({ matchId: r.match.id, conversationId: r.match.conversationId, user: r.match.user }); },
@@ -33,7 +35,7 @@ export default function LikesPage() {
   return (
     <div className="mx-auto w-full max-w-2xl space-y-5 px-4 py-4">
       <h1 className="text-2xl font-extrabold">{t('likes.heading')}</h1>
-      <Tabs label={t('likes.heading')} value={tab} onChange={setTab} tabs={[{ key: 'received', label: `${t('likes.tab.received')}${q.data ? ` (${q.data.count})` : ''}` }, { key: 'sent', label: t('likes.tab.sent') }]} />
+      <Tabs label={t('likes.heading')} value={tab} onChange={setTab} tabs={[{ key: 'received', label: `${t('likes.tab.received')}${q.data ? ` (${q.data.count})` : ''}` }, { key: 'sent', label: t('likes.tab.sent') }, { key: 'visitors', label: `${t('likes.tab.visitors')}${visitors.data ? ` (${visitors.data.count})` : ''}` }]} />
       {tab === 'sent' && (
         <div role="tabpanel" className="space-y-3">
           {sent.isLoading && <><Skeleton className="h-24" /><Skeleton className="h-24" /></>}
@@ -49,6 +51,37 @@ export default function LikesPage() {
               {c.matched && c.conversationId
                 ? <Link href={`/messages/${c.conversationId}`}><Button size="sm"><MessageCircle className="size-4" aria-hidden />{t('likes.chat')}</Button></Link>
                 : <Badge tone="neutral">{t('likes.pending')}</Badge>}
+            </Card></li>
+          ))}</ul>
+        </div>
+      )}
+      {tab === 'visitors' && (
+        <div role="tabpanel" className="space-y-3">
+          {visitors.isLoading && <><Skeleton className="h-24" /><Skeleton className="h-24" /></>}
+          {visitors.data?.locked && (
+            <Card className="overflow-hidden">
+              <div className="grid grid-cols-3 gap-1 p-1" aria-hidden>
+                {Array.from({ length: Math.min(Math.max(visitors.data.count, 1), 6) }).map((_, i) => <div key={i} className="aspect-[4/5] bg-linear-to-br from-brand-2 to-brand-strong blur-lg" />)}
+              </div>
+              <div className="space-y-3 p-6 text-center">
+                <Crown className="mx-auto size-8 text-brand" aria-hidden />
+                <h2 className="text-xl font-bold">{t('likes.visitorsLockedTitle', { count: visitors.data.count })}</h2>
+                <p className="text-muted">{t('likes.visitorsLockedText')}</p>
+                <Link href="/premium"><Button size="lg">{t('app.goPremium')}</Button></Link>
+              </div>
+            </Card>
+          )}
+          {visitors.data && !visitors.data.locked && visitors.data.items.length === 0 && <EmptyState icon={<Eye className="size-8" />} title={t('likes.visitorsEmptyTitle')}>{t('likes.visitorsEmptyText')}</EmptyState>}
+          <ul className="space-y-3">{visitors.data?.items.map((c) => (
+            <li key={c.id}><Card className="flex items-center gap-4 p-3">
+              <Link href={`/profile/${c.id}`} className="flex min-w-0 flex-1 items-center gap-4" aria-label={t('likes.view', { name: c.displayName })}>
+                <Avatar src={c.photos[0]?.thumbUrl} name={c.displayName} size={72} className="rounded-2xl" />
+                <span className="min-w-0">
+                  <span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <BadgeCheck className="size-4 fill-sky-500 text-white" aria-label={t('card.verified')} />}</span>
+                  <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span>
+                  <span className="mt-1 block text-sm text-muted">{t('likes.visitedAgo', { when: new Date(c.visitedAt).toLocaleDateString(locale, { day: 'numeric', month: 'short' }) })} · {t('likes.visitCount', { n: c.visits })}</span>
+                </span>
+              </Link>
             </Card></li>
           ))}</ul>
         </div>

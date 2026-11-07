@@ -13,7 +13,7 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 | Auth | inscription (18+), connexion, déconnexion, e-mail à confirmer, mot de passe oublié/réinitialisation, changement de mot de passe, verrouillage, sessions actives, Google (code prêt) |
 | Profil | onboarding 4 étapes, photos (recadrage, ordre, principale, suppression, suppression EXIF), complétude, préférences, vérification par selfie (revue humaine), boost VIP |
 | Découverte | swipe (glisser/boutons/clavier), Super Like, retour arrière, filtres gratuits + Premium (serveur), score + % de compatibilité, exclusion bloqués/suspendus/masqués, mode discret, position arrondie |
-| Likes / matchs | quotas par formule, match transactionnel idempotent (verrou de paire), animation, likes reçus (verrouillés en gratuit) |
+| Likes / matchs | quotas par formule, match transactionnel idempotent (verrou de paire), animation, likes reçus (verrouillés en gratuit), **visiteurs du profil** (onglet « Ils ont vu votre profil » : 30 jours, compteur seul en gratuit, liste Premium/VIP, mode discret respecté ; non testé en E2E navigateur) |
 | Messagerie | temps réel Socket.IO, texte/émojis/images, frappe, lecture configurable, historique paginé, recherche, suppression, unmatch, blocage, signalement, anti-spam |
 | Notifications | in-app + temps réel + e-mail (préférences), page de réglages |
 | Abonnements | plans, checkout, **webhook signé idempotent**, factures, historique, annulation/reprise, expiration, droits côté serveur |

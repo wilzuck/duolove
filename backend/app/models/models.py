@@ -1172,6 +1172,24 @@ class Subscription(Base):
     Payment: Mapped[list['Payment']] = relationship('Payment', back_populates='Subscription_')
 
 
+class ProfileVisit(Base):
+    """Visite d'un profil : une ligne par couple (visiteur, profil visité), mise à jour à chaque nouvelle visite."""
+    __tablename__ = 'ProfileVisit'
+    __table_args__ = (
+        ForeignKeyConstraint(['viewerId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='ProfileVisit_viewerId_fkey'),
+        ForeignKeyConstraint(['visitedId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='ProfileVisit_visitedId_fkey'),
+        PrimaryKeyConstraint('id', name='ProfileVisit_pkey'),
+        Index('ProfileVisit_viewerId_visitedId_key', 'viewerId', 'visitedId', unique=True),
+        Index('ProfileVisit_visitedId_lastVisitAt_idx', 'visitedId', 'lastVisitAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    viewerId: Mapped[str] = mapped_column(Text, nullable=False)
+    visitedId: Mapped[str] = mapped_column(Text, nullable=False)
+    visits: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('1'))
+    lastVisitAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
 class Swipe(Base):
     __tablename__ = 'Swipe'
     __table_args__ = (
