@@ -58,29 +58,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </ul>
       </section>
 
-      <section id="comment-ca-marche" className="mx-auto max-w-6xl scroll-mt-24 px-4 pt-20 pb-6 sm:px-6" aria-labelledby="how3">
-        <div className="flex items-center justify-center gap-5">
-          <span aria-hidden className="hidden h-0.5 w-14 bg-brand sm:block" />
-          <h2 id="how3" className="text-center font-display text-3xl font-extrabold md:text-4xl">{t('home.v2.how3.title')}</h2>
-          <span aria-hidden className="hidden h-0.5 w-14 bg-brand sm:block" />
-        </div>
-        <ol className="mt-12 grid items-start gap-12 md:grid-cols-3 md:gap-14">
-          {HOW.map(([Icon, k], i) => (
-            <li key={k} className="relative">
-              <div className="text-center">
-                <div className="mx-auto flex w-fit items-center gap-3">
-                  <span className="flex size-9 items-center justify-center rounded-full bg-brand-strong font-display text-base font-extrabold text-white">{i + 1}</span>
-                  <span className="flex size-20 items-center justify-center rounded-[1.6rem] bg-soft text-brand-ink"><Icon className="size-9" aria-hidden /></span>
-                </div>
-                <h3 className="mt-5 font-display text-xl font-bold">{t(`home.v2.how3.${k}.title`)}</h3>
-                <p className="mx-auto mt-2 max-w-[17rem] text-fg/80">{t(`home.v2.how3.${k}.text`)}</p>
-              </div>
-              {i < HOW.length - 1 && <ChevronRight aria-hidden className="absolute top-9 -right-10 hidden size-6 text-brand md:block" />}
-            </li>
-          ))}
-        </ol>
-      </section>
-
       <section id="fonctionnalites" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-20" aria-labelledby="benefits">
         <h2 id="benefits" className="mx-auto max-w-2xl text-center text-3xl font-extrabold md:text-4xl">{t('home.benefitsTitle')}</h2>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -91,6 +68,27 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <p className="text-muted">{t(`home.benefits.${k}.text`)}</p>
             </Card>
           ))}
+        </div>
+      </section>
+
+      <section id="comment-ca-marche" className="scroll-mt-24 bg-soft px-4 py-20 sm:px-6" aria-labelledby="how3">
+        <div className="mx-auto max-w-6xl">
+        <h2 id="how3" className="text-center font-display text-3xl font-extrabold md:text-4xl">{t('home.v2.how3.title')}</h2>
+        <ol className="mt-12 grid items-start gap-12 md:grid-cols-3 md:gap-14">
+          {HOW.map(([Icon, k], i) => (
+            <li key={k} className="relative">
+              <div className="text-center">
+                <div className="mx-auto flex w-fit flex-col items-center gap-3">
+                  <span className="flex size-9 items-center justify-center rounded-full bg-brand-strong font-display text-base font-extrabold text-white">{i + 1}</span>
+                  <span className="flex size-20 items-center justify-center rounded-[1.6rem] bg-card text-brand-ink shadow-sm"><Icon className="size-9" aria-hidden /></span>
+                </div>
+                <h3 className="mt-5 font-display text-xl font-bold">{t(`home.v2.how3.${k}.title`)}</h3>
+                <p className="mx-auto mt-2 max-w-[17rem] text-fg/80">{t(`home.v2.how3.${k}.text`)}</p>
+              </div>
+              {i < HOW.length - 1 && <ChevronRight aria-hidden className="absolute top-[5.3rem] -right-10 hidden size-6 text-brand md:block" />}
+            </li>
+          ))}
+        </ol>
         </div>
       </section>
 

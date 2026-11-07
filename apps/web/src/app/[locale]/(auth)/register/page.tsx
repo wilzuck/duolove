@@ -1,6 +1,5 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
@@ -78,9 +77,6 @@ function RegisterForm() {
 
   return (
     <AuthShell title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')} footer={<>{t('auth.haveAccount')} <Link href="/login" className="font-semibold text-brand-ink underline">{t('nav.login')}</Link></>}>
-      <ul className="-mt-2 mb-6 space-y-1.5 text-sm">
-        {(t.raw('auth.reassure') as string[]).map((r) => <li key={r} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success-ink" aria-hidden /><span>{r}</span></li>)}
-      </ul>
       {!googleToken && <GoogleButton onToken={setGoogleToken} />}
       {googleToken && <p className="mb-5 rounded-2xl bg-soft p-4 text-sm">{t('auth.googleComplete')}</p>}
       <form onSubmit={submit} className="space-y-4" noValidate>
@@ -89,7 +85,7 @@ function RegisterForm() {
           <>
             <Field label={t('auth.displayName')} error={errors.displayName}>{(p) => <Input {...p} autoComplete="given-name" value={f.displayName} onChange={(e) => set('displayName', e.target.value)} />}</Field>
             <Field label={t('auth.email')} error={errors.email}>{(p) => <Input {...p} type="email" autoComplete="email" value={f.email} onChange={(e) => set('email', e.target.value)} />}</Field>
-            <Field label={t('auth.password')} hint={t('auth.passwordHint')} error={errors.password}>{(p) => <><PasswordInput {...p} autoComplete="new-password" value={f.password} onChange={(e) => set('password', e.target.value)} /><PasswordStrength value={f.password} /></>}</Field>
+            <Field label={t('auth.password')} hint={f.password ? undefined : t('auth.passwordHint')} error={errors.password}>{(p) => <><PasswordInput {...p} autoComplete="new-password" value={f.password} onChange={(e) => set('password', e.target.value)} /><PasswordStrength value={f.password} /></>}</Field>
           </>
         )}
         <Field label={t('auth.birthDate')} hint={t('auth.birthHint', { age: MIN_AGE })} error={errors.birthDate}>{(p) => <DatePicker id={p.id} aria-describedby={p['aria-describedby']} invalid={!!errors.birthDate} dropdowns locale={locale} max={maxBirth} value={f.birthDate} onChange={(v) => set('birthDate', v)} labels={{ placeholder: t('common.pickDate'), clear: t('common.clearDate') }} />}</Field>
@@ -117,7 +113,9 @@ function RegisterForm() {
           />
           {errors.acceptTerms && <Alert variant="text">{errors.acceptTerms}</Alert>}
         </div>
-        <Button type="submit" size="lg" className="w-full" loading={reg.isPending || google.isPending}>{t('auth.createAccount')}</Button>
+        <div className="max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-7 max-sm:-mb-1 max-sm:border-t max-sm:border-line max-sm:bg-card max-sm:px-7 max-sm:py-3">
+          <Button type="submit" size="lg" className="w-full" loading={reg.isPending || google.isPending}>{t('auth.createAccount')}</Button>
+        </div>
         <p className="text-center text-xs text-muted">{t('auth.adultsNote')} {t('auth.privacyNote')}</p>
       </form>
     </AuthShell>

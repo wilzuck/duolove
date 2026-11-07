@@ -19,13 +19,10 @@ test('connexion : carte centrée sobre, lien « mot de passe oublié » centré,
   await expect(page.getByRole('heading', { level: 1, name: 'Welcome back!' })).toBeVisible();
 });
 
-test('inscription : réassurance sobre, règles du mot de passe en direct, règles de la communauté, accessible', async ({ page }) => {
+test('inscription : sous-titre court, règles du mot de passe en direct, règles de la communauté, accessible', async ({ page }) => {
   await page.goto('/register');
   await expect(page.getByRole('heading', { level: 1, name: 'Créer mon compte' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0); // carte centrée sobre, comme la connexion
-  await expect(page.getByText('Gratuit pour commencer, sans carte bancaire.')).toBeVisible();
-  await expect(page.getByText('De vrais profils : modération humaine et badge « vérifié ».')).toBeVisible();
-  await expect(page.getByText('Vous gardez la main : profil masquable, mode pause.')).toBeVisible();
   const pw = page.getByLabel('Mot de passe', { exact: true });
   await pw.fill('abc');
   const rules = page.getByRole('list').filter({ hasText: '10 caractères ou plus' });
@@ -42,7 +39,7 @@ test('inscription : réassurance sobre, règles du mot de passe en direct, règl
   await expect(page.getByText(/Votre adresse e-mail n’apparaît jamais sur votre profil/)).toBeVisible();
   expect(await axeOf(page)).toEqual([]);
   await page.goto('/en/register');
-  await expect(page.getByText('Free to start, no credit card.')).toBeVisible();
+  await expect(page.getByText('Free, in under two minutes. No credit card.')).toBeVisible();
 });
 
 test('mobile : pas de débordement, formulaire complet', async ({ page }) => {

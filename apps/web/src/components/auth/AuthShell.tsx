@@ -8,7 +8,7 @@ import { ThemeToggle } from '../ThemeToggle';
 /** `backdrop` : photo décorative plein cadre (le sujet reste visible à droite sur grand écran, la carte du formulaire se place à gauche, sur la partie dégagée de l'image). */
 export function AuthShell({ title, subtitle, children, footer, backdrop }: { title: string; subtitle?: string; children: ReactNode; footer?: ReactNode; backdrop?: string }) {
   return (
-    <div className="hero-glow relative isolate flex min-h-dvh flex-col overflow-hidden">
+    <div className="hero-glow relative isolate flex min-h-dvh flex-col overflow-clip">
       {backdrop && <img src={backdrop} alt="" aria-hidden decoding="async" fetchPriority="high" className="fixed inset-0 -z-10 size-full object-cover object-[78%_center] lg:object-right [[data-theme=dark]_&]:brightness-75" />}
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4">
         <Link href="/"><Logo /></Link>
