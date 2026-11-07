@@ -1,4 +1,4 @@
-import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, Heart, MessageCircle, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus, Users, Zap } from 'lucide-react';
+import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, Heart, HeartHandshake, MessageCircle, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus, Users, Zap } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button, Card } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
@@ -20,10 +20,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <>
       <section className="hero-glow relative overflow-hidden pb-24 md:pb-28">
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-linear-to-b from-transparent to-bg" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-4 pt-6 sm:px-6 md:pt-10 lg:grid-cols-2 lg:gap-0">
           <div className="min-w-0 space-y-7 text-center lg:pb-10 lg:text-left">
-            <p className="inline-flex items-center gap-2 rounded-full bg-brand/10 px-4 py-2 text-sm font-semibold text-brand-ink"><Heart className="size-4 fill-brand text-brand" aria-hidden />{t('home.v2.badge')}</p>
+            <p className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-sm font-semibold text-brand-ink shadow-soft"><HeartHandshake className="size-4" aria-hidden />{t('home.eyebrow')}</p>
             <h1 className="font-display text-[2.4rem] font-extrabold leading-[1.08] tracking-tight text-balance sm:text-5xl lg:text-6xl">
               {t('home.v2.h1a')} <span className="inline-block text-brand">{t('home.v2.h1b')}</span>
             </h1>
