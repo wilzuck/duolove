@@ -19,7 +19,7 @@ from app.core.ids import utcnow
 from app.core.profile_card import thumb_key
 from app.db.session import get_db
 from app.models.models import (
-    AuditLog, Conversation, Entitlement, FeatureFlag, Match, ModerationAction, Payment, PlanPrice, Product, Profile, ProfilePhoto,
+    AuditLog, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Product, Profile, ProfilePhoto,
     PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, SystemSetting, User, VerificationRequest,
 )
 from app.schemas.admin import (
@@ -80,8 +80,28 @@ async def _display_names(db: AsyncSession, ids) -> dict[str, str]:
 
 
 # ───────── Vue d'ensemble ─────────
+# Séries par jour (zéro si aucun événement) : table, colonne et filtre sont des constantes de ce module, jamais une saisie.
+_SERIES = {
+    "signups": ('"User"', '"createdAt"', "COUNT(*)", "TRUE"),
+    "likes": ('"Swipe"', '"createdAt"', "COUNT(*)", "\"action\" IN ('LIKE','SUPER_LIKE')"),
+    "matches": ('"Match"', '"createdAt"', "COUNT(*)", "TRUE"),
+    "messages": ('"Message"', '"createdAt"', "COUNT(*)", "TRUE"),
+    "revenue": ('"Payment"', '"paidAt"', 'COALESCE(SUM("amountXof"),0)', "\"status\" = 'SUCCEEDED'"),
+}
+
+
+async def _series(db: AsyncSession, key: str, days: int) -> list[dict]:
+    table, col, agg, where = _SERIES[key]
+    rows = (await db.execute(text(
+        f"SELECT g::date AS day, COALESCE(c.n, 0)::bigint AS n FROM generate_series(date_trunc('day', now()) - (:d - 1) * interval '1 day', date_trunc('day', now()), interval '1 day') g "
+        f"LEFT JOIN (SELECT date_trunc('day', {col}) AS d, {agg} AS n FROM {table} WHERE {col} >= date_trunc('day', now()) - (:d - 1) * interval '1 day' AND {where} GROUP BY 1) c ON c.d = g ORDER BY 1"), {"d": days})).all()
+    return [{"day": r.day.isoformat(), "value": int(r.n)} for r in rows]
+
+
 @router.get("/overview")
-async def overview(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+async def overview(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Vue d'ensemble. `days` (7, 30 ou 90) fixe la période ; `period` compare la période courante à la précédente, avec une série par jour."""
+    days = days if days in (7, 30, 90) else 30
     now = utcnow()
     d = lambda n: now - n * DAY  # noqa: E731
 
@@ -101,7 +121,25 @@ async def overview(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     profiles = {p.userId: p for p in (await db.execute(select(Profile).where(Profile.userId.in_([u.id for u in recent])))).scalars()}
     by_country = (await db.execute(select(Profile.country, func.count().label("n")).group_by(Profile.country).order_by(func.count().desc()).limit(6))).all()
     refunded = (await db.execute(select(func.coalesce(func.sum(Refund.amountXof), 0)).where(Refund.status == "COMPLETED"))).scalar_one()
+
+    async def flow(model, col, *where, summed=None):
+        """Valeur sur la période courante et sur la précédente (même durée, juste avant)."""
+        agg = func.coalesce(func.sum(summed), 0) if summed is not None else func.count()
+        cur = (await db.execute(select(agg).select_from(model).where(col >= d(days), *where))).scalar_one()
+        prev = (await db.execute(select(agg).select_from(model).where(col >= d(2 * days), col < d(days), *where))).scalar_one()
+        return {"current": int(cur), "previous": int(prev)}
+
+    period = {
+        "days": days,
+        "signups": await flow(User, User.createdAt),
+        "likes": await flow(Swipe, Swipe.createdAt, Swipe.action.in_(["LIKE", "SUPER_LIKE"])),
+        "matches": await flow(Match, Match.createdAt),
+        "messages": await flow(Message, Message.createdAt),
+        "revenue": await flow(Payment, Payment.paidAt, Payment.status == "SUCCEEDED", summed=Payment.amountXof),
+        "series": {k: await _series(db, k, days) for k in _SERIES},
+    }
     return {
+        "period": period, "generatedAt": now,
         "planDistribution": [{"plan": ev(p), "count": c} for p, c in plans],
         "recentSignups": [{"id": u.id, "displayName": profiles[u.id].displayName if u.id in profiles else "—", "city": profiles[u.id].city if u.id in profiles else "",
                            "country": profiles[u.id].country if u.id in profiles else "", "createdAt": u.createdAt} for u in recent],

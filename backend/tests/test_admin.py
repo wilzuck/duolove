@@ -87,3 +87,16 @@ async def test_produits_et_audit(app, db):
 
 async def app_catalog(ad):
     return (await ad.agent.get("/api/plans")).json()["products"]
+
+
+async def test_overview_period_compares_and_fills_every_day(app, db):
+    """`days` borné à 7/30/90 ; chaque série a une valeur par jour (zéro compris) ; la période précédente accompagne la courante."""
+    ad = await admin(app, db)
+    o = (await ad.agent.get("/api/admin/overview", params={"days": 7})).json()["period"]
+    assert o["days"] == 7
+    assert set(o["series"]) == {"signups", "likes", "matches", "messages", "revenue"}
+    assert all(len(v) == 7 for v in o["series"].values())
+    assert o["signups"]["current"] >= 1 and set(o["signups"]) == {"current", "previous"}
+    assert o["signups"]["current"] == sum(p["value"] for p in o["series"]["signups"])
+    assert (await ad.agent.get("/api/admin/overview", params={"days": 5})).json()["period"]["days"] == 30  # valeur inconnue : défaut
+    assert len((await ad.agent.get("/api/admin/overview", params={"days": 90})).json()["period"]["series"]["signups"]) == 90
