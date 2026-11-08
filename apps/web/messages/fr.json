@@ -145,7 +145,7 @@
         "text": "Chaque jour, une sélection limitée de profils compatibles et une question pour briser la glace : les réponses ne se révèlent que si vous avez tous les deux répondu."
       },
       "live": {
-        "title": "Match en direct",
+        "title": "Crush en direct",
         "text": "Choisissez vos critères du moment : nous proposons une rencontre aux personnes connectées. Celles qui acceptent s’affichent, vous choisissez avec qui discuter."
       },
       "speed": {
@@ -328,9 +328,9 @@
       "boostsMonthly": "{n} boosts par mois",
       "incognito": "Mode discret",
       "noAds": "Sans publicité",
-      "liveMatch": "Menu Match en direct (illimité)",
-      "liveMatchTrials": "Menu Match : {n} essais gratuits",
-      "matchTokensMonthly": "{n} jetons Match par mois",
+      "liveMatch": "Menu Crush en direct (illimité)",
+      "liveMatchTrials": "Menu Crush : {n} essais gratuits",
+      "matchTokensMonthly": "{n} jetons Crush par mois",
       "chatImages": "Envoi de photos dans les messages",
       "readReceipts": "Gestion des accusés de lecture (« vu »)",
       "dailyPicks": "{n, plural, one {# découverte du jour} other {# découvertes du jour}}"
@@ -338,10 +338,11 @@
     "boostLabel": "Boost de visibilité",
     "boostDuration": "de mise en avant",
     "superLikesLabel": "Super Likes",
-    "tokensLabel": "jetons Match",
+    "tokensLabel": "jetons Crush",
     "perUnit": "soit {price} l’unité",
     "minutesShort": "{n} min",
-    "hoursShort": "{n} h"
+    "hoursShort": "{n} h",
+    "order": "Commander"
   },
   "about": {
     "title": "À propos de CrushDuo",
@@ -489,7 +490,7 @@
     "urgent": "Utilisez « Signaler » dans l’application : c’est confidentiel et examiné par un modérateur. En danger immédiat, contactez les secours de votre pays.",
     "sections": {
       "start": "Premiers pas",
-      "meet": "Rencontres et Match",
+      "meet": "Rencontres et Crush",
       "chat": "Messages et rendez-vous",
       "safety": "Sécurité",
       "billing": "Abonnements et paiements",
@@ -536,7 +537,7 @@
           "a": "La formule gratuite comprend un nombre de likes par jour. Il se renouvelle chaque jour ; Premium lève cette limite."
         },
         {
-          "q": "À quoi sert le menu Match ?",
+          "q": "À quoi sert le menu Crush ?",
           "a": "Il lance une recherche en direct auprès des personnes en ligne qui correspondent à vos critères. Celles qui acceptent apparaissent : discuter avec l’une d’elles coûte un jeton Match, et vous pouvez toujours aimer gratuitement."
         }
       ],
@@ -733,7 +734,7 @@
           "id": "offres",
           "h": "Offres gratuites et payantes",
           "paras": [
-            "CrushDuo est gratuit pour commencer. Des formules payantes (Premium, VIP) et des achats à l’unité (boosts, Super Likes, jetons Match) donnent accès à des fonctions supplémentaires. Les prix, durées et avantages sont indiqués sur la page Tarifs avant tout paiement."
+            "CrushDuo est gratuit pour commencer. Des formules payantes (Premium, VIP) et des achats à l’unité (boosts, Super Likes, jetons Crush) donnent accès à des fonctions supplémentaires. Les prix, durées et avantages sont indiqués sur la page Tarifs avant tout paiement."
           ],
           "lists": [
             {
@@ -1528,7 +1529,7 @@
       "notifications": "Notifications",
       "admin": "Administration",
       "shop": "Charme+",
-      "match": "Match",
+      "match": "Crush",
       "daily": "Découvertes du jour",
       "speed": "Speed dating"
     },
@@ -1800,9 +1801,9 @@
       "REFUND_UPDATE_COMPLETED": "Votre remboursement a été effectué.",
       "REFUND_UPDATE_REJECTED": "Votre demande de remboursement a été rejetée.",
       "REFUND_UPDATE_FAILED": "Votre remboursement n’a pas pu aboutir : notre équipe vous recontacte.",
-      "LIVE_INVITE": "Quelqu’un souhaite faire connaissance : répondez dans Match.",
-      "LIVE_ACCEPTED": "Une personne a accepté votre invitation Match.",
-      "REFERRAL_REWARD": "Un ami parrainé a complété son profil : jetons Match ajoutés.",
+      "LIVE_INVITE": "Quelqu’un souhaite faire connaissance : répondez dans Crush.",
+      "LIVE_ACCEPTED": "Une personne a accepté votre invitation Crush.",
+      "REFERRAL_REWARD": "Un ami parrainé a complété son profil : jetons Crush ajoutés.",
       "DATE_UPDATE_PROPOSED": "Nouvelle proposition de rendez-vous.",
       "DATE_UPDATE_ACCEPTED": "Rendez-vous accepté !",
       "DATE_UPDATE_DECLINED": "Une proposition de rendez-vous a été refusée.",
@@ -2202,7 +2203,7 @@
     },
     "promos": {
       "title": "Codes promo",
-      "subtitle": "Remises en pourcentage ou jetons Match offerts. Un code ne s’utilise qu’une fois par membre.",
+      "subtitle": "Remises en pourcentage ou jetons Crush offerts. Un code ne s’utilise qu’une fois par membre.",
       "new": "Nouveau code",
       "code": "Code",
       "kind": "Type",
@@ -2251,7 +2252,7 @@
         },
         "payments_enabled": {
           "name": "Paiements",
-          "what": "Permet de lancer de nouveaux paiements : abonnements, jetons Match, boosts, Super Likes.",
+          "what": "Permet de lancer de nouveaux paiements : abonnements, jetons Crush, boosts, Super Likes.",
           "on": "Les achats fonctionnent.",
           "off": "Aucun nouvel achat ne peut démarrer. Un paiement déjà lancé peut se terminer, et les remboursements restent possibles.",
           "useWhen": "En cas de panne ou de maintenance du fournisseur de paiement."
@@ -2271,10 +2272,10 @@
           "useWhen": "Si le classement des profils boostés pose problème."
         },
         "live_match": {
-          "name": "Match en direct",
-          "what": "Le menu Match : critères, invitations aux personnes en ligne, conversations payées en jetons.",
-          "on": "Le menu Match fonctionne.",
-          "off": "Match est indisponible pour tous ; les jetons et les conversations existantes sont conservés.",
+          "name": "Crush en direct",
+          "what": "Le menu Crush : critères, invitations aux personnes en ligne, conversations payées en jetons.",
+          "on": "Le menu Crush fonctionne.",
+          "off": "Crush est indisponible pour tous ; les jetons et les conversations existantes sont conservés.",
           "useWhen": "En cas d’abus constaté ou de surcharge du serveur."
         },
         "super_likes": {
@@ -2546,7 +2547,7 @@
       "dailyPlansNote": "Le nombre de découvertes du jour se règle par formule, dans",
       "codeTtl": "Validité du code de confirmation (minutes)",
       "unverifiedTtl": "Suppression des comptes non confirmés après (heures)",
-      "liveHours": "Durée d’une recherche Live Match (heures)",
+      "liveHours": "Durée d’une recherche Live Crush (heures)",
       "callRing": "Durée de sonnerie d’un appel (secondes)",
       "callMax": "Durée maximale d’un appel (minutes)",
       "callPerDay": "Appels lancés par membre et par jour",
@@ -2760,11 +2761,11 @@
       "PROMO": "Code promo",
       "REFERRAL": "Parrainage"
     },
-    "tokens": "Jetons Match",
-    "tokensUse": "Les utiliser dans Match",
-    "tokenPackHint": "{n} jetons : 1 jeton ouvre 1 conversation dans Match.",
-    "groupTokens": "Jetons Match",
-    "groupTokensText": "Pour ouvrir une conversation avec une personne qui accepte votre recherche dans le menu Match (1 jeton = 1 conversation).",
+    "tokens": "Jetons Crush",
+    "tokensUse": "Les utiliser dans Crush",
+    "tokenPackHint": "{n} jetons : 1 jeton ouvre 1 conversation dans Crush.",
+    "groupTokens": "Jetons Crush",
+    "groupTokensText": "Pour ouvrir une conversation avec une personne qui accepte votre recherche dans le menu Crush (1 jeton = 1 conversation).",
     "groupBoosts": "Boosts de visibilité",
     "groupBoostsText": "Mettent votre profil en avant auprès des personnes compatibles pendant 30 minutes, 2 heures ou 24 heures.",
     "groupSuperLikes": "Super Likes",
@@ -2772,7 +2773,7 @@
   },
   "life": {
     "title": "Mode de vie",
-    "hint": "Facultatif. Ces informations servent aux critères du menu Match ; laissez vide si vous préférez ne pas répondre.",
+    "hint": "Facultatif. Ces informations servent aux critères du menu Crush ; laissez vide si vous préférez ne pas répondre.",
     "unspecified": "Non précisé",
     "yes": "Oui",
     "no": "Non",
@@ -2789,9 +2790,9 @@
     "origin": "Pays d’origine"
   },
   "live": {
-    "title": "Match en direct",
+    "title": "Crush en direct",
     "subtitle": "Validez vos critères : nous proposons une rencontre aux personnes connectées. Celles qui acceptent s’affichent, vous choisissez avec qui discuter.",
-    "tokensAria": "{n} jetons Match, ouvrir Charme+",
+    "tokensAria": "{n} jetons Crush, ouvrir Charme+",
     "giftTitle": "{n} jetons offerts !",
     "giftText": "Complétez votre profil à 100 % (actuellement {pct} %) et confirmez votre e-mail pour les recevoir.",
     "giftCta": "Compléter mon profil",
@@ -2861,16 +2862,16 @@
     "openChat": "Ouvrir la conversation",
     "chosen": "Conversation ouverte ({n} jeton utilisé).",
     "chosenFree": "Vous étiez déjà en relation : aucun jeton utilisé.",
-    "incoming": "Invitations Match ({n})",
+    "incoming": "Invitations Crush ({n})",
     "incomingText": "Ces personnes cherchent à faire connaissance. Acceptez pour qu’elles puissent vous choisir ; vous ne payez rien.",
     "accept": "Accepter",
     "decline": "Refuser",
     "accepted": "Invitation acceptée : cette personne peut maintenant vous choisir.",
     "paywallTitle": "Vos essais gratuits sont utilisés",
-    "paywallText": "Passez Premium pour lancer des recherches Match sans limite. Les jetons de conversation restent disponibles dans Charme+.",
-    "optInTitle": "Recevoir des invitations Match",
+    "paywallText": "Passez Premium pour lancer des recherches Crush sans limite. Les jetons de conversation restent disponibles dans Charme+.",
+    "optInTitle": "Recevoir des invitations Crush",
     "optInText": "Désactivez pour ne plus être invité(e) quand quelqu’un cherche.",
-    "unavailable": "Match indisponible",
+    "unavailable": "Crush indisponible",
     "unavailableText": "Confirmez votre e-mail et terminez votre profil, puis réessayez.",
     "like": "J’aime",
     "liked": "Aimé",
@@ -2903,14 +2904,14 @@
     "remove": "Retirer",
     "hint": "Un code ne s’utilise qu’une fois par compte. La remise est calculée au paiement.",
     "percentApplied": "{code} : −{percent} % sur votre prochain paiement.",
-    "tokensOffer": "{code} : {n} jetons Match offerts.",
+    "tokensOffer": "{code} : {n} jetons Crush offerts.",
     "claim": "Récupérer mes jetons",
     "claimed": "{n} jetons ajoutés à votre solde.",
     "discountBadge": "−{percent} %"
   },
   "referral": {
     "title": "Parrainage",
-    "subtitle": "Invitez vos proches : vous gagnez des jetons Match, eux aussi.",
+    "subtitle": "Invitez vos proches : vous gagnez des jetons Crush, eux aussi.",
     "yourCode": "Votre code de parrainage",
     "yourLink": "Votre lien d’invitation",
     "copy": "Copier le lien",

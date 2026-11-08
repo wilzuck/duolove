@@ -51,9 +51,9 @@ DEFAULT_PRODUCTS = (
     ("SUPERLIKE_5", "SUPER_LIKE_PACK", "SUPER_LIKE", "Pack 5 Super Likes", 5, 500, 3),
     ("SUPERLIKE_15", "SUPER_LIKE_PACK", "SUPER_LIKE", "Pack 15 Super Likes", 15, 1200, 4),
     ("SUPERLIKE_30", "SUPER_LIKE_PACK", "SUPER_LIKE", "Pack 30 Super Likes", 30, 2000, 5),
-    ("TOKENS_5", "TOKEN_PACK", "MATCH_TOKEN", "Pack 5 tokens Match", 5, 1000, 6),
-    ("TOKENS_15", "TOKEN_PACK", "MATCH_TOKEN", "Pack 15 tokens Match", 15, 2500, 7),
-    ("TOKENS_30", "TOKEN_PACK", "MATCH_TOKEN", "Pack 30 tokens Match", 30, 4500, 8),
+    ("TOKENS_5", "TOKEN_PACK", "MATCH_TOKEN", "Pack 5 tokens Crush", 5, 1000, 6),
+    ("TOKENS_15", "TOKEN_PACK", "MATCH_TOKEN", "Pack 15 tokens Crush", 15, 2500, 7),
+    ("TOKENS_30", "TOKEN_PACK", "MATCH_TOKEN", "Pack 30 tokens Crush", 30, 4500, 8),
 )
 
 

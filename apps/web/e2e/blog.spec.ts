@@ -82,7 +82,7 @@ test.describe.serial('Blog administrable', () => {
 
 test('page Tarifs : boosts, Super Likes et jetons séparés, avec heures et quantités en évidence', async ({ page }) => {
   await page.goto('/pricing');
-  for (const g of ['Boosts de visibilité', 'Super Likes', 'Jetons Match']) await expect(page.getByRole('group', { name: g })).toBeVisible();
+  for (const g of ['Boosts de visibilité', 'Super Likes', 'Jetons Crush']) await expect(page.getByRole('group', { name: g })).toBeVisible();
   const boosts = page.getByRole('group', { name: 'Boosts de visibilité' });
   for (const d of ['30 min', '2 h', '24 h']) await expect(boosts.getByText(d, { exact: true })).toBeVisible();
   const likes = page.getByRole('group', { name: 'Super Likes' });

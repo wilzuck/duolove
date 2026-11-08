@@ -43,7 +43,7 @@ test.describe.serial('Parrainage et codes promo', () => {
     const pct = sql(`select p.completeness from "Profile" p join "User" u on u.id=p."userId" where u.email='${yao.email}'`);
     if (Number(pct) < 100) sql(`update "Profile" set completeness=100 from "User" u where u.id="Profile"."userId" and u.email='${yao.email}'`);
     await page.goto('/match');
-    await expect(page.getByRole('heading', { name: 'Match en direct' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Crush en direct' })).toBeVisible();
     const r = await page.request.get('/api/credits');
     expect(((await r.json()) as { balances: { MATCH_TOKEN: number } }).balances.MATCH_TOKEN).toBe(2 + 3); // parrainage + cadeau de profil
   });
@@ -84,13 +84,13 @@ test.describe.serial('Parrainage et codes promo', () => {
   test('Awa applique la remise dans Charme+, puis récupère les jetons offerts', async () => {
     const { page } = awaPage;
     await page.goto('/shop');
-    // Trois familles d'achat séparées : jetons Match, boosts, Super Likes.
-    const tokens = page.getByRole('region', { name: 'Jetons Match' });
+    // Trois familles d'achat séparées : jetons Crush, boosts, Super Likes.
+    const tokens = page.getByRole('region', { name: 'Jetons Crush' });
     const boosts = page.getByRole('region', { name: 'Boosts de visibilité' });
-    await expect(tokens.getByText('Pack 5 tokens Match')).toBeVisible();
+    await expect(tokens.getByText('Pack 5 tokens Crush')).toBeVisible();
     await expect(tokens.getByText('Boost 30 minutes')).toHaveCount(0);
     await expect(boosts.getByText('Boost 30 minutes')).toBeVisible();
-    await expect(boosts.getByText(/Pack \d+ tokens Match/)).toHaveCount(0);
+    await expect(boosts.getByText(/Pack \d+ tokens Crush/)).toHaveCount(0);
     await expect(page.getByRole('region', { name: 'Super Likes' }).getByText('Pack 5 Super Likes')).toBeVisible();
     await page.getByLabel('Votre code').fill(PCT);
     await page.getByRole('button', { name: 'Appliquer' }).click();
@@ -100,7 +100,7 @@ test.describe.serial('Parrainage et codes promo', () => {
     // Code « jetons » : récupération unique.
     await page.getByLabel('Votre code').fill(TOK);
     await page.getByRole('button', { name: 'Appliquer' }).click();
-    await expect(page.getByText(`${TOK} : 4 jetons Match offerts.`)).toBeVisible();
+    await expect(page.getByText(`${TOK} : 4 jetons Crush offerts.`)).toBeVisible();
     const before = ((await (await page.request.get('/api/credits')).json()) as { balances: { MATCH_TOKEN: number } }).balances.MATCH_TOKEN;
     await page.getByRole('button', { name: 'Récupérer mes jetons' }).click();
     await expect(page.getByText('4 jetons ajoutés à votre solde.')).toBeVisible();

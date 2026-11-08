@@ -35,7 +35,7 @@ export default function ShopPage() {
   });
   if (!catalog || !wallet.data || !me) return <div className="mx-auto max-w-4xl space-y-4 p-4"><Skeleton className="h-32" /><Skeleton className="h-64" /></div>;
   const b = wallet.data.balances;
-  // Trois familles d'achat distinctes : jetons Match, boosts de visibilité, Super Likes.
+  // Trois familles d'achat distinctes : jetons Crush, boosts de visibilité, Super Likes.
   const groups = [
     { kind: 'TOKEN_PACK', title: t('shop.groupTokens'), text: t('shop.groupTokensText') },
     { kind: 'BOOST', title: t('shop.groupBoosts'), text: t('shop.groupBoostsText') },

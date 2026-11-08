@@ -23,7 +23,7 @@ async function api(page: Page, method: 'post' | 'patch', url: string, data: unkn
   return r.json() as Promise<Record<string, unknown>>;
 }
 
-test.describe.serial('Match en direct', () => {
+test.describe.serial('Crush en direct', () => {
   const city = `Ville${uid()}`;
   const awa = persona('Awa', 'Femme', city);
   const yao = persona('Yao', 'Homme', city);
@@ -49,8 +49,8 @@ test.describe.serial('Match en direct', () => {
   test('Awa valide ses critères et lance la recherche (accessible)', async () => {
     const { page } = awaPage;
     await page.goto('/match');
-    await expect(page.getByRole('heading', { name: 'Match en direct' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /5 jetons Match/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Crush en direct' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /5 jetons Crush/ })).toBeVisible();
     await expect(page.getByRole('radio', { name: 'Des hommes' })).toBeChecked();  // formulaire simplifié : pastilles radio et curseurs
     await setRange(page, 'Taille min. (cm)', height);
     await setRange(page, 'Taille max. (cm)', height);
@@ -69,7 +69,7 @@ test.describe.serial('Match en direct', () => {
   test('Yao reçoit l’invitation et accepte', async () => {
     const { page } = yaoPage;
     await page.goto('/match');
-    await expect(page.getByRole('heading', { name: 'Invitations Match (1)' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Invitations Crush (1)' })).toBeVisible();
     await expect(page.getByText(/Awa, \d+/)).toBeVisible();
     await page.getByRole('button', { name: 'Accepter' }).click();
     await expect(page.getByText(/Invitation acceptée/)).toBeVisible();
@@ -88,13 +88,13 @@ test.describe.serial('Match en direct', () => {
     await page.getByRole('button', { name: /Discuter \(1 jeton\)/ }).click();
     await expect(page).toHaveURL(/\/messages\/.+/);
     await page.goto('/match');
-    await expect(page.getByRole('link', { name: /4 jetons Match/ })).toBeVisible();
+    await expect(page.getByRole('link', { name: /4 jetons Crush/ })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Ouvrir la conversation' })).toBeVisible();
   });
 });
 
 // Un membre sans jeton dont la recherche reçoit une acceptation : le guide explique quoi faire.
-test.describe.serial('Match en direct : guide sans jeton', () => {
+test.describe.serial('Crush en direct : guide sans jeton', () => {
   const city = `Ville${uid()}`;
   const bea = persona('Bea', 'Femme', city);
   const zed = persona('Zed', 'Homme', city);

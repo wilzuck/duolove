@@ -31,7 +31,7 @@ export const lifeFrom = (p: MyProfile): LifeValue => ({ hasChildren: p.hasChildr
 const triValue = (v: boolean | null) => (v === null ? '' : v ? 'yes' : 'no');
 const fromTri = (v: string): boolean | null => (v === '' ? null : v === 'yes');
 
-/** Mode de vie (facultatif) : sert aux critères du menu Match. Une information non renseignée n'est jamais devinée. */
+/** Mode de vie (facultatif) : sert aux critères du menu Crush. Une information non renseignée n'est jamais devinée. */
 export function LifestyleFields({ value, onChange }: { value: LifeValue; onChange: (v: LifeValue) => void }) {
   const t = useTranslations();
   const locale = useLocale();

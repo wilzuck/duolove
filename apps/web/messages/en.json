@@ -145,7 +145,7 @@
         "text": "Every day, a limited selection of compatible profiles and one icebreaker question: answers are revealed only once you have both answered."
       },
       "live": {
-        "title": "Live Match",
+        "title": "Live Crush",
         "text": "Set your criteria for the moment: we invite people who are online. Those who accept show up, and you choose who to talk to."
       },
       "speed": {
@@ -328,9 +328,9 @@
       "boostsMonthly": "{n} boosts per month",
       "incognito": "Incognito mode",
       "noAds": "Ad-free",
-      "liveMatch": "Live Match menu (unlimited)",
-      "liveMatchTrials": "Live Match: {n} free tries",
-      "matchTokensMonthly": "{n} Match tokens per month",
+      "liveMatch": "Live Crush menu (unlimited)",
+      "liveMatchTrials": "Live Crush: {n} free tries",
+      "matchTokensMonthly": "{n} Crush tokens per month",
       "chatImages": "Send photos in messages",
       "readReceipts": "Read receipts control (“seen”)",
       "dailyPicks": "{n, plural, one {# daily pick} other {# daily picks}}"
@@ -338,10 +338,11 @@
     "boostLabel": "Visibility boost",
     "boostDuration": "in the spotlight",
     "superLikesLabel": "Super Likes",
-    "tokensLabel": "Match tokens",
+    "tokensLabel": "Crush tokens",
     "perUnit": "i.e. {price} each",
     "minutesShort": "{n} min",
-    "hoursShort": "{n} h"
+    "hoursShort": "{n} h",
+    "order": "Order"
   },
   "about": {
     "title": "About CrushDuo",
@@ -489,7 +490,7 @@
     "urgent": "Use “Report” in the app: it is confidential and reviewed by a moderator. In immediate danger, contact your country’s emergency services.",
     "sections": {
       "start": "Getting started",
-      "meet": "Dating and Match",
+      "meet": "Dating and Crush",
       "chat": "Messages and dates",
       "safety": "Safety",
       "billing": "Subscriptions and payments",
@@ -536,7 +537,7 @@
           "a": "The free plan includes a number of likes per day. It resets every day; Premium removes the limit."
         },
         {
-          "q": "What is the Match menu for?",
+          "q": "What is the Crush menu for?",
           "a": "It starts a live search among online people who fit your criteria. Those who accept appear: chatting with one costs a Match token, and you can always like for free."
         }
       ],
@@ -733,7 +734,7 @@
           "id": "offres",
           "h": "Free and paid offers",
           "paras": [
-            "CrushDuo is free to start. Paid plans (Premium, VIP) and one-off purchases (boosts, Super Likes, Match tokens) unlock extra features. Prices, durations and benefits are shown on the Pricing page before any payment."
+            "CrushDuo is free to start. Paid plans (Premium, VIP) and one-off purchases (boosts, Super Likes, Crush tokens) unlock extra features. Prices, durations and benefits are shown on the Pricing page before any payment."
           ],
           "lists": [
             {
@@ -1528,7 +1529,7 @@
       "notifications": "Notifications",
       "admin": "Administration",
       "shop": "Charm+",
-      "match": "Match",
+      "match": "Crush",
       "daily": "Daily picks",
       "speed": "Speed dating"
     },
@@ -1800,9 +1801,9 @@
       "REFUND_UPDATE_COMPLETED": "Your refund has been issued.",
       "REFUND_UPDATE_REJECTED": "Your refund request was rejected.",
       "REFUND_UPDATE_FAILED": "Your refund could not be completed: our team will contact you.",
-      "LIVE_INVITE": "Someone would like to meet you: reply in Match.",
-      "LIVE_ACCEPTED": "Someone accepted your Match invitation.",
-      "REFERRAL_REWARD": "A friend you referred completed their profile: Match tokens added.",
+      "LIVE_INVITE": "Someone would like to meet you: reply in Crush.",
+      "LIVE_ACCEPTED": "Someone accepted your Crush invitation.",
+      "REFERRAL_REWARD": "A friend you referred completed their profile: Crush tokens added.",
       "DATE_UPDATE_PROPOSED": "New date proposal.",
       "DATE_UPDATE_ACCEPTED": "Date accepted!",
       "DATE_UPDATE_DECLINED": "A date proposal was declined.",
@@ -2202,7 +2203,7 @@
     },
     "promos": {
       "title": "Promo codes",
-      "subtitle": "Percentage discounts or free Match tokens. A code can be used once per member.",
+      "subtitle": "Percentage discounts or free Crush tokens. A code can be used once per member.",
       "new": "New code",
       "code": "Code",
       "kind": "Type",
@@ -2251,7 +2252,7 @@
         },
         "payments_enabled": {
           "name": "Payments",
-          "what": "Allows starting new payments: subscriptions, Match tokens, boosts, Super Likes.",
+          "what": "Allows starting new payments: subscriptions, Crush tokens, boosts, Super Likes.",
           "on": "Purchases work.",
           "off": "No new purchase can start. A payment already started can complete, and refunds remain possible.",
           "useWhen": "When the payment provider has an outage or maintenance."
@@ -2271,10 +2272,10 @@
           "useWhen": "If ranking of boosted profiles causes trouble."
         },
         "live_match": {
-          "name": "Live Match",
-          "what": "The Match menu: criteria, invitations to people online, chats paid with tokens.",
-          "on": "The Match menu works.",
-          "off": "Match is unavailable for everyone; tokens and existing chats are kept.",
+          "name": "Live Crush",
+          "what": "The Crush menu: criteria, invitations to people online, chats paid with tokens.",
+          "on": "The Crush menu works.",
+          "off": "Crush is unavailable for everyone; tokens and existing chats are kept.",
           "useWhen": "In case of observed abuse or server overload."
         },
         "super_likes": {
@@ -2546,7 +2547,7 @@
       "dailyPlansNote": "The number of daily picks is set per plan, in",
       "codeTtl": "Confirmation code validity (minutes)",
       "unverifiedTtl": "Delete unconfirmed accounts after (hours)",
-      "liveHours": "Live Match search duration (hours)",
+      "liveHours": "Live Crush search duration (hours)",
       "callRing": "Call ring time (seconds)",
       "callMax": "Maximum call length (minutes)",
       "callPerDay": "Calls started per member per day",
@@ -2760,11 +2761,11 @@
       "PROMO": "Promo code",
       "REFERRAL": "Referral"
     },
-    "tokens": "Match tokens",
-    "tokensUse": "Use them in Match",
-    "tokenPackHint": "{n} tokens: 1 token opens 1 chat in Match.",
-    "groupTokens": "Match tokens",
-    "groupTokensText": "To open a conversation with someone who accepts your search in the Match menu (1 token = 1 conversation).",
+    "tokens": "Crush tokens",
+    "tokensUse": "Use them in Crush",
+    "tokenPackHint": "{n} tokens: 1 token opens 1 chat in Crush.",
+    "groupTokens": "Crush tokens",
+    "groupTokensText": "To open a conversation with someone who accepts your search in the Crush menu (1 token = 1 conversation).",
     "groupBoosts": "Visibility boosts",
     "groupBoostsText": "Put your profile forward to compatible people for 30 minutes, 2 hours or 24 hours.",
     "groupSuperLikes": "Super Likes",
@@ -2772,7 +2773,7 @@
   },
   "life": {
     "title": "Lifestyle",
-    "hint": "Optional. Used by the Match menu criteria; leave blank if you prefer not to answer.",
+    "hint": "Optional. Used by the Crush menu criteria; leave blank if you prefer not to answer.",
     "unspecified": "Not specified",
     "yes": "Yes",
     "no": "No",
@@ -2789,9 +2790,9 @@
     "origin": "Country of origin"
   },
   "live": {
-    "title": "Live Match",
+    "title": "Live Crush",
     "subtitle": "Set your criteria: we invite people who are online. Those who accept show up, and you choose who to talk to.",
-    "tokensAria": "{n} Match tokens, open Charm+",
+    "tokensAria": "{n} Crush tokens, open Charm+",
     "giftTitle": "{n} free tokens!",
     "giftText": "Complete your profile to 100% (currently {pct}%) and confirm your email to receive them.",
     "giftCta": "Complete my profile",
@@ -2861,16 +2862,16 @@
     "openChat": "Open chat",
     "chosen": "Chat opened ({n} token used).",
     "chosenFree": "You were already connected: no token used.",
-    "incoming": "Match invitations ({n})",
+    "incoming": "Crush invitations ({n})",
     "incomingText": "These people would like to meet you. Accept so they can choose you; it costs you nothing.",
     "accept": "Accept",
     "decline": "Decline",
     "accepted": "Invitation accepted: this person can now choose you.",
     "paywallTitle": "Your free tries are used up",
-    "paywallText": "Go Premium to run unlimited Match searches. Chat tokens stay available in Charm+.",
-    "optInTitle": "Receive Match invitations",
+    "paywallText": "Go Premium to run unlimited Crush searches. Chat tokens stay available in Charm+.",
+    "optInTitle": "Receive Crush invitations",
     "optInText": "Turn off to stop being invited when someone searches.",
-    "unavailable": "Match unavailable",
+    "unavailable": "Crush unavailable",
     "unavailableText": "Confirm your email and finish your profile, then try again.",
     "like": "Like",
     "liked": "Liked",
@@ -2903,14 +2904,14 @@
     "remove": "Remove",
     "hint": "A code can be used once per account. The discount is calculated at checkout.",
     "percentApplied": "{code}: −{percent}% on your next payment.",
-    "tokensOffer": "{code}: {n} free Match tokens.",
+    "tokensOffer": "{code}: {n} free Crush tokens.",
     "claim": "Claim my tokens",
     "claimed": "{n} tokens added to your balance.",
     "discountBadge": "−{percent}%"
   },
   "referral": {
     "title": "Referral",
-    "subtitle": "Invite friends: you both earn Match tokens.",
+    "subtitle": "Invite friends: you both earn Crush tokens.",
     "yourCode": "Your referral code",
     "yourLink": "Your invitation link",
     "copy": "Copy link",
