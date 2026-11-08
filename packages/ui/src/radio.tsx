@@ -15,7 +15,7 @@ export function RadioChips<T extends string>({ legend, options, value, onChange,
         {options.map((o) => (
           <label key={o.value} className="relative">
             <input type="radio" name={name} value={o.value} checked={value === o.value} onChange={() => onChange(o.value)} className="peer sr-only" />
-            <span className="inline-flex min-h-10 cursor-pointer items-center rounded-full border border-line bg-card px-4 text-sm font-medium transition hover:bg-soft peer-checked:border-brand-strong peer-checked:bg-brand-strong peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand">{o.label}</span>
+            <span className="inline-flex min-h-10 cursor-pointer items-center rounded-full border border-line bg-card px-4 text-sm font-medium transition hover:bg-soft peer-checked:border-brand-strong peer-checked:bg-soft peer-checked:font-semibold peer-checked:text-brand-ink peer-checked:[&>.chip-check]:inline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand"><Check className="chip-check mr-1.5 hidden size-4" aria-hidden />{o.label}</span>
           </label>
         ))}
       </div>

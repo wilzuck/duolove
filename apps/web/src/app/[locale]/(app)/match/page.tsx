@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Clock, Coins, Crown, Heart, MessageCircle, Radio, Sparkles, X } from 'lucide-react';
+import { Clock, Coins, Crown, Heart, MessageCircle, Radio, Search, Sparkles, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { COUNTRIES, countryFlag, LIVING, SEEKING, type LiveCriteria } from '@duomatch/types';
@@ -213,8 +213,8 @@ export default function MatchPage() {
             {live.access.trialsLeft !== null && <Badge tone="brand">{t('live.trialsLeft', { n: live.access.trialsLeft })}</Badge>}
           </div>
           <CriteriaForm value={form} onChange={setDraft} />
-          <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={() => start.mutate(toCriteria(form))} loading={start.isPending} disabled={waitMs > 0 || form.ageMin > form.ageMax}>{search ? t('live.relaunch') : t('live.launch')}</Button>
+          <div className="flex flex-wrap items-center gap-3 border-t border-line pt-5">
+            <Button size="lg" className="max-sm:w-full" onClick={() => start.mutate(toCriteria(form))} loading={start.isPending} disabled={waitMs > 0 || form.ageMin > form.ageMax}><Search className="size-5" aria-hidden />{search ? t('live.relaunch') : t('live.launch')}</Button>
             {search && <Button variant="outline" onClick={() => { setEditing(false); setDraft(null); }}>{t('common.cancel')}</Button>}
             {waitMs > 0 && <span className="flex items-center gap-1.5 text-sm text-muted" role="status"><Clock className="size-4" aria-hidden />{t('live.wait', { time: waitLabel })}</span>}
           </div>
