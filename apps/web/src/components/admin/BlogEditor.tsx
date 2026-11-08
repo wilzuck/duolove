@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ImagePlus, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
-import { Badge, Button, Card, Dialog, Field, Input, Select, Tabs, Textarea } from '@duomatch/ui';
+import { Badge, Button, Card, Dialog, Field, Input, Select, Spinner, Tabs, Textarea } from '@duomatch/ui';
 import { refreshBlogCache } from '@/app/actions/blog';
 import { Markdown } from '@/components/marketing/Markdown';
 import { useApiError } from '@/hooks/useApiError';
@@ -96,8 +96,8 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
             ? <img src={f.coverUrl} alt={f.coverAlt || ''} className="aspect-video w-full max-w-xl rounded-2xl object-cover" />
             : <div className="grid aspect-video w-full max-w-xl place-items-center rounded-2xl border-2 border-dashed border-line text-sm text-muted">{t('admin.blog.coverNone')}</div>}
           <label className="inline-flex">
-            <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" aria-label={t(f.coverUrl ? 'admin.blog.coverReplace' : 'admin.blog.coverUpload')} onChange={(e) => { const file = e.target.files?.[0]; if (file) cover.mutate(file); e.target.value = ''; }} />
-            <span className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-line px-5 text-sm font-semibold hover:bg-soft has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand"><ImagePlus className="size-4" aria-hidden />{cover.isPending ? t('admin.blog.uploading') : t(f.coverUrl ? 'admin.blog.coverReplace' : 'admin.blog.coverUpload')}</span>
+            <input type="file" accept="image/jpeg,image/png,image/webp" disabled={cover.isPending} className="sr-only" aria-label={t(f.coverUrl ? 'admin.blog.coverReplace' : 'admin.blog.coverUpload')} onChange={(e) => { const file = e.target.files?.[0]; if (file) cover.mutate(file); e.target.value = ''; }} />
+            <span className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-line px-5 text-sm font-semibold hover:bg-soft has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand">{cover.isPending ? <Spinner size="sm" label={t('common.loading')} /> : <ImagePlus className="size-4" aria-hidden />}{cover.isPending ? t('admin.blog.uploading') : t(f.coverUrl ? 'admin.blog.coverReplace' : 'admin.blog.coverUpload')}</span>
           </label>
           <div className="max-w-xl"><Field label={t('admin.blog.coverAlt')}>{(p) => <Input {...p} maxLength={200} value={f.coverAlt} onChange={(e) => set('coverAlt', e.target.value)} />}</Field></div>
         </Card>

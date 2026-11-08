@@ -6,11 +6,13 @@ import { Alert, Button, Dialog } from '@duomatch/ui';
 const W = 1000, H = 1250; // sortie 4:5
 
 /** Recadrage : glisser pour cadrer, curseur pour zoomer ; export JPEG via canvas (les métadonnées EXIF disparaissent). */
-export function PhotoCropper({ file, onCancel, onDone }: { file: File | null; onCancel: () => void; onDone: (blob: Blob) => void }) {
+export function PhotoCropper({ file, onCancel, onDone, onInterrupt, busy = false }: { file: File | null; onCancel: () => void; onDone: (blob: Blob) => void; /** Arrête l'envoi en cours (sinon un réseau bloqué laisserait la fenêtre figée). */ onInterrupt?: () => void; /** Envoi en cours : fenêtre verrouillée, boutons désactivés, chargement visible. */ busy?: boolean }) {
   const t = useTranslations();
   const [zoom, setZoom] = useState(1);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [failed, setFailed] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const locked = busy || exporting; // « Utiliser cette photo » → préparation puis envoi : rien d'autre ne doit être possible
   const img = useRef<HTMLImageElement | null>(null);
   const drag = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -29,7 +31,8 @@ export function PhotoCropper({ file, onCancel, onDone }: { file: File | null; on
 
   const exportCrop = () => {
     const el = box.current, im = img.current;
-    if (!el || !im) return;
+    if (!el || !im || locked) return;
+    setExporting(true);
     const base = Math.max(el.clientWidth / im.naturalWidth, el.clientHeight / im.naturalHeight) * zoom;
     const sw = el.clientWidth / base, sh = el.clientHeight / base;
     const sx = im.naturalWidth / 2 - pos.x / base - sw / 2, sy = im.naturalHeight / 2 - pos.y / base - sh / 2;
@@ -37,25 +40,25 @@ export function PhotoCropper({ file, onCancel, onDone }: { file: File | null; on
     c.width = W; c.height = H;
     try {
       c.getContext('2d')!.drawImage(im, sx, sy, sw, sh, 0, 0, W, H);
-      c.toBlob((b) => (b ? onDone(b) : setFailed(true)), 'image/jpeg', 0.9);
-    } catch { setFailed(true); }
+      c.toBlob((b) => { if (b) onDone(b); else { setFailed(true); setExporting(false); } }, 'image/jpeg', 0.9);
+    } catch { setFailed(true); setExporting(false); }
   };
 
   return (
-    <Dialog open={!!file} onClose={onCancel} title={t('photos.cropTitle')} closeLabel={t('common.close')}>
+    <Dialog open={!!file} onClose={onCancel} title={t('photos.cropTitle')} closeLabel={t('common.close')} dismissible={!locked}>
       <div className="space-y-4">
         <div ref={box} className="relative mx-auto aspect-[4/5] w-full max-w-xs touch-none overflow-hidden rounded-2xl bg-line"
-          onPointerDown={(e) => { (e.target as HTMLElement).setPointerCapture(e.pointerId); drag.current = { x: e.clientX, y: e.clientY, px: pos.x, py: pos.y }; }}
+          onPointerDown={(e) => { if (locked) return; (e.target as HTMLElement).setPointerCapture(e.pointerId); drag.current = { x: e.clientX, y: e.clientY, px: pos.x, py: pos.y }; }}
           onPointerMove={(e) => { if (drag.current) setPos(clamp(drag.current.px + e.clientX - drag.current.x, drag.current.py + e.clientY - drag.current.y, zoom)); }}
           onPointerUp={() => { drag.current = null; }}>
-          {src && <img ref={img} src={src} alt="" draggable={false} onLoad={() => { setPos({ x: 0, y: 0 }); setZoom(1); setFailed(false); }} onError={() => setFailed(true)} className="absolute top-1/2 left-1/2 max-w-none select-none"
+          {src && <img ref={img} src={src} alt="" draggable={false} onLoad={() => { setPos({ x: 0, y: 0 }); setZoom(1); setFailed(false); setExporting(false); }} onError={() => setFailed(true)} className="absolute top-1/2 left-1/2 max-w-none select-none"
             style={{ transform: `translate(-50%, -50%) translate(${pos.x}px, ${pos.y}px) scale(${zoom})`, minWidth: '100%', minHeight: '100%', objectFit: 'cover', width: '100%', height: '100%' }} />}
         </div>
         {failed && <Alert variant="text">{t('photos.cropError')}</Alert>}
         <label className="flex items-center gap-3 text-sm font-medium">{t('photos.zoom')}
-          <input type="range" min={1} max={3} step={0.05} value={zoom} onChange={(e) => { const z = Number(e.target.value); setZoom(z); setPos((p) => clamp(p.x, p.y, z)); }} className="flex-1 accent-brand-strong" />
+          <input type="range" min={1} max={3} step={0.05} value={zoom} disabled={locked} onChange={(e) => { const z = Number(e.target.value); setZoom(z); setPos((p) => clamp(p.x, p.y, z)); }} className="flex-1 accent-brand-strong" />
         </label>
-        <div className="flex justify-end gap-2"><Button variant="ghost" onClick={onCancel}>{t('common.cancel')}</Button><Button onClick={exportCrop} disabled={failed}>{t('photos.cropDone')}</Button></div>
+        <div className="flex justify-end gap-2"><Button variant="ghost" onClick={busy ? onInterrupt : onCancel} disabled={exporting && !busy}>{busy ? t('photos.interrupt') : t('common.cancel')}</Button><Button onClick={exportCrop} disabled={failed || locked} loading={locked}>{locked ? t('photos.uploading') : t('photos.cropDone')}</Button></div>
       </div>
     </Dialog>
   );

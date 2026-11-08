@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import { Badge, cn, Spinner } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { keys } from '@/hooks/useQueries';
-import { del, put, upload } from '@/lib/api';
+import { del, isAbort, put, upload } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import type { MyProfile } from '@/lib/types';
 import { PhotoCropper } from './PhotoCropper';
@@ -20,10 +20,15 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
   const toast = useUi((s) => s.toast);
   const input = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
+  const abort = useRef<AbortController | null>(null);
   const done = (p: MyProfile) => qc.setQueryData(keys.profile, p);
   const fail = (e: unknown) => toast('error', err(e));
 
-  const add = useMutation({ mutationFn: (b: Blob) => upload<MyProfile>('/profiles/me/photos', b), onSuccess: (p) => { done(p); setFile(null); void qc.invalidateQueries({ queryKey: keys.me }); }, onError: (e) => { setFile(null); fail(e); } });
+  const add = useMutation({
+    mutationFn: (b: Blob) => { abort.current = new AbortController(); return upload<MyProfile>('/profiles/me/photos', b, 'photo.jpg', { signal: abort.current.signal }); },
+    onSuccess: (p) => { done(p); setFile(null); void qc.invalidateQueries({ queryKey: keys.me }); },
+    onError: (e) => { setFile(null); if (!isAbort(e)) fail(e); }, // interruption voulue : on ferme sans message
+  });
   const remove = useMutation({ mutationFn: (id: string) => del<MyProfile>(`/profiles/me/photos/${id}`), onSuccess: done, onError: fail });
   const order = useMutation({ mutationFn: (ids: string[]) => put<MyProfile>('/profiles/me/photos/order', { ids }), onSuccess: done, onError: fail });
   const move = (i: number, d: number) => {
@@ -55,14 +60,14 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
           <li>
             <button type="button" onClick={() => input.current?.click()} disabled={add.isPending}
               className="flex aspect-[4/5] w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-brand/40 bg-soft/60 text-brand-ink transition hover:bg-soft disabled:opacity-60">
-              {add.isPending ? <Spinner label={t('common.loading')} /> : <><Plus className="size-8" aria-hidden /><span className="text-sm font-semibold">{t('photos.add')}</span></>}
+              {add.isPending ? <Spinner label={t('photos.uploading')} /> : <><Plus className="size-8" aria-hidden /><span className="text-sm font-semibold">{t('photos.add')}</span></>}
             </button>
           </li>
         )}
       </ul>
       <p className="mt-3 text-sm text-muted">{t('photos.hint', { max: MAX })}</p>
       <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" aria-hidden className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) setFile(f); e.target.value = ''; }} />
-      <PhotoCropper file={file} onCancel={() => setFile(null)} onDone={(b) => add.mutate(b)} />
+      <PhotoCropper file={file} busy={add.isPending} onInterrupt={() => abort.current?.abort()} onCancel={() => setFile(null)} onDone={(b) => add.mutate(b)} />
     </div>
   );
 }

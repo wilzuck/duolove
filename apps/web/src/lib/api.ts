@@ -26,8 +26,25 @@ export const post = <T,>(path: string, body?: unknown) => api<T>(path, { method:
 export const put = <T,>(path: string, body?: unknown) => api<T>(path, { method: 'PUT', body: body ?? {} });
 export const patch = <T,>(path: string, body?: unknown) => api<T>(path, { method: 'PATCH', body: body ?? {} });
 export const del = <T,>(path: string, body?: unknown) => api<T>(path, { method: 'DELETE', body });
-export const upload = <T,>(path: string, file: Blob, name = 'photo.jpg') => {
+/** Envoi de fichier. Délai maximum (60 s par défaut) : un réseau qui bloque ne laisse jamais un chargement infini ; `signal` permet d'interrompre l'envoi à la demande de l'utilisateur. */
+export async function upload<T>(path: string, file: Blob, name = 'photo.jpg', { signal, timeoutMs = 60_000 }: { signal?: AbortSignal; timeoutMs?: number } = {}): Promise<T> {
   const form = new FormData();
   form.append('file', file, name);
-  return api<T>(path, { method: 'POST', form });
-};
+  const ctrl = new AbortController();
+  let timedOut = false;
+  const timer = setTimeout(() => { timedOut = true; ctrl.abort(); }, timeoutMs);
+  const onAbort = () => ctrl.abort();
+  signal?.addEventListener('abort', onAbort, { once: true });
+  try {
+    return await api<T>(path, { method: 'POST', form, signal: ctrl.signal });
+  } catch (e) {
+    if (timedOut) throw new ApiError(408, 'UPLOAD_TIMEOUT', 'Upload timeout');
+    throw e; // annulation volontaire : AbortError, à ignorer silencieusement par l'appelant
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', onAbort);
+  }
+}
+
+/** Vrai si l'erreur vient d'une interruption voulue par l'utilisateur (pas d'alerte à afficher). */
+export const isAbort = (e: unknown) => e instanceof DOMException && e.name === 'AbortError';

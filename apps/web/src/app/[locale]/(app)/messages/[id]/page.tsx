@@ -3,7 +3,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { ArrowLeft, Ban, CalendarHeart, Check, CheckCheck, Flag, HeartCrack, ImagePlus, Lightbulb, Lock, MoreVertical, Reply, Send, ShieldAlert, Smile, SmilePlus, Trash2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { use, useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Button, Checkbox, cn, Dialog, IconButton, Skeleton, Textarea } from '@duomatch/ui';
+import { Avatar, Button, Checkbox, cn, Dialog, IconButton, Skeleton, Spinner, Textarea } from '@duomatch/ui';
 import { CallButtons } from '@/components/app/CallLayer';
 import { DatesPanel } from '@/components/app/DatesPanel';
 import { IcebreakerPanel } from '@/components/app/IcebreakerPanel';
@@ -191,7 +191,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
           <div className="flex items-end gap-2">
             {canIdeas && <IconButton label={t('chat.iceOpen')} aria-expanded={ideas} onClick={() => setIdeas(!ideas)}><Lightbulb className="size-5" /></IconButton>}
             <IconButton label={canImages ? t('chat.attach') : t('chat.attachLocked')} onClick={() => (canImages ? file.current?.click() : setUpsell(true))} disabled={sendImg.isPending}>
-              <span className="relative"><ImagePlus className="size-5" />{!canImages && <Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden />}</span>
+              <span className="relative">{sendImg.isPending ? <Spinner size="sm" label={t('common.loading')} /> : <ImagePlus className="size-5" />}{!canImages && <Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden />}</span>
             </IconButton>
             <input ref={file} type="file" accept="image/jpeg,image/png,image/webp" aria-hidden className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) sendImg.mutate(f); e.target.value = ''; }} />
             <Textarea ref={area} aria-label={t('chat.compose')} placeholder={t('chat.compose')} rows={1} maxLength={2000} value={text} onChange={(e) => onType(e.target.value)}

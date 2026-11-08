@@ -1517,7 +1517,8 @@
     "CALLEE_UNAVAILABLE": "Cette personne n’est pas disponible pour le moment.",
     "CALL_LIMIT": "Vous avez atteint le nombre d’appels possibles aujourd’hui.",
     "CALL_NOT_ACTIVE": "Cet appel n’est plus en cours.",
-    "CALLS_UNAVAILABLE": "Les appels ne sont pas disponibles pour le moment."
+    "CALLS_UNAVAILABLE": "Les appels ne sont pas disponibles pour le moment.",
+    "UPLOAD_TIMEOUT": "L'envoi a pris trop de temps. Vérifiez votre connexion, puis réessayez."
   },
   "app": {
     "nav": {
@@ -1751,7 +1752,9 @@
     "cropTitle": "Recadrer la photo",
     "zoom": "Zoom",
     "cropDone": "Utiliser cette photo",
-    "cropError": "Ce fichier n’est pas une image lisible. Choisissez une photo JPEG, PNG ou WebP."
+    "cropError": "Ce fichier n’est pas une image lisible. Choisissez une photo JPEG, PNG ou WebP.",
+    "uploading": "Envoi en cours…",
+    "interrupt": "Interrompre l'envoi"
   },
   "onboarding": {
     "progress": "Étape {n} sur {total}",
