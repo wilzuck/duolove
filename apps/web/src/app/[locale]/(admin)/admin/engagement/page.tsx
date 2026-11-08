@@ -3,8 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { INTENTS, INTEREST_SLUGS } from '@duomatch/types';
-import { Badge, Button, Card, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
+import { Badge, Button, Card, CrudTable, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
+import { PageLoader } from '@/components/PageLoader';
 import { useApiError } from '@/hooks/useApiError';
+import { useTableLabels } from '@/hooks/useTableLabels';
 import { Link } from '@/i18n/navigation';
 import { api, del, patch, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
@@ -74,45 +76,34 @@ function PromptsTab() {
   const err = useApiError();
   const toast = useUi((s) => s.toast);
   const q = useQuery({ queryKey: ['admin', 'prompts'], queryFn: () => api<{ items: PromptRow[] }>('/admin/prompts') });
-  const [f, setF] = useState({ slug: '', textFr: '', textEn: '', sortOrder: 50 });
+  const blank = { slug: '', textFr: '', textEn: '', sortOrder: 50 };
+  const [f, setF] = useState(blank);
+  const [editId, setEditId] = useState<string | null>(null);
   const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin', 'prompts'] }); void qc.invalidateQueries({ queryKey: ['engagement'] }); };
-  const create = useMutation({ mutationFn: () => post('/admin/prompts', f), onSuccess: () => { toast('success', t('admin.eng.created')); setF({ slug: '', textFr: '', textEn: '', sortOrder: 50 }); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const create = useMutation({ mutationFn: () => post('/admin/prompts', f), onSuccess: () => { toast('success', t('admin.eng.created')); refresh(); }, onError: (e) => toast('error', err(e)) });
   const update = useMutation({ mutationFn: ({ id, ...b }: { id: string } & Partial<PromptRow>) => patch(`/admin/prompts/${id}`, b), onSuccess: () => { toast('success', t('admin.eng.updated')); refresh(); }, onError: (e) => toast('error', err(e)) });
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-muted">{t('admin.eng.promptsHelp')}</p>
-      <Card className="p-5">
-        <h3 className="mb-3 font-bold">{t('admin.eng.newPrompt')}</h3>
-        <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); create.mutate(); }}>
-          <Field label={t('admin.eng.slug')}>{(p) => <Input {...p} required pattern="[a-z0-9]+(-[a-z0-9]+)*" minLength={2} maxLength={40} value={f.slug} onChange={(e) => setF({ ...f, slug: e.target.value })} />}</Field>
-          <Field label={t('admin.eng.order')}>{(p) => <Input {...p} type="number" min={0} max={1000} value={f.sortOrder} onChange={(e) => setF({ ...f, sortOrder: num(e.target.value) })} />}</Field>
-          <Field label={t('admin.eng.textFr')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>
-          <Field label={t('admin.eng.textEn')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textEn} onChange={(e) => setF({ ...f, textEn: e.target.value })} />}</Field>
-          <div className="sm:col-span-2"><Button type="submit" loading={create.isPending}>{t('admin.eng.create')}</Button></div>
-        </form>
-      </Card>
-      {q.isLoading && <Skeleton className="h-40" />}
-      <ul className="space-y-3">{q.data?.items.map((p) => <PromptItem key={`${p.id}-${p.textFr}-${p.textEn}-${p.sortOrder}`} p={p} onSave={(b) => update.mutate({ id: p.id, ...b })} />)}</ul>
-    </div>
-  );
-}
-
-function PromptItem({ p, onSave }: { p: PromptRow; onSave: (b: Partial<PromptRow>) => void }) {
-  const t = useTranslations();
-  const [d, setD] = useState({ textFr: p.textFr, textEn: p.textEn, sortOrder: p.sortOrder });
-  return (
-    <li><Card className="space-y-3 p-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="flex items-center gap-2"><code className="text-xs">{p.slug}</code><Badge tone={p.active ? 'success' : 'neutral'}>{t(p.active ? 'admin.eng.active' : 'admin.eng.inactive')}</Badge><span className="text-xs text-muted">{t('admin.eng.answers')} : {p.answers}</span></span>
-        <label className="flex items-center gap-2 text-sm">{t(p.active ? 'admin.eng.disable' : 'admin.eng.enable')}<Switch checked={p.active} onChange={(v) => onSave({ active: v })} label={t(p.active ? 'admin.eng.disable' : 'admin.eng.enable')} /></label>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-[1fr_1fr_6rem_auto] sm:items-end">
-        <Field label={t('admin.eng.textFr')}>{(x) => <Input {...x} maxLength={120} value={d.textFr} onChange={(e) => setD({ ...d, textFr: e.target.value })} />}</Field>
-        <Field label={t('admin.eng.textEn')}>{(x) => <Input {...x} maxLength={120} value={d.textEn} onChange={(e) => setD({ ...d, textEn: e.target.value })} />}</Field>
-        <Field label={t('admin.eng.order')}>{(x) => <Input {...x} type="number" min={0} max={1000} value={d.sortOrder} onChange={(e) => setD({ ...d, sortOrder: num(e.target.value) })} />}</Field>
-        <Button variant="outline" onClick={() => onSave(d)}>{t('admin.eng.save1')}</Button>
-      </div>
-    </Card></li>
+    <CrudTable
+      title={t('admin.eng.tabPrompts')} description={t('admin.eng.promptsHelp')}
+      addLabel={t('admin.eng.newPrompt')} editLabel={t('admin.eng.edit')}
+      dialogTitle={editId ? t('admin.eng.edit') : t('admin.eng.newPrompt')} submitLabel={editId ? t('admin.eng.save1') : t('admin.eng.create')}
+      exportName="questions-profil" tableLabels={useTableLabels()} cancelLabel={t('common.cancel')} closeLabel={t('common.close')} submitting={create.isPending || update.isPending}
+      onOpen={(r) => { setEditId(r?.id ?? null); setF(r ? { slug: r.slug, textFr: r.textFr, textEn: r.textEn, sortOrder: r.sortOrder } : blank); }}
+      onSubmit={(r) => (r ? update.mutateAsync({ id: r.id, textFr: f.textFr, textEn: f.textEn, sortOrder: f.sortOrder }) : create.mutateAsync())}
+      rows={q.data?.items} rowKey={(p) => p.id} loading={<PageLoader inline />} minWidth="44rem"
+      columns={[
+        { key: 'slug', header: t('admin.eng.slug'), value: (p) => p.slug, filter: 'text', cell: (p) => <code className="text-xs">{p.slug}</code> },
+        { key: 'text', header: t('admin.eng.textFr'), value: (p) => `${p.textFr} ${p.textEn}`, cell: (p) => <><span className="block">{p.textFr}</span><span className="block text-xs text-muted">{p.textEn}</span></> },
+        { key: 'order', mobileHidden: true, header: t('admin.eng.order'), value: (p) => p.sortOrder, cell: (p) => p.sortOrder },
+        { key: 'answers', mobileHidden: true, header: t('admin.eng.answers'), value: (p) => p.answers, cell: (p) => p.answers },
+        { key: 'active', header: t('admin.status'), value: (p) => (p.active ? 'active' : 'inactive'), filter: { options: [{ value: 'active', label: t('admin.eng.active') }, { value: 'inactive', label: t('admin.eng.inactive') }] }, cell: (p) => <Switch checked={p.active} onChange={(v) => update.mutate({ id: p.id, active: v })} label={`${t(p.active ? 'admin.eng.disable' : 'admin.eng.enable')} ${p.slug}`} /> },
+      ]}
+    >
+      <Field label={t('admin.eng.slug')}>{(p) => <Input {...p} required disabled={!!editId} pattern="[a-z0-9]+(-[a-z0-9]+)*" minLength={2} maxLength={40} value={f.slug} onChange={(e) => setF({ ...f, slug: e.target.value })} />}</Field>
+      <Field label={t('admin.eng.order')}>{(p) => <Input {...p} type="number" min={0} max={1000} value={f.sortOrder} onChange={(e) => setF({ ...f, sortOrder: num(e.target.value) })} />}</Field>
+      <Field label={t('admin.eng.textFr')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>
+      <Field label={t('admin.eng.textEn')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textEn} onChange={(e) => setF({ ...f, textEn: e.target.value })} />}</Field>
+    </CrudTable>
   );
 }
 
@@ -124,47 +115,35 @@ function IcebreakersTab() {
   const q = useQuery({ queryKey: ['admin', 'icebreakers'], queryFn: () => api<{ items: IceRow[] }>('/admin/icebreakers') });
   const blank = { slug: '', kind: 'INTEREST' as IceRow['kind'], key: INTEREST_SLUGS[0] as string, textFr: '', textEn: '', sortOrder: 100 };
   const [f, setF] = useState(blank);
+  const [editId, setEditId] = useState<string | null>(null);
   const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin', 'icebreakers'] }); void qc.invalidateQueries({ queryKey: ['icebreakers'] }); };
-  const create = useMutation({ mutationFn: () => post('/admin/icebreakers', { ...f, key: f.kind === 'GENERIC' ? null : f.key }), onSuccess: () => { toast('success', t('admin.eng.created')); setF(blank); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const create = useMutation({ mutationFn: () => post('/admin/icebreakers', { ...f, key: f.kind === 'GENERIC' ? null : f.key }), onSuccess: () => { toast('success', t('admin.eng.created')); refresh(); }, onError: (e) => toast('error', err(e)) });
   const update = useMutation({ mutationFn: ({ id, ...b }: { id: string } & Partial<IceRow>) => patch(`/admin/icebreakers/${id}`, b), onSuccess: () => { toast('success', t('admin.eng.updated')); refresh(); }, onError: (e) => toast('error', err(e)) });
   const keyLabel = (r: { kind: IceRow['kind']; key: string | null }) => (r.kind === 'INTEREST' && r.key ? t(`interest.${r.key}` as never) : r.kind === 'INTENT' && r.key ? t(`intent.${r.key}` as never) : t('admin.eng.ice.noKey'));
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-muted">{t('admin.eng.ice.help')}</p>
-      <Card className="p-5">
-        <h3 className="mb-3 font-bold">{t('admin.eng.ice.new')}</h3>
-        <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); create.mutate(); }}>
-          <Field label={t('admin.eng.slug')}>{(p) => <Input {...p} required pattern="[a-z0-9]+(-[a-z0-9]+)*" minLength={2} maxLength={60} value={f.slug} onChange={(e) => setF({ ...f, slug: e.target.value })} />}</Field>
-          <Field label={t('admin.eng.ice.kind')}>{(p) => <Select {...p} value={f.kind} onChange={(e) => { const kind = e.target.value as IceRow['kind']; setF({ ...f, kind, key: kind === 'INTENT' ? INTENTS[0] : INTEREST_SLUGS[0] }); }}>{(['INTEREST', 'INTENT', 'GENERIC'] as const).map((k) => <option key={k} value={k}>{t(`admin.eng.ice.kind${k}`)}</option>)}</Select>}</Field>
-          {f.kind !== 'GENERIC' && <Field label={t('admin.eng.ice.key')}>{(p) => <Select {...p} value={f.key} onChange={(e) => setF({ ...f, key: e.target.value })}>{(f.kind === 'INTENT' ? INTENTS : INTEREST_SLUGS).map((k) => <option key={k} value={k}>{keyLabel({ kind: f.kind, key: k })}</option>)}</Select>}</Field>}
-          <Field label={t('admin.eng.order')}>{(p) => <Input {...p} type="number" min={0} max={1000} value={f.sortOrder} onChange={(e) => setF({ ...f, sortOrder: num(e.target.value) })} />}</Field>
-          <Field label={t('admin.eng.textFr')}>{(p) => <Input {...p} required minLength={10} maxLength={220} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>
-          <Field label={t('admin.eng.textEn')}>{(p) => <Input {...p} required minLength={10} maxLength={220} value={f.textEn} onChange={(e) => setF({ ...f, textEn: e.target.value })} />}</Field>
-          <div className="sm:col-span-2"><Button type="submit" loading={create.isPending}>{t('admin.eng.create')}</Button></div>
-        </form>
-      </Card>
-      {q.isLoading && <Skeleton className="h-40" />}
-      <ul className="space-y-3">{q.data?.items.map((r) => <IceItem key={`${r.id}-${r.textFr}-${r.textEn}-${r.sortOrder}`} r={r} label={`${t(`admin.eng.ice.kind${r.kind}`)} · ${keyLabel(r)}`} onSave={(b) => update.mutate({ id: r.id, ...b })} />)}</ul>
-    </div>
-  );
-}
-
-function IceItem({ r, label, onSave }: { r: IceRow; label: string; onSave: (b: Partial<IceRow>) => void }) {
-  const t = useTranslations();
-  const [d, setD] = useState({ textFr: r.textFr, textEn: r.textEn, sortOrder: r.sortOrder });
-  return (
-    <li><Card className="space-y-3 p-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="flex items-center gap-2"><code className="text-xs">{r.slug}</code><Badge tone="neutral">{label}</Badge><Badge tone={r.active ? 'success' : 'neutral'}>{t(r.active ? 'admin.eng.active' : 'admin.eng.inactive')}</Badge></span>
-        <label className="flex items-center gap-2 text-sm">{t(r.active ? 'admin.eng.disable' : 'admin.eng.enable')}<Switch checked={r.active} onChange={(v) => onSave({ active: v })} label={`${t(r.active ? 'admin.eng.disable' : 'admin.eng.enable')} ${r.slug}`} /></label>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-[1fr_1fr_6rem_auto] sm:items-end">
-        <Field label={t('admin.eng.textFr')}>{(x) => <Input {...x} maxLength={220} value={d.textFr} onChange={(e) => setD({ ...d, textFr: e.target.value })} />}</Field>
-        <Field label={t('admin.eng.textEn')}>{(x) => <Input {...x} maxLength={220} value={d.textEn} onChange={(e) => setD({ ...d, textEn: e.target.value })} />}</Field>
-        <Field label={t('admin.eng.order')}>{(x) => <Input {...x} type="number" min={0} max={1000} value={d.sortOrder} onChange={(e) => setD({ ...d, sortOrder: num(e.target.value) })} />}</Field>
-        <Button variant="outline" onClick={() => onSave(d)}>{t('admin.eng.save1')}</Button>
-      </div>
-    </Card></li>
+    <CrudTable
+      title={t('admin.eng.tabIcebreakers')} description={t('admin.eng.ice.help')}
+      addLabel={t('admin.eng.ice.new')} editLabel={t('admin.eng.edit')}
+      dialogTitle={editId ? t('admin.eng.edit') : t('admin.eng.ice.new')} submitLabel={editId ? t('admin.eng.save1') : t('admin.eng.create')}
+      exportName="brise-glaces" tableLabels={useTableLabels()} cancelLabel={t('common.cancel')} closeLabel={t('common.close')} submitting={create.isPending || update.isPending}
+      onOpen={(r) => { setEditId(r?.id ?? null); setF(r ? { slug: r.slug, kind: r.kind, key: r.key ?? '', textFr: r.textFr, textEn: r.textEn, sortOrder: r.sortOrder } : blank); }}
+      onSubmit={(r) => (r ? update.mutateAsync({ id: r.id, textFr: f.textFr, textEn: f.textEn, sortOrder: f.sortOrder }) : create.mutateAsync())}
+      rows={q.data?.items} rowKey={(r) => r.id} loading={<PageLoader inline />} minWidth="46rem"
+      columns={[
+        { key: 'slug', header: t('admin.eng.slug'), value: (r) => r.slug, filter: 'text', cell: (r) => <code className="text-xs">{r.slug}</code> },
+        { key: 'kind', header: t('admin.eng.ice.kind'), value: (r) => r.kind, filter: { options: (['INTEREST', 'INTENT', 'GENERIC'] as const).map((k) => ({ value: k, label: t(`admin.eng.ice.kind${k}`) })) }, cell: (r) => <Badge tone="neutral">{`${t(`admin.eng.ice.kind${r.kind}`)} · ${keyLabel(r)}`}</Badge> },
+        { key: 'text', header: t('admin.eng.textFr'), value: (r) => `${r.textFr} ${r.textEn}`, cell: (r) => <><span className="block">{r.textFr}</span><span className="block text-xs text-muted">{r.textEn}</span></> },
+        { key: 'order', mobileHidden: true, header: t('admin.eng.order'), value: (r) => r.sortOrder, cell: (r) => r.sortOrder },
+        { key: 'active', header: t('admin.status'), value: (r) => (r.active ? 'active' : 'inactive'), filter: { options: [{ value: 'active', label: t('admin.eng.active') }, { value: 'inactive', label: t('admin.eng.inactive') }] }, cell: (r) => <Switch checked={r.active} onChange={(v) => update.mutate({ id: r.id, active: v })} label={`${t(r.active ? 'admin.eng.disable' : 'admin.eng.enable')} ${r.slug}`} /> },
+      ]}
+    >
+      <Field label={t('admin.eng.slug')}>{(p) => <Input {...p} required disabled={!!editId} pattern="[a-z0-9]+(-[a-z0-9]+)*" minLength={2} maxLength={60} value={f.slug} onChange={(e) => setF({ ...f, slug: e.target.value })} />}</Field>
+      <Field label={t('admin.eng.ice.kind')}>{(p) => <Select {...p} disabled={!!editId} value={f.kind} onChange={(e) => { const kind = e.target.value as IceRow['kind']; setF({ ...f, kind, key: kind === 'INTENT' ? INTENTS[0] : INTEREST_SLUGS[0] }); }}>{(['INTEREST', 'INTENT', 'GENERIC'] as const).map((k) => <option key={k} value={k}>{t(`admin.eng.ice.kind${k}`)}</option>)}</Select>}</Field>
+      {f.kind !== 'GENERIC' && <Field label={t('admin.eng.ice.key')}>{(p) => <Select {...p} disabled={!!editId} value={f.key} onChange={(e) => setF({ ...f, key: e.target.value })}>{(f.kind === 'INTENT' ? INTENTS : INTEREST_SLUGS).map((k) => <option key={k} value={k}>{keyLabel({ kind: f.kind, key: k })}</option>)}</Select>}</Field>}
+      <Field label={t('admin.eng.order')}>{(p) => <Input {...p} type="number" min={0} max={1000} value={f.sortOrder} onChange={(e) => setF({ ...f, sortOrder: num(e.target.value) })} />}</Field>
+      <Field label={t('admin.eng.textFr')}>{(p) => <Input {...p} required minLength={10} maxLength={220} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>
+      <Field label={t('admin.eng.textEn')}>{(p) => <Input {...p} required minLength={10} maxLength={220} value={f.textEn} onChange={(e) => setF({ ...f, textEn: e.target.value })} />}</Field>
+    </CrudTable>
   );
 }
 
@@ -178,56 +157,36 @@ function DailyQuestionsTab() {
   const blank = { day: '', textFr: '', textEn: '', options: [{ fr: '', en: '' }, { fr: '', en: '' }] };
   const [f, setF] = useState(blank);
   const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin', 'daily-questions'] }); void qc.invalidateQueries({ queryKey: ['engagement', 'daily-question'] }); };
-  const create = useMutation({ mutationFn: () => post('/admin/daily-questions', { day: f.day || null, textFr: f.textFr, textEn: f.textEn, options: f.options }), onSuccess: () => { toast('success', t('admin.eng.dq.created')); setF(blank); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const create = useMutation({ mutationFn: () => post('/admin/daily-questions', { day: f.day || null, textFr: f.textFr, textEn: f.textEn, options: f.options }), onSuccess: () => { toast('success', t('admin.eng.dq.created')); refresh(); }, onError: (e) => toast('error', err(e)) });
   const update = useMutation({ mutationFn: ({ id, ...b }: { id: string; active: boolean }) => patch(`/admin/daily-questions/${id}`, b), onSuccess: () => { toast('success', t('admin.eng.dq.updated')); refresh(); }, onError: (e) => toast('error', err(e)) });
   const remove = useMutation({ mutationFn: (id: string) => del(`/admin/daily-questions/${id}`), onSuccess: () => { toast('success', t('admin.eng.dq.deleted')); refresh(); }, onError: (e) => toast('error', err(e)) });
   const setOpt = (i: number, k: 'fr' | 'en', v: string) => setF({ ...f, options: f.options.map((o, j) => (j === i ? { ...o, [k]: v } : o)) });
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-muted">{t('admin.eng.dq.help')}</p>
-      <Card className="p-5">
-        <h3 className="mb-3 font-bold">{t('admin.eng.dq.new')}</h3>
-        <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); create.mutate(); }}>
-          <Field label={t('admin.eng.dq.textFr')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>
-          <Field label={t('admin.eng.dq.textEn')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textEn} onChange={(e) => setF({ ...f, textEn: e.target.value })} />}</Field>
-          {f.options.map((o, i) => (
-            <div key={i} className="contents">
-              <Field label={t('admin.eng.dq.optFr', { n: i + 1 })}>{(p) => <Input {...p} required maxLength={60} value={o.fr} onChange={(e) => setOpt(i, 'fr', e.target.value)} />}</Field>
-              <Field label={t('admin.eng.dq.optEn', { n: i + 1 })}>{(p) => <Input {...p} required maxLength={60} value={o.en} onChange={(e) => setOpt(i, 'en', e.target.value)} />}</Field>
-            </div>
-          ))}
-          <Field label={t('admin.eng.dq.day')}>{(p) => <Input {...p} type="date" value={f.day} onChange={(e) => setF({ ...f, day: e.target.value })} />}</Field>
-          <div className="flex items-end gap-2">
-            {f.options.length < 4 && <Button type="button" variant="outline" onClick={() => setF({ ...f, options: [...f.options, { fr: '', en: '' }] })}>{t('admin.eng.dq.addOption')}</Button>}
-            <Button type="submit" loading={create.isPending}>{t('admin.eng.dq.create')}</Button>
-          </div>
-        </form>
-      </Card>
-      {q.isLoading && <Skeleton className="h-40" />}
-      {q.data && q.data.items.length === 0 && <p className="text-center text-muted">{t('admin.eng.dq.empty')}</p>}
-      <ul className="space-y-3">
-        {q.data?.items.map((r) => (
-          <li key={r.id}>
-            <Card className="space-y-2 p-4">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <p className="font-semibold">{locale === 'en' ? r.text.en : r.text.fr}</p>
-                <div className="flex flex-wrap gap-2">
-                  {r.isToday && <Badge tone="success">{t('admin.eng.dq.today')}</Badge>}
-                  <Badge tone="neutral">{r.day ?? t('admin.eng.dq.pool')}</Badge>
-                  <Badge tone={r.active ? 'brand' : 'neutral'}>{r.active ? t('admin.eng.dq.active') : t('admin.eng.dq.inactive')}</Badge>
-                </div>
-              </div>
-              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">{r.options.map((o) => <li key={o.key}>{locale === 'en' ? o.en : o.fr} · {r.perOption[o.key] ?? 0}</li>)}</ul>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs text-muted">{t('admin.eng.dq.colAnswers')} : {r.answers}</span>
-                <Button size="sm" variant="outline" onClick={() => update.mutate({ id: r.id, active: !r.active })}>{r.active ? t('admin.eng.dq.disable') : t('admin.eng.dq.enable')}</Button>
-                <Button size="sm" variant="ghost" onClick={() => remove.mutate(r.id)}>{t('admin.eng.dq.delete')}</Button>
-              </div>
-            </Card>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <CrudTable
+      title={t('admin.eng.dq.tab')} description={t('admin.eng.dq.help')}
+      addLabel={t('admin.eng.dq.new')} dialogTitle={t('admin.eng.dq.new')} submitLabel={t('admin.eng.dq.create')}
+      exportName="question-du-jour" tableLabels={useTableLabels()} cancelLabel={t('common.cancel')} closeLabel={t('common.close')} submitting={create.isPending}
+      onOpen={() => setF(blank)} onSubmit={() => create.mutateAsync()}
+      rows={q.data?.items} rowKey={(r) => r.id} loading={<PageLoader inline />} empty={t('admin.eng.dq.empty')} minWidth="46rem"
+      columns={[
+        { key: 'q', header: t('admin.eng.dq.textFr'), value: (r) => `${r.text.fr} ${r.text.en}`, filter: 'text', cell: (r) => <><span className="block font-semibold">{locale === 'en' ? r.text.en : r.text.fr}</span><span className="block text-xs text-muted">{r.options.map((o) => `${locale === 'en' ? o.en : o.fr} · ${r.perOption[o.key] ?? 0}`).join('  ·  ')}</span></> },
+        { key: 'day', header: t('admin.eng.dq.day'), value: (r) => r.day ?? '', cell: (r) => <span className="flex flex-wrap gap-1.5">{r.isToday && <Badge tone="success">{t('admin.eng.dq.today')}</Badge>}<Badge tone="neutral">{r.day ?? t('admin.eng.dq.pool')}</Badge></span> },
+        { key: 'status', header: t('admin.status'), value: (r) => (r.active ? 'active' : 'inactive'), filter: { options: [{ value: 'active', label: t('admin.eng.dq.active') }, { value: 'inactive', label: t('admin.eng.dq.inactive') }] }, cell: (r) => <Badge tone={r.active ? 'brand' : 'neutral'}>{r.active ? t('admin.eng.dq.active') : t('admin.eng.dq.inactive')}</Badge> },
+        { key: 'answers', mobileHidden: true, header: t('admin.eng.dq.colAnswers'), value: (r) => r.answers, cell: (r) => r.answers },
+        { key: 'act', header: t('admin.status'), srOnlyHeader: true, cell: (r) => <span className="flex gap-2"><Button size="sm" variant="outline" onClick={() => update.mutate({ id: r.id, active: !r.active })}>{r.active ? t('admin.eng.dq.disable') : t('admin.eng.dq.enable')}</Button><Button size="sm" variant="ghost" onClick={() => remove.mutate(r.id)}>{t('admin.eng.dq.delete')}</Button></span> },
+      ]}
+    >
+      <Field label={t('admin.eng.dq.textFr')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>
+      <Field label={t('admin.eng.dq.textEn')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textEn} onChange={(e) => setF({ ...f, textEn: e.target.value })} />}</Field>
+      {f.options.map((o, i) => (
+        <div key={i} className="contents">
+          <Field label={t('admin.eng.dq.optFr', { n: i + 1 })}>{(p) => <Input {...p} required maxLength={60} value={o.fr} onChange={(e) => setOpt(i, 'fr', e.target.value)} />}</Field>
+          <Field label={t('admin.eng.dq.optEn', { n: i + 1 })}>{(p) => <Input {...p} required maxLength={60} value={o.en} onChange={(e) => setOpt(i, 'en', e.target.value)} />}</Field>
+        </div>
+      ))}
+      <Field label={t('admin.eng.dq.day')}>{(p) => <Input {...p} type="date" value={f.day} onChange={(e) => setF({ ...f, day: e.target.value })} />}</Field>
+      <div className="flex items-end">{f.options.length < 4 && <Button type="button" variant="outline" onClick={() => setF({ ...f, options: [...f.options, { fr: '', en: '' }] })}>{t('admin.eng.dq.addOption')}</Button>}</div>
+    </CrudTable>
   );
 }
 

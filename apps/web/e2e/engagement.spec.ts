@@ -116,11 +116,14 @@ test.describe.serial('Engagement : phase 1', () => {
     // Questions : ajout puis désactivation.
     await page.getByRole('tab', { name: 'Questions' }).click();
     const slug = `e2e-${uid()}`;
-    await page.getByLabel('Clé technique').fill(slug);
-    await page.getByLabel('Texte (français)', { exact: true }).first().fill('Ma question de test ?');
-    await page.getByLabel('Texte (anglais)', { exact: true }).first().fill('My test question?');
-    await page.getByRole('button', { name: 'Ajouter', exact: true }).click();
+    await page.getByRole('button', { name: 'Nouvelle question' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Nouvelle question' });
+    await dialog.getByLabel('Clé technique').fill(slug);
+    await dialog.getByLabel('Texte (français)', { exact: true }).fill('Ma question de test ?');
+    await dialog.getByLabel('Texte (anglais)', { exact: true }).fill('My test question?');
+    await dialog.getByRole('button', { name: 'Ajouter', exact: true }).click();
     await expect(page.getByText('Question ajoutée.')).toBeVisible();
+    await page.getByRole('searchbox', { name: 'Rechercher dans le tableau' }).fill(slug);
     await expect(page.getByText(slug)).toBeVisible();
     // Indicateurs : chiffres réels et liste de ce qui n'est pas encore mesuré.
     await page.getByRole('tab', { name: 'Indicateurs' }).click();

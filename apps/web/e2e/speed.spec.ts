@@ -28,12 +28,15 @@ test.describe.serial('Speed dating', () => {
 
   test('l’administrateur publie une session (accessible) ; elle apparaît dans la liste', async () => {
     await b.page.goto('/admin/speed');
-    await b.page.getByLabel('Titre').fill(title);
-    await b.page.getByLabel('Ville (facultative)').fill(city);
-    await b.page.getByLabel('Nombre d’échanges').fill('3');
+    await b.page.getByRole('button', { name: 'Nouvelle session' }).click();
+    const dialog = b.page.getByRole('dialog', { name: 'Nouvelle session' });
+    await dialog.getByLabel('Titre').fill(title);
+    await dialog.getByLabel('Ville (facultative)').fill(city);
+    await dialog.getByLabel('Nombre d’échanges').fill('3');
     expect(await axeOf(b.page)).toEqual([]);
-    await b.page.getByRole('button', { name: 'Publier la session' }).click();
+    await dialog.getByRole('button', { name: 'Publier la session' }).click();
     await expect(b.page.getByText('Session publiée.')).toBeVisible();
+    await b.page.getByRole('searchbox', { name: 'Rechercher dans le tableau' }).fill(title);
     await expect(b.page.getByRole('cell', { name: title })).toBeVisible();
     eventId = sql(`select id from "SpeedEvent" where title='${title}'`);
   });

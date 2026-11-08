@@ -2568,7 +2568,8 @@
         "enable": "Enable",
         "delete": "Delete",
         "empty": "No questions."
-      }
+      },
+      "edit": "Edit"
     },
     "speed": {
       "title": "Speed dating",
@@ -3263,5 +3264,25 @@
       }
     },
     "cta": "See the plans"
+  },
+  "table": {
+    "search": "Search the table",
+    "searchPlaceholder": "Search…",
+    "all": "all",
+    "reset": "Reset",
+    "rowsPerPage": "Rows per page",
+    "showing": "{total, plural, =0 {No rows} other {{from}–{to} of #}}",
+    "pageOf": "Page {page} of {pages}",
+    "first": "First page",
+    "prev": "Previous page",
+    "next": "Next page",
+    "last": "Last page",
+    "noResults": "No results for these filters.",
+    "sortBy": "Sort by {name}",
+    "export": "Export (CSV)",
+    "sortLabel": "Sort",
+    "columns": "Columns",
+    "filters": "Filters",
+    "done": "Done"
   }
 }

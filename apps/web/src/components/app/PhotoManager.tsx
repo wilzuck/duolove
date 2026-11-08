@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, ArrowRight, Plus, Star, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
-import { Badge, cn } from '@duomatch/ui';
+import { Badge, cn, Spinner } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { keys } from '@/hooks/useQueries';
 import { del, put, upload } from '@/lib/api';
@@ -55,7 +55,7 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
           <li>
             <button type="button" onClick={() => input.current?.click()} disabled={add.isPending}
               className="flex aspect-[4/5] w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-brand/40 bg-soft/60 text-brand-ink transition hover:bg-soft disabled:opacity-60">
-              <Plus className="size-8" aria-hidden /><span className="text-sm font-semibold">{add.isPending ? t('common.loading') : t('photos.add')}</span>
+              {add.isPending ? <Spinner label={t('common.loading')} /> : <><Plus className="size-8" aria-hidden /><span className="text-sm font-semibold">{t('photos.add')}</span></>}
             </button>
           </li>
         )}

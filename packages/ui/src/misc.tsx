@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Loader2 } from 'lucide-react';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from './cn';
 
@@ -12,6 +13,16 @@ const badge = cva('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-
 });
 export function Badge({ className, tone, ...p }: HTMLAttributes<HTMLSpanElement> & VariantProps<typeof badge>) {
   return <span className={cn(badge({ tone }), className)} {...p} />;
+}
+
+/** Indicateur de chargement tournant, annoncé aux lecteurs d'écran (`label`) ; respecte « réduire les animations » (le cercle reste visible). */
+export function Spinner({ label, size = 'md', className }: { label: string; size?: 'sm' | 'md' | 'lg'; className?: string }) {
+  return (
+    <span role="status" className={cn('inline-flex items-center justify-center text-brand', className)}>
+      <Loader2 aria-hidden className={cn('animate-spin motion-reduce:animate-none', size === 'sm' ? 'size-4' : size === 'lg' ? 'size-10' : 'size-7')} />
+      <span className="sr-only">{label}</span>
+    </span>
+  );
 }
 
 export function Skeleton({ className }: { className?: string }) {

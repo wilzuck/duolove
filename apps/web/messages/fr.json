@@ -2568,7 +2568,8 @@
         "enable": "Activer",
         "delete": "Supprimer",
         "empty": "Aucune question."
-      }
+      },
+      "edit": "Modifier"
     },
     "speed": {
       "title": "Speed dating",
@@ -3263,5 +3264,25 @@
       }
     },
     "cta": "Voir les formules"
+  },
+  "table": {
+    "search": "Rechercher dans le tableau",
+    "searchPlaceholder": "Rechercher…",
+    "all": "tous",
+    "reset": "Réinitialiser",
+    "rowsPerPage": "Lignes par page",
+    "showing": "{total, plural, =0 {Aucune ligne} other {{from}–{to} sur #}}",
+    "pageOf": "Page {page} sur {pages}",
+    "first": "Première page",
+    "prev": "Page précédente",
+    "next": "Page suivante",
+    "last": "Dernière page",
+    "noResults": "Aucun résultat pour ces filtres.",
+    "sortBy": "Trier par {name}",
+    "export": "Exporter (CSV)",
+    "sortLabel": "Trier",
+    "columns": "Colonnes",
+    "filters": "Filtres",
+    "done": "Terminé"
   }
 }
