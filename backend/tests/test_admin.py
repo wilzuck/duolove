@@ -21,6 +21,8 @@ async def test_permissions_par_role(app, db):
 async def test_vue_d_ensemble_et_listes(app, db):
     ad, u = await admin(app, db), await member(app, db)
     await buy(u, {"type": "subscription", "plan": "PREMIUM", "months": 1})
+    for _ in range(2):  # un curseur n'existe que s'il reste des lignes après 2 : il faut 3 abonnements, sans dépendre de données déjà présentes (base vide en CI)
+        await buy(await member(app, db), {"type": "subscription", "plan": "PREMIUM", "months": 1})
     o = (await ad.agent.get("/api/admin/overview")).json()
     for k in ("users", "signups7", "revenueXof", "conversionRate", "retentionD7", "planDistribution", "recentSignups", "signupsPerDay", "topCountries", "refundedXof"):
         assert k in o

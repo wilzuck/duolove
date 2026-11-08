@@ -9,15 +9,15 @@ export interface SeriesPoint { day: string; value: number }
 
 /** Évolution face à la période précédente : flèche + pourcentage + texte lisible par les lecteurs d'écran (la couleur ne porte jamais seule l'information). */
 export function Delta({ flow }: { flow: Flow }) {
-  const t = useTranslations('admin.dash');
+  const t = useTranslations();
   const { current, previous } = flow;
-  if (previous === 0 && current === 0) return <Badge tone="neutral"><Minus className="size-3" aria-hidden />{t('stable')}</Badge>;
-  if (previous === 0) return <Badge tone="brand"><TrendingUp className="size-3" aria-hidden />{t('isNew')}</Badge>;
+  if (previous === 0 && current === 0) return <Badge tone="neutral"><Minus className="size-3" aria-hidden />{t('admin.dash.stable')}</Badge>;
+  if (previous === 0) return <Badge tone="brand"><TrendingUp className="size-3" aria-hidden />{t('admin.dash.isNew')}</Badge>;
   const pct = Math.round(((current - previous) / previous) * 100);
-  if (pct === 0) return <Badge tone="neutral"><Minus className="size-3" aria-hidden />{t('stable')}</Badge>;
+  if (pct === 0) return <Badge tone="neutral"><Minus className="size-3" aria-hidden />{t('admin.dash.stable')}</Badge>;
   return pct > 0
-    ? <Badge tone="success"><TrendingUp className="size-3" aria-hidden /><span aria-hidden>+{pct} %</span><span className="sr-only">{t('up', { pct })}</span></Badge>
-    : <Badge tone="danger"><TrendingDown className="size-3" aria-hidden /><span aria-hidden>{pct} %</span><span className="sr-only">{t('down', { pct: -pct })}</span></Badge>;
+    ? <Badge tone="success"><TrendingUp className="size-3" aria-hidden /><span aria-hidden>+{pct} %</span><span className="sr-only">{t('admin.dash.up', { pct })}</span></Badge>
+    : <Badge tone="danger"><TrendingDown className="size-3" aria-hidden /><span aria-hidden>{pct} %</span><span className="sr-only">{t('admin.dash.down', { pct: -pct })}</span></Badge>;
 }
 
 /** Mini-courbe décorative (la valeur exacte est écrite à côté). */
@@ -52,7 +52,7 @@ export function KpiCard({ label, value, flow, series, hint, icon }: { label: str
 
 /** Graphique en barres par jour : infobulle native, repères, et tableau équivalent pour les lecteurs d'écran. */
 export function TrendChart({ title, points, format, locale, total, delta }: { title: string; points: SeriesPoint[]; format: (v: number) => string; locale: string; total: string; delta?: Flow }) {
-  const t = useTranslations('admin.dash');
+  const t = useTranslations();
   const max = Math.max(1, ...points.map((p) => p.value));
   const date = (iso: string) => new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(new Date(`${iso}T00:00:00`));
   const W = 600, H = 150, gap = points.length > 45 ? 1 : 3;
@@ -64,7 +64,7 @@ export function TrendChart({ title, points, format, locale, total, delta }: { ti
         <div><h3 className="font-bold">{title}</h3><p className="mt-0.5 text-sm text-muted">{total}</p></div>
         {delta && <Delta flow={delta} />}
       </div>
-      {points.length === 0 || peak.value === 0 ? <p className="py-10 text-center text-sm text-muted">{t('noData')}</p> : (
+      {points.length === 0 || peak.value === 0 ? <p className="py-10 text-center text-sm text-muted">{t('admin.dash.noData')}</p> : (
         <>
           <svg viewBox={`0 0 ${W} ${H + 2}`} role="img" aria-label={title} className="h-44 w-full">
             {[0, 0.5, 1].map((r) => <line key={r} x1="0" x2={W} y1={H - r * (H - 8)} y2={H - r * (H - 8)} className="stroke-line" strokeWidth="1" strokeDasharray={r === 0 ? undefined : '3 4'} />)}
@@ -77,8 +77,8 @@ export function TrendChart({ title, points, format, locale, total, delta }: { ti
               );
             })}
           </svg>
-          <div className="mt-1 flex justify-between text-xs text-muted"><span>{date(points[0]!.day)}</span><span>{t('peak', { value: format(peak.value), day: date(peak.day) })}</span><span>{date(points[points.length - 1]!.day)}</span></div>
-          <table className="sr-only"><caption>{title}</caption><thead><tr><th scope="col">{t('day')}</th><th scope="col">{t('value')}</th></tr></thead>
+          <div className="mt-1 flex justify-between text-xs text-muted"><span>{date(points[0]!.day)}</span><span>{t('admin.dash.peak', { value: format(peak.value), day: date(peak.day) })}</span><span>{date(points[points.length - 1]!.day)}</span></div>
+          <table className="sr-only"><caption>{title}</caption><thead><tr><th scope="col">{t('admin.dash.day')}</th><th scope="col">{t('admin.dash.value')}</th></tr></thead>
             <tbody>{points.map((p) => <tr key={p.day}><th scope="row">{date(p.day)}</th><td>{format(p.value)}</td></tr>)}</tbody></table>
         </>
       )}

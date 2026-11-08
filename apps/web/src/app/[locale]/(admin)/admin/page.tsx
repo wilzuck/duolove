@@ -19,7 +19,6 @@ const PERIODS = [7, 30, 90] as const;
 
 export default function AdminOverview() {
   const t = useTranslations();
-  const d = useTranslations('admin.dash');
   const locale = useLocale();
   const [days, setDays] = useState<(typeof PERIODS)[number]>(30);
   const q = useQuery({ queryKey: ['admin', 'overview', days], queryFn: () => api<Overview>(`/admin/overview?days=${days}`), placeholderData: keepPreviousData, refetchInterval: 60_000 });
@@ -35,23 +34,23 @@ export default function AdminOverview() {
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-xl font-extrabold">{d('title')}</h2>
+        <h2 className="font-display text-xl font-extrabold">{t('admin.dash.title')}</h2>
         <div className="flex flex-wrap items-center gap-3">
-          {data && <span className="text-xs text-muted">{d('updated', { time: new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(data.generatedAt)) })}</span>}
-          <div role="group" aria-label={d('period')} className="inline-flex rounded-full border border-field-line bg-field p-1">
+          {data && <span className="text-xs text-muted">{t('admin.dash.updated', { time: new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(data.generatedAt)) })}</span>}
+          <div role="group" aria-label={t('admin.dash.period')} className="inline-flex rounded-full border border-field-line bg-field p-1">
             {PERIODS.map((p) => (
               <button key={p} type="button" aria-pressed={days === p} onClick={() => setDays(p)}
-                className={cn('rounded-full px-3.5 py-1.5 text-sm font-semibold transition', days === p ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>{d(`p${p}`)}</button>
+                className={cn('rounded-full px-3.5 py-1.5 text-sm font-semibold transition', days === p ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>{t(`admin.dash.p${p}`)}</button>
             ))}
           </div>
-          <Button variant="outline" size="sm" onClick={() => { void q.refetch(); void badges.refetch(); }} loading={q.isFetching} aria-label={d('refresh')}>{!q.isFetching && <RefreshCw className="size-4" aria-hidden />}<span className="max-sm:sr-only">{d('refresh')}</span></Button>
+          <Button variant="outline" size="sm" onClick={() => { void q.refetch(); void badges.refetch(); }} loading={q.isFetching} aria-label={t('admin.dash.refresh')}>{!q.isFetching && <RefreshCw className="size-4" aria-hidden />}<span className="max-sm:sr-only">{t('admin.dash.refresh')}</span></Button>
         </div>
       </div>
 
       <section aria-labelledby="todo-h" className="space-y-3">
-        <h3 id="todo-h" className="sr-only">{d('todo')}</h3>
+        <h3 id="todo-h" className="sr-only">{t('admin.dash.todo')}</h3>
         {todo && pending === 0 ? (
-          <p className="flex items-center gap-3 rounded-3xl border border-line bg-card p-4 text-sm text-muted"><CircleCheck className="size-5 text-success-ink" aria-hidden />{d('allClear')}</p>
+          <p className="flex items-center gap-3 rounded-3xl border border-line bg-card p-4 text-sm text-muted"><CircleCheck className="size-5 text-success-ink" aria-hidden />{t('admin.dash.allClear')}</p>
         ) : (
           <div className="grid gap-3 sm:grid-cols-3">
             {([['/admin/reports', Flag, 'reports', todo?.reports], ['/admin/moderation', UserCheck, 'verifications', todo?.verifications], ['/admin/moderation', ShieldCheck, 'appeals', todo?.appeals]] as const).map(([href, Icon, k, count]) => (
@@ -66,39 +65,39 @@ export default function AdminOverview() {
 
       {!data ? <div className="space-y-4"><Skeleton className="h-36" /><Skeleton className="h-64" /></div> : (
         <>
-          <section aria-label={d('vsPrev', { days: data.period.days })} className="space-y-2">
+          <section aria-label={t('admin.dash.vsPrev', { days: data.period.days })} className="space-y-2">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <KpiCard icon={<Users className="size-5" />} label={d('members')} value={n(data.users)} hint={d('membersHint', { n: n(data.period.signups.current) })} flow={data.period.signups} series={data.period.series.signups} />
-              <KpiCard icon={<Wallet className="size-5" />} label={d('revenue')} value={xof(data.period.revenue.current)} hint={d('revenueHint')} flow={data.period.revenue} series={data.period.series.revenue} />
-              <KpiCard icon={<HeartHandshake className="size-5" />} label={d('matches')} value={n(data.period.matches.current)} hint={d('matchesHint')} flow={data.period.matches} series={data.period.series.matches} />
-              <KpiCard icon={<Crown className="size-5" />} label={d('subscribers')} value={n(data.activeSubscriptions)} hint={d('subscribersHint', { rate: data.conversionRate })} />
+              <KpiCard icon={<Users className="size-5" />} label={t('admin.dash.members')} value={n(data.users)} hint={t('admin.dash.membersHint', { n: n(data.period.signups.current) })} flow={data.period.signups} series={data.period.series.signups} />
+              <KpiCard icon={<Wallet className="size-5" />} label={t('admin.dash.revenue')} value={xof(data.period.revenue.current)} hint={t('admin.dash.revenueHint')} flow={data.period.revenue} series={data.period.series.revenue} />
+              <KpiCard icon={<HeartHandshake className="size-5" />} label={t('admin.dash.matches')} value={n(data.period.matches.current)} hint={t('admin.dash.matchesHint')} flow={data.period.matches} series={data.period.series.matches} />
+              <KpiCard icon={<Crown className="size-5" />} label={t('admin.dash.subscribers')} value={n(data.activeSubscriptions)} hint={t('admin.dash.subscribersHint', { rate: data.conversionRate })} />
             </div>
-            <p className="text-xs text-muted">{d('vsPrev', { days: data.period.days })}</p>
+            <p className="text-xs text-muted">{t('admin.dash.vsPrev', { days: data.period.days })}</p>
           </section>
 
           <section aria-labelledby="charts-h" className="space-y-3">
-            <h3 id="charts-h" className="font-display text-lg font-bold">{d('growth')} · {d('revenueSection')}</h3>
+            <h3 id="charts-h" className="font-display text-lg font-bold">{t('admin.dash.growth')} · {t('admin.dash.revenueSection')}</h3>
             <div className="grid gap-4 lg:grid-cols-2">
-              <TrendChart title={d('signupsChart')} points={data.period.series.signups} format={n} locale={locale} total={d('signupsTotal', { n: n(data.period.signups.current) })} delta={data.period.signups} />
-              <TrendChart title={d('revenueChart')} points={data.period.series.revenue} format={xof} locale={locale} total={d('revenueTotal', { amount: xof(data.period.revenue.current), refunded: xof(data.refundedXof) })} delta={data.period.revenue} />
+              <TrendChart title={t('admin.dash.signupsChart')} points={data.period.series.signups} format={n} locale={locale} total={t('admin.dash.signupsTotal', { n: n(data.period.signups.current) })} delta={data.period.signups} />
+              <TrendChart title={t('admin.dash.revenueChart')} points={data.period.series.revenue} format={xof} locale={locale} total={t('admin.dash.revenueTotal', { amount: xof(data.period.revenue.current), refunded: xof(data.refundedXof) })} delta={data.period.revenue} />
             </div>
           </section>
 
           <section aria-labelledby="eng-h" className="space-y-3">
-            <div><h3 id="eng-h" className="font-display text-lg font-bold">{d('engagement')}</h3><p className="text-sm text-muted">{d('engagementHint')}</p></div>
+            <div><h3 id="eng-h" className="font-display text-lg font-bold">{t('admin.dash.engagement')}</h3><p className="text-sm text-muted">{t('admin.dash.engagementHint')}</p></div>
             <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <Metric label={d('likes')} value={n(data.period.likes.current)} flow={data.period.likes} />
-              <Metric label={d('messages')} value={n(data.period.messages.current)} flow={data.period.messages} />
-              <Metric label={d('active7')} value={n(data.active7)} hint={d('active7Hint')} />
-              <Metric label={d('activeConv')} value={n(data.activeConversations)} hint={d('activeConvHint')} />
-              <Metric label={d('completed')} value={n(data.profilesCompleted)} hint={d('completedHint')} />
-              <Metric label={d('retention')} value={`${data.retentionD7} %`} hint={d('retentionHint')} />
-              <Metric label={d('conversion')} value={`${data.conversionRate} %`} hint={d('conversionHint')} />
+              <Metric label={t('admin.dash.likes')} value={n(data.period.likes.current)} flow={data.period.likes} />
+              <Metric label={t('admin.dash.messages')} value={n(data.period.messages.current)} flow={data.period.messages} />
+              <Metric label={t('admin.dash.active7')} value={n(data.active7)} hint={t('admin.dash.active7Hint')} />
+              <Metric label={t('admin.dash.activeConv')} value={n(data.activeConversations)} hint={t('admin.dash.activeConvHint')} />
+              <Metric label={t('admin.dash.completed')} value={n(data.profilesCompleted)} hint={t('admin.dash.completedHint')} />
+              <Metric label={t('admin.dash.retention')} value={`${data.retentionD7} %`} hint={t('admin.dash.retentionHint')} />
+              <Metric label={t('admin.dash.conversion')} value={`${data.conversionRate} %`} hint={t('admin.dash.conversionHint')} />
             </dl>
           </section>
 
           <section aria-labelledby="brk-h" className="space-y-3">
-            <h3 id="brk-h" className="font-display text-lg font-bold">{d('breakdown')}</h3>
+            <h3 id="brk-h" className="font-display text-lg font-bold">{t('admin.dash.breakdown')}</h3>
             <div className="grid gap-4 lg:grid-cols-3">
               <Card className="p-5"><h4 className="mb-4 font-bold">{t('admin.plansTitle')}</h4>
                 <ul className="space-y-3">{data.planDistribution.map((p) => (
