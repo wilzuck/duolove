@@ -2906,7 +2906,10 @@
     "heightFrom": "from {min}",
     "heightBetween": "{min} to {max}",
     "navSearching": "Crush search in progress",
-    "navAccepted": "{n, plural, one {# person accepted} other {# people accepted}}"
+    "navAccepted": "{n, plural, one {# person accepted} other {# people accepted}}",
+    "relaunchSame": "Relaunch the search",
+    "relaunchIn": "Relaunch in {time}",
+    "relaunchReady": "The wait is over: relaunch with the same criteria to reach new people, or edit them."
   },
   "promo": {
     "title": "Promo code",

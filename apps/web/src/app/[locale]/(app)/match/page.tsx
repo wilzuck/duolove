@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Clock, Coins, Crown, Heart, MessageCircle, Radio, Search, Sparkles, X } from 'lucide-react';
+import { Clock, Coins, Crown, Heart, MessageCircle, Radio, RefreshCw, Search, Sparkles, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { COUNTRIES, countryFlag, LIVING, SEEKING, type LiveCriteria } from '@duomatch/types';
@@ -228,11 +228,15 @@ export default function MatchPage() {
               <ExpiryWatcher at={search.expiresAt} /><Badge tone="neutral">{t('live.until', { time: sameDay(search.expiresAt) ? formatTime(search.expiresAt, locale) : formatDate(search.expiresAt, locale, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) })}</Badge>
             </div>
             <p className="text-sm text-muted" role="status">{t('live.progress', { pending: search.pending, accepted: live.accepted.filter((a) => a.status === 'ACCEPTED').length })}</p>
+            {waitMs === 0 && <p className="rounded-2xl bg-soft px-4 py-3 text-sm text-brand-ink" role="status">{t('live.relaunchReady')}</p>}
             <div className="flex flex-wrap items-center gap-2">
+              <Button size="sm" onClick={() => start.mutate(toCriteria(draftFrom(live.defaults, search.criteria)))} loading={start.isPending} disabled={waitMs > 0}>
+                {waitMs > 0 ? <Clock className="size-4" aria-hidden /> : <RefreshCw className="size-4" aria-hidden />}{waitMs > 0 ? t('live.relaunchIn', { time: waitLabel }) : t('live.relaunchSame')}
+              </Button>
               <Button size="sm" variant="outline" onClick={() => { setDraft(null); setEditing(true); }}>{t('live.editCriteria')}</Button>
               <Button size="sm" variant="ghost" onClick={() => cancel.mutate()} loading={cancel.isPending}>{t('live.stop')}</Button>
-              {waitMs > 0 && <span className="flex items-center gap-1.5 text-xs text-muted"><Clock className="size-3.5" aria-hidden />{t('live.wait', { time: waitLabel })}</span>}
             </div>
+            {live.access.trialsLeft !== null && <p className="text-xs text-muted">{t('live.trialsLeft', { n: live.access.trialsLeft })}</p>}
           </Card>
 
           <h2 className="font-bold">{t('live.acceptedTitle')}</h2>
