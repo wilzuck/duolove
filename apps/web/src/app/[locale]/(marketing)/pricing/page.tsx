@@ -27,9 +27,9 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
   const [t, catalog] = await Promise.all([getTranslations(), fetchCatalog()]);
   return (
     <>
-    <div className="mx-auto max-w-6xl px-4 pt-16">
-      <h1 className="text-center text-4xl font-extrabold md:text-5xl">{t('home.plansTitle')}</h1>
-      <p className="mx-auto mt-4 max-w-xl text-center text-lg text-muted">{t('home.plansSubtitle')}</p>
+    <div className="mx-auto max-w-6xl px-4 pt-16 pb-10 md:pt-24 md:pb-12">
+      <h1 className="text-balance text-center text-4xl font-extrabold md:text-5xl">{t('home.plansTitle')}</h1>
+      <p className="mx-auto mt-5 max-w-xl text-center text-lg text-muted">{t('home.plansSubtitle')}</p>
     </div>
     <PageToc items={[{ id: 'tiers', label: t('toc.tiers') }, { id: 'needs', label: t('toc.needs') }, { id: 'shop', label: t('toc.shop') }, { id: 'faqp', label: t('toc.faq') }]} />
     <div className="mx-auto max-w-6xl px-4 pt-10 pb-16">

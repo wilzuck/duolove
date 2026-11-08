@@ -9,8 +9,10 @@ export function Input({ className, ...p }: InputHTMLAttributes<HTMLInputElement>
 export function Textarea({ className, ...p }: TextareaHTMLAttributes<HTMLTextAreaElement> & { ref?: Ref<HTMLTextAreaElement> }) {
   return <textarea className={cn(control, 'min-h-28 py-3', className)} {...p} />;
 }
+/** Flèche de liste déroulante (gris moyen : lisible en thème clair et sombre), dessinée en fond car `appearance-none` retire celle du navigateur. */
+const CHEVRON = 'bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238a8f98%27%20stroke-width=%272.5%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3E%3Cpath%20d=%27m6%209%206%206%206-6%27/%3E%3C/svg%3E)] bg-[length:1.1rem] bg-[position:right_0.9rem_center]';
 export function Select({ className, children, ...p }: SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select className={cn(control, 'h-12 appearance-none bg-[length:1rem] pr-10', className)} {...p}>{children}</select>;
+  return <select className={cn(control, 'h-12 cursor-pointer appearance-none bg-no-repeat pr-10', CHEVRON, className)} {...p}>{children}</select>;
 }
 
 /** Étiquette + contrôle + aide/erreur, correctement reliés (aria-describedby, aria-invalid). */
