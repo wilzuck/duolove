@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Dialog, EmptyState, Skeleton, cn } from '@duomatch/ui';
 import { ProfileCard } from '@/components/app/ProfileCard';
-import { ProfileDetail } from '@/components/app/ProfileDetail';
+import { ProfileSheet } from '@/components/app/ProfileSheet';
 import { useApiError } from '@/hooks/useApiError';
 import { useMe } from '@/hooks/useQueries';
 import { Link } from '@/i18n/navigation';
@@ -25,6 +25,20 @@ function SwipeCard({ card, top, leaving, onDecide, onGone, onInfo }: { card: Car
   const likeOp = useTransform(x, [20, 120], [0, 1]);
   const nopeOp = useTransform(x, [-120, -20], [1, 0]);
   const gone = useRef(false);
+  const wheelLock = useRef(false);
+  const el = useRef<HTMLDivElement>(null);
+  // Défiler vers le bas sur la carte ouvre le profil ; l'écouteur natif (non passif) empêche la page de glisser en même temps.
+  useEffect(() => {
+    const node = el.current;
+    if (!node || !top || leaving) return;
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY <= 0) return;
+      e.preventDefault();
+      if (e.deltaY > 35 && !wheelLock.current) { wheelLock.current = true; onInfo(); setTimeout(() => { wheelLock.current = false; }, 900); }
+    };
+    node.addEventListener('wheel', onWheel, { passive: false });
+    return () => node.removeEventListener('wheel', onWheel);
+  }, [top, leaving, onInfo]);
 
   useEffect(() => {
     if (!leaving || gone.current) return;
@@ -35,13 +49,15 @@ function SwipeCard({ card, top, leaving, onDecide, onGone, onInfo }: { card: Car
   }, [leaving, onGone, x, y]);
 
   return (
-    <motion.div className={cn('absolute inset-0', top ? 'z-10 cursor-grab touch-pan-y active:cursor-grabbing' : 'pointer-events-none')}
+    <motion.div ref={el} className={cn('absolute inset-0', top ? 'z-10 cursor-grab touch-none active:cursor-grabbing' : 'pointer-events-none')}
       style={{ x, y, rotate }} initial={false} animate={{ scale: top ? 1 : 0.94, opacity: top ? 1 : 0.9 }}
+      onPanEnd={top && !leaving ? (_, info) => { if (info.offset.y < -70 && Math.abs(info.offset.x) < 60) onInfo(); } : undefined}
       drag={top && !leaving ? 'x' : false} dragSnapToOrigin dragElastic={0.9} dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={(_, info) => { if (info.offset.x > 110 || info.velocity.x > 600) onDecide('right'); else if (info.offset.x < -110 || info.velocity.x < -600) onDecide('left'); }}>
       <ProfileCard card={card} />
       {top && (
         <>
+          <span aria-hidden className="pointer-events-none absolute bottom-2 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-white/60" />
           <motion.span style={{ opacity: likeOp }} aria-hidden className="pointer-events-none absolute top-10 left-6 -rotate-12 rounded-xl border-4 border-success px-3 py-1 font-display text-3xl font-extrabold text-success">{t('discover.like')}</motion.span>
           <motion.span style={{ opacity: nopeOp }} aria-hidden className="pointer-events-none absolute top-10 right-6 rotate-12 rounded-xl border-4 border-danger px-3 py-1 font-display text-3xl font-extrabold text-danger">{t('discover.nope')}</motion.span>
           <button type="button" onClick={onInfo} aria-label={t('discover.info')} className="absolute right-4 bottom-4 flex size-10 items-center justify-center rounded-full bg-white/25 text-white backdrop-blur hover:bg-white/40"><Info className="size-5" /></button>
@@ -113,11 +129,11 @@ export default function DiscoverPage() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (detail || upsell || (e.target as HTMLElement).closest('input,textarea,select,dialog')) return;
-      if (e.key === 'ArrowRight') decide('right'); else if (e.key === 'ArrowLeft') decide('left');
+      if (e.key === 'ArrowRight') decide('right'); else if (e.key === 'ArrowLeft') decide('left'); else if ((e.key === 'ArrowUp' || e.key === 'i') && top) setDetail(top);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [decide, detail, upsell]);
+  }, [decide, detail, upsell, top]);
 
   const remaining = usage.data && !usage.data.limits.unlimitedLikes ? Math.max(0, usage.data.limits.dailyLikes - usage.data.used.likes) : null;
 
@@ -160,10 +176,11 @@ export default function DiscoverPage() {
         </div>
       )}
 
-      <Dialog open={!!detail} onClose={() => setDetail(null)} title={detail?.displayName ?? ''} closeLabel={t('common.close')} className="w-[min(94vw,32rem)]">
-        {detail && <ProfileDetail card={detail} onBlocked={() => { setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); }}
-          onLiked={(r) => { setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); void qc.invalidateQueries({ queryKey: ['usage'] }); if (r.matched && r.match) showMatch({ matchId: r.match.id, conversationId: r.match.conversationId, user: r.match.user ?? detail }); }} />}
-      </Dialog>
+      <ProfileSheet card={detail} open={!!detail} onClose={() => setDetail(null)} onDecide={(d) => { setDetail(null); decide(d); }}
+        onBlocked={() => { if (detail) setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); }}
+        onLiked={(r) => { if (detail) setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); void qc.invalidateQueries({ queryKey: ['usage'] }); if (r.matched && r.match) showMatch({ matchId: r.match.id, conversationId: r.match.conversationId, user: r.match.user ?? detail ?? null }); }} />
+
+      {top && <p className="text-center text-xs text-muted">{t('discover.sheetHint')}</p>}
 
       <Dialog open={!!upsell} onClose={() => setUpsell(null)} title={t(upsell === 'DAILY_LIMIT' ? 'discover.limitTitle' : upsell === 'NO_SUPER_LIKES' ? 'discover.noSuperTitle' : 'discover.planTitle')} closeLabel={t('common.close')}>
         <div className="space-y-4">
