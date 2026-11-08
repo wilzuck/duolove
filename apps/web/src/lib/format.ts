@@ -17,3 +17,7 @@ export function timeAgo(iso: string | Date, locale: string): string {
   if (abs < 86400) return rtf.format(Math.round(diff / 3600), 'hour');
   return rtf.format(Math.round(diff / 86400), 'day');
 }
+
+/** Taille en mètres, plus parlante partout que des centimètres : 165 → « 1,65 m » (fr) / « 1.65 m » (en). */
+export const formatHeight = (cm: number, locale: string) =>
+  `${new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(cm / 100)} m`;

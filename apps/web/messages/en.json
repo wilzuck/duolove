@@ -1536,7 +1536,8 @@
     "upsellTitle": "Go Premium",
     "upsellText": "More likes, see who likes you, advanced filters.",
     "goPremium": "Go Premium",
-    "unread": "{count, plural, one {# unread notification} other {# unread notifications}}"
+    "unread": "{count, plural, one {# unread notification} other {# unread notifications}}",
+    "sectionTabs": "In this section"
   },
   "suspended": {
     "title": "Your account is suspended",
@@ -1578,7 +1579,9 @@
     "planText": "This feature is part of the Premium and VIP plans.",
     "noSuperTitle": "No Super Like available",
     "noSuperText": "You have no Super Like available. Buy a pack or go Premium to get some every week.",
-    "buyPack": "Buy a pack"
+    "buyPack": "Buy a pack",
+    "sheetHint": "Swipe up to see their profile",
+    "sheetGrab": "Handle: drag down to close"
   },
   "match": {
     "title": "It’s a match!",
@@ -1708,7 +1711,13 @@
   "profileView": {
     "about": "About",
     "unavailable": "This profile isn’t available",
-    "back": "Back to discovery"
+    "back": "Back to discovery",
+    "hasChildren": "Has children",
+    "noChildren": "No children",
+    "likesPets": "Likes animals",
+    "noPets": "Doesn’t like animals",
+    "from": "Originally from {country}",
+    "lifestyle": "Lifestyle"
   },
   "prefs": {
     "title": "My dating preferences",
@@ -2785,8 +2794,8 @@
       "FAMILY": "I live with family",
       "ROOMMATES": "I live with roommates"
     },
-    "height": "Height (cm)",
-    "heightHint": "Between 120 and 230 cm.",
+    "height": "Height",
+    "heightHint": "Between 1.20 m and 2.30 m (for example 1.70).",
     "origin": "Country of origin"
   },
   "live": {
@@ -2893,9 +2902,11 @@
     "ageRange": "Age range",
     "ageBetween": "{min} to {max} years",
     "heightRange": "Height",
-    "heightUpTo": "up to {max} cm",
-    "heightFrom": "from {min} cm",
-    "heightBetween": "{min} to {max} cm"
+    "heightUpTo": "up to {max}",
+    "heightFrom": "from {min}",
+    "heightBetween": "{min} to {max}",
+    "navSearching": "Crush search in progress",
+    "navAccepted": "{n, plural, one {# person accepted} other {# people accepted}}"
   },
   "promo": {
     "title": "Promo code",

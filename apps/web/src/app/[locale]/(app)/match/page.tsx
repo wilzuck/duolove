@@ -10,7 +10,7 @@ import { useApiError } from '@/hooks/useApiError';
 import { keys, useLive, useLiveInvites } from '@/hooks/useQueries';
 import { Link, useRouter } from '@/i18n/navigation';
 import { del, post, put } from '@/lib/api';
-import { formatDate, formatTime } from '@/lib/format';
+import { formatDate, formatHeight, formatTime } from '@/lib/format';
 import { useUi } from '@/lib/store';
 import type { Card as ProfileCardT, LiveState } from '@/lib/types';
 import { VerifiedBadge } from '@/components/app/VerifiedBadge';
@@ -48,7 +48,7 @@ function CriteriaForm({ value, onChange }: { value: Draft; onChange: (d: Draft) 
   const countries = COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>);
   const hLo = value.heightMin ? Number(value.heightMin) : H_MIN;
   const hHi = value.heightMax ? Number(value.heightMax) : H_MAX;
-  const heightText = hLo <= H_MIN && hHi >= H_MAX ? t('live.any') : hLo <= H_MIN ? t('live.heightUpTo', { max: hHi }) : hHi >= H_MAX ? t('live.heightFrom', { min: hLo }) : t('live.heightBetween', { min: hLo, max: hHi });
+  const heightText = hLo <= H_MIN && hHi >= H_MAX ? t('live.any') : hLo <= H_MIN ? t('live.heightUpTo', { max: formatHeight(hHi, locale) }) : hHi >= H_MAX ? t('live.heightFrom', { min: formatHeight(hLo, locale) }) : t('live.heightBetween', { min: formatHeight(hLo, locale), max: formatHeight(hHi, locale) });
   return (
     <div className="space-y-6">
       <p className="text-sm text-muted">{t('live.critIntro')}</p>

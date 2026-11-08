@@ -26,6 +26,22 @@ const INTENT_ICONS: Record<Intent, React.ReactNode> = { SERIOUS: <HeartHandshake
 export interface AboutValue { bio: string; occupation: string; languages: string[]; intent: Intent; interests: string[]; city: string; country: string }
 export const aboutFrom = (p: MyProfile): AboutValue => ({ bio: p.bio, occupation: p.occupation ?? '', languages: p.languages, intent: p.intent, interests: p.interests, city: p.city, country: p.country });
 
+/** Saisie de la taille en mètres (« 1,65 ») ; la valeur enregistrée reste en centimètres (120 à 230). */
+function HeightInput({ cm, onChange, ...p }: { cm: number | null; onChange: (cm: number | null) => void; id: string; 'aria-invalid'?: boolean; 'aria-describedby'?: string }) {
+  const locale = useLocale();
+  const fmt = (v: number | null) => (v ? new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v / 100) : '');
+  const [text, setText] = useState(() => fmt(cm));
+  return (
+    <Input {...p} type="text" inputMode="decimal" placeholder={fmt(170)} value={text} aria-invalid={p['aria-invalid']}
+      onChange={(e) => {
+        setText(e.target.value);
+        const n = parseFloat(e.target.value.replace(',', '.'));
+        if (!e.target.value.trim()) onChange(null);
+        else if (n >= 1.2 && n <= 2.3) onChange(Math.round(n * 100));
+      }} onBlur={() => setText(fmt(cm))} />
+  );
+}
+
 export interface LifeValue { hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null }
 export const lifeFrom = (p: MyProfile): LifeValue => ({ hasChildren: p.hasChildren, likesPets: p.likesPets, living: p.living, heightCm: p.heightCm, originCountry: p.originCountry });
 const triValue = (v: boolean | null) => (v === null ? '' : v ? 'yes' : 'no');
@@ -44,7 +60,7 @@ export function LifestyleFields({ value, onChange }: { value: LifeValue; onChang
       {tri(t('life.hasChildren'), 'hasChildren')}
       {tri(t('life.likesPets'), 'likesPets')}
       <Field label={t('life.living')}>{(p) => <Select {...p} value={value.living ?? ''} onChange={(e) => set('living', (e.target.value || null) as Living | null)}><option value="">{t('life.unspecified')}</option>{LIVING.map((l) => <option key={l} value={l}>{t(`life.livingOpt.${l}`)}</option>)}</Select>}</Field>
-      <Field label={t('life.height')} hint={t('life.heightHint')}>{(p) => <Input {...p} type="number" inputMode="numeric" min={120} max={230} value={value.heightCm ?? ''} onChange={(e) => set('heightCm', e.target.value ? Number(e.target.value) : null)} />}</Field>
+      <Field label={t('life.height')} hint={t('life.heightHint')}>{(p) => <HeightInput {...p} cm={value.heightCm} onChange={(cm) => set('heightCm', cm)} />}</Field>
       <Field label={t('life.origin')}>{(p) => <Select {...p} value={value.originCountry ?? ''} onChange={(e) => set('originCountry', e.target.value || null)}><option value="">{t('life.unspecified')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
     </div>
   );

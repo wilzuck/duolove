@@ -1536,7 +1536,8 @@
     "upsellTitle": "Passez à Premium",
     "upsellText": "Plus de likes, voir qui vous aime, filtres avancés.",
     "goPremium": "Passer Premium",
-    "unread": "{count, plural, one {# notification non lue} other {# notifications non lues}}"
+    "unread": "{count, plural, one {# notification non lue} other {# notifications non lues}}",
+    "sectionTabs": "Dans cette rubrique"
   },
   "suspended": {
     "title": "Votre compte est suspendu",
@@ -1578,7 +1579,9 @@
     "planText": "Cette fonction fait partie des formules Premium et VIP.",
     "noSuperTitle": "Pas de Super Like disponible",
     "noSuperText": "Vous n’avez aucun Super Like disponible. Achetez un pack ou passez Premium pour en recevoir chaque semaine.",
-    "buyPack": "Acheter un pack"
+    "buyPack": "Acheter un pack",
+    "sheetHint": "Faites glisser vers le haut pour découvrir son profil",
+    "sheetGrab": "Poignée : faire glisser vers le bas pour fermer"
   },
   "match": {
     "title": "C’est un match !",
@@ -1708,7 +1711,13 @@
   "profileView": {
     "about": "À propos",
     "unavailable": "Ce profil n’est pas disponible",
-    "back": "Retour à la découverte"
+    "back": "Retour à la découverte",
+    "hasChildren": "A des enfants",
+    "noChildren": "Sans enfants",
+    "likesPets": "Aime les animaux",
+    "noPets": "N’aime pas les animaux",
+    "from": "Originaire de {country}",
+    "lifestyle": "Mode de vie"
   },
   "prefs": {
     "title": "Mes critères de rencontre",
@@ -2785,8 +2794,8 @@
       "FAMILY": "Je vis en famille",
       "ROOMMATES": "Je vis en colocation"
     },
-    "height": "Taille (cm)",
-    "heightHint": "Entre 120 et 230 cm.",
+    "height": "Taille",
+    "heightHint": "Entre 1,20 m et 2,30 m (par exemple 1,70).",
     "origin": "Pays d’origine"
   },
   "live": {
@@ -2893,9 +2902,11 @@
     "ageRange": "Tranche d’âge",
     "ageBetween": "{min} à {max} ans",
     "heightRange": "Taille",
-    "heightUpTo": "jusqu’à {max} cm",
-    "heightFrom": "à partir de {min} cm",
-    "heightBetween": "{min} à {max} cm"
+    "heightUpTo": "jusqu’à {max}",
+    "heightFrom": "à partir de {min}",
+    "heightBetween": "{min} à {max}",
+    "navSearching": "Recherche Crush en cours",
+    "navAccepted": "{n, plural, one {# personne a accepté} other {# personnes ont accepté}}"
   },
   "promo": {
     "title": "Code promo",
