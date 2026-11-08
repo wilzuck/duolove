@@ -3,14 +3,13 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button } from '@duomatch/ui';
 import { ContactForm } from '@/components/marketing/ContactForm';
 import { Link } from '@/i18n/navigation';
+import { SUPPORT_EMAIL } from '@/lib/site';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
   return { title: t('nav.contact'), description: t('contact.lead') };
 }
 
-// Adresse de support à définir au déploiement (aucune boîte réelle n'est présumée).
-const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? 'support@crushduo.com';
 const TOPICS: [string, LucideIcon][] = [['account', UserCog], ['billing', CreditCard], ['safety', ShieldAlert], ['privacy', Lock], ['idea', Lightbulb], ['other', MessageCircleQuestion]];
 
 export default async function Contact({ params }: { params: Promise<{ locale: string }> }) {

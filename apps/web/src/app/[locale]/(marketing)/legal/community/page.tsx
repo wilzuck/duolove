@@ -37,7 +37,7 @@ export default async function CommunityPage({ params }: { params: Promise<{ loca
         </div>
       </section>
 
-      <section aria-labelledby="glance" className="mx-auto max-w-6xl px-4 py-12">
+      <section aria-labelledby="glance" className="mx-auto max-w-7xl px-4 sm:px-6 py-12">
         <h2 id="glance" className="text-center text-2xl font-bold md:text-3xl">{t('legal.community.glanceTitle')}</h2>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {glance.map((g, i) => {

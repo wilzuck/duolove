@@ -38,7 +38,7 @@ export default async function HowItWorks({ params }: { params: Promise<{ locale:
 
       <PageToc items={[{ id: 'steps', label: t('toc.steps') }, { id: 'why', label: t('toc.why') }, { id: 'plans', label: t('toc.plans') }, { id: 'safe', label: t('toc.safety') }]} />
 
-      <section aria-labelledby="steps-title" id="steps" className="mx-auto max-w-6xl scroll-mt-36 px-4 py-14">
+      <section aria-labelledby="steps-title" id="steps" className="mx-auto max-w-7xl scroll-mt-36 px-4 sm:px-6 py-14">
         <h2 id="steps-title" className="text-center text-2xl font-extrabold md:text-3xl">{t('how.stepsTitle')}</h2>
         <div className="mt-10 grid gap-10 lg:grid-cols-[17rem_minmax(0,1fr)]">
         <StepsNav label={t('how.stepsTitle')} steps={STEPS.map(([key]) => ({ key, title: t(`how.steps.${key}.title`) }))} />
@@ -61,7 +61,7 @@ export default async function HowItWorks({ params }: { params: Promise<{ locale:
       </section>
 
       <section aria-labelledby="why-title" id="why" className="scroll-mt-36 bg-soft/50 py-14">
-        <div className="mx-auto max-w-6xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <h2 id="why-title" className="text-center text-2xl font-extrabold md:text-3xl">{t('how.whyTitle')}</h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {why.map((w, i) => {

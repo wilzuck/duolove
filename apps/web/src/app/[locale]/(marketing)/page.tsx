@@ -59,7 +59,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </ul>
       </section>
 
-      <section id="fonctionnalites" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-20" aria-labelledby="benefits">
+      <section id="fonctionnalites" className="mx-auto max-w-7xl scroll-mt-24 px-4 sm:px-6 py-20" aria-labelledby="benefits">
         <h2 id="benefits" className="mx-auto max-w-2xl text-center text-3xl font-extrabold md:text-4xl">{t('home.benefitsTitle')}</h2>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map(([Icon, k]) => (
@@ -73,7 +73,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
 
       <section id="comment-ca-marche" className="scroll-mt-24 bg-soft px-4 py-20 sm:px-6" aria-labelledby="how3">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-7xl">
         <h2 id="how3" className="text-center font-display text-3xl font-extrabold md:text-4xl">{t('home.v2.how3.title')}</h2>
         <ol className="mt-12 grid items-start gap-12 md:grid-cols-3 md:gap-14">
           {HOW.map(([Icon, k], i) => (
@@ -93,7 +93,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      <section id="abonnements" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-20" aria-labelledby="plans">
+      <section id="abonnements" className="mx-auto max-w-7xl scroll-mt-24 px-4 sm:px-6 py-20" aria-labelledby="plans">
         <h2 id="plans" className="mx-auto max-w-2xl text-center text-3xl font-extrabold md:text-4xl">{t('home.plansTitle')}</h2>
         <p className="mx-auto mt-3 max-w-xl text-center text-muted">{t('home.plansSubtitle')}</p>
         <div className="mt-12">

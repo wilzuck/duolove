@@ -18,7 +18,7 @@ export function TocBar({ label, items }: { label: string; items: readonly { id: 
   }, [active]);
   return (
     <nav aria-label={label} className="sticky top-16 z-30 border-b border-line bg-bg/90 backdrop-blur">
-      <ul ref={list} className="relative mx-auto flex max-w-6xl snap-x md:justify-center gap-2 overflow-x-auto px-4 py-2.5 [scrollbar-width:none] max-sm:[mask-image:linear-gradient(to_right,transparent,#000_1rem,#000_calc(100%-2rem),transparent)] [&::-webkit-scrollbar]:hidden">
+      <ul ref={list} className="relative mx-auto flex max-w-7xl snap-x md:justify-center gap-2 overflow-x-auto px-4 sm:px-6 py-2.5 [scrollbar-width:none] max-sm:[mask-image:linear-gradient(to_right,transparent,#000_1rem,#000_calc(100%-2rem),transparent)] [&::-webkit-scrollbar]:hidden">
         {items.map((i) => {
           const on = active === i.id;
           return (

@@ -35,7 +35,7 @@ export default async function CookiesPage({ params }: { params: Promise<{ locale
         </div>
       </section>
 
-      <section aria-labelledby="glance" className="mx-auto max-w-6xl px-4 pt-10">
+      <section aria-labelledby="glance" className="mx-auto max-w-7xl px-4 sm:px-6 pt-10">
         <h2 id="glance" className="sr-only">{t('legal.cookies.glanceTitle')}</h2>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {glance.map((g, i) => {

@@ -23,7 +23,7 @@ export function DocBody({ sections, icons, tocLabel, listLabels, extra, footer }
     </ol>
   );
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 pb-16 lg:grid-cols-[15rem_1fr]">
+    <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 pb-16 lg:grid-cols-[15rem_1fr]">
       <aside className="lg:sticky lg:top-24 lg:self-start">
         <details className="rounded-2xl border border-line bg-card p-3 lg:hidden"><summary className="cursor-pointer px-3 py-2 font-semibold">{tocLabel}</summary><nav aria-label={tocLabel} className="mt-2">{toc}</nav></details>
         <nav aria-label={tocLabel} className="hidden lg:block"><p className="mb-2 px-3 text-sm font-bold">{tocLabel}</p>{toc}</nav>
