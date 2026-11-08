@@ -24,12 +24,14 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
   const ref = useRef<HTMLDialogElement>(null);
   const controls = useDragControls();
   const titleId = useId();
+  const scroller = useRef<HTMLDivElement>(null);
   const [photo, setPhoto] = useState(0);
 
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (open && !d.open) { d.showModal(); setPhoto(0); }
+    // Le focus initial va au contenu (pas au bouton Fermer, qui afficherait son anneau de focus dès l'ouverture).
+    if (open && !d.open) { d.showModal(); setPhoto(0); scroller.current?.focus(); }
     if (!open && d.open) d.close();
   }, [open]);
 
@@ -74,9 +76,9 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
         onDragEnd={(_, info) => { if (info.offset.y > 120 || info.velocity.y > 700) onClose(); }}>
         <div className="relative flex shrink-0 touch-none justify-center py-3" onPointerDown={(e) => controls.start(e)} title={t('discover.sheetGrab')}>
           <span className="h-1.5 w-12 rounded-full bg-line" aria-hidden />
-          <button type="button" onClick={onClose} aria-label={t('common.close')} className="absolute top-1.5 right-3 flex size-9 items-center justify-center rounded-full bg-soft text-fg hover:bg-line"><X className="size-5" aria-hidden /></button>
+          <button type="button" onClick={onClose} className="absolute top-1.5 right-3 z-10 flex h-9 items-center gap-1.5 rounded-full bg-fg px-3.5 text-sm font-semibold text-bg shadow-pop hover:opacity-90"><X className="size-4" aria-hidden />{t('common.close')}</button>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 pb-6">
+        <div ref={scroller} tabIndex={-1} className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 pb-6 outline-none">
           <ProfileDetail card={card} hero={hero} onBlocked={onBlocked} onLiked={onLiked} />
         </div>
         <div className="flex shrink-0 items-center justify-center gap-4 border-t border-line bg-card px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]" role="group" aria-label={t('discover.actions')}>
