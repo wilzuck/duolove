@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: t('meta.description'),
     applicationName: 'CrushDuo',
     manifest: '/manifest.webmanifest',
-    openGraph: { type: 'website', siteName: 'CrushDuo', title: t('meta.title'), description: t('meta.description'), locale: locale === 'en' ? 'en_US' : 'fr_FR', images: [{ url: '/og.png', width: 1200, height: 630 }] },
+    openGraph: { type: 'website', siteName: 'CrushDuo', title: t('meta.title'), description: t('meta.description'), locale: locale === 'en' ? 'en_US' : 'fr_FR', images: [{ url: '/og.jpg', width: 1200, height: 630, type: 'image/jpeg', alt: 'CrushDuo — Deux cœurs, une belle histoire' }] },
     twitter: { card: 'summary_large_image', title: t('meta.title'), description: t('meta.description') },
     icons: { icon: '/icon.svg' },
   };

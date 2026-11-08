@@ -467,7 +467,7 @@ Actuellement en **texte brut** (code de confirmation, réinitialisation, lien ma
 
 ### 13.5 Application installable (PWA) et partage
 
-Nom « DuoMatch », couleur de thème `#E91E63`, fond `#FFFFFF`, icône `icon.svg`. Image de partage `og.png` en 1 200 × 630 px. (Voir écart E4 sur les icônes.)
+Nom « DuoMatch », couleur de thème `#E91E63`, fond `#FFFFFF`, icône `icon.svg`. Image de partage `og.jpg` en 1 200 × 630 px (moins de 300 Ko : limite des aperçus WhatsApp). (Voir écart E4 sur les icônes.)
 
 ### 13.6 Présentations et documents
 
