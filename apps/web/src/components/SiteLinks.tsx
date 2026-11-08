@@ -16,7 +16,7 @@ export function SiteLinks({ className = '' }: { className?: string }) {
           {LINKS.map(([href, key]) => <li key={href}><Link href={href} className="underline-offset-4 hover:text-brand-ink hover:underline">{t(key)}</Link></li>)}
         </ul>
       </nav>
-      <p className="mt-3">© {new Date().getFullYear()} DuoMatch · {t('footer.adults')}</p>
+      <p className="mt-3">© {new Date().getFullYear()} CrushDuo · {t('footer.adults')}</p>
     </footer>
   );
 }

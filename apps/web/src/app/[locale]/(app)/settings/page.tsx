@@ -58,7 +58,7 @@ function PrivacyTab() {
     onSuccess: () => toast('success', t('settings.privacy.locationSaved')), onError: () => toast('error', t('settings.privacy.locationDenied')),
   });
   const clearGeo = useMutation({ mutationFn: () => del('/profiles/me/location'), onSuccess: () => toast('info', t('settings.privacy.locationCleared')) });
-  const exportData = async () => { const d = await api<unknown>('/users/me/export'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' })); a.download = 'duomatch-export.json'; a.click(); URL.revokeObjectURL(a.href); };
+  const exportData = async () => { const d = await api<unknown>('/users/me/export'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' })); a.download = 'crushduo-export.json'; a.click(); URL.revokeObjectURL(a.href); };
   const remove = useMutation({ mutationFn: () => del('/users/me', { confirm: 'DELETE', password: pw || undefined }), onSuccess: () => { qc.clear(); router.replace('/'); }, onError: (e) => toast('error', err(e)) });
   if (!p || !me) return <Skeleton className="h-64" />;
   return (

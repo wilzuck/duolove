@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "DuoMatch — Two hearts, one beautiful story",
-    "description": "DuoMatch, the dating platform for serious adults: verified profiles, smart matching, private and secure messaging.",
+    "title": "CrushDuo — Two hearts, one beautiful story",
+    "description": "CrushDuo, the dating platform for serious adults: verified profiles, smart matching, private and secure messaging.",
     "tagline": "Two hearts, one beautiful story."
   },
   "common": {
@@ -25,7 +25,7 @@
     "backHome": "Back to home"
   },
   "nav": {
-    "home": "DuoMatch home",
+    "home": "CrushDuo home",
     "main": "Main navigation",
     "menu": "Open menu",
     "how": "How it works",
@@ -39,7 +39,7 @@
   },
   "footer": {
     "product": "Product",
-    "company": "DuoMatch",
+    "company": "CrushDuo",
     "legal": "Legal",
     "adults": "For adults only (18 and over).",
     "rights": "All rights reserved.",
@@ -57,7 +57,7 @@
         "data": "Protected data"
       },
       "ctaCreate": "Create my free account",
-      "ctaDiscover": "Discover DuoMatch",
+      "ctaDiscover": "Discover CrushDuo",
       "heroAlt": "A smiling couple, cheek to cheek, in front of a large pink heart, with the “It’s a match!” card.",
       "strip": {
         "community": {
@@ -99,7 +99,7 @@
     },
     "eyebrow": "Serious dating, with confidence",
     "title": "Two hearts, one beautiful story.",
-    "subtitle": "DuoMatch helps you meet compatible people: same intentions, same values, same city or close. Simple, elegant and secure.",
+    "subtitle": "CrushDuo helps you meet compatible people: same intentions, same values, same city or close. Simple, elegant and secure.",
     "ctaRegister": "Create my account",
     "ctaLogin": "Log in",
     "heroMatch": "It’s a match!",
@@ -156,14 +156,14 @@
   },
   "how": {
     "kicker": "Step by step",
-    "title": "How DuoMatch works",
+    "title": "How CrushDuo works",
     "subtitle": "Sincere connections, at your own pace, at any age. Here is the path, from signing up to your first conversation… and your first date.",
     "ctaHelp": "A question? The Help centre",
     "stepsTitle": "Your journey in eight steps",
     "steps": {
       "signup": {
         "title": "Create your account",
-        "text": "With your email (or Google) and a password, or simply a magic link. You confirm your address and that you are an adult: DuoMatch is for people aged 18 and over."
+        "text": "With your email (or Google) and a password, or simply a magic link. You confirm your address and that you are an adult: CrushDuo is for people aged 18 and over."
       },
       "profile": {
         "title": "Tell your story",
@@ -214,7 +214,7 @@
       }
     ],
     "ageTitle": "Love has no age",
-    "ageText": "At 25, 45 or 70, you deserve a lovely encounter. DuoMatch welcomes all adults, with one requirement: respect. Read our code of kindness.",
+    "ageText": "At 25, 45 or 70, you deserve a lovely encounter. CrushDuo welcomes all adults, with one requirement: respect. Read our code of kindness.",
     "ageCta": "Community guidelines",
     "plansTitle": "Free to start, Premium to go further",
     "plansFree": {
@@ -245,7 +245,7 @@
       "a": "Only people aged 18 and over. Your date of birth is checked at sign-up."
     },
     "free": {
-      "q": "Is DuoMatch free?",
+      "q": "Is CrushDuo free?",
       "a": "Yes: profile, discovery, matches and post-match messaging are free, with a daily like limit. Premium and VIP unlock more features."
     },
     "safety": {
@@ -268,7 +268,7 @@
   "plans": {
     "FREE": {
       "name": "Free",
-      "tagline": "To discover DuoMatch"
+      "tagline": "To discover CrushDuo"
     },
     "PREMIUM": {
       "name": "Premium",
@@ -344,9 +344,9 @@
     "hoursShort": "{n} h"
   },
   "about": {
-    "title": "About DuoMatch",
+    "title": "About CrushDuo",
     "lead": "Behind every family, there was a day when two strangers looked at each other differently.",
-    "mission": "We’re building DuoMatch to make serious dating and beautiful stories easier between adults, in francophone Africa and beyond, in an environment where everyone feels safe.",
+    "mission": "We’re building CrushDuo to make serious dating and beautiful stories easier between adults, in francophone Africa and beyond, in an environment where everyone feels safe.",
     "valuesTitle": "Our commitments",
     "values": {
       "respect": {
@@ -376,7 +376,7 @@
       "c2": {
         "title": "Meeting people has never been so easy… or so hard",
         "p1": "We’re more connected than ever, yet so many sincere people feel alone. Too many profiles, too many promises, too many conversations that fade after two messages. Many are looking for someone to build something real with, and end up lost in the noise, sometimes exposed to fake profiles and scams.",
-        "p2": "DuoMatch was born for those who want something else: less showcase, more meaning."
+        "p2": "CrushDuo was born for those who want something else: less showcase, more meaning."
       },
       "c3": {
         "title": "A platform built to build, not to consume",
@@ -390,7 +390,7 @@
       },
       "c5": {
         "title": "Our dream: families that begin here",
-        "p1": "We dream of the day a couple tells us: “We met on DuoMatch.” Of the day children ask how their parents met, and the answer begins with a simple profile, a simple “Like”.",
+        "p1": "We dream of the day a couple tells us: “We met on CrushDuo.” Of the day children ask how their parents met, and the answer begins with a simple profile, a simple “Like”.",
         "p2": "We don’t sell promises. We build the conditions for beautiful stories to happen: a respectful, safe, human-sized place, in francophone Africa and beyond."
       }
     },
@@ -426,13 +426,13 @@
       },
       "idea": {
         "h": "A suggestion",
-        "p": "An idea to make DuoMatch nicer.",
+        "p": "An idea to make CrushDuo nicer.",
         "subject": "Suggestion"
       },
       "other": {
         "h": "Another question",
         "p": "Anything else, we read everything.",
-        "subject": "Question about DuoMatch"
+        "subject": "Question about CrushDuo"
       }
     },
     "emailLabel": "Or write to us directly at",
@@ -450,7 +450,7 @@
     "helpTitle": "An answer may already be waiting",
     "helpCta": "Help centre",
     "communityCta": "Community guidelines",
-    "subject": "Question about DuoMatch",
+    "subject": "Question about CrushDuo",
     "form": {
       "title": "Write to us directly",
       "name": "Your name",
@@ -499,10 +499,10 @@
       "start": [
         {
           "q": "Who can sign up?",
-          "a": "Only people aged 18 and over. Your date of birth is checked at sign-up, and DuoMatch welcomes adults of every age."
+          "a": "Only people aged 18 and over. Your date of birth is checked at sign-up, and CrushDuo welcomes adults of every age."
         },
         {
-          "q": "Is DuoMatch free?",
+          "q": "Is CrushDuo free?",
           "a": "Yes to get started: profile, discovery, daily picks, matches and messaging are free, with a daily number of likes. Premium and VIP add features, without ever guaranteeing a match."
         },
         {
@@ -649,7 +649,7 @@
     }
   },
   "blog": {
-    "title": "The DuoMatch blog",
+    "title": "The CrushDuo blog",
     "lead": "Tips for safe and successful dating.",
     "read": "Read the article",
     "minutes": "{n} min read",
@@ -658,7 +658,7 @@
     "empty": "The first articles are coming soon.",
     "back": "Back to the blog",
     "ctaTitle": "Ready to write your story?",
-    "ctaText": "Join DuoMatch and meet people looking for the same thing as you.",
+    "ctaText": "Join CrushDuo and meet people looking for the same thing as you.",
     "ctaButton": "Create my account"
   },
   "legal": {
@@ -668,8 +668,8 @@
     "terms": {
       "title": "Terms of use",
       "kicker": "Terms of use",
-      "metaDescription": "DuoMatch’s terms of use: access, account, content, paid plans, moderation and responsibilities, explained simply.",
-      "lead": "This document explains, simply and honestly, the rules between you and DuoMatch. We wanted it to be readable: if in doubt, write to us.",
+      "metaDescription": "CrushDuo’s terms of use: access, account, content, paid plans, moderation and responsibilities, explained simply.",
+      "lead": "This document explains, simply and honestly, the rules between you and CrushDuo. We wanted it to be readable: if in doubt, write to us.",
       "toc": "Contents",
       "updated": "Last updated: November 2026",
       "listDo": "To remember",
@@ -685,7 +685,7 @@
           "id": "objet",
           "h": "Purpose and acceptance",
           "paras": [
-            "DuoMatch is an online service that connects adults who want to meet people, at any age. By creating an account, you accept these terms and our community guidelines.",
+            "CrushDuo is an online service that connects adults who want to meet people, at any age. By creating an account, you accept these terms and our community guidelines.",
             "If you do not agree with these terms, please do not use the service."
           ]
         },
@@ -733,7 +733,7 @@
           "id": "offres",
           "h": "Free and paid offers",
           "paras": [
-            "DuoMatch is free to start. Paid plans (Premium, VIP) and one-off purchases (boosts, Super Likes, Match tokens) unlock extra features. Prices, durations and benefits are shown on the Pricing page before any payment."
+            "CrushDuo is free to start. Paid plans (Premium, VIP) and one-off purchases (boosts, Super Likes, Match tokens) unlock extra features. Prices, durations and benefits are shown on the Pricing page before any payment."
           ],
           "lists": [
             {
@@ -768,7 +768,7 @@
           "id": "rencontres",
           "h": "Meetings and responsibility",
           "paras": [
-            "DuoMatch connects people but cannot guarantee the identity, intentions or behaviour of members. The “verified profile” badge means a moderator compared a selfie with the profile’s photos; it is not a guarantee.",
+            "CrushDuo connects people but cannot guarantee the identity, intentions or behaviour of members. The “verified profile” badge means a moderator compared a selfie with the profile’s photos; it is not a guarantee.",
             "For a first meeting, choose a public place, tell someone you trust and arrive by your own means. Meetings take place under your own responsibility, to the extent the law allows."
           ]
         },
@@ -788,7 +788,7 @@
         },
         {
           "id": "fin",
-          "h": "Leaving DuoMatch",
+          "h": "Leaving CrushDuo",
           "paras": [
             "You can delete your account at any time: deletion is permanent. We may suspend or close an account in case of serious or repeated breach, under the conditions of the “Moderation and sanctions” section."
           ]
@@ -848,8 +848,8 @@
     "cookies": {
       "title": "Cookie policy",
       "kicker": "Cookies and storage",
-      "metaDescription": "DuoMatch’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising, no tracking.",
-      "lead": "Let’s talk cookies, without jargon and without hiding anything. DuoMatch only uses the bare minimum to sign you in and remember your preferences: no advertising, no tracking, no selling of data.",
+      "metaDescription": "CrushDuo’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising, no tracking.",
+      "lead": "Let’s talk cookies, without jargon and without hiding anything. CrushDuo only uses the bare minimum to sign you in and remember your preferences: no advertising, no tracking, no selling of data.",
       "toc": "Contents",
       "updated": "Last updated: November 2026",
       "listDo": "To remember",
@@ -879,7 +879,7 @@
         }
       ],
       "table": {
-        "caption": "Cookies and storage used by DuoMatch",
+        "caption": "Cookies and storage used by CrushDuo",
         "name": "Name",
         "kind": "Type",
         "purpose": "What it is for",
@@ -891,7 +891,7 @@
           {
             "name": "duomatch_sid",
             "kind": "Cookie, secure (httpOnly)",
-            "purpose": "Keeps you signed in while you use DuoMatch.",
+            "purpose": "Keeps you signed in while you use CrushDuo.",
             "duration": "The browser session, or 30 days if you tick “Stay signed in”.",
             "need": "yes"
           },
@@ -958,7 +958,7 @@
           "id": "preferences",
           "h": "Your preferences",
           "paras": [
-            "Your language, your light or dark theme and the “Enter sends” choice are comfort settings. If you clear them, DuoMatch simply starts again with its defaults."
+            "Your language, your light or dark theme and the “Enter sends” choice are comfort settings. If you clear them, CrushDuo simply starts again with its defaults."
           ]
         },
         {
@@ -995,7 +995,7 @@
           "h": "See, block or erase",
           "paras": [
             "Every browser lets you view, block or delete cookies and local storage (in its privacy settings). Note: blocking the session cookie will prevent you from signing in, and erasing everything signs you out and resets your preferences.",
-            "Signing out from DuoMatch immediately removes the session cookie from the device."
+            "Signing out from CrushDuo immediately removes the session cookie from the device."
           ]
         },
         {
@@ -1016,9 +1016,9 @@
     },
     "community": {
       "title": "Community guidelines",
-      "metaDescription": "DuoMatch’s code of kindness: respect, sincerity, safety and privacy, for happy relationships at any age.",
+      "metaDescription": "CrushDuo’s code of kindness: respect, sincerity, safety and privacy, for happy relationships at any age.",
       "kicker": "Our code of kindness",
-      "lead": "You can find love at any age. DuoMatch brings together adults aged 18 and over who are looking for a real relationship, and everyone has the right to do so with respect, sincerity and peace of mind. These rules are here so you feel good here.",
+      "lead": "You can find love at any age. CrushDuo brings together adults aged 18 and over who are looking for a real relationship, and everyone has the right to do so with respect, sincerity and peace of mind. These rules are here so you feel good here.",
       "ctaHelp": "Help centre",
       "ctaReport": "How to report",
       "glanceTitle": "The essentials in five ideas",
@@ -1055,7 +1055,7 @@
         {
           "id": "promesse",
           "h": "Love has no age",
-          "intro": "At 25, 40, 55 or 70, you have every reason to dream of a beautiful story. Here, age is neither a joke nor a flaw: it is a journey. DuoMatch welcomes all adults, whatever their origin, situation, way of loving or appearance, on one condition: respect others.",
+          "intro": "At 25, 40, 55 or 70, you have every reason to dream of a beautiful story. Here, age is neither a joke nor a flaw: it is a journey. CrushDuo welcomes all adults, whatever their origin, situation, way of loving or appearance, on one condition: respect others.",
           "lists": [
             {
               "kind": "do",
@@ -1145,7 +1145,7 @@
         {
           "id": "contenus",
           "h": "Content and photos",
-          "intro": "DuoMatch is a dating place for all ages: let’s keep content that makes everyone comfortable.",
+          "intro": "CrushDuo is a dating place for all ages: let’s keep content that makes everyone comfortable.",
           "lists": [
             {
               "kind": "dont",
@@ -1296,7 +1296,7 @@
     "createAccount": "Create my account",
     "google": "Continue with Google",
     "or": "or",
-    "googleNeedsSignup": "New to DuoMatch? Create your account first to complete your profile.",
+    "googleNeedsSignup": "New to CrushDuo? Create your account first to complete your profile.",
     "googleComplete": "Google account recognized. Complete this information to finish signing up.",
     "forgotTitle": "Forgot password",
     "forgotSubtitle": "Enter your email: we’ll send you a reset link.",
@@ -2679,6 +2679,30 @@
       "peak": "Peak: {value} on {day}",
       "day": "Day",
       "value": "Value"
+    },
+    "pageDesc": {
+      "users": "Find a member, view their profile and apply a sanction if needed.",
+      "reports": "Reports sent by members: review them, then resolve or dismiss.",
+      "contact": "Messages received from the Contact page: reply, sort, archive.",
+      "payments": "All payments from the last 30 days, with the option to request a refund.",
+      "subscriptions": "Premium and VIP subscriptions, their status and end date.",
+      "refunds": "Refund requests waiting to be approved or rejected.",
+      "audit": "Who did what in the administration, and when: useful to understand a change.",
+      "moderation": "Selfies to verify, appeals from sanctioned members and published photos."
+    },
+    "strip": {
+      "total": "Members",
+      "active": "Active",
+      "suspended": "Suspended",
+      "banned": "Banned",
+      "revenue30": "Revenue (30 d)",
+      "succeeded": "Successful payments (30 d)",
+      "failed": "Failed payments (30 d)",
+      "pending": "Pending (30 d)",
+      "subActive": "Active subscriptions",
+      "pastDue": "Payment overdue",
+      "canceled": "Canceled",
+      "expired": "Expired"
     }
   },
   "pricingFaq": {
@@ -3027,7 +3051,7 @@
   },
   "cookieNotice": {
     "title": "Cookies and privacy",
-    "text": "DuoMatch only uses cookies and storage that are essential to the service (sign-in, language, theme). No advertising cookies, no tracking.",
+    "text": "CrushDuo only uses cookies and storage that are essential to the service (sign-in, language, theme). No advertising cookies, no tracking.",
     "more": "Learn more",
     "ok": "Got it"
   },
@@ -3149,7 +3173,7 @@
   },
   "rhythm": {
     "title": "Your pace",
-    "intro": "Meeting someone is not a race. Set DuoMatch to your own pace: you always stay in control.",
+    "intro": "Meeting someone is not a race. Set CrushDuo to your own pace: you always stay in control.",
     "pauseTitle": "Pause mode",
     "pauseText": "You are invisible in discovery, you stop receiving alerts and you cannot like, while you catch your breath. Your conversations and matches stay right here.",
     "pauseFor": "Length of the pause",

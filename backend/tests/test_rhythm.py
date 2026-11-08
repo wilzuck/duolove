@@ -191,7 +191,7 @@ async def test_one_email_per_hour_per_conversation(app, db, capture):
         await s.commit()
     for i in range(4):
         await w.agent.post(f"/api/conversations/{conv}/messages", json={"body": f"Message {i} pour tester"})
-    assert len([x for x in capture["mail"] if x[1] == "Nouveau message sur DuoMatch"]) == 1  # 4 messages, un seul e-mail
+    assert len([x for x in capture["mail"] if x[1] == "Nouveau message sur CrushDuo"]) == 1  # 4 messages, un seul e-mail
 
 
 # ───────── rappels de rendez-vous facultatifs ─────────

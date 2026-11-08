@@ -18,7 +18,7 @@ SECRET = "hash-secret-for-tests"
 def kk_env():
     with pytest.MonkeyPatch.context() as mp:
         for k, v in {"PAYMENT_PROVIDER": "kkiapay", "KKIAPAY_PUBLIC_KEY": "pk_test_fake", "KKIAPAY_PRIVATE_KEY": "private_fake",
-                     "KKIAPAY_WEBHOOK_SECRET": SECRET, "KKIAPAY_SANDBOX": "true", "SITE_NAME": "DuoMatch"}.items():
+                     "KKIAPAY_WEBHOOK_SECRET": SECRET, "KKIAPAY_SANDBOX": "true", "SITE_NAME": "CrushDuo"}.items():
             mp.setenv(k, v)
         get_settings.cache_clear()
         yield
@@ -52,7 +52,7 @@ async def test_checkout_renvoie_la_config_du_widget_et_n_active_rien(app, db, fa
     assert r.status_code == 201
     b = r.json()
     assert b["checkoutUrl"] is None
-    assert b["widget"]["publicKey"] == "pk_test_fake" and b["widget"]["sandbox"] is True and b["widget"]["amount"] == 2500 and b["widget"]["name"] == "DuoMatch"
+    assert b["widget"]["publicKey"] == "pk_test_fake" and b["widget"]["sandbox"] is True and b["widget"]["amount"] == 2500 and b["widget"]["name"] == "CrushDuo"
     assert b["widget"]["reference"].startswith("kk_")
     assert await plan_of(a) == "FREE"
     assert "private_fake" not in r.text  # les clés privées ne sortent jamais
@@ -73,7 +73,7 @@ async def test_active_apres_verification_serveur_idempotent_et_facture(app, db, 
         assert (await s.execute(select(func.count()).select_from(Payment).where(Payment.userId == a.id, Payment.status == "SUCCEEDED"))).scalar_one() == 1
     hist = (await a.agent.get("/api/payments")).json()
     inv = (await a.agent.get(f"/api/payments/{hist[0]['id']}/invoice")).json()
-    assert "DuoMatch" in inv["description"] and inv["amountXof"] == 2500
+    assert "CrushDuo" in inv["description"] and inv["amountXof"] == 2500
 
 
 async def test_refuse_montant_different_et_transaction_reutilisee(app, db, fake):

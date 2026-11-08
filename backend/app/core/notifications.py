@@ -17,9 +17,9 @@ from app.models.models import Notification, NotificationPreference, Profile, Use
 PREF = {"LIKE": ("inAppLikes", "emailLikes"), "MATCH": ("inAppMatches", "emailMatches"), "MESSAGE": ("inAppMessages", "emailMessages")}
 ESSENTIAL = {"SECURITY_ALERT", "SUBSCRIPTION_ACTIVATED", "SUBSCRIPTION_EXPIRING", "REFUND_UPDATE"}
 EMAIL_COPY = {
-    "LIKE": ("Quelqu’un vous a liké sur DuoMatch", "Une personne s’intéresse à vous. Ouvrez DuoMatch pour la découvrir."),
-    "MATCH": ("C’est un match sur DuoMatch !", "Vous avez un nouveau match. Dites-lui bonjour !"),
-    "MESSAGE": ("Nouveau message sur DuoMatch", "Vous avez reçu un nouveau message."),
+    "LIKE": ("Quelqu’un vous a liké sur CrushDuo", "Une personne s’intéresse à vous. Ouvrez CrushDuo pour la découvrir."),
+    "MATCH": ("C’est un match sur CrushDuo !", "Vous avez un nouveau match. Dites-lui bonjour !"),
+    "MESSAGE": ("Nouveau message sur CrushDuo", "Vous avez reçu un nouveau message."),
 }
 HOUR = datetime.timedelta(hours=1)
 

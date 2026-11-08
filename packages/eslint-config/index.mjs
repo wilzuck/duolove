@@ -1,7 +1,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
-/** Règles communes DuoMatch : TypeScript strict, pas de catch vide, pas de any implicite. */
+/** Règles communes CrushDuo : TypeScript strict, pas de catch vide, pas de any implicite. */
 export default tseslint.config(
   { ignores: ['dist', '.next', 'node_modules', 'coverage', 'next-env.d.ts'] },
   js.configs.recommended,

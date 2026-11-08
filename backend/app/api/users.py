@@ -74,7 +74,7 @@ async def appeal(body: AppealIn, u: AuthUser = Depends(current_user_allow_suspen
 @router.get("/me/export", dependencies=[limit(3, 3600)])
 async def export(res: Response, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
     """Portabilité RGPD : toutes les données personnelles de l'utilisateur au format JSON."""
-    res.headers["Content-Disposition"] = 'attachment; filename="duomatch-export.json"'
+    res.headers["Content-Disposition"] = 'attachment; filename="crushduo-export.json"'
     user = await db.get(User, u.id)
     async def rows(model, *where, order=None):
         q = select(model).where(*where)

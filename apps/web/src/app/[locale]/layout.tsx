@@ -24,11 +24,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale });
   return {
     metadataBase: new URL(SITE_URL),
-    title: { default: t('meta.title'), template: `%s · DuoMatch` },
+    title: { default: t('meta.title'), template: `%s · CrushDuo` },
     description: t('meta.description'),
-    applicationName: 'DuoMatch',
+    applicationName: 'CrushDuo',
     manifest: '/manifest.webmanifest',
-    openGraph: { type: 'website', siteName: 'DuoMatch', title: t('meta.title'), description: t('meta.description'), locale: locale === 'en' ? 'en_US' : 'fr_FR', images: [{ url: '/og.png', width: 1200, height: 630 }] },
+    openGraph: { type: 'website', siteName: 'CrushDuo', title: t('meta.title'), description: t('meta.description'), locale: locale === 'en' ? 'en_US' : 'fr_FR', images: [{ url: '/og.png', width: 1200, height: 630 }] },
     twitter: { card: 'summary_large_image', title: t('meta.title'), description: t('meta.description') },
     icons: { icon: '/icon.svg' },
   };

@@ -1,4 +1,4 @@
-"""Point d'entrée FastAPI de DuoMatch. Routes sous /api, Socket.IO sous /socket.io, même port que l'ancienne API (4000)."""
+"""Point d'entrée FastAPI de CrushDuo. Routes sous /api, Socket.IO sous /socket.io, même port que l'ancienne API (4000)."""
 import asyncio
 import importlib
 import logging
@@ -77,8 +77,8 @@ async def lifespan(_: FastAPI):
 def create_fastapi() -> FastAPI:
     s = get_settings()
     app = FastAPI(
-        title="DuoMatch API", version="0.2.0", lifespan=lifespan,
-        description="API REST de DuoMatch. Authentification par cookie de session httpOnly `duomatch_sid`.",
+        title="CrushDuo API", version="0.2.0", lifespan=lifespan,
+        description="API REST de CrushDuo. Authentification par cookie de session httpOnly `duomatch_sid`.",
         docs_url=None if s.is_prod else "/api/docs", redoc_url=None, openapi_url=None if s.is_prod else "/api/openapi.json",
         dependencies=[Depends(global_limit)],
     )

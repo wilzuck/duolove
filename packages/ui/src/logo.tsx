@@ -1,6 +1,6 @@
 import { cn } from './cn';
 
-/** Marque DuoMatch : deux cœurs entrelacés (dessin original). */
+/** Marque CrushDuo : deux cœurs entrelacés (dessin original). */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 48 44" aria-hidden className={cn('size-8', className)}>
@@ -18,7 +18,7 @@ export function Logo({ className, markClassName }: { className?: string; markCla
   return (
     <span className={cn('inline-flex items-center gap-2 font-display text-xl font-extrabold tracking-tight text-fg', className)}>
       <LogoMark className={markClassName} />
-      <span>Duo<span className="text-brand-ink">Match</span></span>
+      <span>Crush<span className="text-brand-ink">Duo</span></span>
     </span>
   );
 }

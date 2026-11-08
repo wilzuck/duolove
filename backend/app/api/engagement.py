@@ -39,7 +39,7 @@ async def set_my_prompts(body: PromptAnswersIn, u: AuthUser = Depends(verified_u
 
 @router.get("/me/rhythm")
 async def my_rhythm(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
-    """Pause, période de repos et rappels : tout ce qui règle le rythme de DuoMatch pour le membre."""
+    """Pause, période de repos et rappels : tout ce qui règle le rythme de CrushDuo pour le membre."""
     return await rhythm.get(db, u.id)
 
 

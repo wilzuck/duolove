@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-/** Âge minimum légal pour utiliser DuoMatch. */
+/** Âge minimum légal pour utiliser CrushDuo. */
 export const MIN_AGE = 18;
 
 export const GENDERS = ['MAN', 'WOMAN', 'NON_BINARY', 'OTHER'] as const;

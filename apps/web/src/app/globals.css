@@ -59,7 +59,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .scrollbar-none { scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
 
-/* Calendrier react-day-picker (DatePicker de @duomatch/ui) aux couleurs DuoMatch.
+/* Calendrier react-day-picker (DatePicker de @duomatch/ui) aux couleurs CrushDuo.
    Sélecteurs doublés : la feuille de la lib arrive après globals.css et gagnerait à spécificité égale. */
 .rdp-root.rdp-root {
   --rdp-accent-color: var(--brand-strong);

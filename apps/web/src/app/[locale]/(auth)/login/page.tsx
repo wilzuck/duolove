@@ -35,7 +35,7 @@ function LoginForm() {
     mutationFn: (idToken: string) => post('/auth/google', { idToken }),
     onSuccess: done,
     onError: (e, idToken) => {
-      if (e instanceof Error && 'code' in e && (e as { code: string }).code === 'PROFILE_DETAILS_REQUIRED') { useUi.getState().setGoogleToken(idToken); router.push('/register'); return; }  // nouveau sur DuoMatch : on complète l'inscription
+      if (e instanceof Error && 'code' in e && (e as { code: string }).code === 'PROFILE_DETAILS_REQUIRED') { useUi.getState().setGoogleToken(idToken); router.push('/register'); return; }  // nouveau sur CrushDuo : on complète l'inscription
       setError(err(e));
     },
   });

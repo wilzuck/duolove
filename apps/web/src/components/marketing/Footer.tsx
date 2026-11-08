@@ -27,7 +27,7 @@ export function MarketingFooter() {
           </nav>
         ))}
       </div>
-      <div className="border-t border-line py-5 text-center text-xs text-muted">© {new Date().getFullYear()} DuoMatch — {t('footer.rights')}</div>
+      <div className="border-t border-line py-5 text-center text-xs text-muted">© {new Date().getFullYear()} CrushDuo — {t('footer.rights')}</div>
     </footer>
   );
 }

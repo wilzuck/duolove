@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 // Adresse de support à définir au déploiement (aucune boîte réelle n'est présumée).
-const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? 'support@duomatch.example';
+const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? 'support@crushduo.com';
 const TOPICS: [string, LucideIcon][] = [['account', UserCog], ['billing', CreditCard], ['safety', ShieldAlert], ['privacy', Lock], ['idea', Lightbulb], ['other', MessageCircleQuestion]];
 
 export default async function Contact({ params }: { params: Promise<{ locale: string }> }) {
@@ -18,7 +18,7 @@ export default async function Contact({ params }: { params: Promise<{ locale: st
   setRequestLocale(locale);
   const t = await getTranslations();
   const tips = t.raw('contact.tips') as string[];
-  const mail = (subject: string) => `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(`DuoMatch — ${subject}`)}`;
+  const mail = (subject: string) => `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(`CrushDuo — ${subject}`)}`;
   return (
     <>
       <section className="hero-glow">

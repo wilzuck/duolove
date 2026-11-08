@@ -280,7 +280,7 @@ async def main() -> None:
         await db.commit()
         interests = {i.slug: i.id for i in (await db.execute(select(Interest))).scalars()}
 
-        staff = [("super@duo.test", "Super Admin", "SUPER_ADMIN"), ("admin@duo.test", "Admin DuoMatch", "ADMIN"), ("moderateur@duo.test", "Modératrice", "MODERATOR")]
+        staff = [("super@duo.test", "Super Admin", "SUPER_ADMIN"), ("admin@duo.test", "Admin CrushDuo", "ADMIN"), ("moderateur@duo.test", "Modératrice", "MODERATOR")]
         for email, name, role in staff:
             if (await db.execute(select(User.id).where(User.email == email))).first():
                 continue
