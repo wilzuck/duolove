@@ -15,6 +15,8 @@ export interface Column<T> {
   filter?: 'text' | { options: readonly { value: string; label: string }[] };
   /** Colonne masquée par défaut sur téléphone (l'utilisateur peut l'afficher via le menu « Colonnes »). */
   mobileHidden?: boolean;
+  /** Colonne du menu d'actions : en cartes mobiles, elle se place en haut à droite de la carte. */
+  actions?: boolean;
   /** Libellé du filtre (par défaut l'en-tête s'il s'agit d'un texte). */
   filterLabel?: string;
 }
@@ -46,14 +48,16 @@ export function DataTable<T>({ columns, rows, rowKey, minWidth = '36rem', empty,
 }) {
   if (stacked && !children) {
     const labelled = columns.filter((c) => !c.srOnlyHeader);
-    const actions = columns.filter((c) => c.srOnlyHeader);
+    const corner = columns.filter((c) => c.actions);
+    const actions = columns.filter((c) => c.srOnlyHeader && !c.actions);
     return (
       <div className={className}>
         {caption && <p className="sr-only">{caption}</p>}
         <ul className="space-y-3">
           {(rows ?? []).map((row, i) => (
-            <li key={rowKey ? rowKey(row) : i} className={cn('rounded-3xl border border-line bg-card p-4', rowClassName)}>
-              <dl className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-3 gap-y-2 text-sm">
+            <li key={rowKey ? rowKey(row) : i} className={cn('relative rounded-3xl border border-line bg-card p-4', rowClassName)}>
+              {corner.length > 0 && <div className="absolute top-3 right-3">{corner.map((c) => <div key={c.key}>{c.cell?.(row)}</div>)}</div>}
+              <dl className={cn('grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-3 gap-y-2 text-sm', corner.length > 0 && 'pr-10')}>
                 {labelled.map((c) => (
                   <div key={c.key} className="contents">
                     <dt className="text-muted">{c.header}</dt>

@@ -41,17 +41,20 @@ test.describe.serial('Boîte de contact', () => {
     await signUp(page, request, boss);
     sql(`update "User" set role='ADMIN' where email='${boss.email}'`);
     await page.goto('/admin/contact');
-    const card = page.getByRole('listitem').filter({ hasText: `Mon paiement ${tag}` });
+    const card = page.getByRole('row').filter({ hasText: `Mon paiement ${tag}` });
     await expect(card).toBeVisible();
     await expect(card).toContainText(`awa-${tag}@example.com`);
-    await card.getByRole('button', { name: 'Marquer comme lu' }).click();
+    await card.getByRole('button', { name: 'Actions' }).click();
+    await page.getByRole('menuitem', { name: 'Marquer comme lu' }).click();
     await expect(card).toBeHidden();
     await page.getByLabel('Statut').selectOption('READ');
     await expect(card).toBeVisible();
-    await card.getByRole('button', { name: 'Répondu' }).click();
+    await card.getByRole('button', { name: 'Actions' }).click();
+    await page.getByRole('menuitem', { name: 'Répondu' }).click();
     await page.getByLabel('Statut').selectOption('ANSWERED');
     await expect(card).toBeVisible();
-    await card.getByRole('button', { name: 'Archiver' }).click();
+    await card.getByRole('button', { name: 'Actions' }).click();
+    await page.getByRole('menuitem', { name: 'Archiver' }).click();
     expect(sql(`select status from "ContactMessage" where email='awa-${tag}@example.com'`)).toBe('ARCHIVED');
   });
 

@@ -5,6 +5,7 @@ import { useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 
 import { Button } from './button';
 import { DataTable, type Column, type SortState } from './data-table';
 import { Popover } from './popover';
+import { RowMenu, type RowAction } from './row-menu';
 import { Input, Select } from './field';
 
 export const PAGE_SIZES = [10, 20, 30, 50, 100] as const;
@@ -24,6 +25,10 @@ export interface DataTableLabels {
   noResults: string;
   /** Libellé du bouton d'export CSV. */
   export: string;
+  /** Bouton qui charge la suite des données quand elles sont paginées côté serveur. */
+  loadMore: string;
+  /** Nom accessible du bouton « ⋯ » du menu d'actions d'une ligne. */
+  actions: string;
   sortBy: (name: string) => string;
   /** Libellé de la liste de tri (affichage en cartes). */
   sortLabel: string;
@@ -41,7 +46,7 @@ const subscribeNarrow = (cb: () => void) => { const m = window.matchMedia(NARROW
 /** Vrai sur écran étroit (téléphone) : le tableau passe en cartes. Faux côté serveur, puis corrigé à l'hydratation. */
 const useNarrow = () => useSyncExternalStore(subscribeNarrow, () => window.matchMedia(NARROW).matches, () => false);
 
-const menuButton = 'inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-line bg-card px-3.5 text-sm font-semibold hover:bg-soft';
+const menuButton = 'inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-field-line bg-field px-3.5 text-sm font-semibold hover:bg-soft';
 
 const norm = (v: unknown) => String(v ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 const cmp = (a: string | number | null | undefined, b: string | number | null | undefined) => {
@@ -70,7 +75,7 @@ function downloadCsv(name: string, head: string[], lines: unknown[][]) {
  * pagination (10, 20, 30, 50, 100 lignes) avec compteur. Les colonnes participent via `value` (et `filter`).
  * Avec `exportName`, un bouton exporte en CSV toutes les lignes filtrées et triées (pas seulement la page affichée).
  */
-export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidth, defaultPageSize = 10, toolbar, exportName }: {
+export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidth, defaultPageSize = 10, toolbar, exportName, serverSearch, hasMore, onLoadMore, loadingMore, rowActions }: {
   columns: readonly Column<T>[];
   rows: readonly T[];
   rowKey: (row: T) => string;
@@ -82,6 +87,14 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
   toolbar?: ReactNode;
   /** Nom du fichier d'export (sans extension) ; sans lui, pas de bouton d'export. */
   exportName?: string;
+  /** Recherche faite par le serveur (grandes listes) : la saisie est confiée à l'appelant au lieu de filtrer les lignes chargées. */
+  serverSearch?: { value: string; onChange: (v: string) => void };
+  /** Données paginées côté serveur : affiche « Charger plus » tant qu'il en reste. */
+  hasMore?: boolean;
+  onLoadMore?: () => void;
+  loadingMore?: boolean;
+  /** Actions d'une ligne : un bouton « ⋯ » (icône seule) ouvre un menu ; sur téléphone il se place en haut à droite de la carte. */
+  rowActions?: (row: T) => RowAction[];
 }) {
   const [q, setQ] = useState('');
   const [filters, setFilters] = useState<Record<string, string>>({});
@@ -93,7 +106,8 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
 
   const searchable = columns.filter((c) => c.value);
   const isShown = (c: Column<T>) => c.srOnlyHeader || (shown[c.key] ?? !(narrow && c.mobileHidden));
-  const displayed = columns.filter(isShown);
+  const displayed: Column<T>[] = columns.filter(isShown);
+  if (rowActions) displayed.push({ key: '_actions', header: labels.actions, srOnlyHeader: true, actions: true, cellClassName: 'w-px text-right', cell: (r) => <RowMenu actions={rowActions(r)} label={labels.actions} /> });
   const togglable = columns.filter((c) => !c.srOnlyHeader);
   const sortable = columns.filter((c) => c.value && !c.srOnlyHeader);
   const filterable = columns.filter((c) => c.filter && c.value);
@@ -102,10 +116,10 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
   const [dialog, setDialog] = useState<'filters' | 'columns' | null>(null);
   const columnsBtn = useRef<HTMLButtonElement>(null);
   const filtersBtn = useRef<HTMLButtonElement>(null);
-  const active = q.trim() !== '' || Object.values(filters).some(Boolean);
+  const active = (!serverSearch && q.trim() !== '') || Object.values(filters).some(Boolean);
 
   const result = useMemo(() => {
-    const needle = norm(q.trim());
+    const needle = serverSearch ? '' : norm(q.trim());
     let out = rows.filter((r) => {
       if (needle && !searchable.some((c) => norm(c.value!(r)).includes(needle))) return false;
       return filterable.every((c) => {
@@ -119,7 +133,7 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
       if (col?.value) out = [...out].sort((a, b) => (sort.dir === 'asc' ? 1 : -1) * cmp(col.value!(a), col.value!(b)));
     }
     return out;
-  }, [rows, q, filters, sort, columns, searchable, filterable]);
+  }, [rows, q, filters, sort, columns, searchable, filterable, serverSearch]);
 
   const pages = Math.max(1, Math.ceil(result.length / size));
   const current = Math.min(page, pages);
@@ -135,7 +149,7 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
       <div className="relative flex items-center gap-2">
         <div className="relative min-w-0 flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted" aria-hidden />
-          <Input type="search" aria-label={labels.search} placeholder={labels.searchPlaceholder} value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} className="h-10 rounded-3xl pl-10" />
+          <Input type="search" aria-label={labels.search} placeholder={labels.searchPlaceholder} value={serverSearch ? serverSearch.value : q} onChange={(e) => { if (serverSearch) serverSearch.onChange(e.target.value); else setQ(e.target.value); setPage(1); }} className="h-10 rounded-3xl pl-10" />
         </div>
         {(selects.length > 0 || narrow) && (
           <button ref={filtersBtn} type="button" className={menuButton} aria-label={labels.filters} aria-haspopup="true" aria-expanded={dialog === 'filters'} onClick={() => setDialog(dialog === 'filters' ? null : 'filters')}>
@@ -149,7 +163,7 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
           </button>
         )}
         {exportName && (
-          <Button type="button" variant="outline" size="sm" className="h-10 shrink-0" aria-label={labels.export} disabled={result.length === 0}
+          <Button type="button" variant="outline" size="sm" className="h-10 shrink-0 border-field-line" aria-label={labels.export} disabled={result.length === 0}
             onClick={() => downloadCsv(exportName, searchable.map((c) => (typeof c.header === 'string' ? c.header : c.filterLabel ?? c.key)), result.map((r) => searchable.map((c) => c.value!(r))))}>
             <Download className="size-4" aria-hidden /><span className="max-sm:sr-only">{labels.export}</span>
           </Button>
@@ -201,6 +215,7 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
       <DataTable columns={displayed} rows={visible} rowKey={rowKey} minWidth={minWidth} stacked={narrow} sort={sort} onSort={onSort} sortLabel={labels.sortBy}
         empty={rows.length === 0 ? empty : result.length === 0 ? labels.noResults : undefined} />
 
+      {hasMore && <div className="text-center"><Button type="button" variant="outline" size="sm" onClick={onLoadMore} loading={loadingMore}>{labels.loadMore}</Button></div>}
       {rows.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted">
           <p aria-live="polite">{labels.showing(from, to, result.length)}</p>

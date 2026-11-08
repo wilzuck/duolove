@@ -1,5 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Power, PowerOff, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { INTENTS, INTEREST_SLUGS } from '@duomatch/types';
@@ -168,12 +169,15 @@ function DailyQuestionsTab() {
       exportName="question-du-jour" tableLabels={useTableLabels()} cancelLabel={t('common.cancel')} closeLabel={t('common.close')} submitting={create.isPending}
       onOpen={() => setF(blank)} onSubmit={() => create.mutateAsync()}
       rows={q.data?.items} rowKey={(r) => r.id} loading={<PageLoader inline />} empty={t('admin.eng.dq.empty')} minWidth="46rem"
+      rowActions={(r) => [
+        { label: r.active ? t('admin.eng.dq.disable') : t('admin.eng.dq.enable'), icon: r.active ? <PowerOff className="size-4" aria-hidden /> : <Power className="size-4" aria-hidden />, onSelect: () => update.mutate({ id: r.id, active: !r.active }) },
+        { label: t('admin.eng.dq.delete'), icon: <Trash2 className="size-4" aria-hidden />, tone: 'danger' as const, onSelect: () => remove.mutate(r.id) },
+      ]}
       columns={[
         { key: 'q', header: t('admin.eng.dq.textFr'), value: (r) => `${r.text.fr} ${r.text.en}`, filter: 'text', cell: (r) => <><span className="block font-semibold">{locale === 'en' ? r.text.en : r.text.fr}</span><span className="block text-xs text-muted">{r.options.map((o) => `${locale === 'en' ? o.en : o.fr} · ${r.perOption[o.key] ?? 0}`).join('  ·  ')}</span></> },
         { key: 'day', header: t('admin.eng.dq.day'), value: (r) => r.day ?? '', cell: (r) => <span className="flex flex-wrap gap-1.5">{r.isToday && <Badge tone="success">{t('admin.eng.dq.today')}</Badge>}<Badge tone="neutral">{r.day ?? t('admin.eng.dq.pool')}</Badge></span> },
         { key: 'status', header: t('admin.status'), value: (r) => (r.active ? 'active' : 'inactive'), filter: { options: [{ value: 'active', label: t('admin.eng.dq.active') }, { value: 'inactive', label: t('admin.eng.dq.inactive') }] }, cell: (r) => <Badge tone={r.active ? 'brand' : 'neutral'}>{r.active ? t('admin.eng.dq.active') : t('admin.eng.dq.inactive')}</Badge> },
         { key: 'answers', mobileHidden: true, header: t('admin.eng.dq.colAnswers'), value: (r) => r.answers, cell: (r) => r.answers },
-        { key: 'act', header: t('admin.status'), srOnlyHeader: true, cell: (r) => <span className="flex gap-2"><Button size="sm" variant="outline" onClick={() => update.mutate({ id: r.id, active: !r.active })}>{r.active ? t('admin.eng.dq.disable') : t('admin.eng.dq.enable')}</Button><Button size="sm" variant="ghost" onClick={() => remove.mutate(r.id)}>{t('admin.eng.dq.delete')}</Button></span> },
       ]}
     >
       <Field label={t('admin.eng.dq.textFr')}>{(p) => <Input {...p} required minLength={5} maxLength={120} value={f.textFr} onChange={(e) => setF({ ...f, textFr: e.target.value })} />}</Field>

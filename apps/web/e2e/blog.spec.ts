@@ -68,6 +68,7 @@ test.describe.serial('Blog administrable', () => {
   test('dépublication puis suppression', async () => {
     const { page } = ctx;
     await page.goto('/admin/blog');
+    await page.getByRole('searchbox', { name: 'Rechercher dans le tableau' }).fill(title);
     await page.getByRole('link', { name: title }).click();
     await page.getByRole('button', { name: 'Dépublier' }).click();
     await expect(page.getByText('Article dépublié.')).toBeVisible();

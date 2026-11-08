@@ -1,11 +1,12 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Banknote } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Alert, Badge, Button, Card, Checkbox, Dialog, EmptyState, Field, Select, Skeleton, Textarea } from '@duomatch/ui';
+import { Badge, Button, Checkbox, DataTableView, Dialog, Field, Select, Skeleton, Textarea } from '@duomatch/ui';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
+import { useTableLabels } from '@/hooks/useTableLabels';
 import { useMe } from '@/hooks/useQueries';
 import { post } from '@/lib/api';
 import { formatXof, timeAgo } from '@/lib/format';
@@ -20,6 +21,7 @@ export default function AdminRefunds() {
   const qc = useQueryClient();
   const err = useApiError();
   const toast = useUi((s) => s.toast);
+  const tableLabels = useTableLabels();
   const { data: me } = useMe();
   const [status, setStatus] = useState('REQUESTED');
   const [dlg, setDlg] = useState<{ r: Refund; kind: 'approve' | 'reject' } | null>(null);
@@ -34,30 +36,25 @@ export default function AdminRefunds() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted">{t('admin.refunds.intro')}</p>
-      <Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="w-56">{['REQUESTED', 'COMPLETED', 'REJECTED', 'FAILED', 'PROCESSING'].map((s) => <option key={s} value={s}>{t(`admin.refunds.status.${s}`)}</option>)}</Select>
-      {list.isLoading && <Skeleton className="h-40" />}
-      {!list.isLoading && list.items.length === 0 && <EmptyState icon={<Banknote className="size-8" aria-hidden />} title={t('admin.refunds.empty')} />}
-      <ul className="space-y-3">{list.items.map((r) => {
-        const selfBlocked = r.source === 'ADMIN' && r.requestedById === me?.id;
-        return (
-          <li key={r.id}><Card className="space-y-3 p-5">
-            <div className="flex flex-wrap items-center gap-2"><Badge tone={TONE[r.status as keyof typeof TONE] ?? 'neutral'}>{t(`admin.refunds.status.${r.status}`)}</Badge><Badge tone="neutral">{t(`admin.refunds.source.${r.source}`)}</Badge><span className="text-sm text-muted">{timeAgo(r.createdAt, locale)} · {r.provider}</span></div>
-            <p className="font-semibold">{r.displayName} — {r.product ?? '—'} — {formatXof(r.amountXof, locale)}</p>
-            <p className="rounded-2xl bg-soft p-3 text-sm">{r.reason}</p>
-            {r.decisionNote && <p className="text-sm text-muted">{t('admin.refunds.note')} {r.decisionNote}</p>}
-            {r.failureReason && <Alert variant="text">{r.failureReason}</Alert>}
-            {r.status === 'COMPLETED' && r.creditsReversed > 0 && <p className="text-sm text-muted">{t('admin.refunds.creditsBack', { n: r.creditsReversed })}</p>}
-            {r.status === 'REQUESTED' && (
-              <div className="flex flex-wrap items-center gap-2">
-                <Button size="sm" disabled={selfBlocked} onClick={() => setDlg({ r, kind: 'approve' })}>{t('admin.refunds.approve')}</Button>
-                <Button size="sm" variant="outline" onClick={() => setDlg({ r, kind: 'reject' })}>{t('admin.refunds.reject')}</Button>
-                {selfBlocked && <span className="text-xs text-muted">{t('admin.refunds.needOther')}</span>}
-              </div>
-            )}
-          </Card></li>
-        );
-      })}</ul>
-      {list.hasNextPage && <div className="text-center"><Button variant="outline" onClick={() => list.fetchNextPage()}>{t('admin.more')}</Button></div>}
+      {list.isLoading ? <Skeleton className="h-40" /> : (
+        <DataTableView
+          minWidth="52rem" rows={list.items} rowKey={(r) => r.id} empty={t('admin.refunds.empty')} labels={tableLabels} exportName="remboursements"
+          hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
+          toolbar={<Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="h-10 w-auto">{['REQUESTED', 'COMPLETED', 'REJECTED', 'FAILED', 'PROCESSING'].map((s) => <option key={s} value={s}>{t(`admin.refunds.status.${s}`)}</option>)}</Select>}
+          rowActions={(r) => r.status !== 'REQUESTED' ? [] : [
+            { label: t('admin.refunds.approve'), icon: <Check className="size-4" aria-hidden />, disabled: r.source === 'ADMIN' && r.requestedById === me?.id, onSelect: () => setDlg({ r, kind: 'approve' }) },
+            { label: t('admin.refunds.reject'), icon: <X className="size-4" aria-hidden />, tone: 'danger' as const, onSelect: () => setDlg({ r, kind: 'reject' }) },
+          ]}
+          columns={[
+            { key: 'user', header: t('admin.cols.name'), value: (r) => r.displayName, cellClassName: 'font-medium', cell: (r) => <>{r.displayName}<span className="block text-xs text-muted">{r.product ?? '—'}</span></> },
+            { key: 'amount', header: t('admin.cols.amount'), value: (r) => r.amountXof, cell: (r) => formatXof(r.amountXof, locale) },
+            { key: 'status', header: t('admin.cols.status'), value: (r) => r.status, cell: (r) => <Badge tone={TONE[r.status as keyof typeof TONE] ?? 'neutral'}>{t(`admin.refunds.status.${r.status}`)}</Badge> },
+            { key: 'source', mobileHidden: true, header: t('admin.cols.source'), value: (r) => r.source, filter: { options: (['USER', 'ADMIN'] as const).map((x) => ({ value: x, label: t(`admin.refunds.source.${x}`) })) }, cell: (r) => <Badge tone="neutral">{t(`admin.refunds.source.${r.source}`)}</Badge> },
+            { key: 'reason', header: t('admin.cols.reason'), value: (r) => r.reason, cellClassName: 'max-w-xs whitespace-pre-wrap', cell: (r) => <>{r.reason}{r.decisionNote && <span className="mt-1 block text-xs text-muted">{t('admin.refunds.note')} {r.decisionNote}</span>}{r.failureReason && <span className="mt-1 block text-xs text-danger-ink">{r.failureReason}</span>}{r.status === 'COMPLETED' && r.creditsReversed > 0 && <span className="mt-1 block text-xs text-muted">{t('admin.refunds.creditsBack', { n: r.creditsReversed })}</span>}</> },
+            { key: 'date', mobileHidden: true, header: t('admin.cols.date'), value: (r) => r.createdAt, cellClassName: 'text-muted', cell: (r) => `${timeAgo(r.createdAt, locale)} · ${r.provider}` },
+          ]}
+        />
+      )}
 
       <Dialog open={!!dlg} onClose={() => setDlg(null)} title={dlg ? t(`admin.refunds.${dlg.kind}Title`) : ''} closeLabel={t('common.close')}>
         {dlg && (

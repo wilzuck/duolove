@@ -2,9 +2,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { Badge, Button, DataTable, Dialog, Field, Input, Select, Skeleton } from '@duomatch/ui';
+import { Badge, Button, DataTableView, Dialog, Field, Input, Select, Skeleton } from '@duomatch/ui';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
+import { useTableLabels } from '@/hooks/useTableLabels';
 import { useMe } from '@/hooks/useQueries';
 import { api, patch, post } from '@/lib/api';
 import { formatDate } from '@/lib/format';
@@ -22,12 +23,12 @@ export default function AdminUsers() {
   const { data: me } = useMe();
   const [q, setQ] = useState('');
   const [term, setTerm] = useState('');
-  const [status, setStatus] = useState('');
+  const tableLabels = useTableLabels();
   const [sel, setSel] = useState<string | null>(null);
   const [reason, setReason] = useState('');
   const [days, setDays] = useState(7);
   useEffect(() => { const id = setTimeout(() => setTerm(q.trim()), 300); return () => clearTimeout(id); }, [q]);
-  const list = useAdminList<Row>(['users', term, status], `/admin/users?q=${encodeURIComponent(term)}&status=${status}`);
+  const list = useAdminList<Row>(['users', term], `/admin/users?q=${encodeURIComponent(term)}`);
   const detail = useQuery({ queryKey: ['admin', 'user', sel], enabled: !!sel, queryFn: () => api<Detail>(`/admin/users/${sel}`) });
   const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin'] }); setReason(''); };
   const act = useMutation({ mutationFn: ({ kind }: { kind: 'suspend' | 'ban' | 'unsuspend' }) => post(`/admin/users/${sel}/${kind}`, kind === 'suspend' ? { reason, days } : { reason }), onSuccess: () => { refresh(); toast('success', t('admin.done')); }, onError: (e) => toast('error', err(e)) });
@@ -37,23 +38,19 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-3">
-        <Input aria-label={t('admin.search')} placeholder={t('admin.search')} value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" type="search" />
-        <Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="w-44"><option value="">{t('admin.allStatuses')}</option>{['ACTIVE', 'SUSPENDED', 'BANNED', 'DELETED'].map((s) => <option key={s} value={s}>{t(`admin.userStatus.${s}`)}</option>)}</Select>
-      </div>
       {list.isLoading ? <Skeleton className="h-64" /> : (
-        <DataTable
-          minWidth="40rem" rows={list.items} rowKey={(u) => u.id} rowClassName="hover:bg-soft/50" empty={t('admin.empty')}
+        <DataTableView
+          minWidth="40rem" rows={list.items} rowKey={(u) => u.id} empty={t('admin.empty')} labels={tableLabels} exportName="utilisateurs"
+          serverSearch={{ value: q, onChange: setQ }} hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
           columns={[
-            { key: 'name', header: t('admin.cols.name'), cell: (u) => <><button className="text-left font-semibold text-brand-ink underline-offset-2 hover:underline" onClick={() => setSel(u.id)}>{u.displayName}</button><span className="block text-xs text-muted">{u.email ?? u.id.slice(0, 8)} · {u.role}</span></> },
-            { key: 'status', header: t('admin.cols.status'), cell: (u) => <Badge tone={tone(u.status)}>{t(`admin.userStatus.${u.status}`)}</Badge> },
-            { key: 'plan', header: t('admin.cols.plan'), cell: (u) => u.plan },
-            { key: 'reports', header: t('admin.cols.reports'), cell: (u) => u.reports },
-            { key: 'joined', header: t('admin.cols.joined'), cellClassName: 'text-muted', cell: (u) => formatDate(u.createdAt, locale, { day: 'numeric', month: 'short', year: 'numeric' }) },
+            { key: 'name', header: t('admin.cols.name'), value: (u) => `${u.displayName} ${u.email ?? ''}`, cell: (u) => <><button className="text-left font-semibold text-brand-ink underline-offset-2 hover:underline" onClick={() => setSel(u.id)}>{u.displayName}</button><span className="block text-xs text-muted">{u.email ?? u.id.slice(0, 8)} · {u.role}</span></> },
+            { key: 'status', header: t('admin.cols.status'), value: (u) => u.status, filter: { options: ['ACTIVE', 'SUSPENDED', 'BANNED', 'DELETED'].map((s) => ({ value: s, label: t(`admin.userStatus.${s}`) })) }, cell: (u) => <Badge tone={tone(u.status)}>{t(`admin.userStatus.${u.status}`)}</Badge> },
+            { key: 'plan', header: t('admin.cols.plan'), value: (u) => u.plan, filter: { options: ['FREE', 'PREMIUM', 'VIP'].map((p) => ({ value: p, label: p })) }, cell: (u) => u.plan },
+            { key: 'reports', mobileHidden: true, header: t('admin.cols.reports'), value: (u) => u.reports, cell: (u) => u.reports },
+            { key: 'joined', mobileHidden: true, header: t('admin.cols.joined'), value: (u) => u.createdAt, cellClassName: 'text-muted', cell: (u) => formatDate(u.createdAt, locale, { day: 'numeric', month: 'short', year: 'numeric' }) },
           ]}
         />
       )}
-      {list.hasNextPage && <div className="text-center"><Button variant="outline" onClick={() => list.fetchNextPage()} loading={list.isFetchingNextPage}>{t('admin.more')}</Button></div>}
 
       <Dialog open={!!sel} onClose={() => setSel(null)} title={d?.profile?.displayName ?? t('admin.user')} closeLabel={t('common.close')} className="w-[min(94vw,38rem)]">
         {!d ? <Skeleton className="h-40" /> : (

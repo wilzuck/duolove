@@ -57,7 +57,7 @@ export async function emailCode(request: APIRequestContext, email: string): Prom
 export async function completeOnboarding(page: Page, p: Persona) {
   await page.goto('/onboarding');
   await page.getByLabel('Biographie').fill('Passionné(e) de cuisine, de voyages et de belles discussions. Je cherche une relation sincère.');
-  await page.getByRole('radio', { name: /Relation sérieuse/ }).check();
+  await page.getByRole('radio', { name: /Relation sérieuse/ }).check({ force: true });
   await page.getByRole('button', { name: 'Continuer' }).click();
   for (const i of ['Musique', 'Cuisine', 'Voyages']) await page.getByRole('button', { name: i, exact: true }).click();
   await page.getByRole('button', { name: 'Continuer' }).click();

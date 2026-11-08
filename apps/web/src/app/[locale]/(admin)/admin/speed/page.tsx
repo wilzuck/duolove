@@ -1,8 +1,9 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Ban } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, CrudTable, Field, Input, RangeSlider, Select, Textarea } from '@duomatch/ui';
+import { Badge, CrudTable, Field, Input, RangeSlider, Select, Textarea } from '@duomatch/ui';
 import { PageLoader } from '@/components/PageLoader';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -47,14 +48,14 @@ export default function AdminSpeed() {
       exportName="speed-dating" tableLabels={tableLabels} cancelLabel={t('common.cancel')} closeLabel={t('common.close')}
       onOpen={() => setF(blank())} onSubmit={() => create.mutateAsync()} submitting={create.isPending}
       rows={q.data?.items} rowKey={(r) => r.id} loading={<PageLoader inline />} empty={t('admin.speed.empty')} minWidth="44rem"
+      rowActions={(r) => ((r.status === 'SCHEDULED' || r.status === 'RUNNING') ? [{ label: t('admin.speed.cancel'), icon: <Ban className="size-4" aria-hidden />, tone: 'danger' as const, onSelect: () => cancel.mutate(r.id) }] : [])}
       columns={[
         { key: 'title', header: t('admin.speed.colTitle'), value: (r) => r.title, filter: 'text', cell: (r) => <span className="font-semibold">{r.title}</span> },
         { key: 'when', header: t('admin.speed.colWhen'), value: (r) => r.startsAt, cell: (r) => formatDate(r.startsAt, locale, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) },
         { key: 'reg', mobileHidden: true, header: t('admin.speed.colRegistered'), value: (r) => r.registered, cell: (r) => `${r.registered} / ${r.capacity}` },
         { key: 'status', header: t('admin.speed.colStatus'), value: (r) => r.phase, filter: { options: (['UPCOMING', 'ROUND', 'BREAK', 'DECISION', 'ENDED', 'CANCELED'] as const).map((p) => ({ value: p, label: t(`admin.speed.phase.${p}` as never) })) }, cell: (r) => <Badge tone={r.phase === 'CANCELED' ? 'neutral' : r.phase === 'ROUND' || r.phase === 'DECISION' ? 'success' : 'brand'}>{t(`admin.speed.phase.${r.phase}` as never)}</Badge> },
         { key: 'mutual', mobileHidden: true, header: t('admin.speed.colMutual'), value: (r) => r.mutualInterests, cell: (r) => `${r.mutualInterests} / ${r.pairs}` },
-        { key: 'act', header: t('admin.speed.cancel'), srOnlyHeader: true, cell: (r) => (r.status === 'SCHEDULED' || r.status === 'RUNNING') ? <Button size="sm" variant="outline" onClick={() => cancel.mutate(r.id)}>{t('admin.speed.cancel')}</Button> : null },
-      ]}
+        ]}
     >
       <div className="sm:col-span-2"><Field label={t('admin.speed.name')}>{(p) => <Input {...p} required minLength={3} maxLength={80} value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />}</Field></div>
       <div className="sm:col-span-2"><Field label={t('admin.speed.description')}>{(p) => <Textarea {...p} maxLength={600} className="min-h-20" value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} />}</Field></div>

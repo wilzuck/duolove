@@ -1,11 +1,12 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CircleCheck } from 'lucide-react';
+import { Check, Eye, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, EmptyState, Select, Skeleton } from '@duomatch/ui';
+import { Badge, DataTableView, Select, Skeleton } from '@duomatch/ui';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
+import { useTableLabels } from '@/hooks/useTableLabels';
 import { post } from '@/lib/api';
 import { timeAgo } from '@/lib/format';
 import { useUi } from '@/lib/store';
@@ -19,27 +20,31 @@ export default function AdminReports() {
   const qc = useQueryClient();
   const err = useApiError();
   const toast = useUi((s) => s.toast);
+  const tableLabels = useTableLabels();
   const [status, setStatus] = useState('OPEN');
   const list = useAdminList<Report>(['reports', status], `/admin/reports?status=${status}`);
   const resolve = useMutation({ mutationFn: ({ id, s }: { id: string; s: string }) => post(`/admin/reports/${id}/resolve`, { status: s }), onSuccess: () => qc.invalidateQueries({ queryKey: ['admin'] }), onError: (e) => toast('error', err(e)) });
   return (
     <div className="space-y-4">
-      <Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="w-52">{['OPEN', 'REVIEWING', 'RESOLVED', 'DISMISSED'].map((s) => <option key={s} value={s}>{t(`admin.reportStatus.${s}`)}</option>)}</Select>
-      {list.isLoading && <Skeleton className="h-40" />}
-      {!list.isLoading && list.items.length === 0 && <EmptyState icon={<CircleCheck className="size-8" aria-hidden />} title={t('admin.noReports')} />}
-      <ul className="space-y-3">{list.items.map((r) => (
-        <li key={r.id}><Card className="space-y-3 p-5">
-          <div className="flex flex-wrap items-center gap-2"><Badge tone="danger">{t(`report.reasons.${r.reason}` as never)}</Badge><span className="text-sm text-muted">{timeAgo(r.createdAt, locale)} · {t('admin.by', { name: r.reporter.displayName ?? '?' })}</span></div>
-          <p><Link href={`/admin/users?focus=${r.target.id}`} className="font-semibold text-brand-ink underline">{r.target.displayName}</Link> <span className="text-sm text-muted">({t('admin.totalReports', { n: r.target.totalReports })})</span></p>
-          {r.details && <p className="rounded-2xl bg-soft p-3 text-sm">{r.details}</p>}
-          <div className="flex flex-wrap gap-2">
-            {r.status !== 'REVIEWING' && <Button size="sm" variant="outline" onClick={() => resolve.mutate({ id: r.id, s: 'REVIEWING' })}>{t('admin.review')}</Button>}
-            <Button size="sm" onClick={() => resolve.mutate({ id: r.id, s: 'RESOLVED' })}>{t('admin.resolve')}</Button>
-            <Button size="sm" variant="ghost" onClick={() => resolve.mutate({ id: r.id, s: 'DISMISSED' })}>{t('admin.dismiss')}</Button>
-          </div>
-        </Card></li>
-      ))}</ul>
-      {list.hasNextPage && <div className="text-center"><Button variant="outline" onClick={() => list.fetchNextPage()}>{t('admin.more')}</Button></div>}
+      {list.isLoading ? <Skeleton className="h-40" /> : (
+        <DataTableView
+          minWidth="48rem" rows={list.items} rowKey={(r) => r.id} empty={t('admin.noReports')} labels={tableLabels} exportName="signalements"
+          hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
+          toolbar={<Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="h-10 w-auto">{['OPEN', 'REVIEWING', 'RESOLVED', 'DISMISSED'].map((s) => <option key={s} value={s}>{t(`admin.reportStatus.${s}`)}</option>)}</Select>}
+          rowActions={(r) => [
+            ...(r.status !== 'REVIEWING' ? [{ label: t('admin.review'), icon: <Eye className="size-4" aria-hidden />, onSelect: () => resolve.mutate({ id: r.id, s: 'REVIEWING' }) }] : []),
+            { label: t('admin.resolve'), icon: <Check className="size-4" aria-hidden />, onSelect: () => resolve.mutate({ id: r.id, s: 'RESOLVED' }) },
+            { label: t('admin.dismiss'), icon: <X className="size-4" aria-hidden />, onSelect: () => resolve.mutate({ id: r.id, s: 'DISMISSED' }) },
+          ]}
+          columns={[
+            { key: 'reason', header: t('admin.cols.reason'), value: (r) => r.reason, filter: { options: ['FAKE_PROFILE', 'SCAM', 'HARASSMENT', 'INAPPROPRIATE_CONTENT', 'UNDERAGE', 'SPAM', 'OTHER'].map((x) => ({ value: x, label: t(`report.reasons.${x}` as never) })) }, cell: (r) => <Badge tone="danger">{t(`report.reasons.${r.reason}` as never)}</Badge> },
+            { key: 'target', header: t('admin.cols.target'), value: (r) => r.target.displayName ?? '', cell: (r) => <><Link href={`/admin/users?focus=${r.target.id}`} className="font-semibold text-brand-ink underline">{r.target.displayName}</Link><span className="block text-xs text-muted">{t('admin.totalReports', { n: r.target.totalReports })}</span></> },
+            { key: 'reporter', mobileHidden: true, header: t('admin.cols.reporter'), value: (r) => r.reporter.displayName ?? '', cell: (r) => r.reporter.displayName ?? '?' },
+            { key: 'details', header: t('admin.cols.message'), value: (r) => r.details ?? '', cellClassName: 'max-w-xs whitespace-pre-wrap', cell: (r) => r.details ?? '—' },
+            { key: 'date', mobileHidden: true, header: t('admin.cols.date'), value: (r) => r.createdAt, cellClassName: 'text-muted', cell: (r) => timeAgo(r.createdAt, locale) },
+          ]}
+        />
+      )}
     </div>
   );
 }

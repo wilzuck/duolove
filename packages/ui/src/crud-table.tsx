@@ -3,7 +3,9 @@
 import { Plus } from 'lucide-react';
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { Button } from './button';
+import { Pencil } from 'lucide-react';
 import type { Column } from './data-table';
+import type { RowAction } from './row-menu';
 import { DataTableView, type DataTableLabels } from './data-table-view';
 import { Dialog } from './dialog';
 
@@ -17,7 +19,7 @@ import { Dialog } from './dialog';
  *   reçoivent alors la ligne (`null` pour un ajout), et l'appelant adapte `dialogTitle` / `submitLabel`.
  */
 export function CrudTable<T>({
-  title, description, intro, addLabel, editLabel, columns, rows, rowKey, empty, loading, minWidth, tableLabels, exportName,
+  title, description, intro, addLabel, editLabel, rowActions, columns, rows, rowKey, empty, loading, minWidth, tableLabels, exportName,
   dialogTitle, submitLabel, cancelLabel, closeLabel, submitting, onOpen, onSubmit, children, footnote,
 }: {
   title: string;
@@ -27,6 +29,8 @@ export function CrudTable<T>({
   addLabel: string;
   /** Libellé du bouton de modification par ligne ; sans lui, aucune colonne d'actions n'est ajoutée. */
   editLabel?: string;
+  /** Autres actions de ligne (menu « ⋯ »), après « Modifier ». */
+  rowActions?: (row: T) => RowAction[];
   columns: readonly Column<T>[];
   rows: readonly T[] | undefined;
   rowKey: (row: T) => string;
@@ -55,9 +59,9 @@ export function CrudTable<T>({
     e.preventDefault();
     try { await onSubmit(editing); setOpen(false); } catch { /* la boîte reste ouverte : l'appelant a déjà signalé l'erreur */ }
   };
-  const allColumns: readonly Column<T>[] = editLabel
-    ? [...columns, { key: '_edit', header: editLabel, srOnlyHeader: true, cell: (row) => <Button size="sm" variant="outline" onClick={() => show(row)}>{editLabel}</Button> }]
-    : columns;
+  const menu = editLabel || rowActions
+    ? (row: T): RowAction[] => [...(editLabel ? [{ label: editLabel, icon: <Pencil className="size-4" aria-hidden />, onSelect: () => show(row) }] : []), ...(rowActions?.(row) ?? [])]
+    : undefined;
   return (
     <section className="space-y-4">
       <header className="flex flex-wrap items-start justify-between gap-3">
@@ -68,7 +72,7 @@ export function CrudTable<T>({
         <Button onClick={() => show(null)}><Plus className="size-4" aria-hidden />{addLabel}</Button>
       </header>
       {intro}
-      {rows === undefined ? loading : <DataTableView columns={allColumns} rows={rows} rowKey={rowKey} empty={empty} minWidth={minWidth} labels={tableLabels} exportName={exportName} />}
+      {rows === undefined ? loading : <DataTableView columns={columns} rowActions={menu} rows={rows} rowKey={rowKey} empty={empty} minWidth={minWidth} labels={tableLabels} exportName={exportName} />}
       <Dialog open={open} onClose={() => setOpen(false)} title={dialogTitle} closeLabel={closeLabel} className="w-[min(92vw,34rem)]">
         <form onSubmit={submit} className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2 [&>*:only-child]:sm:col-span-2">{children}</div>
