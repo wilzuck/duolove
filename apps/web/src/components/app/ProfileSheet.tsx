@@ -33,6 +33,15 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
     if (!open && d.open) d.close();
   }, [open]);
 
+  // La page derrière ne doit pas défiler (sinon : deux barres de défilement superposées).
+  useEffect(() => {
+    if (!open) return;
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = 'hidden';
+    return () => { html.style.overflow = prev; };
+  }, [open]);
+
   if (!card) return <dialog ref={ref} />;
   const hero = (
     <div className="-mx-4 -mt-2">
@@ -58,7 +67,7 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
   const act = 'flex items-center justify-center rounded-full shadow-soft ring-1 ring-line transition hover:scale-105';
   return (
     <dialog ref={ref} aria-labelledby={titleId} onClose={onClose} onClick={(e) => e.target === ref.current && onClose()}
-      className="m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 text-fg backdrop:bg-black/60">
+      className="m-0 h-dvh max-h-none w-full max-w-none overflow-hidden bg-transparent p-0 text-fg backdrop:bg-black/60">
       <motion.div className="mx-auto mt-[6dvh] flex h-[94dvh] max-w-lg flex-col overflow-hidden rounded-t-[2rem] bg-bg shadow-pop"
         initial={{ y: '100%' }} animate={{ y: open ? 0 : '100%' }} transition={{ type: 'spring', damping: 32, stiffness: 320 }}
         drag="y" dragControls={controls} dragListener={false} dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.7 }} dragSnapToOrigin
@@ -67,7 +76,7 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
           <span className="h-1.5 w-12 rounded-full bg-line" aria-hidden />
           <button type="button" onClick={onClose} aria-label={t('common.close')} className="absolute top-1.5 right-3 flex size-9 items-center justify-center rounded-full bg-soft text-fg hover:bg-line"><X className="size-5" aria-hidden /></button>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6">
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 pb-6">
           <ProfileDetail card={card} hero={hero} onBlocked={onBlocked} onLiked={onLiked} />
         </div>
         <div className="flex shrink-0 items-center justify-center gap-4 border-t border-line bg-card px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]" role="group" aria-label={t('discover.actions')}>
