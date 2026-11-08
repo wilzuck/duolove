@@ -1,13 +1,14 @@
 'use client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Archive, ArchiveRestore, CheckCheck, Mail, MailOpen } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, DataTableView, Select, Skeleton } from '@duomatch/ui';
+import { Badge, DataTableView, Skeleton } from '@duomatch/ui';
+import { PageHeader, StatusTabs, countOf, useAdminSummary } from '@/components/admin/PageParts';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
-import { api, patch } from '@/lib/api';
+import { patch } from '@/lib/api';
 import { timeAgo } from '@/lib/format';
 import { useUi } from '@/lib/store';
 
@@ -24,20 +25,18 @@ export default function AdminContact() {
   const tableLabels = useTableLabels();
   const [status, setStatus] = useState<Status>('NEW');
   const list = useAdminList<Msg>(['contact', status], `/admin/contact-messages?status=${status}`);
-  const counts = useQuery({ queryKey: ['admin', 'contact-counts', status], queryFn: () => api<{ counts: Record<Status, number> }>('/admin/contact-messages?limit=1&status=' + status) });
   const move = useMutation({ mutationFn: ({ id, s }: { id: string; s: Status }) => patch(`/admin/contact-messages/${id}`, { status: s }), onSuccess: () => qc.invalidateQueries({ queryKey: ['admin'] }), onError: (e) => toast('error', err(e)) });
-  const c = counts.data?.counts;
+  const c = useAdminSummary().data?.contact as Record<Status, number> | undefined;
   return (
     <div className="space-y-4">
+      <PageHeader title={t('admin.nav.contact')} description={t('admin.pageDesc.contact')} />
+      <StatusTabs label={t('admin.status')} value={status} onChange={setStatus} options={STATUSES.map((s) => ({ key: s, label: t(`admin.contactBox.statuses.${s}`), count: countOf(c, s) }))} />
       {list.isLoading ? <Skeleton className="h-40" /> : (
         <DataTableView
           minWidth="48rem" rows={list.items} rowKey={(m) => m.id} empty={t('admin.contactBox.empty')} labels={tableLabels} exportName="messages-contact"
           hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
-          toolbar={<Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value as Status)} className="h-10 w-auto">
-            {STATUSES.map((s) => <option key={s} value={s}>{t(`admin.contactBox.statuses.${s}`)}{c ? ` (${c[s]})` : ''}</option>)}
-          </Select>}
           rowActions={(m) => [
-            { label: t('admin.contactBox.reply'), icon: <Mail className="size-4" aria-hidden />, href: `mailto:${m.email}?subject=${encodeURIComponent('Re: DuoMatch')}`, onSelect: () => { if (m.status === 'NEW') move.mutate({ id: m.id, s: 'READ' }); } },
+            { label: t('admin.contactBox.reply'), icon: <Mail className="size-4" aria-hidden />, href: `mailto:${m.email}?subject=${encodeURIComponent('Re: CrushDuo')}`, onSelect: () => { if (m.status === 'NEW') move.mutate({ id: m.id, s: 'READ' }); } },
             ...(m.status === 'NEW' ? [{ label: t('admin.contactBox.markRead'), icon: <MailOpen className="size-4" aria-hidden />, onSelect: () => move.mutate({ id: m.id, s: 'READ' }) }] : []),
             ...(m.status !== 'ANSWERED' && m.status !== 'ARCHIVED' ? [{ label: t('admin.contactBox.answered'), icon: <CheckCheck className="size-4" aria-hidden />, onSelect: () => move.mutate({ id: m.id, s: 'ANSWERED' }) }] : []),
             m.status !== 'ARCHIVED' ? { label: t('admin.contactBox.archive'), icon: <Archive className="size-4" aria-hidden />, onSelect: () => move.mutate({ id: m.id, s: 'ARCHIVED' }) } : { label: t('admin.contactBox.restore'), icon: <ArchiveRestore className="size-4" aria-hidden />, onSelect: () => move.mutate({ id: m.id, s: 'NEW' }) },

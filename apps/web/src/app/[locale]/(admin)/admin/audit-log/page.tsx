@@ -1,6 +1,7 @@
 'use client';
 import { useLocale, useTranslations } from 'next-intl';
 import { DataTableView } from '@duomatch/ui';
+import { PageHeader } from '@/components/admin/PageParts';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useTableLabels } from '@/hooks/useTableLabels';
 import { formatDate } from '@/lib/format';
@@ -14,7 +15,8 @@ export default function AdminAudit() {
   const logs = useAdminList<Log>(['logs'], '/admin/audit-logs');
   return (
     <div className="space-y-6">
-      <section aria-labelledby="al"><h2 id="al" className="mb-3 text-lg font-bold">{t('admin.audit')}</h2>
+      <PageHeader title={t('admin.nav.audit')} description={t('admin.pageDesc.audit')} />
+      <section aria-label={t('admin.audit')}>
         <DataTableView
           rows={logs.items} rowKey={(l) => l.id} empty={t('admin.empty')} labels={tableLabels} exportName="journal-audit"
           hasMore={logs.hasNextPage} onLoadMore={() => void logs.fetchNextPage()} loadingMore={logs.isFetchingNextPage}

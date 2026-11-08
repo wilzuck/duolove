@@ -4,6 +4,7 @@ import { CircleCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, Card, EmptyState, Skeleton, Tabs } from '@duomatch/ui';
+import { PageHeader } from '@/components/admin/PageParts';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { api, post } from '@/lib/api';
@@ -64,6 +65,7 @@ export default function AdminModeration() {
   const [tab, setTab] = useState<(typeof TABS)[number]>('verifications');
   return (
     <div className="space-y-4">
+      <PageHeader title={t('admin.nav.moderation')} description={t('admin.pageDesc.moderation')} />
       <Tabs label={t('admin.tabs.moderation')} value={tab} onChange={setTab} tabs={TABS.map((k) => ({ key: k, label: t(`admin.mod.${k}`) }))} />
       <div role="tabpanel">{tab === 'verifications' ? <Verifications /> : tab === 'appeals' ? <Appeals /> : <Photos />}</div>
     </div>

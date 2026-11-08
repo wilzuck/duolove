@@ -100,3 +100,13 @@ async def test_overview_period_compares_and_fills_every_day(app, db):
     assert o["signups"]["current"] == sum(p["value"] for p in o["series"]["signups"])
     assert (await ad.agent.get("/api/admin/overview", params={"days": 5})).json()["period"]["days"] == 30  # valeur inconnue : défaut
     assert len((await ad.agent.get("/api/admin/overview", params={"days": 90})).json()["period"]["series"]["signups"]) == 90
+
+
+async def test_summary_counts_by_section_and_hides_money_from_moderators(app, db):
+    ad, mod = await admin(app, db), await member(app, db)
+    await set_role(mod.id, "MODERATOR")
+    a = (await ad.agent.get("/api/admin/summary")).json()
+    assert a["users"]["total"] >= 2 and a["users"].get("ACTIVE", 0) >= 2
+    assert {"payments", "subscriptions", "refunds", "contact", "reports"} <= set(a) and "revenue30" in a["payments"]
+    m = (await mod.agent.get("/api/admin/summary")).json()
+    assert set(m) == {"users", "reports"}  # pas de chiffres financiers pour un modérateur

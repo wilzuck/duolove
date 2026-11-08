@@ -19,7 +19,7 @@ from app.core.ids import utcnow
 from app.core.profile_card import thumb_key
 from app.db.session import get_db
 from app.models.models import (
-    AuditLog, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Product, Profile, ProfilePhoto,
+    AuditLog, ContactMessage, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Product, Profile, ProfilePhoto,
     PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, SystemSetting, User, VerificationRequest,
 )
 from app.schemas.admin import (
@@ -162,6 +162,24 @@ async def badges(_: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
 
     reports, verifs, appeals = await c(Report, Report.status == "OPEN"), await c(VerificationRequest, VerificationRequest.status == "PENDING"), await c(ModerationAction, ModerationAction.appealStatus == "PENDING")
     return {"reports": reports, "moderation": verifs + appeals, "verifications": verifs, "appeals": appeals}
+
+
+@router.get("/summary")
+async def summary(a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    """Compteurs par section pour les en-têtes de pages (indicateurs et onglets de statut). Les chiffres financiers ne sont donnés qu'aux administrateurs."""
+    async def by(col, *where) -> dict:
+        rows = (await db.execute(select(col, func.count()).where(*where).group_by(col))).all()
+        return {ev(k): int(n) for k, n in rows}
+
+    out = {"users": await by(User.status), "reports": await by(Report.status)}
+    out["users"]["total"] = sum(v for k, v in out["users"].items() if k != "DELETED")
+    if has_role(a.role, "ADMIN"):
+        since = utcnow() - 30 * DAY
+        pays = await by(Payment.status, Payment.createdAt >= since)
+        revenue = (await db.execute(select(func.coalesce(func.sum(Payment.amountXof), 0)).where(Payment.status == "SUCCEEDED", Payment.paidAt >= since))).scalar_one()
+        out.update({"payments": {**pays, "revenue30": int(revenue)}, "subscriptions": await by(Subscription.status), "refunds": await by(Refund.status),
+                    "contact": await by(ContactMessage.status)})
+    return out
 
 
 # ───────── Utilisateurs ─────────

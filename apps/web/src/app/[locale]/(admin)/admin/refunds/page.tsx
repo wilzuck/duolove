@@ -3,7 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Check, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Checkbox, DataTableView, Dialog, Field, Select, Skeleton, Textarea } from '@duomatch/ui';
+import { Badge, Button, Checkbox, DataTableView, Dialog, Field, Skeleton, Textarea } from '@duomatch/ui';
+import { PageHeader, StatusTabs, countOf, useAdminSummary } from '@/components/admin/PageParts';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -22,6 +23,7 @@ export default function AdminRefunds() {
   const err = useApiError();
   const toast = useUi((s) => s.toast);
   const tableLabels = useTableLabels();
+  const sum = useAdminSummary().data;
   const { data: me } = useMe();
   const [status, setStatus] = useState('REQUESTED');
   const [dlg, setDlg] = useState<{ r: Refund; kind: 'approve' | 'reject' } | null>(null);
@@ -35,12 +37,13 @@ export default function AdminRefunds() {
   });
   return (
     <div className="space-y-4">
+      <PageHeader title={t('admin.nav.refunds')} description={t('admin.pageDesc.refunds')} />
       <p className="text-sm text-muted">{t('admin.refunds.intro')}</p>
+      <StatusTabs label={t('admin.status')} value={status} onChange={setStatus} options={['REQUESTED', 'PROCESSING', 'COMPLETED', 'REJECTED', 'FAILED'].map((s) => ({ key: s, label: t(`admin.refunds.status.${s}`), count: countOf(sum?.refunds, s) }))} />
       {list.isLoading ? <Skeleton className="h-40" /> : (
         <DataTableView
           minWidth="52rem" rows={list.items} rowKey={(r) => r.id} empty={t('admin.refunds.empty')} labels={tableLabels} exportName="remboursements"
           hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
-          toolbar={<Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="h-10 w-auto">{['REQUESTED', 'COMPLETED', 'REJECTED', 'FAILED', 'PROCESSING'].map((s) => <option key={s} value={s}>{t(`admin.refunds.status.${s}`)}</option>)}</Select>}
           rowActions={(r) => r.status !== 'REQUESTED' ? [] : [
             { label: t('admin.refunds.approve'), icon: <Check className="size-4" aria-hidden />, disabled: r.source === 'ADMIN' && r.requestedById === me?.id, onSelect: () => setDlg({ r, kind: 'approve' }) },
             { label: t('admin.refunds.reject'), icon: <X className="size-4" aria-hidden />, tone: 'danger' as const, onSelect: () => setDlg({ r, kind: 'reject' }) },

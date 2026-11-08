@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Badge, Button, DataTableView, Dialog, Field, Input, Select, Skeleton } from '@duomatch/ui';
+import { PageHeader, StatStrip, countOf, useAdminSummary } from '@/components/admin/PageParts';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -24,6 +25,7 @@ export default function AdminUsers() {
   const [q, setQ] = useState('');
   const [term, setTerm] = useState('');
   const tableLabels = useTableLabels();
+  const sum = useAdminSummary().data;
   const [sel, setSel] = useState<string | null>(null);
   const [reason, setReason] = useState('');
   const [days, setDays] = useState(7);
@@ -38,6 +40,13 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-4">
+      <PageHeader title={t('admin.nav.users')} description={t('admin.pageDesc.users')} />
+      <StatStrip items={[
+        { label: t('admin.strip.total'), value: sum?.users.total },
+        { label: t('admin.strip.active'), value: countOf(sum?.users, 'ACTIVE'), tone: 'success' },
+        { label: t('admin.strip.suspended'), value: countOf(sum?.users, 'SUSPENDED'), tone: 'warn' },
+        { label: t('admin.strip.banned'), value: countOf(sum?.users, 'BANNED'), tone: 'danger' },
+      ]} />
       {list.isLoading ? <Skeleton className="h-64" /> : (
         <DataTableView
           minWidth="40rem" rows={list.items} rowKey={(u) => u.id} empty={t('admin.empty')} labels={tableLabels} exportName="utilisateurs"

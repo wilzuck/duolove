@@ -47,11 +47,11 @@ test.describe.serial('Boîte de contact', () => {
     await card.getByRole('button', { name: 'Actions' }).click();
     await page.getByRole('menuitem', { name: 'Marquer comme lu' }).click();
     await expect(card).toBeHidden();
-    await page.getByLabel('Statut').selectOption('READ');
+    await page.getByRole('tab', { name: /Lus/ }).click();
     await expect(card).toBeVisible();
     await card.getByRole('button', { name: 'Actions' }).click();
     await page.getByRole('menuitem', { name: 'Répondu' }).click();
-    await page.getByLabel('Statut').selectOption('ANSWERED');
+    await page.getByRole('tab', { name: /Répondus/ }).click();
     await expect(card).toBeVisible();
     await card.getByRole('button', { name: 'Actions' }).click();
     await page.getByRole('menuitem', { name: 'Archiver' }).click();

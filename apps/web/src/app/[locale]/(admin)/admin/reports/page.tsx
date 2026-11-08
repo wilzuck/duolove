@@ -3,7 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Check, Eye, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, DataTableView, Select, Skeleton } from '@duomatch/ui';
+import { Badge, DataTableView, Skeleton } from '@duomatch/ui';
+import { PageHeader, StatusTabs, countOf, useAdminSummary } from '@/components/admin/PageParts';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -21,16 +22,18 @@ export default function AdminReports() {
   const err = useApiError();
   const toast = useUi((s) => s.toast);
   const tableLabels = useTableLabels();
+  const sum = useAdminSummary().data;
   const [status, setStatus] = useState('OPEN');
   const list = useAdminList<Report>(['reports', status], `/admin/reports?status=${status}`);
   const resolve = useMutation({ mutationFn: ({ id, s }: { id: string; s: string }) => post(`/admin/reports/${id}/resolve`, { status: s }), onSuccess: () => qc.invalidateQueries({ queryKey: ['admin'] }), onError: (e) => toast('error', err(e)) });
   return (
     <div className="space-y-4">
+      <PageHeader title={t('admin.nav.reports')} description={t('admin.pageDesc.reports')} />
+      <StatusTabs label={t('admin.status')} value={status} onChange={setStatus} options={['OPEN', 'REVIEWING', 'RESOLVED', 'DISMISSED'].map((s) => ({ key: s, label: t(`admin.reportStatus.${s}`), count: countOf(sum?.reports, s) }))} />
       {list.isLoading ? <Skeleton className="h-40" /> : (
         <DataTableView
           minWidth="48rem" rows={list.items} rowKey={(r) => r.id} empty={t('admin.noReports')} labels={tableLabels} exportName="signalements"
           hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
-          toolbar={<Select aria-label={t('admin.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="h-10 w-auto">{['OPEN', 'REVIEWING', 'RESOLVED', 'DISMISSED'].map((s) => <option key={s} value={s}>{t(`admin.reportStatus.${s}`)}</option>)}</Select>}
           rowActions={(r) => [
             ...(r.status !== 'REVIEWING' ? [{ label: t('admin.review'), icon: <Eye className="size-4" aria-hidden />, onSelect: () => resolve.mutate({ id: r.id, s: 'REVIEWING' }) }] : []),
             { label: t('admin.resolve'), icon: <Check className="size-4" aria-hidden />, onSelect: () => resolve.mutate({ id: r.id, s: 'RESOLVED' }) },

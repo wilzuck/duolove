@@ -4,6 +4,7 @@ import { Undo2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, Button, DataTableView, Dialog, Field, Skeleton, Textarea } from '@duomatch/ui';
+import { PageHeader, StatStrip, countOf, useAdminSummary } from '@/components/admin/PageParts';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -21,6 +22,7 @@ export default function AdminPayments() {
   const err = useApiError();
   const toast = useUi((s) => s.toast);
   const tableLabels = useTableLabels();
+  const sum = useAdminSummary().data?.payments;
   const pays = useAdminList<Pay>(['pays'], '/admin/payments');
   const [target, setTarget] = useState<Pay | null>(null);
   const [reason, setReason] = useState('');
@@ -32,7 +34,14 @@ export default function AdminPayments() {
   });
   return (
     <div className="space-y-6">
-      <section aria-labelledby="pays"><h2 id="pays" className="mb-3 text-lg font-bold">{t('admin.billing.payments')}</h2>
+      <PageHeader title={t('admin.nav.payments')} description={t('admin.pageDesc.payments')} />
+      <StatStrip items={[
+        { label: t('admin.strip.revenue30'), value: sum ? formatXof(sum.revenue30 ?? 0, locale) : undefined },
+        { label: t('admin.strip.succeeded'), value: countOf(sum, 'SUCCEEDED'), tone: 'success' },
+        { label: t('admin.strip.failed'), value: countOf(sum, 'FAILED'), tone: 'danger' },
+        { label: t('admin.strip.pending'), value: countOf(sum, 'PENDING'), tone: 'warn' },
+      ]} />
+      <section aria-label={t('admin.billing.payments')}>
         {pays.isLoading ? <Skeleton className="h-32" /> : (
           <DataTableView
             minWidth="44rem" rows={pays.items} rowKey={(p) => p.id} empty={t('admin.empty')} labels={tableLabels} exportName="paiements"
