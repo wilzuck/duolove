@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=ROOT / ".env", extra="ignore")
+    # str_strip_whitespace : une tabulation / un espace collé dans une variable Railway (ex. COOKIE_DOMAIN="\t.exemple.com") ne casse plus le serveur.
+    model_config = SettingsConfigDict(env_file=ROOT / ".env", extra="ignore", str_strip_whitespace=True)
 
     node_env: str = Field("development", alias="NODE_ENV")  # nom conservé : partagé avec le front
     port: int = Field(4000, alias="PORT")

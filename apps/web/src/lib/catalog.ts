@@ -21,7 +21,7 @@ export function fallbackCatalog(): Catalog {
 /** Récupération côté serveur Next (pages marketing), revalidée toutes les 60 s. */
 export async function fetchCatalog(): Promise<Catalog> {
   try {
-    const res = await fetch(`${process.env.API_URL ?? 'http://localhost:4000'}/api/plans`, { next: { revalidate: 60 } });
+    const res = await fetch(`${(process.env.API_URL ?? 'http://localhost:4000').trim()}/api/plans`, { next: { revalidate: 60 } });
     if (!res.ok) throw new Error(String(res.status));
     return (await res.json()) as Catalog;
   } catch {

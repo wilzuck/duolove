@@ -1,6 +1,6 @@
 import type { BlogCard, BlogPostFull } from './types';
 
-const API = () => process.env.API_URL ?? 'http://localhost:4000';
+const API = () => (process.env.API_URL ?? 'http://localhost:4000').trim();
 
 /** Articles publiés (rendu serveur, revalidé toutes les 30 s). Une API injoignable donne une liste vide, jamais une page cassée. */
 export async function fetchPosts(locale: string): Promise<BlogCard[]> {
