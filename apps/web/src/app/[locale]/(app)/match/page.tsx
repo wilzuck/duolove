@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { BadgeCheck, Clock, Coins, Crown, Heart, MessageCircle, Radio, Sparkles, X } from 'lucide-react';
+import { Clock, Coins, Crown, Heart, MessageCircle, Radio, Sparkles, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { COUNTRIES, countryFlag, LIVING, SEEKING, type LiveCriteria } from '@duomatch/types';
@@ -13,6 +13,7 @@ import { del, post, put } from '@/lib/api';
 import { formatDate, formatTime } from '@/lib/format';
 import { useUi } from '@/lib/store';
 import type { Card as ProfileCardT, LiveState } from '@/lib/types';
+import { VerifiedBadge } from '@/components/app/VerifiedBadge';
 
 type Draft = { seeking: LiveCriteria['seeking']; ageMin: number; ageMax: number; country: string; hasChildren: LiveCriteria['hasChildren']; likesPets: LiveCriteria['likesPets']; living: LiveCriteria['living']; heightMin: string; heightMax: string; originCountry: string };
 
@@ -74,7 +75,7 @@ function PersonCard({ c, locale, until, children }: { c: ProfileCardT; locale: s
     <Card className="flex flex-wrap items-center gap-4 p-4">
       <Avatar src={c.photos[0]?.thumbUrl} name={c.displayName} size={64} />
       <div className="min-w-0 flex-1">
-        <p className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <BadgeCheck className="size-4 text-sky-500" aria-label={t('profile.verified')} />}</p>
+        <p className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <VerifiedBadge size="sm" />}</p>
         <p className="text-sm text-muted">{c.city}, {countryName(c.country, locale)}</p>
         {c.bio && <p className="mt-1 line-clamp-2 text-sm">{c.bio}</p>}
         {until && <p className="mt-1 flex items-center gap-1 text-xs text-muted"><Clock className="size-3.5" aria-hidden />{t('live.availableUntil', { time: formatTime(until, locale) })}</p>}

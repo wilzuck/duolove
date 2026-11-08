@@ -1,6 +1,6 @@
 'use client';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { BadgeCheck, Heart, MapPin, Sparkles, X } from 'lucide-react';
+import { Heart, MapPin, Sparkles, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Avatar, Badge, Button, Card, Dialog, EmptyState, Skeleton, Tabs } from '@duomatch/ui';
@@ -16,6 +16,7 @@ import { ApiError, api, del, post } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { useUi } from '@/lib/store';
 import type { Card as ProfileCardT, DailyQuestionState, SwipeResult } from '@/lib/types';
+import { VerifiedBadge } from '@/components/app/VerifiedBadge';
 
 interface Today { day: string; items: ProfileCardT[]; pending: number }
 interface History { days: { day: string; items: ProfileCardT[] }[]; nextCursor: string | null }
@@ -29,7 +30,7 @@ function PickCard({ card, onOpen, onLike, onPass, busy }: { card: ProfileCardT; 
       <div className="flex items-start gap-4">
         <Avatar src={card.photos[0]?.thumbUrl} name={card.displayName} size={88} className="rounded-2xl" />
         <div className="min-w-0 flex-1 space-y-1">
-          <h3 className="flex items-center gap-1.5 text-lg font-extrabold">{card.displayName}, {card.age}{card.verified && <BadgeCheck className="size-5 fill-sky-500 text-white" aria-label={t('card.verified')} />}</h3>
+          <h3 className="flex items-center gap-1.5 text-lg font-extrabold">{card.displayName}, {card.age}{card.verified && <VerifiedBadge size="md" />}</h3>
           <p className="flex items-center gap-1 text-sm text-muted"><MapPin className="size-4" aria-hidden />{card.city}, {countryName(card.country, locale)}</p>
           <Badge tone="brand"><Sparkles className="size-3" aria-hidden />{t('card.compat', { n: card.affinity?.score ?? card.compatibility ?? 0 })}</Badge>
         </div>

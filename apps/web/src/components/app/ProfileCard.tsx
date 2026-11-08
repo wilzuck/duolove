@@ -1,10 +1,11 @@
 'use client';
-import { BadgeCheck, ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, cn } from '@duomatch/ui';
 import { COUNTRIES, countryFlag } from '@duomatch/types';
 import type { Card } from '@/lib/types';
+import { VerifiedBadge } from './VerifiedBadge';
 
 export const countryName = (code: string, locale: string) => {
   const c = COUNTRIES.find((x) => x.code === code);
@@ -31,7 +32,7 @@ export function ProfileCard({ card, compact = false, className }: { card: Card; 
       )}
       {card.compatibility != null && <Badge className="absolute top-8 right-4 bg-black/45 text-white backdrop-blur"><Sparkles className="size-3" aria-hidden />{t('card.compat', { n: card.compatibility })}</Badge>}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 space-y-2 p-5">
-        <h2 className="flex items-center gap-2 font-display text-3xl font-extrabold">{card.displayName}, {card.age}{card.verified && <BadgeCheck className="size-6 fill-sky-500 text-white" aria-label={t('card.verified')} />}</h2>
+        <h2 className="flex items-center gap-2 font-display text-3xl font-extrabold">{card.displayName}, {card.age}{card.verified && <VerifiedBadge size="lg" />}</h2>
         <p className="flex items-center gap-1.5 text-sm text-white/90"><MapPin className="size-4" aria-hidden />{card.city}, {countryName(card.country, locale)}{card.distanceKm != null && <span> · {t('card.distance', { km: card.distanceKm })}</span>}</p>
         <div className="flex flex-wrap gap-1.5"><Badge className="bg-white/90 text-[#c2185b]">{t(`intent.${card.intent}`)}</Badge>{card.commonInterests.slice(0, compact ? 2 : 4).map((s) => <Badge key={s} className="bg-white/25 text-white backdrop-blur">{t(`interest.${s}` as never)}</Badge>)}</div>
         {card.bio && !compact && <p className="line-clamp-2 text-sm text-white/90">{card.bio}</p>}

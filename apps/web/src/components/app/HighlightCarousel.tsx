@@ -1,11 +1,12 @@
 'use client';
-import { BadgeCheck, ChevronLeft, ChevronRight, Heart, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Badge, Button, IconButton, cn } from '@duomatch/ui';
 import { DuoGauge } from '@/components/app/DuoGauge';
 import { countryName } from '@/components/app/ProfileCard';
 import type { Card, DailyQuestionState } from '@/lib/types';
+import { VerifiedBadge } from './VerifiedBadge';
 
 /** « À la une » : une carte par personne, photo plein cadre avec un léger dégradé en bas, informations et gestes sous la photo. Défilement sans minuteur. */
 export function HighlightCarousel({ items, question, busy, likeWithWord, onLike, onPass, onOpen }: {
@@ -42,7 +43,7 @@ export function HighlightCarousel({ items, question, busy, likeWithWord, onLike,
                 <div className="relative aspect-[4/5] bg-soft">
                   {photo ? <img src={photo.url} alt={t('engagement.carousel.photoOf', { name: c.displayName })} loading={i < 2 ? 'eager' : 'lazy'} className="size-full object-cover" /> : <div className="grid size-full place-items-center text-6xl font-extrabold text-brand/40" aria-hidden>{c.displayName[0]}</div>}
                   <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/75 via-black/30 to-transparent p-4 pt-20 text-white">
-                    <h3 className="flex items-center gap-1.5 font-display text-xl font-extrabold">{c.displayName}, {c.age}{c.verified && <BadgeCheck className="size-5 fill-sky-500 text-white" aria-label={t('card.verified')} />}</h3>
+                    <h3 className="flex items-center gap-1.5 font-display text-xl font-extrabold">{c.displayName}, {c.age}{c.verified && <VerifiedBadge size="md" />}</h3>
                     <p className="text-sm text-white/90">{c.city}, {countryName(c.country, locale)}</p>
                   </div>
                 </div>

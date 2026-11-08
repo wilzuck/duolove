@@ -6,6 +6,7 @@ import { Avatar, Badge, Input, Skeleton, cn } from '@duomatch/ui';
 import { useConversations } from '@/hooks/useQueries';
 import { Link, usePathname } from '@/i18n/navigation';
 import { timeAgo } from '@/lib/format';
+import { VerifiedBadge } from '@/components/app/VerifiedBadge';
 
 export default function MessagesLayout({ children }: { children: ReactNode }) {
   const t = useTranslations();
@@ -42,7 +43,7 @@ export default function MessagesLayout({ children }: { children: ReactNode }) {
                 <Link href={`/messages/${c.id}`} aria-current={activeId === c.id ? 'page' : undefined} className={cn('flex items-center gap-3 px-4 py-3 transition hover:bg-soft', activeId === c.id && 'bg-soft')}>
                   <Avatar src={c.user.thumbUrl} name={c.user.displayName} size={52} />
                   <span className="min-w-0 flex-1">
-                    <span className="flex items-baseline justify-between gap-2"><span className="truncate font-semibold">{c.user.displayName}</span>{c.lastMessage && <time className="shrink-0 text-xs text-muted" dateTime={c.lastMessage.createdAt}>{timeAgo(c.lastMessage.createdAt, locale)}</time>}</span>
+                    <span className="flex items-baseline justify-between gap-2"><span className="flex min-w-0 items-center gap-1 truncate font-semibold"><span className="truncate">{c.user.displayName}</span>{c.user.verified && <VerifiedBadge size="sm" />}</span>{c.lastMessage && <time className="shrink-0 text-xs text-muted" dateTime={c.lastMessage.createdAt}>{timeAgo(c.lastMessage.createdAt, locale)}</time>}</span>
                     <span className={cn('block truncate text-sm', c.unread ? 'font-semibold text-fg' : 'text-muted')}>{c.lastMessage ? <>{c.lastMessage.mine ? `${t('chat.you')} ` : ''}{c.lastMessage.body ?? (c.lastMessage.hasImage ? <span className="inline-flex items-center gap-1 align-middle"><Camera className="size-3.5" aria-hidden />{t('chat.photo')}</span> : t('chat.deleted'))}</> : t('chat.sayHello')}</span>
                   </span>
                   {c.unread > 0 && <Badge className="bg-brand-strong text-white" aria-label={t('chat.unread', { count: c.unread })}>{c.unread}</Badge>}

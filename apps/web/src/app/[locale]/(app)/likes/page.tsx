@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { BadgeCheck, Crown, Eye, Heart, MessageCircle, Star, X } from 'lucide-react';
+import { Crown, Eye, Heart, MessageCircle, Star, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Avatar, Badge, Button, Card, EmptyState, Skeleton, Tabs } from '@duomatch/ui';
@@ -10,6 +10,7 @@ import { Link } from '@/i18n/navigation';
 import { api, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import type { Card as ProfileCardT, Paged, SwipeResult } from '@/lib/types';
+import { VerifiedBadge } from '@/components/app/VerifiedBadge';
 
 type Received = Paged<ProfileCardT> & { locked: boolean; count: number };
 type Visitors = Paged<ProfileCardT & { visitedAt: string; visits: number }> & { locked: boolean; count: number };
@@ -44,7 +45,7 @@ export default function LikesPage() {
             <li key={c.id}><Card className="flex items-center gap-4 p-3">
               <Link href={`/profile/${c.id}`} className="flex min-w-0 flex-1 items-center gap-4" aria-label={t('likes.view', { name: c.displayName })}>
                 <Avatar src={c.photos[0]?.thumbUrl} name={c.displayName} size={72} className="rounded-2xl" />
-                <span className="min-w-0"><span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.superLike && <Star className="size-4 fill-sky-500 text-sky-500" aria-label={t('likes.superLike')} />}</span>
+                <span className="min-w-0"><span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <VerifiedBadge size="sm" />}{c.superLike && <Star className="size-4 fill-sky-500 text-sky-500" aria-label={t('likes.superLike')} />}</span>
                   <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span>
                   {c.comment && <span className="mt-1 block truncate text-sm italic text-muted"><span className="sr-only">{t('likes.commentLabel')} </span>« {c.comment} »</span>}</span>
               </Link>
@@ -77,7 +78,7 @@ export default function LikesPage() {
               <Link href={`/profile/${c.id}`} className="flex min-w-0 flex-1 items-center gap-4" aria-label={t('likes.view', { name: c.displayName })}>
                 <Avatar src={c.photos[0]?.thumbUrl} name={c.displayName} size={72} className="rounded-2xl" />
                 <span className="min-w-0">
-                  <span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <BadgeCheck className="size-4 fill-sky-500 text-white" aria-label={t('card.verified')} />}</span>
+                  <span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <VerifiedBadge size="sm" />}</span>
                   <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span>
                   <span className="mt-1 block text-sm text-muted">{t('likes.visitedAgo', { when: new Date(c.visitedAt).toLocaleDateString(locale, { day: 'numeric', month: 'short' }) })} · {t('likes.visitCount', { n: c.visits })}</span>
                 </span>
@@ -108,7 +109,7 @@ export default function LikesPage() {
               <Link href={`/profile/${c.id}`} className="flex min-w-0 flex-1 items-center gap-4" aria-label={t('likes.view', { name: c.displayName })}>
                 <Avatar src={c.photos[0]?.thumbUrl} name={c.displayName} size={72} className="rounded-2xl" />
                 <span className="min-w-0">
-                  <span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <BadgeCheck className="size-4 fill-sky-500 text-white" aria-label={t('card.verified')} />}{c.superLike && <Star className="size-4 fill-sky-500 text-sky-500" aria-label={t('likes.superLike')} />}</span>
+                  <span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <VerifiedBadge size="sm" />}{c.superLike && <Star className="size-4 fill-sky-500 text-sky-500" aria-label={t('likes.superLike')} />}</span>
                   <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span>
                   {c.comment && <span className="mt-1 block rounded-xl bg-soft px-3 py-1.5 text-sm"><span className="sr-only">{t('likes.commentLabel')} </span>« {c.comment} »</span>}
                 </span>
