@@ -51,6 +51,20 @@ Le service `migrate` applique `alembic upgrade head` puis s'arrête ; l'API dém
 
 `.github/workflows/ci.yml` : lint → typecheck → tests web → build ; job `api` (Alembic + pytest sur PostgreSQL de service) ; puis E2E Playwright, puis `pnpm audit --prod`. Déploiement : à brancher selon la plateforme (déclenché sur `main` après CI verte).
 
+## Verrous contre les déploiements cassés
+
+Incident du 8 nov. 2026 : deux déploiements ont échoué (« Failed to build an image », sans journal). Causes trouvées : (1) la CI était **désactivée sans bruit** (erreur de syntaxe dans `ci.yml`, tous les contrôles échouaient en 0 s), donc rien ne bloquait ; (2) des variables Railway collées depuis un tableau avaient une **tabulation cachée dans leur nom**.
+
+| Verrou | Où | Effet |
+|---|---|---|
+| Contrôle local avant envoi | `.githooks/pre-push` → `scripts/verify.sh` (`pnpm verify`, `pnpm verify:full`) | Bloque `git push` si un workflow est invalide, s'il y a plusieurs têtes Alembic, ou si lint / types échouent. `VERIFY_FULL=1` ajoute build + tests API. Activé par `pnpm install` (script `prepare`). Contournement : `git push --no-verify` |
+| Lint des workflows | `.github/workflows/workflow-lint.yml` (actionlint) | Échoue si un fichier de workflow est invalide : la CI ne peut plus être désactivée en silence |
+| CI | `.github/workflows/ci.yml` | lint, types, tests, build, migrations, tests API sur PostgreSQL, E2E, audit |
+| « Wait for CI » | Railway → service → Settings → Deploy | Railway ne déploie que si la CI est verte (à activer sur `api` et `web`) |
+| Branche protégée | GitHub → Settings → Branches → `main` | Exige les contrôles `quality` et `api` avant fusion (facultatif) |
+
+Variables Railway : **ne jamais coller un tableau**. Utiliser *Raw Editor* (`NOM=valeur`, une ligne par variable) ou saisir nom et valeur séparément ; un nom ne doit contenir ni espace ni tabulation.
+
 ## Observabilité (à mettre en place)
 
 - Logs : actuellement les logs uvicorn et Python (texte). Recommandé : logs JSON + corrélation de requête, jamais de données personnelles.

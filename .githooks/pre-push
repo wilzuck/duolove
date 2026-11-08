@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Bloque l'envoi si les contrôles échouent (voir scripts/verify.sh). Contournement : git push --no-verify
+exec "$(git rev-parse --show-toplevel)/scripts/verify.sh"

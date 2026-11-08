@@ -1,0 +1,15 @@
+name: Workflow lint
+# Garde-fou : une erreur de syntaxe dans un workflow le désactive en silence (cela est arrivé : aucun contrôle n'a tourné pendant des jours).
+on:
+  push:
+    paths: [".github/workflows/**"]
+  pull_request:
+    paths: [".github/workflows/**"]
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash) 1.7.12
+      - run: ./actionlint -color

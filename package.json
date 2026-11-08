@@ -4,7 +4,9 @@
   "private": true,
   "description": "DuoMatch — plateforme de rencontres amoureuses. Deux cœurs, une belle histoire.",
   "packageManager": "pnpm@11.10.0",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "pnpm dev:api & pnpm dev:web & wait",
     "dev:web": "pnpm --filter @duomatch/web dev",
@@ -18,7 +20,10 @@
     "db:migrate": "make -C backend migrate",
     "db:seed": "make -C backend seed",
     "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\" --ignore-path .gitignore",
-    "audit:deps": "pnpm audit --prod"
+    "audit:deps": "pnpm audit --prod",
+    "verify": "bash scripts/verify.sh",
+    "verify:full": "VERIFY_FULL=1 bash scripts/verify.sh",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
