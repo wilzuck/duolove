@@ -3,12 +3,12 @@ import { BadgeCheck, ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, cn } from '@duomatch/ui';
-import { COUNTRIES } from '@duomatch/types';
+import { COUNTRIES, countryFlag } from '@duomatch/types';
 import type { Card } from '@/lib/types';
 
 export const countryName = (code: string, locale: string) => {
   const c = COUNTRIES.find((x) => x.code === code);
-  return c ? (locale === 'en' ? c.en : c.fr) : code;
+  return c ? `${countryFlag(c.code)} ${locale === 'en' ? c.en : c.fr}` : code;
 };
 
 /** Carte de profil plein cadre : photos (toucher les bords pour changer), identité, intention, intérêts communs. */

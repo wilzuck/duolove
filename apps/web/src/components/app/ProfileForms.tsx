@@ -2,8 +2,8 @@
 import { Compass, Crown, Diamond, HeartHandshake, Smile, Users } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { COUNTRIES, INTENTS, INTEREST_SLUGS, LIVING, SEEKING, type Intent, type Living } from '@duomatch/types';
-import { Button, ChoiceCards, Checkbox, cn, Field, Input, Select, Textarea } from '@duomatch/ui';
+import { COUNTRIES, countryFlag, INTENTS, INTEREST_SLUGS, LIVING, SEEKING, type Intent, type Living } from '@duomatch/types';
+import { Button, ChoiceCards, Checkbox, cn, Field, Input, RangeSlider, Select, Textarea } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Limits, MyProfile } from '@/lib/types';
 
@@ -45,7 +45,7 @@ export function LifestyleFields({ value, onChange }: { value: LifeValue; onChang
       {tri(t('life.likesPets'), 'likesPets')}
       <Field label={t('life.living')}>{(p) => <Select {...p} value={value.living ?? ''} onChange={(e) => set('living', (e.target.value || null) as Living | null)}><option value="">{t('life.unspecified')}</option>{LIVING.map((l) => <option key={l} value={l}>{t(`life.livingOpt.${l}`)}</option>)}</Select>}</Field>
       <Field label={t('life.height')} hint={t('life.heightHint')}>{(p) => <Input {...p} type="number" inputMode="numeric" min={120} max={230} value={value.heightCm ?? ''} onChange={(e) => set('heightCm', e.target.value ? Number(e.target.value) : null)} />}</Field>
-      <Field label={t('life.origin')}>{(p) => <Select {...p} value={value.originCountry ?? ''} onChange={(e) => set('originCountry', e.target.value || null)}><option value="">{t('life.unspecified')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+      <Field label={t('life.origin')}>{(p) => <Select {...p} value={value.originCountry ?? ''} onChange={(e) => set('originCountry', e.target.value || null)}><option value="">{t('life.unspecified')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
     </div>
   );
 }
@@ -60,7 +60,7 @@ export function AboutFields({ value, onChange, withLocation }: { value: AboutVal
       <Field label={t('profile.occupation')}>{(p) => <Input {...p} maxLength={80} value={value.occupation} onChange={(e) => set('occupation', e.target.value)} />}</Field>
       {withLocation && (
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t('auth.country')}>{(p) => <Select {...p} value={value.country} onChange={(e) => set('country', e.target.value)}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+          <Field label={t('auth.country')}>{(p) => <Select {...p} value={value.country} onChange={(e) => set('country', e.target.value)}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
           <Field label={t('auth.city')}>{(p) => <Input {...p} value={value.city} onChange={(e) => set('city', e.target.value)} />}</Field>
         </div>
       )}
@@ -96,14 +96,10 @@ export function PreferenceFields({ value, onChange, limits }: { value: Pref; onC
       <fieldset><legend className="mb-2 text-sm font-medium">{t('prefs.seeking')}</legend>
         <div className="flex flex-wrap gap-2">{SEEKING.map((s) => <label key={s} className={cn('cursor-pointer rounded-full border px-4 py-2 text-sm font-medium has-[:checked]:border-brand-strong has-[:checked]:bg-brand-strong has-[:checked]:text-white', 'border-line')}><input type="radio" name="seeking" className="sr-only" checked={value.seeking === s} onChange={() => set('seeking', s)} />{t(`seeking.${s}`)}</label>)}</div>
       </fieldset>
-      <fieldset className="space-y-3"><legend className="text-sm font-medium">{t('prefs.ageRange', { min: value.ageMin, max: value.ageMax })}</legend>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label={t('prefs.ageMin')}>{(p) => <Input {...p} type="number" min={18} max={99} value={value.ageMin} onChange={(e) => { const n = Math.min(99, Math.max(18, Number(e.target.value) || 18)); onChange({ ...value, ageMin: n, ageMax: Math.max(n, value.ageMax) }); }} />}</Field>
-          <Field label={t('prefs.ageMax')}>{(p) => <Input {...p} type="number" min={18} max={99} value={value.ageMax} onChange={(e) => { const n = Math.min(99, Math.max(18, Number(e.target.value) || 18)); onChange({ ...value, ageMax: n, ageMin: Math.min(n, value.ageMin) }); }} />}</Field>
-        </div>
-      </fieldset>
+      <RangeSlider label={t('live.ageRange')} min={18} max={99} value={[value.ageMin, value.ageMax]} minLabel={t('prefs.ageMin')} maxLabel={t('prefs.ageMax')}
+        valueText={t('live.ageBetween', { min: value.ageMin, max: value.ageMax })} onChange={([a, b]) => onChange({ ...value, ageMin: a, ageMax: b })} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t('prefs.country')}>{(p) => <Select {...p} value={value.country ?? ''} onChange={(e) => set('country', e.target.value || null)}><option value="">{t('prefs.anyCountry')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+        <Field label={t('prefs.country')}>{(p) => <Select {...p} value={value.country ?? ''} onChange={(e) => set('country', e.target.value || null)}><option value="">{t('prefs.anyCountry')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
         <Field label={t('prefs.city')} hint={t('prefs.cityHint')}>{(p) => <Input {...p} value={value.city ?? ''} onChange={(e) => set('city', e.target.value || null)} />}</Field>
       </div>
       <div className="space-y-2"><p className="text-sm font-medium">{t('prefs.intents')}</p><Chips label={t('prefs.intents')} options={INTENTS} value={value.intents} onChange={(v) => set('intents', v)} render={(i) => t(`intent.${i}`)} /></div>

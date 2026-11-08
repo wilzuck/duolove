@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
-import { COUNTRIES, GENDERS, MIN_AGE, registerSchema } from '@duomatch/types';
+import { COUNTRIES, countryFlag, GENDERS, MIN_AGE, registerSchema } from '@duomatch/types';
 import { Alert, Button, Checkbox, DatePicker, Field, Input, Select } from '@duomatch/ui';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { GoogleButton } from '@/components/auth/GoogleButton';
@@ -98,7 +98,7 @@ function RegisterForm() {
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t('auth.country')} error={errors.country}>{(p) => (
             <Select {...p} value={f.country} onChange={(e) => set('country', e.target.value)}>
-              {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{locale === 'en' ? c.en : c.fr}</option>)}
+              {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}
             </Select>)}
           </Field>
           <Field label={t('auth.city')} error={errors.city}>{(p) => <Input {...p} autoComplete="address-level2" value={f.city} onChange={(e) => set('city', e.target.value)} />}</Field>

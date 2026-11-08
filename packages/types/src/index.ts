@@ -41,6 +41,8 @@ export const COUNTRIES = [
   { code: 'BE', fr: 'Belgique', en: 'Belgium' },
   { code: 'CA', fr: 'Canada', en: 'Canada' },
 ] as const;
+/** Drapeau émoji d'un code pays ISO 3166-1 alpha-2 (lettres « indicateur régional » Unicode). */
+export const countryFlag = (code: string): string => (/^[A-Za-z]{2}$/.test(code) ? String.fromCodePoint(...[...code.toUpperCase()].map((ch) => 0x1f1e6 + ch.charCodeAt(0) - 65)) : '');
 export const COUNTRY_CODES = COUNTRIES.map((c) => c.code) as [string, ...string[]];
 
 /** Centres d'intérêt proposés à l'onboarding (slug stable, libellé traduit côté web). */

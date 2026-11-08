@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { BadgeCheck, Clock, Coins, Crown, Heart, MessageCircle, Radio, Sparkles, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { COUNTRIES, LIVING, SEEKING, type LiveCriteria } from '@duomatch/types';
+import { COUNTRIES, countryFlag, LIVING, SEEKING, type LiveCriteria } from '@duomatch/types';
 import { Avatar, Badge, Button, Card, EmptyState, Field, RadioChips, RangeSlider, Select, Skeleton, Switch } from '@duomatch/ui';
 import { countryName } from '@/components/app/ProfileCard';
 import { useApiError } from '@/hooks/useApiError';
@@ -44,7 +44,7 @@ function CriteriaForm({ value, onChange }: { value: Draft; onChange: (d: Draft) 
   const tri = (label: string, k: 'hasChildren' | 'likesPets') => (
     <RadioChips legend={label} value={value[k]} onChange={(v) => set(k, v)} options={[{ value: 'ANY', label: t('live.any') }, { value: 'YES', label: t('life.yes') }, { value: 'NO', label: t('life.no') }]} />
   );
-  const countries = COUNTRIES.map((c) => <option key={c.code} value={c.code}>{locale === 'en' ? c.en : c.fr}</option>);
+  const countries = COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>);
   const hLo = value.heightMin ? Number(value.heightMin) : H_MIN;
   const hHi = value.heightMax ? Number(value.heightMax) : H_MAX;
   const heightText = hLo <= H_MIN && hHi >= H_MAX ? t('live.any') : hLo <= H_MIN ? t('live.heightUpTo', { max: hHi }) : hHi >= H_MAX ? t('live.heightFrom', { min: hLo }) : t('live.heightBetween', { min: hLo, max: hHi });
