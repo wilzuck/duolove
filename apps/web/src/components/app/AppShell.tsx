@@ -1,5 +1,5 @@
 'use client';
-import { Bell, Compass, Crown, Heart, Radio, MessageCircle, ShieldAlert, User } from 'lucide-react';
+import { BadgeCheck, Bell, Compass, Crown, Heart, Radio, MessageCircle, ShieldAlert, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Avatar, Button, Logo, cn } from '@duomatch/ui';
@@ -38,7 +38,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
   const speedOn = useEngagementConfig().data?.flags.speed_dating !== false;
   const group = Object.entries(TABS).find(([, tabs]) => tabs.some((x) => x.href === path))?.[1];
   const sectionTabs = group && (
-    <nav aria-label={t('app.sectionTabs')} className="flex flex-wrap gap-2 px-4 pt-4 lg:px-8">
+    <nav aria-label={t('app.sectionTabs')} className="mx-auto flex max-w-2xl flex-wrap justify-center gap-2 px-4 pt-4 lg:px-8">
       {group.filter((x) => x.href !== '/speed' || speedOn).map((x) => (
         <Link key={x.href} href={x.href} aria-current={path === x.href ? 'page' : undefined}
           className={cn('rounded-full border px-4 py-2 text-sm font-semibold transition', path === x.href ? 'border-brand-strong bg-soft text-brand-ink' : 'border-field-line bg-field text-muted hover:bg-soft hover:text-fg')}>{t(x.key)}</Link>
@@ -52,7 +52,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
     return (
       <div className="min-h-dvh bg-bg">
         {banner}
-        <header className="mx-auto flex h-16 max-w-xl items-center justify-between px-4"><Logo /><div className="flex items-center gap-1"><LocaleSwitcher /><ThemeToggle /></div></header>
+        <header className="mx-auto flex h-16 max-w-xl items-center justify-between px-4"><Logo markOnMobile /><div className="flex items-center gap-1"><LocaleSwitcher /><ThemeToggle /></div></header>
         <main id="main">{children}</main>
       </div>
     );
@@ -63,7 +63,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
       <CallLayer />
       <a href="#main" className="skip-link">{t('common.skipToContent')}</a>
       {/* Barre latérale (desktop) */}
-      <aside className="sticky top-0 hidden h-dvh flex-col gap-2 border-r border-line bg-card p-5 lg:flex">
+      <aside className="hidden flex-col gap-2 border-r border-line bg-card p-5 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[17rem]">
         <Link href="/discover" className="mb-4 px-2"><Logo /></Link>
         <nav aria-label={t('nav.main')} className="flex flex-col gap-1">
           {NAV.map(({ href, icon: Icon, key }) => (
@@ -85,18 +85,18 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
           )}
           <Link href="/settings" className="flex items-center gap-3 rounded-2xl p-2 hover:bg-soft">
             <Avatar src={me.profile?.thumbUrl} name={me.profile?.displayName ?? '?'} size={44} />
-            <span className="min-w-0 flex-1"><span className="block truncate font-semibold">{me.profile?.displayName}</span><span className="text-xs text-muted">{t('app.nav.settings')}</span></span>
+            <span className="min-w-0 flex-1"><span className="flex items-center gap-1 font-semibold leading-tight"><span className="truncate">{me.profile?.displayName}</span>{me.profile?.verified && <BadgeCheck className="size-4 shrink-0 fill-sky-500 text-white" aria-label={t('profile.verification')} />}</span><span className="block text-xs leading-tight text-muted">{t('app.nav.settings')}</span></span>
           </Link>
           <div className="flex items-center justify-between"><LocaleSwitcher /><ThemeToggle /></div>
         </div>
       </aside>
 
-      <div className="flex min-h-dvh min-w-0 flex-col">
+      <div className="flex min-h-dvh min-w-0 flex-col lg:col-start-2">
         {banner}
         {me.profile?.paused && <PauseBanner endsAt={me.profile.pauseEndsAt} />}
         {/* Barre du haut */}
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-bg/90 px-4 backdrop-blur lg:h-16 lg:px-8">
-          <Link href="/discover" className="lg:hidden" aria-label={t('nav.home')}><Logo /></Link>
+          <Link href="/discover" className="lg:hidden" aria-label={t('nav.home')}><Logo markOnMobile /></Link>
           <div className="hidden lg:block" />
           <div className="flex items-center gap-1">
             {me.entitlement.plan === 'FREE' && <Link href="/premium" aria-label={t('app.goPremium')} className="rounded-full bg-soft p-2.5 text-brand-ink hover:bg-brand/15 sm:hidden"><Crown className="size-5" /></Link>}

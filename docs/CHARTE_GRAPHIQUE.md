@@ -75,7 +75,7 @@ Source de vérité : `packages/ui/src/logo.tsx`. Ne pas redessiner : réexporter
 | Version | Usage | Remarques |
 |---|---|---|
 | Horizontale (marque + mot-symbole) | Défaut : en-têtes, e-mails, documents | Espace entre marque et texte = 0,5 em (gap 8 px à 20 px de corps) |
-| Marque seule | Icône d'application, favicon, avatar de réseau social, tampon | `apps/web/public/icon.svg` |
+| Marque seule | Icône d'application, favicon, avatar de réseau social, tampon | `apps/web/public/icon-512.png`, `icon-192.png`, `icon-maskable-512.png`, `apple-touch-icon.png`, `favicon.ico` |
 | Monochrome **[Recommandation]** | Fax, gravure, impression 1 couleur, filigrane | Aplat unique `#C2185B` sur clair, blanc sur sombre ; à produire |
 | Négatif **[Recommandation]** | Fonds photo ou fonds foncés saturés | Marque en dégradés, mot « DuoMatch » entièrement blanc |
 
@@ -467,7 +467,7 @@ Actuellement en **texte brut** (code de confirmation, réinitialisation, lien ma
 
 ### 13.5 Application installable (PWA) et partage
 
-Nom « DuoMatch », couleur de thème `#E91E63`, fond `#FFFFFF`, icône `icon.svg`. Image de partage `og.jpg` en 1 200 × 630 px (moins de 300 Ko : limite des aperçus WhatsApp). (Voir écart E4 sur les icônes.)
+Nom « DuoMatch », couleur de thème `#E91E63`, fond `#FFFFFF`, icônes PNG 192/512, « maskable » 512, `apple-touch-icon.png` et `favicon.ico` (cœur du logo sur fond `#FFF0F5`). Image de partage `og.jpg` en 1 200 × 630 px (moins de 300 Ko : limite des aperçus WhatsApp). 
 
 ### 13.6 Présentations et documents
 
@@ -511,7 +511,7 @@ Responsable : <nom>                            Validée par : <nom>   Date : <jj
 
 | Livrable | Existe ? |
 |---|---|
-| Logo horizontal et marque seule (SVG) | ✅ (composant + `icon.svg`) |
+| Logo horizontal et marque seule (SVG) | ✅ (composant + icônes PNG) |
 | Logo monochrome et négatif (SVG, PNG) | ❌ |
 | Jetons de couleur (CSS) | ✅ `tokens.css` |
 | Palette exportée (ASE/Figma) | ❌ |
@@ -534,7 +534,7 @@ Constatés à la rédaction de ce document (non corrigés, sauf mention). À tra
 | E1 | **Bordure des champs sous 3:1** : 1,52:1 en clair (`#D9CFD5` sur blanc), 2,64:1 en sombre. Le critère WCAG 1.4.11 (contraste des composants) peut ne pas être satisfait ; l'outil axe ne le détecte pas | Moyenne | Assombrir `--field-line` (≈ `#8F8590` en clair pour atteindre 3:1 sur blanc, ≈ `#7A7490` en sombre) puis revérifier tous les écrans |
 | E2 | **Rose de marque `#E91E63` sur blanc à 4,35:1** : conforme seulement pour les grands éléments ; risque d'un usage en texte par un nouveau contributeur | Faible | Règle déjà documentée (3.1) ; ajouter une vérification automatique |
 | E3 | **Logo en thème sombre** : le second cœur utilise un mélange `multiply` qui, sur fond sombre, le rend bordeaux très foncé (constaté dans le navigateur) ; la marque change d'aspect entre thèmes | Moyenne (identité) | Remplacer par des teintes fixes sans mode de fusion, validées sur fonds clair et sombre |
-| E4 | **Icônes d'application** : seul `icon.svg` est déclaré dans le manifeste ; pas d'icônes PNG 192/512 ni d'icône « maskable ». L'installation sur certains appareils peut être dégradée **[à vérifier sur appareils réels]** | Faible | Produire les PNG et les déclarer |
+| E4 | ~~Icônes d'application~~ — **résolu** : PNG 192/512, maskable, apple-touch-icon et favicon.ico générés depuis le nouveau logo et déclarés dans le manifeste | — | — |
 | E5 | **Aucun logo monochrome ni négatif** | Faible | Dessiner et ajouter au kit (14.1) |
 | E6 | **Badge Premium/VIP absent** : aucune distinction visible d'un abonné | À décider | Voir 8.9 |
 | E7 | **E-mails en texte brut** : pas d'identité visuelle dans les messages | Faible | Voir 13.3 |

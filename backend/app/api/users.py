@@ -42,7 +42,7 @@ async def me(u: AuthUser = Depends(current_user_allow_suspended), db: AsyncSessi
     return {
         "id": user.id, "email": user.email, "emailVerified": bool(user.emailVerifiedAt), "role": user.role.value, "status": user.status.value,
         "suspendedUntil": user.suspendedUntil, "marketingConsent": user.marketingConsent,
-        "profile": None if not profile else {"displayName": profile.displayName, "onboarded": bool(profile.onboardedAt), "completeness": profile.completeness,
+        "profile": None if not profile else {"displayName": profile.displayName, "onboarded": bool(profile.onboardedAt), "completeness": profile.completeness, "verified": bool(profile.verified),
                                               "paused": rhythm.is_paused(profile), "pauseEndsAt": profile.pauseEndsAt if rhythm.is_paused(profile) else None,
                                               "thumbUrl": photo_url(thumb_key(photo_key)) if photo_key else None},
         "entitlement": {"plan": e["plan"], "validUntil": e["validUntil"], "limits": e["limits"], "credits": await credits.balances(db, u.id)},

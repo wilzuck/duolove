@@ -57,6 +57,13 @@ def provider():
     return kkiapay.KkiapayProvider() if get_settings().payment_provider == "kkiapay" else MockProvider()
 
 
+def checkout_provider():
+    """Fournisseur pour ENCAISSER : en production, la simulation n'est jamais proposée (aucun paiement factice, aucun accès offert sans payer)."""
+    if get_settings().is_prod and get_settings().payment_provider != "kkiapay":
+        raise AppError(503, "PAYMENTS_UNAVAILABLE")
+    return provider()
+
+
 async def catalog(db: AsyncSession) -> dict:
     plans = await plan_config.catalog(db)
     products = await plan_config.products(db)
@@ -81,7 +88,7 @@ async def current(db: AsyncSession, user_id: str) -> dict:
 async def checkout(db: AsyncSession, user_id: str, code: str, months: int = 1, promo_code: str | None = None) -> dict:
     plan, price = await plan_config.quote(db, code, months)
     plan_row = (await db.execute(select(SubscriptionPlan).where(SubscriptionPlan.code == code))).scalar_one()
-    prov = provider()
+    prov = checkout_provider()
     # Abonnement + paiement (+ remise) dans une transaction : le verrou du code promo garantit qu'il ne dépasse jamais son plafond.
     q = await promo.evaluate(db, user_id, promo_code, price["totalXof"], True) if promo_code else None
     amount = q.finalXof if q else price["totalXof"]
@@ -106,7 +113,7 @@ async def checkout_product(db: AsyncSession, user_id: str, code: str, promo_code
     product = (await db.execute(select(Product).where(Product.code == code, Product.active.is_(True)))).scalar_one_or_none()
     if not product:
         raise not_found("PRODUCT_NOT_FOUND")
-    prov = provider()
+    prov = checkout_provider()
     q = await promo.evaluate(db, user_id, promo_code, product.priceXof, True) if promo_code else None
     payment = Payment(userId=user_id, kind="PRODUCT", productId=product.id, quantity=product.quantity,
                       amountXof=q.finalXof if q else product.priceXof, promoCodeId=q.promoId if q else None,
@@ -131,7 +138,7 @@ async def _record_event(db: AsyncSession, provider_name: str, event_id: str, typ
 
 async def handle_webhook(db: AsyncSession, provider_name: str, raw: bytes, signature: str | None) -> dict:
     """Authentifie (HMAC-SHA256 du corps brut), dédoublonne (WebhookEvent) puis applique. Idempotent."""
-    if provider_name != "mock":
+    if provider_name != "mock" or get_settings().is_prod:  # webhook simulé : jamais en production
         raise not_found("UNKNOWN_PROVIDER")
     expected = hmac_hex(get_settings().payment_webhook_secret, raw)
     if not signature or not safe_equal(expected, signature):

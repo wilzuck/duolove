@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     manifest: '/manifest.webmanifest',
     openGraph: { type: 'website', siteName: 'CrushDuo', title: t('meta.title'), description: t('meta.description'), locale: locale === 'en' ? 'en_US' : 'fr_FR', images: [{ url: '/og.jpg', width: 1200, height: 630, type: 'image/jpeg', alt: 'CrushDuo — Deux cœurs, une belle histoire' }] },
     twitter: { card: 'summary_large_image', title: t('meta.title'), description: t('meta.description') },
-    icons: { icon: '/icon.svg' },
+    icons: { icon: [{ url: '/favicon.ico', sizes: 'any' }, { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/apple-touch-icon.png' },
   };
 }
 

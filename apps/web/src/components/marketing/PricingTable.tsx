@@ -54,9 +54,9 @@ export function PricingTable({ initial, current, action, defaultMonths = 1 }: { 
         <div role="radiogroup" aria-label={t('plans.durationLabel')} className="mx-auto flex w-fit max-w-full flex-wrap justify-center gap-1 rounded-full bg-soft p-1">
           {durations.map((m) => (
             <button key={m} type="button" role="radio" aria-checked={months === m} onClick={() => setMonths(m)}
-              className={cn('flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition', months === m ? 'bg-brand-strong text-white shadow-soft' : 'text-brand-ink hover:bg-card')}>
+              className={cn('flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition', months === m ? 'bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-soft' : 'text-brand-ink hover:bg-card')}>
               {t('plans.months', { n: m })}
-              {maxDiscount(m) > 0 && <span className={cn('rounded-full px-1.5 text-[11px]', months === m ? 'bg-white/25' : 'bg-brand-strong text-white')}>−{maxDiscount(m)}%</span>}
+              {maxDiscount(m) > 0 && <span className={cn('rounded-full px-1.5 text-[11px]', months === m ? 'bg-white/25' : 'bg-linear-to-br from-brand-strong to-brand-strong-2 text-white')}>−{maxDiscount(m)}%</span>}
             </button>
           ))}
         </div>
@@ -68,7 +68,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1 }: { 
           const lines = [...(p.code === 'FREE' ? BASE.map((k) => t(k)) : []), ...featureLines(p, t as never)];
           return (
             <Card key={p.code} className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
-              {p.featured && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-strong text-white">{t('plans.popular')}</Badge>}
+              {p.featured && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-linear-to-br from-brand-strong to-brand-strong-2 text-white">{t('plans.popular')}</Badge>}
               <div className="flex items-center gap-3">
                 <span className="flex size-11 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-5" aria-hidden /></span>
                 <h3 className="text-xl font-bold">{p.name}</h3>

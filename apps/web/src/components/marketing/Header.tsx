@@ -20,7 +20,7 @@ export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-1 px-4 sm:gap-4 sm:px-6">
-        <Link href="/" aria-label={t('nav.home')} className="flex items-center"><Logo /></Link>
+        <Link href="/" aria-label={t('nav.home')} className="flex items-center"><Logo markOnMobile /></Link>
         <nav aria-label={t('nav.main')} className="hidden items-center gap-1 xl:flex">
           {LINKS.map(([href, key]) => (
             <Link key={href} href={href} aria-current={isActive(pathname, href) ? 'page' : undefined} className={`rounded-full px-3 py-2 text-sm whitespace-nowrap hover:bg-soft xl:px-4 ${isActive(pathname, href) ? 'bg-soft font-bold text-brand-ink underline decoration-2 underline-offset-8' : 'font-medium text-muted hover:text-fg'}`}>{t(key)}</Link>

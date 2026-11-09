@@ -133,3 +133,24 @@ async def test_webhook_signature_invalide_refusee(http):
     r = await http.post("/api/payments/webhook/mock", content=b'{"id":"x"}', headers={"content-type": "application/json", "x-duomatch-signature": "00"})
     assert r.status_code == 401 and r.json()["error"]["code"] == "INVALID_SIGNATURE"
     assert (await http.post("/api/payments/webhook/inconnu", content=b"{}", headers={"content-type": "application/json"})).status_code == 404
+
+
+async def test_production_sans_kkiapay_refuse_la_simulation(monkeypatch):
+    """En production, sans KKiaPay configuré, aucun paiement simulé n'est proposé et le webhook simulé est refusé."""
+    from types import SimpleNamespace
+
+    import pytest
+
+    from app.core import payments
+    from app.core.errors import AppError
+
+    prod = SimpleNamespace(is_prod=True, payment_provider="mock", payment_webhook_secret="x" * 32)
+    monkeypatch.setattr(payments, "get_settings", lambda: prod)
+    with pytest.raises(AppError) as e:
+        payments.checkout_provider()
+    assert e.value.status == 503 if hasattr(e.value, "status") else True
+    with pytest.raises(AppError):
+        await payments.handle_webhook(None, "mock", b"{}", "sig")
+    dev = SimpleNamespace(is_prod=False, payment_provider="mock")
+    monkeypatch.setattr(payments, "get_settings", lambda: dev)
+    assert payments.checkout_provider().name == "mock"

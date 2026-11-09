@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import and_, distinct, func, inspect as sa_inspect, or_, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import flags as flagsvc
+from app.core import entitlements, flags as flagsvc
 from app.core import notifications, payments, plan_config, promo, refunds, storage, storage_config
 from app.core.auth import AuthUser, has_role, require_role
 from app.core.constants import FEATURE_FLAGS
@@ -23,7 +23,7 @@ from app.models.models import (
     PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, SystemSetting, User, VerificationRequest,
 )
 from app.schemas.admin import (
-    FlagSet, PlanPatch, ProductPatch, PromoCreate, PromoPatch, ReasonOnly, RefundApprove, RefundCreate, RefundReject, ResolveReport,
+    FlagSet, PlanGrant, PlanPatch, ProductPatch, PromoCreate, PromoPatch, ReasonOnly, RefundApprove, RefundCreate, RefundReject, ResolveReport,
     Review, RoleChange, Sanction,
 )
 
@@ -222,10 +222,10 @@ async def user(user_id: str, a: AuthUser = MOD, db: AsyncSession = Depends(get_d
     photos = (await db.execute(select(ProfilePhoto).where(ProfilePhoto.profileId == p.id))).scalars().all() if p else []
     mods = (await db.execute(select(ModerationAction).where(ModerationAction.targetUserId == user_id).order_by(ModerationAction.createdAt.desc()).limit(20))).scalars().all()
     reps = (await db.execute(select(Report).where(Report.targetId == user_id).order_by(Report.createdAt.desc()).limit(20))).scalars().all()
-    plan = (await db.execute(select(Entitlement.plan).where(Entitlement.userId == user_id))).scalar_one_or_none()
+    ent = await entitlements.get(db, user_id)
     return {
         "id": u.id, "email": u.email if has_role(a.role, "ADMIN") else None, "role": ev(u.role), "status": ev(u.status), "suspendedUntil": u.suspendedUntil,
-        "createdAt": u.createdAt, "lastActiveAt": u.lastActiveAt, "emailVerified": bool(u.emailVerifiedAt), "plan": ev(plan) if plan else "FREE",
+        "createdAt": u.createdAt, "lastActiveAt": u.lastActiveAt, "emailVerified": bool(u.emailVerifiedAt), "plan": ent["plan"], "planValidUntil": ent["validUntil"],
         "profile": {"displayName": p.displayName, "bio": p.bio, "city": p.city, "country": p.country, "gender": ev(p.gender), "verified": p.verified, "completeness": p.completeness,
                     "photos": [{"id": x.id, "url": f"/api/media/{x.key}", "status": ev(x.moderationStatus)} for x in photos]} if p else None,
         "moderation": [to_dict(m) for m in mods], "reports": [to_dict(r) for r in reps],
@@ -286,6 +286,29 @@ async def role(user_id: str, body: RoleChange, a: AuthUser = SUP, db: AsyncSessi
         raise not_found("NOT_FOUND")
     await db.commit()
     await audit(db, a.id, "user.role", "User", user_id, {"role": body.role})
+    return {"ok": True}
+
+
+@router.post("/users/{user_id}/grant-plan")
+async def grant_plan(user_id: str, body: PlanGrant, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Offre une formule à un membre pour une durée déterminée (sans paiement). Remplace les droits en cours ; échéance = maintenant + durée."""
+    if not await db.get(User, user_id):
+        raise not_found("USER_NOT_FOUND")
+    until = utcnow() + body.days * DAY
+    await entitlements.set_(db, user_id, body.plan, until)
+    await db.commit()
+    await audit(db, a.id, "user.grant-plan", "User", user_id, {"plan": body.plan, "days": body.days, "until": until.isoformat(), "reason": body.reason})
+    return {"ok": True, "plan": body.plan, "validUntil": until}
+
+
+@router.post("/users/{user_id}/revoke-plan")
+async def revoke_plan(user_id: str, body: ReasonOnly, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Retire la formule en cours (retour à Gratuit). Un abonnement payant encore actif sera recalculé à sa prochaine échéance."""
+    if not await db.get(User, user_id):
+        raise not_found("USER_NOT_FOUND")
+    await entitlements.set_(db, user_id, "FREE", None)
+    await db.commit()
+    await audit(db, a.id, "user.revoke-plan", "User", user_id, {"reason": body.reason})
     return {"ok": True}
 
 

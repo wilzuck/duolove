@@ -20,7 +20,7 @@ export interface Card {
 export interface Me {
   id: string; email: string; emailVerified: boolean; role: 'USER' | 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN';
   status: 'ACTIVE' | 'SUSPENDED' | 'BANNED' | 'DELETED'; suspendedUntil: string | null; marketingConsent: boolean;
-  profile: { displayName: string; onboarded: boolean; completeness: number; thumbUrl: string | null; paused?: boolean; pauseEndsAt?: string | null } | null;
+  profile: { displayName: string; onboarded: boolean; completeness: number; verified?: boolean; thumbUrl: string | null; paused?: boolean; pauseEndsAt?: string | null } | null;
   entitlement: { plan: PlanCode; validUntil: string | null; credits: Record<CreditType, number>; limits: Limits };
   unreadNotifications: number;
   moderation: { reason: string; appealStatus: 'NONE' | 'PENDING' | 'ACCEPTED' | 'REJECTED'; id: string } | null;

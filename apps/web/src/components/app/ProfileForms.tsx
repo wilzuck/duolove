@@ -1,5 +1,5 @@
 'use client';
-import { Compass, Crown, Diamond, HeartHandshake, Smile, Users } from 'lucide-react';
+import { Compass, Crown, HeartHandshake, Smile, Users } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { COUNTRIES, countryFlag, INTENTS, INTEREST_SLUGS, LIVING, SEEKING, type Intent, type Living } from '@duomatch/types';
@@ -22,7 +22,15 @@ export function Chips<T extends string>({ options, value, onChange, max, label, 
   );
 }
 
-const INTENT_ICONS: Record<Intent, React.ReactNode> = { SERIOUS: <HeartHandshake />, MARRIAGE: <Diamond />, DATING: <Users />, FRIENDSHIP: <Smile />, UNSURE: <Compass /> };
+/** Bague de fiançailles (lucide n'en propose pas) : même trait que les autres icônes de la liste. */
+function RingIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <path d="M9.5 2.5h5l2 3-4.5 4-4.5-4z" /><path d="M7.5 5.5h9" /><circle cx="12" cy="16" r="5.5" />
+    </svg>
+  );
+}
+const INTENT_ICONS: Record<Intent, React.ReactNode> = { SERIOUS: <HeartHandshake />, MARRIAGE: <RingIcon />, DATING: <Users />, FRIENDSHIP: <Smile />, UNSURE: <Compass /> };
 
 export interface AboutValue { bio: string; occupation: string; languages: string[]; intent: Intent; interests: string[]; city: string; country: string }
 export const aboutFrom = (p: MyProfile): AboutValue => ({ bio: p.bio, occupation: p.occupation ?? '', languages: p.languages, intent: p.intent, interests: p.interests, city: p.city, country: p.country });

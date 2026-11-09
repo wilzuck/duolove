@@ -112,3 +112,22 @@ async def test_summary_counts_by_section_and_hides_money_from_moderators(app, db
     assert {"payments", "subscriptions", "refunds", "contact", "reports"} <= set(a) and "revenue30" in a["payments"]
     m = (await mod.agent.get("/api/admin/summary")).json()
     assert set(m) == {"users", "reports"}  # pas de chiffres financiers pour un modérateur
+
+
+async def test_offrir_et_retirer_une_formule(app, db):
+    ad, mod, u = await admin(app, db), await member(app, db), await member(app, db)
+    await set_role(mod.id, "MODERATOR")
+    body = {"plan": "VIP", "days": 10, "reason": "Cadeau partenaire"}
+    assert (await mod.agent.post(f"/api/admin/users/{u.id}/grant-plan", json=body)).status_code == 403  # ADMIN requis
+    assert (await ad.agent.post(f"/api/admin/users/{u.id}/grant-plan", json={**body, "days": 400})).status_code == 400  # durée bornée
+    assert (await ad.agent.post(f"/api/admin/users/{u.id}/grant-plan", json={**body, "plan": "FREE"})).status_code == 400
+    assert (await ad.agent.post(f"/api/admin/users/{u.id}/grant-plan", json=body)).status_code == 200
+    me = (await u.agent.get("/api/subscriptions/me")).json()
+    assert me["plan"] == "VIP" and me["validUntil"]
+    detail = (await ad.agent.get(f"/api/admin/users/{u.id}")).json()
+    assert detail["plan"] == "VIP" and detail["planValidUntil"]
+    assert (await ad.agent.post(f"/api/admin/users/{u.id}/revoke-plan", json={"reason": "Fin du partenariat"})).status_code == 200
+    assert (await u.agent.get("/api/subscriptions/me")).json()["plan"] == "FREE"
+    assert (await ad.agent.post(f"/api/admin/users/{uid()}/grant-plan", json=body)).status_code == 404
+    logs = (await ad.agent.get("/api/admin/audit-logs")).json()
+    assert {"user.grant-plan", "user.revoke-plan"} <= {x["action"] for x in logs["items"]}

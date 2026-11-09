@@ -40,6 +40,12 @@ class Review(BaseModel):
     note: str | None = Field(None, max_length=300)
 
 
+class PlanGrant(BaseModel):
+    plan: Literal["PREMIUM", "VIP"]
+    days: int = Field(ge=1, le=365)
+    reason: Trim(3, 300)
+
+
 class RoleChange(BaseModel):
     role: Literal["USER", "MODERATOR", "ADMIN"]
 

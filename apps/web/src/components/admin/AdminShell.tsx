@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, CloudUpload, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, BadgeCheck, CloudUpload, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -90,7 +90,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const account = (
     <div className="space-y-2 border-t border-white/15 pt-3">
       <Link href="/discover" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/75 hover:bg-white/10 hover:text-white"><ArrowLeft className="size-4.5" aria-hidden />{t('admin.backToApp')}</Link>
-      <div className="flex items-center gap-3 px-3 py-1.5"><Avatar src={me.profile?.thumbUrl} name={me.profile?.displayName ?? '?'} size={36} /><span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-white">{me.profile?.displayName}</span><span className="text-xs text-white/60">{t(`admin.roles.${me.role}`)}</span></span>
+      <div className="flex items-center gap-3 px-3 py-1.5"><Avatar src={me.profile?.thumbUrl} name={me.profile?.displayName ?? '?'} size={36} /><span className="min-w-0 flex-1"><span className="flex items-center gap-1 text-sm font-semibold leading-tight text-white"><span className="truncate">{me.profile?.displayName}</span>{me.profile?.verified && <BadgeCheck className="size-4 shrink-0 fill-sky-500 text-white" aria-label={t('profile.verification')} />}</span><span className="block truncate text-xs leading-tight text-white/60">{t(`admin.roles.${me.role}`)}</span></span>
         <button type="button" aria-label={t('settings.account.logout')} className="rounded-full p-2 text-white/70 hover:bg-white/10 hover:text-white" onClick={() => void post('/auth/logout').finally(() => router.replace('/login'))}><LogOut className="size-4.5" /></button></div>
     </div>
   );
@@ -98,13 +98,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh bg-soft/40 lg:grid lg:grid-cols-[16.5rem_1fr]">
       <a href="#main" className="skip-link">{t('common.skipToContent')}</a>
-      <aside className="sticky top-0 hidden h-dvh flex-col gap-3 bg-[#1b1a24] p-4 lg:flex">
+      <aside className="hidden flex-col gap-3 bg-[#1b1a24] p-4 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[16.5rem]">
         <Link href="/admin" className="px-2 pt-1" aria-label="CrushDuo"><Logo variant="dark" /></Link>
         <p className="mx-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white"><ShieldAlert className="size-3.5" aria-hidden />{t('admin.title')}</p>
         {nav}{account}
       </aside>
       {open && <div className="fixed inset-0 z-50 lg:hidden"><button aria-label={t('common.close')} className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} /><aside className="absolute inset-y-0 left-0 flex w-72 flex-col gap-3 bg-[#1b1a24] p-4 shadow-pop"><div className="flex items-center justify-between px-2"><span className="[&_*]:!text-white"><Logo /></span><button aria-label={t('common.close')} className="rounded-full p-2 text-white" onClick={() => setOpen(false)}><X className="size-5" /></button></div>{nav}{account}</aside></div>}
-      <div className="flex min-w-0 flex-col">
+      <div className="flex min-w-0 flex-col lg:col-start-2">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-line bg-bg/90 px-4 backdrop-blur lg:px-8">
           <IconButton label={t('nav.menu')} tone="plain" className="lg:hidden" aria-expanded={open} onClick={() => setOpen(true)}><Menu className="size-5" /></IconButton>
           <p className="hidden text-sm font-semibold text-muted lg:block">{t('admin.title')}</p>
