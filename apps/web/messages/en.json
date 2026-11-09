@@ -1891,7 +1891,8 @@
       "verified": "Confirmed",
       "unverified": "Not confirmed",
       "theme": "Dark theme",
-      "logout": "Log out"
+      "logout": "Log out",
+      "adminText": "Moderation, users, statistics and platform settings."
     },
     "notif": {
       "likes": "New likes",

@@ -219,6 +219,12 @@ function Content() {
             <Row title={t('common.language')}><LocaleSwitcher /></Row>
             <Row title={t('settings.account.theme')}><ThemeToggle className="rounded-full border border-line p-2.5 hover:bg-soft" /></Row>
           </Card>
+          {me.role !== 'USER' && (
+            <Link href="/admin" className="flex items-center gap-3 rounded-3xl border border-line bg-card p-4 font-semibold shadow-soft transition hover:bg-soft">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-brand-strong to-brand-strong-2 text-white"><ShieldCheck className="size-5" aria-hidden /></span>
+              <span className="min-w-0 flex-1">{t('app.nav.admin')}<span className="block text-sm font-normal text-muted">{t('settings.account.adminText')}</span></span>
+            </Link>
+          )}
           <Button variant="outline" onClick={() => logout.mutate()} loading={logout.isPending}><LogOut className="size-4" aria-hidden />{t('settings.account.logout')}</Button>
         </div>
       )}

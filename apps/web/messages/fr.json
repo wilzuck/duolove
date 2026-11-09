@@ -1891,7 +1891,8 @@
       "verified": "Confirmé",
       "unverified": "Non confirmé",
       "theme": "Thème sombre",
-      "logout": "Se déconnecter"
+      "logout": "Se déconnecter",
+      "adminText": "Modération, utilisateurs, statistiques et réglages de la plateforme."
     },
     "notif": {
       "likes": "Nouveaux likes",
