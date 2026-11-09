@@ -3689,6 +3689,7 @@
     "notifications": {
       "okTitle": "You will no longer receive these emails",
       "okText": "Notification emails (likes, matches, messages) are turned off. You keep in-app notifications, and account emails (code, password) keep arriving. You can change this any time in Settings › Notifications."
-    }
+    },
+    "privacy": "An email now and then. One-click unsubscribe, any time."
   }
 }

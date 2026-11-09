@@ -3689,6 +3689,7 @@
     "notifications": {
       "okTitle": "Vous ne recevrez plus ces e-mails",
       "okText": "Les e-mails de notification (likes, matchs, messages) sont coupés. Vous gardez les notifications dans l’application, et les e-mails de compte (code, mot de passe) continuent d’arriver. Vous pouvez changer cela à tout moment dans Paramètres › Notifications."
-    }
+    },
+    "privacy": "Un e-mail de temps en temps. Désinscription en un clic, à tout moment."
   }
 }

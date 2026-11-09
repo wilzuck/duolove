@@ -1,8 +1,9 @@
 import { FloatingHearts } from '@/components/marketing/FloatingHearts';
-import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, Heart, HeartHandshake, MessageCircle, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus, Users, Zap } from 'lucide-react';
+import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, Heart, HeartHandshake, MessageCircle, Mail, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus, Users, Zap } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button, Card } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
+import { NewsletterForm } from '@/components/marketing/NewsletterForm';
 import { PricingTable } from '@/components/marketing/PricingTable';
 import { fetchCatalog } from '@/lib/catalog';
 
@@ -110,6 +111,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <p className="mt-3 text-muted">{t(`faq.${k}.a`)}</p>
             </details>
           ))}
+        </div>
+      </section>
+
+      <section id="newsletter" className="px-4 pb-20 sm:px-6" aria-labelledby="newsletter-title">
+        <div className="mx-auto max-w-4xl rounded-[2rem] bg-soft px-6 py-12 text-center">
+          <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-soft"><Mail className="size-7" aria-hidden /></span>
+          <h2 id="newsletter-title" className="mt-5 font-display text-3xl font-extrabold md:text-4xl">{t('newsletter.title')}</h2>
+          <p className="mx-auto mt-3 max-w-xl text-muted">{t('newsletter.text')}</p>
+          <div className="mt-7"><NewsletterForm /></div>
+          <p className="mt-4 text-xs text-muted">{t('newsletter.privacy')}</p>
         </div>
       </section>
 
