@@ -28,7 +28,7 @@ export interface Me {
 export interface MyProfile {
   id: string; displayName: string; age: number; gender: Gender; pronouns: string | null; country: string; city: string; bio: string;
   occupation: string | null; languages: string[]; intent: Intent; visibility: 'VISIBLE' | 'HIDDEN'; incognito: boolean; verified: boolean;
-  verificationPending: boolean; readReceipts: boolean; readReceiptsLocked: boolean; typingIndicator: boolean; boostedUntil: string | null; completeness: number;
+  verificationPending: boolean; readReceipts: boolean; readReceiptsLocked: boolean; typingIndicator: boolean; showActivity: boolean; boostedUntil: string | null; completeness: number;
   completenessLevel: 'INCOMPLETE' | 'IN_PROGRESS' | 'COMPLETE'; onboarded: boolean;
   hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null; liveOptIn: boolean; interests: string[]; photos: Photo[];
   preference: { seeking: Seeking; ageMin: number; ageMax: number; country: string | null; city: string | null; intents: Intent[]; languages: string[]; interests: string[]; verifiedOnly: boolean; activeRecently: boolean; maxDistanceKm: number | null } | null;
@@ -111,3 +111,6 @@ export interface AdminSpeedRow extends SpeedEventInfo { pairs: number; mutualInt
 
 export interface DailyQuestionState { enabled: boolean; question: { id: string; text: { fr: string; en: string }; options: { key: string; fr: string; en: string }[] } | null; myAnswer: string | null }
 export interface AdminDailyQuestion { id: string; day: string | null; active: boolean; text: { fr: string; en: string }; options: { key: string; fr: string; en: string }[]; answers: number; perOption: Record<string, number>; isToday: boolean }
+
+/** Statut d'activité d'une personne avec qui l'on a un match. `lastSeenAt` : heure exacte, formules « mode discret » seulement. */
+export interface Activity { state: 'online' | 'today' | 'week'; lastSeenAt: string | null }

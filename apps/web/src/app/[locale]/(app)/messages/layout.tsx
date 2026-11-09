@@ -3,7 +3,8 @@ import { Camera, Search } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Avatar, Badge, Input, Skeleton, cn } from '@duomatch/ui';
-import { useConversations } from '@/hooks/useQueries';
+import { OnlineDot } from '@/components/app/Activity';
+import { useActivity, useConversations } from '@/hooks/useQueries';
 import { Link, usePathname } from '@/i18n/navigation';
 import { timeAgo } from '@/lib/format';
 import { VerifiedBadge } from '@/components/app/VerifiedBadge';
@@ -18,6 +19,7 @@ export default function MessagesLayout({ children }: { children: ReactNode }) {
   const [term, setTerm] = useState('');
   useEffect(() => { const id = setTimeout(() => setTerm(q.trim()), 250); return () => clearTimeout(id); }, [q]);
   const { data, isLoading } = useConversations(term);
+  const act = useActivity(data?.map((c) => c.user.id) ?? []);
   const fresh = (data ?? []).filter((c) => !c.lastMessage);
 
   return (
@@ -31,7 +33,7 @@ export default function MessagesLayout({ children }: { children: ReactNode }) {
           {fresh.length > 0 && !term && (
             <div className="px-4 pb-3"><h2 className="mb-2 text-sm font-bold text-muted">{t('chat.newMatches')}</h2>
               <ul className="scrollbar-none flex gap-4 overflow-x-auto">{fresh.map((c) => (
-                <li key={c.id} className="shrink-0"><Link href={`/messages/${c.id}`} className="flex w-16 flex-col items-center gap-1"><span className="rounded-full p-0.5 ring-2 ring-brand"><Avatar src={c.user.thumbUrl} name={c.user.displayName} size={56} /></span><span className="w-full truncate text-center text-xs font-medium">{c.user.displayName}</span></Link></li>
+                <li key={c.id} className="shrink-0"><Link href={`/messages/${c.id}`} className="flex w-16 flex-col items-center gap-1"><span className="relative rounded-full p-0.5 ring-2 ring-brand"><Avatar src={c.user.thumbUrl} name={c.user.displayName} size={56} /><OnlineDot activity={act.data?.[c.user.id]} /></span><span className="w-full truncate text-center text-xs font-medium">{c.user.displayName}</span></Link></li>
               ))}</ul>
             </div>
           )}
@@ -41,7 +43,7 @@ export default function MessagesLayout({ children }: { children: ReactNode }) {
             {data?.filter((c) => c.lastMessage || term).map((c) => (
               <li key={c.id}>
                 <Link href={`/messages/${c.id}`} aria-current={activeId === c.id ? 'page' : undefined} className={cn('flex items-center gap-3 px-4 py-3 transition hover:bg-soft', activeId === c.id && 'bg-soft')}>
-                  <Avatar src={c.user.thumbUrl} name={c.user.displayName} size={52} />
+                  <span className="relative shrink-0"><Avatar src={c.user.thumbUrl} name={c.user.displayName} size={52} /><OnlineDot activity={act.data?.[c.user.id]} /></span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline justify-between gap-2"><span className="flex min-w-0 items-center gap-1 truncate font-semibold"><span className="truncate">{c.user.displayName}</span>{c.user.verified && <VerifiedBadge size="sm" />}</span>{c.lastMessage && <time className="shrink-0 text-xs text-muted" dateTime={c.lastMessage.createdAt}>{timeAgo(c.lastMessage.createdAt, locale)}</time>}</span>
                     <span className={cn('block truncate text-sm', c.unread ? 'font-semibold text-fg' : 'text-muted')}>{c.lastMessage ? <>{c.lastMessage.mine ? `${t('chat.you')} ` : ''}{c.lastMessage.body ?? (c.lastMessage.hasImage ? <span className="inline-flex items-center gap-1 align-middle"><Camera className="size-3.5" aria-hidden />{t('chat.photo')}</span> : t('chat.deleted'))}</> : t('chat.sayHello')}</span>

@@ -1120,6 +1120,7 @@ class Report(Base):
 
     User_: Mapped['User'] = relationship('User', foreign_keys=[reporterId], back_populates='Report_reporterId')
     User1: Mapped['User'] = relationship('User', foreign_keys=[targetId], back_populates='Report_targetId')
+    showActivity: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     ModerationAction: Mapped[list['ModerationAction']] = relationship('ModerationAction', back_populates='Report_')
 
 

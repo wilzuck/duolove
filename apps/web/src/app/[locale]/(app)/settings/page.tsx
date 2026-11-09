@@ -72,6 +72,7 @@ function PrivacyTab() {
         <Row title={t('settings.privacy.incognito')} text={me.entitlement.limits.incognito ? t('settings.privacy.incognitoText') : t('settings.privacy.incognitoLocked')}><Switch checked={p.incognito} disabled={!me.entitlement.limits.incognito} onChange={(v) => set.mutate({ incognito: v })} label={t('settings.privacy.incognito')} /></Row>
         <Row title={t('settings.privacy.marketing')} text={t('settings.privacy.marketingText')}><Switch checked={me.marketingConsent} onChange={(v) => consent.mutate(v)} label={t('settings.privacy.marketing')} /></Row>
       </Card>
+        <Row title={t('settings.privacy.activity')} text={t('settings.privacy.activityText')}><Switch checked={p.showActivity} onChange={(v) => set.mutate({ showActivity: v })} label={t('settings.privacy.activity')} /></Row>
       <Card className="space-y-3 p-5"><h3 className="flex items-center gap-2 font-bold"><MapPin className="size-5 text-brand" aria-hidden />{t('settings.privacy.location')}</h3><p className="text-sm text-muted">{t('settings.privacy.locationText')}</p>
         <div className="flex gap-2"><Button variant="outline" size="sm" onClick={() => geo.mutate()} loading={geo.isPending}>{t('settings.privacy.locationShare')}</Button><Button variant="ghost" size="sm" onClick={() => clearGeo.mutate()}>{t('settings.privacy.locationClear')}</Button></div>
       </Card>

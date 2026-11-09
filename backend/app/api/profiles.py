@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import discoverysvc, profilesvc, visitsvc
+from app.core import activity, discoverysvc, profilesvc, visitsvc
 from app.core.auth import AuthUser, current_user
 from app.core.errors import AppError, bad_request, not_found
 from app.core.profile_card import load_card, to_card
@@ -38,6 +38,12 @@ async def prefs(body: PreferenceIn, u: AuthUser = Depends(current_user), db: Asy
     return await profilesvc.save_preference(db, u.id, body)
 
 
+@router.get("/activity")
+async def activity_of(ids: str = "", u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    """Statut d'activité (en ligne / aujourd'hui / cette semaine) des personnes avec qui l'on a un match : `?ids=a,b,c` (50 au plus)."""
+    return {"items": await activity.statuses(db, u.id, [i for i in ids.split(",") if i])}
+
+
 @router.patch("/me/settings")
 async def settings(body: SettingsIn, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
     if body.visibility:
@@ -48,6 +54,8 @@ async def settings(body: SettingsIn, u: AuthUser = Depends(current_user), db: As
         await profilesvc.set_read_receipts(db, u.id, body.readReceipts)
     if body.typingIndicator is not None:
         await profilesvc.set_typing_indicator(db, u.id, body.typingIndicator)
+    if body.showActivity is not None:
+        await profilesvc.set_show_activity(db, u.id, body.showActivity)
     return await profilesvc.get_mine(db, u.id)
 
 

@@ -10,7 +10,8 @@ import { IcebreakerPanel } from '@/components/app/IcebreakerPanel';
 import { ReportDialog } from '@/components/app/ReportDialog';
 import { useApiError } from '@/hooks/useApiError';
 import { getSocket } from '@/hooks/useRealtime';
-import { keys, useConversations, useEngagementConfig, useMe } from '@/hooks/useQueries';
+import { useActivityLabel } from '@/components/app/Activity';
+import { keys, useActivity, useConversations, useEngagementConfig, useMe } from '@/hooks/useQueries';
 import { Link, useRouter } from '@/i18n/navigation';
 import { ApiError, api, del, post, put, upload } from '@/lib/api';
 import { formatDate, formatTime } from '@/lib/format';
@@ -33,6 +34,8 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const typing = useUi((s) => !!s.typing[id]);
   const { data: convs } = useConversations();
   const conv = convs?.find((c) => c.id === id);
+  const activity = useActivity(conv ? [conv.user.id] : []).data?.[conv?.user.id ?? ''];
+  const activityText = useActivityLabel()(activity);
   const [text, setText] = useState('');
   const [emoji, setEmoji] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -103,7 +106,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
       <header className="flex items-center gap-3 border-b border-line bg-card px-3 py-3">
         <Link href="/messages" className="rounded-full p-2 hover:bg-soft lg:hidden" aria-label={t('common.back')}><ArrowLeft className="size-5" /></Link>
         {conv ? (
-          <Link href={`/profile/${conv.user.id}`} className="flex min-w-0 flex-1 items-center gap-3"><Avatar src={conv.user.thumbUrl} name={conv.user.displayName} size={42} /><span className="min-w-0"><span className="flex min-w-0 items-center gap-1 font-bold"><span className="truncate">{conv.user.displayName}</span>{conv.user.verified && <VerifiedBadge size="sm" />}</span><span className="block text-xs text-muted" aria-live="polite">{typing ? t('chat.typing') : t('chat.viewProfile')}</span></span></Link>
+          <Link href={`/profile/${conv.user.id}`} className="flex min-w-0 flex-1 items-center gap-3"><Avatar src={conv.user.thumbUrl} name={conv.user.displayName} size={42} /><span className="min-w-0"><span className="flex min-w-0 items-center gap-1 font-bold"><span className="truncate">{conv.user.displayName}</span>{conv.user.verified && <VerifiedBadge size="sm" />}</span><span className="block text-xs text-muted" aria-live="polite">{typing ? t('chat.typing') : (activityText ?? t('chat.viewProfile'))}</span></span></Link>
         ) : <Skeleton className="h-10 flex-1" />}
         {cfg?.calls.enabled && !closed && conv && <CallButtons conversationId={id} name={conv.user.displayName} />}
         {canDates && conv && <IconButton label={t('dates.open')} tone="plain" onClick={() => setDatesOpen(true)}><CalendarHeart className="size-5" /></IconButton>}

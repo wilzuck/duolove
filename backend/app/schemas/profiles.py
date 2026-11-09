@@ -56,6 +56,7 @@ class SettingsIn(Body):
     incognito: bool | None = None
     readReceipts: bool | None = None
     typingIndicator: bool | None = None
+    showActivity: bool | None = None
 
 
 class OrderIn(Body):
