@@ -4,7 +4,7 @@ import { CalendarClock, Hourglass, MessageSquareHeart, Pencil, Phone, Power, Pow
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 import { INTENTS, INTEREST_SLUGS } from '@duomatch/types';
-import { Badge, Button, Card, cn, CrudTable, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
+import { Badge, Button, Card, cn, CrudTable, Dialog, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
 import { PageLoader } from '@/components/PageLoader';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -51,22 +51,26 @@ function SettingBlock({ title, help, icon: Icon, editing, onEdit, onCancel, onSa
 }) {
   const t = useTranslations();
   return (
-    <Card className={cn('space-y-5 p-5 transition', editing && 'ring-2 ring-brand/40')}>
+    <Card className="space-y-5 p-5">
       <header className="flex items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-soft"><Icon className="size-5" aria-hidden /></span>
         <div className="min-w-0 flex-1"><h3 className="font-bold leading-tight">{title}</h3>{help && <p className="mt-0.5 text-sm text-muted">{help}</p>}</div>
-        {!editing && <Button type="button" size="sm" variant="outline" onClick={onEdit}><Pencil className="size-4" aria-hidden />{t('admin.eng.edit')}</Button>}
+        <Button type="button" size="sm" variant="outline" onClick={onEdit}><Pencil className="size-4" aria-hidden />{t('admin.eng.edit')}</Button>
       </header>
-      {editing ? (
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
+      {view}
+      <Dialog open={editing} onClose={onCancel} title={title} closeLabel={t('common.close')} className="w-[min(94vw,46rem)]" dismissible={!saving}>
+        <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
+          {help && <p className="-mt-2 text-sm text-muted">{help}</p>}
           {editor}
-          <div className="flex flex-wrap gap-2">
-            <Button type="submit" size="sm" loading={saving} disabled={!canSave}>{t('admin.eng.save1')}</Button>
-            <Button type="button" size="sm" variant="outline" onClick={onCancel} disabled={saving}>{t('common.cancel')}</Button>
-            <Button type="button" size="sm" variant="ghost" onClick={onDefaults} disabled={saving}>{t('admin.eng.defaults')}</Button>
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <Button type="button" variant="ghost" onClick={onDefaults} disabled={saving}>{t('admin.eng.defaults')}</Button>
+            <span className="flex gap-2">
+              <Button type="button" variant="outline" onClick={onCancel} disabled={saving}>{t('common.cancel')}</Button>
+              <Button type="submit" loading={saving} disabled={!canSave}>{t('admin.eng.save1')}</Button>
+            </span>
           </div>
         </form>
-      ) : view}
+      </Dialog>
     </Card>
   );
 }
