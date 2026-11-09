@@ -367,6 +367,8 @@ async def grant_plan(user_id: str, body: PlanGrant, a: AuthUser = ADM, db: Async
     """Offre une formule à un membre pour une durée déterminée (sans paiement). Remplace les droits en cours ; échéance = maintenant + durée."""
     if not await db.get(User, user_id):
         raise not_found("USER_NOT_FOUND")
+    if user_id == a.id and not has_role(a.role, "SUPER_ADMIN"):
+        raise forbidden("CANNOT_GRANT_SELF", "Un administrateur ne peut pas s'offrir une formule : demandez à un super administrateur.")
     until = utcnow() + body.days * DAY
     await entitlements.set_(db, user_id, body.plan, until)
     await db.commit()

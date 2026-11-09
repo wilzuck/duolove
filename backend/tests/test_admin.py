@@ -152,3 +152,11 @@ async def test_sante_plateforme(app, db):
     assert set(r["gender"]) == {"men", "women", "other"} and r["threshold"] == 20
     assert r["activeMembers"] == sum(r["gender"].values())
     assert r["thinPoolShare"] is None or 0 <= r["thinPoolShare"] <= 100
+
+
+async def test_un_admin_ne_s_offre_pas_une_formule(app, db):
+    ad = await admin(app, db)
+    r = await ad.agent.post(f"/api/admin/users/{ad.id}/grant-plan", json={"plan": "VIP", "days": 30, "reason": "pour moi"})
+    assert r.status_code == 403 and r.json()["error"]["code"] == "CANNOT_GRANT_SELF"
+    await set_role(ad.id, "SUPER_ADMIN")
+    assert (await ad.agent.post(f"/api/admin/users/{ad.id}/grant-plan", json={"plan": "VIP", "days": 30, "reason": "test"})).status_code == 200  # un super admin le peut
