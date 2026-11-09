@@ -222,3 +222,13 @@ async def test_state_exposes_the_dev_code_only_when_it_is_active(app, db, monkey
     real = authsvc.get_settings()
     monkeypatch.setattr(authsvc, "get_settings", lambda: SimpleNamespace(fixed_email_code="000000", ip_hash_salt=real.ip_hash_salt, app_url=real.app_url))
     assert (await c.get("/api/auth/verification")).json()["devCode"] == "000000"
+
+
+async def test_email_html_charte_et_echappement(app, db):
+    from app.core import mail
+    mail.outbox.clear()
+    await mail.send_verification("a@duo.test", "<b>Zoé</b>", "tok", "123456", 15)
+    m = mail.outbox[-1]
+    assert "123456" in m["text"] and m["html"] and "123456" in m["html"]
+    assert "#C2185B" in m["html"] and "crushduo-logo-email.png" in m["html"] and "verify-email?token=tok" in m["html"]
+    assert "<b>Zoé</b>" not in m["html"] and "&lt;b&gt;" in m["html"]  # le nom est échappé : aucune injection de HTML

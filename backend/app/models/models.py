@@ -663,6 +663,71 @@ class ContactMessage(Base):
     handledAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
 
 
+class EmailLog(Base):
+    """Journal de chaque e-mail envoyé (ou en échec) par l'application : suivi côté administration. Aucun contenu de message, seulement l'objet."""
+    __tablename__ = 'EmailLog'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='EmailLog_pkey'),
+        Index('EmailLog_createdAt_idx', 'createdAt'),
+        Index('EmailLog_status_createdAt_idx', 'status', 'createdAt'),
+        Index('EmailLog_campaignId_idx', 'campaignId'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    toEmail: Mapped[str] = mapped_column(Text, nullable=False)
+    subject: Mapped[str] = mapped_column(Text, nullable=False)
+    kind: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'other'"))
+    status: Mapped[str] = mapped_column(Text, nullable=False)  # SENT | FAILED
+    provider: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'dev'"))
+    error: Mapped[Optional[str]] = mapped_column(Text)
+    campaignId: Mapped[Optional[str]] = mapped_column(Text)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
+class NewsletterSubscriber(Base):
+    """Abonné à la newsletter : membre (userId) ou visiteur (confirmation par e-mail, double opt-in). Statut : PENDING, ACTIVE, UNSUBSCRIBED."""
+    __tablename__ = 'NewsletterSubscriber'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='NewsletterSubscriber_pkey'),
+        Index('NewsletterSubscriber_email_key', 'email', unique=True),
+        Index('NewsletterSubscriber_token_key', 'token', unique=True),
+        Index('NewsletterSubscriber_status_idx', 'status'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    email: Mapped[str] = mapped_column(Text, nullable=False)
+    token: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'PENDING'"))
+    source: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'site'"))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    confirmedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    unsubscribedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    userId: Mapped[Optional[str]] = mapped_column(Text)
+
+
+class NewsletterCampaign(Base):
+    """Envoi de newsletter rédigé par l'administration. Statut : DRAFT, SENDING, SENT."""
+    __tablename__ = 'NewsletterCampaign'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='NewsletterCampaign_pkey'),
+        Index('NewsletterCampaign_status_createdAt_idx', 'status', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    subject: Mapped[str] = mapped_column(Text, nullable=False)
+    preheader: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("''"))
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    ctaLabel: Mapped[Optional[str]] = mapped_column(Text)
+    ctaUrl: Mapped[Optional[str]] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'DRAFT'"))
+    recipients: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    sent: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    failed: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    createdById: Mapped[Optional[str]] = mapped_column(Text)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    sentAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+
+
 class DailyQuestionAnswer(Base):
     __tablename__ = 'DailyQuestionAnswer'
     __table_args__ = (
@@ -1055,6 +1120,7 @@ class Profile(Base):
     completeness: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
     readReceipts: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     typingIndicator: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
+    showActivity: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     pausedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
     pauseEndsAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
@@ -1120,7 +1186,6 @@ class Report(Base):
 
     User_: Mapped['User'] = relationship('User', foreign_keys=[reporterId], back_populates='Report_reporterId')
     User1: Mapped['User'] = relationship('User', foreign_keys=[targetId], back_populates='Report_targetId')
-    showActivity: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))
     ModerationAction: Mapped[list['ModerationAction']] = relationship('ModerationAction', back_populates='Report_')
 
 

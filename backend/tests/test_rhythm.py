@@ -41,7 +41,7 @@ def capture(monkeypatch):
         if event == "notification:new":
             out["live"].append((user, data["type"]))
 
-    async def send(to, subject, body):
+    async def send(to, subject, body, html=None, **kw):
         out["mail"].append((to, subject))
 
     monkeypatch.setattr(realtime, "emit_to_user", emit)

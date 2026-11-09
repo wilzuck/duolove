@@ -4,8 +4,10 @@ Règles de bienveillance : les notifications ESSENTIELLES (sécurité, abonnemen
 périodes de repos du membre (la ligne est conservée dans l'application, sans alerte ni e-mail), les messages d'une même conversation sont regroupés, et le
 nombre d'e-mails par jour est plafonné par l'administration."""
 import datetime
+import hashlib
+import hmac
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import appsettings, mail, realtime
@@ -22,6 +24,22 @@ EMAIL_COPY = {
     "MESSAGE": ("Nouveau message sur CrushDuo", "Vous avez reçu un nouveau message."),
 }
 HOUR = datetime.timedelta(hours=1)
+
+
+def unsub_token(user_id: str) -> str:
+    """Jeton de désabonnement des e-mails de notification : identifiant + signature (HMAC), sans état à stocker ni connexion à exiger."""
+    sig = hmac.new(get_settings().ip_hash_salt.encode(), f"email-unsub:{user_id}".encode(), hashlib.sha256).hexdigest()[:32]
+    return f"{user_id}.{sig}"
+
+
+async def unsubscribe_emails(db: AsyncSession, token: str) -> bool:
+    """Coupe tous les e-mails de notification facultatifs (likes, matchs, messages). Les e-mails de compte (code, mot de passe) ne sont pas concernés."""
+    uid, _, _sig = token.partition(".")
+    if not uid or not hmac.compare_digest(token, unsub_token(uid)):
+        return False
+    res = await db.execute(update(NotificationPreference).where(NotificationPreference.userId == uid).values(emailLikes=False, emailMatches=False, emailMessages=False))
+    await db.commit()
+    return res.rowcount > 0 or (await db.get(User, uid)) is not None
 
 
 async def _email_allowed(db: AsyncSession, user_id: str, essential: bool, now: datetime.datetime) -> bool:
@@ -66,7 +84,11 @@ async def create(db: AsyncSession, user_id: str, type_: str, data: dict | None =
             return  # un seul e-mail par heure et par conversation
         u = (await db.execute(select(User.email).where(User.id == user_id))).scalar_one_or_none()
         if u:
-            await mail.send(u, copy[0], f"{copy[1]}\n\n{get_settings().app_url}")
+            base = get_settings().app_url.rstrip("/")
+            unsub = None if essential else f"{base}/notifications-unsubscribe?token={unsub_token(user_id)}"
+            text = f"{copy[1]}\n\n{base}" + (f"\n\nNe plus recevoir ces e-mails : {unsub}" if unsub else "")
+            await mail.send(u, copy[0], text, mail.notification_html(copy[0], copy[1], unsub), kind="notification",
+                            headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"} if unsub else None)
             if n is not None:
                 n.emailedAt = now
                 await db.commit()

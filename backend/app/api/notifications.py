@@ -3,9 +3,11 @@ from sqlalchemy import func, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import entitlements
+from app.core import entitlements, notifications
 from app.core.auth import AuthUser, current_user
+from app.core.errors import not_found
 from app.core.ids import new_id, utcnow
+from app.core.ratelimit import limit
 from app.db.session import get_db
 from app.models.models import Notification, NotificationPreference
 from app.schemas.profiles import NotifPrefsIn
@@ -51,6 +53,14 @@ async def unread(u: AuthUser = Depends(current_user), db: AsyncSession = Depends
 async def read_all(u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
     await db.execute(update(Notification).where(Notification.userId == u.id, Notification.readAt.is_(None)).values(readAt=utcnow()))
     await db.commit()
+    return {"ok": True}
+
+
+@router.post("/unsubscribe-email", dependencies=[limit(30, 3600)])
+async def unsubscribe_email(token: str = Query(min_length=10, max_length=200), db: AsyncSession = Depends(get_db)):
+    """Désabonnement en un clic depuis un e-mail de notification (sans connexion) ; accepte aussi le POST « un clic » des clients mail."""
+    if not await notifications.unsubscribe_emails(db, token):
+        raise not_found("UNSUBSCRIBE_LINK_INVALID")
     return {"ok": True}
 
 
