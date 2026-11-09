@@ -1,10 +1,10 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Power, PowerOff, Trash2 } from 'lucide-react';
+import { CalendarClock, Hourglass, MessageSquareHeart, Pencil, Phone, Power, PowerOff, Scale, ShieldCheck, Sparkles, Trash2, type LucideIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { INTENTS, INTEREST_SLUGS } from '@duomatch/types';
-import { Badge, Button, Card, CrudTable, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
+import { Badge, Button, Card, cn, CrudTable, Field, Input, Select, Skeleton, Switch, Tabs } from '@duomatch/ui';
 import { PageLoader } from '@/components/PageLoader';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -33,41 +33,112 @@ const WEIGHT_KEYS = ['intent', 'mutual', 'interests', 'location', 'other'] as co
 const INT_KEYS = [['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount'], ['dates.min_notice_hours', 'dateMinNotice'], ['dates.max_days_ahead', 'dateMaxDays'], ['dates.max_open', 'dateMaxOpen'], ['dates.max_per_day', 'dateMaxPerDay'], ['dates.share_hours_after', 'dateShareHours'], ['pause.max_days', 'pauseMaxDays'], ['signup.code_ttl_minutes', 'codeTtl'], ['signup.unverified_ttl_hours', 'unverifiedTtl'], ['notifications.max_emails_per_day', 'emailCap'], ['live.search_hours', 'liveHours'], ['speed.reminder_minutes', 'speedReminder'], ['calls.ring_seconds', 'callRing'], ['calls.max_minutes', 'callMax'], ['calls.max_per_day', 'callPerDay']] as const;
 const num = (v: string, fb = 0) => (v === '' || Number.isNaN(Number(v)) ? fb : Math.round(Number(v)));
 
+/** Libellé « Durée (heures) » → { name: « Durée », unit: « heures » } : la parenthèse devient l'unité affichée à côté de la valeur. */
+const splitLabel = (l: string) => { const m = /^(.*?)\s*\(([^)]*)\)\s*$/.exec(l); return m ? { name: m[1]!, unit: m[2]! } : { name: l, unit: '' }; };
+const WEIGHT_COLORS = ['bg-brand-strong', 'bg-brand-strong-2', 'bg-brand', 'bg-brand/60', 'bg-brand/30'] as const;
+const BLOCKS: { id: string; icon: LucideIcon; keys: readonly (readonly [string, string])[] }[] = [
+  { id: 'daily', icon: Sparkles, keys: INT_KEYS.filter(([k]) => k.startsWith('daily.')) },
+  { id: 'profiles', icon: MessageSquareHeart, keys: INT_KEYS.filter(([k]) => /^(prompts|likes|icebreakers)\./.test(k)) },
+  { id: 'dates', icon: CalendarClock, keys: INT_KEYS.filter(([k]) => k.startsWith('dates.')) },
+  { id: 'account', icon: ShieldCheck, keys: INT_KEYS.filter(([k]) => /^(pause|signup|notifications)\./.test(k)) },
+  { id: 'meet', icon: Hourglass, keys: INT_KEYS.filter(([k]) => /^(live|speed)\./.test(k)) },
+  { id: 'calls', icon: Phone, keys: INT_KEYS.filter(([k]) => k.startsWith('calls.')) },
+];
+
+/** Bloc de réglages : lecture seule par défaut, un bouton Modifier ouvre l'édition de ce bloc uniquement. */
+function SettingBlock({ title, help, icon: Icon, editing, onEdit, onCancel, onSave, onDefaults, saving, canSave, view, editor }: {
+  title: string; help?: string; icon: LucideIcon; editing: boolean; onEdit: () => void; onCancel: () => void; onSave: () => void; onDefaults: () => void; saving: boolean; canSave: boolean; view: ReactNode; editor: ReactNode;
+}) {
+  const t = useTranslations();
+  return (
+    <Card className={cn('space-y-5 p-5 transition', editing && 'ring-2 ring-brand/40')}>
+      <header className="flex items-start gap-3">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-soft"><Icon className="size-5" aria-hidden /></span>
+        <div className="min-w-0 flex-1"><h3 className="font-bold leading-tight">{title}</h3>{help && <p className="mt-0.5 text-sm text-muted">{help}</p>}</div>
+        {!editing && <Button type="button" size="sm" variant="outline" onClick={onEdit}><Pencil className="size-4" aria-hidden />{t('admin.eng.edit')}</Button>}
+      </header>
+      {editing ? (
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
+          {editor}
+          <div className="flex flex-wrap gap-2">
+            <Button type="submit" size="sm" loading={saving} disabled={!canSave}>{t('admin.eng.save1')}</Button>
+            <Button type="button" size="sm" variant="outline" onClick={onCancel} disabled={saving}>{t('common.cancel')}</Button>
+            <Button type="button" size="sm" variant="ghost" onClick={onDefaults} disabled={saving}>{t('admin.eng.defaults')}</Button>
+          </div>
+        </form>
+      ) : view}
+    </Card>
+  );
+}
+
 function SettingsTab({ data }: { data: SettingsData }) {
   const t = useTranslations();
   const qc = useQueryClient();
   const err = useApiError();
   const toast = useUi((s) => s.toast);
-  const [v, setV] = useState(() => ({ ...data.values }));
-  const w = v['matching.weights'];
-  const total = WEIGHT_KEYS.reduce((n, k) => n + w[k], 0);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [draft, setDraft] = useState<SettingsData['values']>(data.values);
   const save = useMutation({
-    mutationFn: () => patch('/admin/settings', { values: v }),
-    onSuccess: () => { toast('success', t('admin.eng.saved')); void qc.invalidateQueries({ queryKey: ['admin', 'settings'] }); void qc.invalidateQueries({ queryKey: ['engagement', 'config'] }); },
+    mutationFn: () => patch('/admin/settings', { values: draft }),
+    onSuccess: () => { toast('success', t('admin.eng.saved')); setEditing(null); void qc.invalidateQueries({ queryKey: ['admin', 'settings'] }); void qc.invalidateQueries({ queryKey: ['engagement', 'config'] }); },
     onError: (e) => toast('error', err(e)),
   });
+  const open = (id: string) => { setDraft({ ...data.values }); setEditing(id); };
+  const shared = (id: string) => ({ editing: editing === id, onEdit: () => open(id), onCancel: () => setEditing(null), onSave: () => save.mutate(), saving: save.isPending });
+  const sw = data.values['matching.weights'];
+  const dw = draft['matching.weights'];
+  const dtotal = WEIGHT_KEYS.reduce((n, k) => n + dw[k], 0);
+  const total = WEIGHT_KEYS.reduce((n, k) => n + sw[k], 0);
   return (
-    <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); save.mutate(); }}>
-      <Card className="space-y-4 p-5">
-        <div><h3 className="font-bold">{t('admin.eng.weightsTitle')}</h3><p className="text-sm text-muted">{t('admin.eng.weightsHelp')}</p></div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {WEIGHT_KEYS.map((k) => <Field key={k} label={t(`admin.eng.w.${k}`)}>{(p) => <Input {...p} type="number" min={0} max={100} value={w[k]} onChange={(e) => setV({ ...v, 'matching.weights': { ...w, [k]: num(e.target.value) } })} />}</Field>)}
-        </div>
-        <p role="status" className={total === 100 ? 'text-sm font-semibold text-success-ink' : 'text-sm font-semibold text-danger-ink'}>{t('admin.eng.total', { n: total })}{total !== 100 && ` — ${t('admin.eng.totalBad')}`}</p>
-      </Card>
-      <Card className="space-y-4 p-5">
-        <h3 className="font-bold">{t('admin.eng.quotasTitle')}</h3>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {INT_KEYS.map(([key, label]) => <Field key={key} label={t(`admin.eng.${label}`)} hint={`${data.limits[key]!.min} – ${data.limits[key]!.max}`}>{(p) => <Input {...p} type="number" min={data.limits[key]!.min} max={data.limits[key]!.max} value={v[key] as number} onChange={(e) => setV({ ...v, [key]: num(e.target.value, data.defaults[key] as number) })} />}</Field>)}
-        </div>
-        <p className="text-xs text-muted">{t('admin.eng.flagsNote')}</p>
-        <p className="text-xs text-muted">{t('admin.eng.dailyPlansNote')} <Link href="/admin/plans" className="font-semibold text-brand-ink underline">{t('admin.nav.plans')}</Link></p>
-      </Card>
-      <div className="flex flex-wrap gap-3">
-        <Button type="submit" loading={save.isPending} disabled={total !== 100}>{t('admin.eng.save')}</Button>
-        <Button type="button" variant="outline" onClick={() => setV({ ...data.defaults })}>{t('admin.eng.defaults')}</Button>
-      </div>
-    </form>
+    <div className="space-y-5">
+      <SettingBlock {...shared('weights')} icon={Scale} title={t('admin.eng.weightsTitle')} help={t('admin.eng.weightsHelp')} canSave={dtotal === 100}
+        onDefaults={() => setDraft({ ...draft, 'matching.weights': { ...data.defaults['matching.weights'] } })}
+        view={(
+          <div className="space-y-4">
+            <div className="flex h-3 overflow-hidden rounded-full bg-soft" role="img" aria-label={t('admin.eng.total', { n: total })}>
+              {WEIGHT_KEYS.map((k, i) => <span key={k} className={WEIGHT_COLORS[i]} style={{ width: `${sw[k]}%` }} />)}
+            </div>
+            <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {WEIGHT_KEYS.map((k, i) => (
+                <div key={k} className="rounded-2xl bg-soft/60 p-3">
+                  <dt className="flex items-center gap-2 text-xs text-muted"><span className={cn('size-2.5 shrink-0 rounded-full', WEIGHT_COLORS[i])} aria-hidden />{t(`admin.eng.w.${k}`)}</dt>
+                  <dd className="mt-1 font-display text-2xl font-extrabold">{sw[k]}<span className="ml-0.5 text-sm font-semibold text-muted">%</span></dd>
+                </div>
+              ))}
+            </dl>
+            <p className={cn('text-sm font-semibold', total === 100 ? 'text-success-ink' : 'text-danger-ink')}>{t('admin.eng.total', { n: total })}</p>
+          </div>
+        )}
+        editor={(
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {WEIGHT_KEYS.map((k) => <Field key={k} label={t(`admin.eng.w.${k}`)}>{(p) => <Input {...p} type="number" min={0} max={100} value={dw[k]} onChange={(e) => setDraft({ ...draft, 'matching.weights': { ...dw, [k]: num(e.target.value) } })} />}</Field>)}
+            </div>
+            <p role="status" className={cn('text-sm font-semibold', dtotal === 100 ? 'text-success-ink' : 'text-danger-ink')}>{t('admin.eng.total', { n: dtotal })}{dtotal !== 100 && ` — ${t('admin.eng.totalBad')}`}</p>
+          </>
+        )} />
+      {BLOCKS.map((b) => (
+        <SettingBlock key={b.id} {...shared(b.id)} icon={b.icon} title={t(`admin.eng.g.${b.id}` as never)} canSave
+          onDefaults={() => setDraft({ ...draft, ...Object.fromEntries(b.keys.map(([k]) => [k, data.defaults[k]])) })}
+          view={(
+            <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {b.keys.map(([key, label]) => { const { name, unit } = splitLabel(t(`admin.eng.${label}` as never)); return (
+                <div key={key} className="rounded-2xl bg-soft/60 p-3">
+                  <dt className="text-xs text-muted">{name}</dt>
+                  <dd className="mt-1 font-display text-2xl font-extrabold">{data.values[key] as number}{unit && <span className="ml-1 text-sm font-semibold text-muted">{unit}</span>}</dd>
+                </div>
+              ); })}
+            </dl>
+          )}
+          editor={(
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {b.keys.map(([key, label]) => <Field key={key} label={t(`admin.eng.${label}` as never)} hint={`${data.limits[key]!.min} – ${data.limits[key]!.max}`}>{(p) => <Input {...p} type="number" min={data.limits[key]!.min} max={data.limits[key]!.max} value={draft[key] as number} onChange={(e) => setDraft({ ...draft, [key]: num(e.target.value, data.defaults[key] as number) })} />}</Field>)}
+            </div>
+          )} />
+      ))}
+      <p className="text-xs text-muted">{t('admin.eng.flagsNote')}</p>
+      <p className="text-xs text-muted">{t('admin.eng.dailyPlansNote')} <Link href="/admin/plans" className="font-semibold text-brand-ink underline">{t('admin.nav.plans')}</Link></p>
+    </div>
   );
 }
 
