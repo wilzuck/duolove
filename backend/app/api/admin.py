@@ -19,7 +19,7 @@ from app.core.ids import utcnow
 from app.core.profile_card import thumb_key
 from app.db.session import get_db
 from app.models.models import (
-    AuditLog, ContactMessage, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Product, Profile, ProfilePhoto,
+    AuditLog, ContactMessage, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Preference, Product, Profile, ProfilePhoto,
     PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, SystemSetting, User, VerificationRequest,
 )
 from app.schemas.admin import (
@@ -90,9 +90,20 @@ _SERIES = {
 }
 
 
+# Séries supplémentaires de la page Statistiques (mêmes règles : constantes du module, jamais une saisie).
+_STATS_SERIES = {
+    **_SERIES,
+    "passes": ('"Swipe"', '"createdAt"', "COUNT(*)", "\"action\" = 'PASS'"),
+    "crushSearches": ('"LiveSearch"', '"createdAt"', "COUNT(*)", "TRUE"),
+    "crushInvites": ('"LiveInvite"', '"createdAt"', "COUNT(*)", "TRUE"),
+    "crushAccepted": ('"LiveInvite"', '"respondedAt"', "COUNT(*)", "\"status\" IN ('ACCEPTED','CHOSEN')"),
+    "subscriptions": ('"Subscription"', '"createdAt"', "COUNT(*)", "\"status\" <> 'PENDING'"),
+}
+
+
 async def _series(db: AsyncSession, key: str, days: int, start: datetime.datetime) -> list[dict]:
     """Valeur par jour calendaire UTC à partir de `start` (minuit UTC du premier jour) : même définition que les totaux, quel que soit le fuseau de la base."""
-    table, col, agg, where = _SERIES[key]
+    table, col, agg, where = _STATS_SERIES[key]
     rows = (await db.execute(text(
         f"SELECT g::date AS day, COALESCE(c.n, 0)::bigint AS n FROM generate_series(CAST(:start AS timestamp), CAST(:start AS timestamp) + (:d - 1) * interval '1 day', interval '1 day') g "
         f"LEFT JOIN (SELECT date_trunc('day', {col}) AS d, {agg} AS n FROM {table} WHERE {col} >= CAST(:start AS timestamp) AND {where} GROUP BY 1) c ON c.d = g ORDER BY 1"), {"d": days, "start": start})).all()
@@ -156,6 +167,68 @@ async def overview(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = 
         "conversionRate": round(paid / users * 1000) / 10 if users else 0, "retentionD7": round(cohort_active / cohort * 1000) / 10 if cohort else 0,
         "signupsPerDay": [{"day": r.day.date().isoformat(), "count": int(r.count)} for r in series],
     }
+
+
+@router.get("/stats")
+async def stats(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Évolution dans le temps : une série par jour (jours calendaires UTC) et le total comparé à la période précédente, pour chaque indicateur."""
+    days = days if days in (7, 30, 90, 180, 365) else 30
+    now = utcnow()
+    start = now.replace(hour=0, minute=0, second=0, microsecond=0) - (days - 1) * DAY
+    series = {k: await _series(db, k, days, start) for k in _STATS_SERIES}
+    flows = {}
+    for k, pts in series.items():
+        table, col, agg, where = _STATS_SERIES[k]
+        prev = (await db.execute(text(f"SELECT {agg} FROM {table} WHERE {col} >= CAST(:a AS timestamp) AND {col} < CAST(:b AS timestamp) AND {where}"), {"a": start - days * DAY, "b": start})).scalar_one()
+        flows[k] = {"current": sum(p["value"] for p in pts), "previous": int(prev)}
+    before = (await db.execute(select(func.count()).select_from(User).where(User.createdAt < start, User.status != "DELETED"))).scalar_one()
+    run, members = before, []
+    for p in series["signups"]:
+        run += p["value"]
+        members.append({"day": p["day"], "value": run})
+    series["members"] = members
+    plans = (await db.execute(select(Entitlement.plan, func.count()).group_by(Entitlement.plan))).all()
+    sent = flows["crushInvites"]["current"]
+    return {"days": days, "generatedAt": now, "series": series, "flows": flows,
+            "totals": {"members": run, "activeSubscriptions": (await db.execute(select(func.count()).select_from(Subscription).where(Subscription.status == "ACTIVE"))).scalar_one()},
+            "crushAcceptRate": round(flows["crushAccepted"]["current"] / sent * 1000) / 10 if sent else None,
+            "matchRate": round(flows["matches"]["current"] / flows["likes"]["current"] * 1000) / 10 if flows["likes"]["current"] else None,
+            "planDistribution": [{"plan": ev(p), "count": c} for p, c in plans]}
+
+
+@router.get("/stats/health")
+async def stats_health(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Santé de la plateforme : équilibre hommes/femmes, villes actives et part des membres actifs qui n'ont presque plus de profils à voir (« bassin » trop mince)."""
+    now = utcnow()
+    since, threshold = now - 7 * DAY, 20
+    base = [User.status == "ACTIVE", User.lastActiveAt >= since]
+    g = {k: n for k, n in (await db.execute(select(Profile.gender, func.count()).join(User, User.id == Profile.userId).where(*base).group_by(Profile.gender))).all()}
+    gender = {"men": g.get("MAN", 0), "women": g.get("WOMAN", 0), "other": sum(n for k, n in g.items() if k not in ("MAN", "WOMAN"))}
+    cities = (await db.execute(select(Profile.city, Profile.country, func.count().label("n"), func.count().filter(Profile.gender == "MAN").label("men"), func.count().filter(Profile.gender == "WOMAN").label("women"))
+                               .join(User, User.id == Profile.userId).where(*base).group_by(Profile.city, Profile.country).order_by(func.count().desc()).limit(6))).all()
+    # Bassin de chaque membre actif = profils actifs de son pays qui correspondent à sa recherche (genre et âge). Calculé par agrégats (pays × genre × âge), pas membre par membre : reste rapide à grande échelle.
+    age = func.date_part("year", func.age(Profile.birthDate))
+    supply: dict[str, dict[tuple[str, int], int]] = {}
+    for country, gen, yrs, n in (await db.execute(select(Profile.country, Profile.gender, age, func.count()).join(User, User.id == Profile.userId).where(*base).group_by(Profile.country, Profile.gender, age))).all():
+        supply.setdefault(country, {})[(ev(gen), int(yrs))] = n
+    pools: list[tuple[int, int]] = []  # (taille du bassin, nombre de membres concernés)
+    for country, seeking, amin, amax, n in (await db.execute(select(Profile.country, Preference.seeking, func.coalesce(Preference.ageMin, text("18")), func.coalesce(Preference.ageMax, text("99")), func.count())
+                                                             .join(User, User.id == Profile.userId).outerjoin(Preference, Preference.userId == Profile.userId).where(*base)
+                                                             .group_by(Profile.country, Preference.seeking, func.coalesce(Preference.ageMin, text("18")), func.coalesce(Preference.ageMax, text("99"))))).all():
+        want = {"MEN": {"MAN"}, "WOMEN": {"WOMAN"}}.get(ev(seeking) if seeking else "EVERYONE")
+        pool = sum(c for (gen, yrs), c in supply.get(country, {}).items() if (want is None or gen in want) and amin <= yrs <= amax) - 1  # -1 : le membre lui-même
+        pools.append((max(pool, 0), n))
+    total = sum(n for _, n in pools)
+    pools.sort()
+    cum, median = 0, None
+    for pool, n in pools:
+        cum += n
+        if median is None and cum * 2 >= total:
+            median = pool
+    active = sum(gender.values())
+    return {"generatedAt": now, "activeMembers": active, "gender": gender, "threshold": threshold,
+            "thinPoolShare": round(sum(n for p, n in pools if p < threshold) / total * 1000) / 10 if total else None, "medianPool": median,
+            "topCities": [{"city": c.city, "country": c.country, "active": c.n, "men": c.men, "women": c.women} for c in cities]}
 
 
 @router.get("/badges")

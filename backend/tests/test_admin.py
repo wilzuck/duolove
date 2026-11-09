@@ -131,3 +131,24 @@ async def test_offrir_et_retirer_une_formule(app, db):
     assert (await ad.agent.post(f"/api/admin/users/{uid()}/grant-plan", json=body)).status_code == 404
     logs = (await ad.agent.get("/api/admin/audit-logs")).json()
     assert {"user.grant-plan", "user.revoke-plan"} <= {x["action"] for x in logs["items"]}
+
+
+async def test_statistiques_evolution(app, db):
+    ad, u = await admin(app, db), await member(app, db)
+    assert (await u.agent.get("/api/admin/stats")).status_code == 403
+    r = (await ad.agent.get("/api/admin/stats?days=7")).json()
+    assert r["days"] == 7 and len(r["series"]["signups"]) == 7 and len(r["series"]["members"]) == 7
+    for k in ("likes", "passes", "matches", "crushSearches", "crushInvites", "crushAccepted", "subscriptions", "messages", "revenue"):
+        assert len(r["series"][k]) == 7 and set(r["flows"][k]) == {"current", "previous"}
+    assert r["flows"]["signups"]["current"] >= 2  # les membres de ce test sont créés aujourd'hui
+    assert r["series"]["members"][-1]["value"] == r["totals"]["members"]
+    assert (await ad.agent.get("/api/admin/stats?days=999")).json()["days"] == 30
+
+
+async def test_sante_plateforme(app, db):
+    ad, u = await admin(app, db), await member(app, db)
+    assert (await u.agent.get("/api/admin/stats/health")).status_code == 403
+    r = (await ad.agent.get("/api/admin/stats/health")).json()
+    assert set(r["gender"]) == {"men", "women", "other"} and r["threshold"] == 20
+    assert r["activeMembers"] == sum(r["gender"].values())
+    assert r["thinPoolShare"] is None or 0 <= r["thinPoolShare"] <= 100
