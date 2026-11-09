@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { emailCode, newMember, PASSWORD, persona, uid, NOTICE_SEEN } from './helpers';
 
 // Confirmation de l'e-mail par code : écran obligatoire après l'inscription, garde de toute l'application, essais limités, renvoi, suppression des comptes non confirmés.
-const DB = 'postgresql://admin@localhost:5432/duomatch_test';
+const DB = process.env.E2E_DATABASE_URL ?? 'postgresql://admin@localhost:5432/duomatch_test'; // CI : base de GitHub (utilisateur postgres avec mot de passe)
 const sql = (q: string) => execFileSync('psql', [DB, '-Atc', q], { encoding: 'utf8' }).trim();
 const axeOf = async (page: Page) => (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help}`);
 

@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { completeOnboarding, newMember, persona, signUp, uid } from './helpers';
 
 // Phase 1 engagement : questions de personnalité → découvertes du jour → like commenté → match → premier message ; contrôle par l'admin.
-const DB = 'postgresql://admin@localhost:5432/duomatch_test';
+const DB = process.env.E2E_DATABASE_URL ?? 'postgresql://admin@localhost:5432/duomatch_test'; // CI : base de GitHub (utilisateur postgres avec mot de passe)
 const sql = (q: string) => execFileSync('psql', [DB, '-Atc', q], { encoding: 'utf8' }).trim();
 const axeOf = async (page: import('@playwright/test').Page) => (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help}`);
 

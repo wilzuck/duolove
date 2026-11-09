@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { completeOnboarding, newMember, persona, signUp, uid } from './helpers';
 
 // Speed dating en texte : publication par l'admin, inscription, salle chronométrée, message, choix privés, match réciproque.
-const DB = 'postgresql://admin@localhost:5432/duomatch_test';
+const DB = process.env.E2E_DATABASE_URL ?? 'postgresql://admin@localhost:5432/duomatch_test'; // CI : base de GitHub (utilisateur postgres avec mot de passe)
 const sql = (q: string) => execFileSync('psql', [DB, '-Atc', q], { encoding: 'utf8' }).trim();
 const axeOf = async (page: Page) => (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help}`);
 
