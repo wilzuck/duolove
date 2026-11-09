@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, MailCheck, Megaphone, ChartLine, BadgeCheck, CloudUpload, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, BookOpen, MailCheck, Megaphone, ChartLine, BadgeCheck, CloudUpload, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -11,15 +11,16 @@ import { LocaleSwitcher } from '../LocaleSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
 
 const RANK = { USER: 0, MODERATOR: 1, ADMIN: 2, SUPER_ADMIN: 3 } as const;
-type Item = { href: string; key: string; icon: LucideIcon; min: 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN'; badge?: 'reports' | 'moderation' };
+export type Item = { href: string; key: string; icon: LucideIcon; min: 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN'; badge?: 'reports' | 'moderation' };
 
 /** Rubriques de la console (même logique que WaMarcket : on cherche d'abord un domaine, puis la page). */
-const SECTIONS: { id: string; items: Item[] }[] = [
+export const SECTIONS: { id: string; items: Item[] }[] = [
   { id: 'pilot', items: [
     { href: '/admin', key: 'overview', icon: LayoutDashboard, min: 'ADMIN' },
     { href: '/admin/moderation', key: 'moderation', icon: ShieldCheck, min: 'MODERATOR', badge: 'moderation' },
     { href: '/admin/stats', key: 'stats', icon: ChartLine, min: 'ADMIN' },
     { href: '/admin/audit-log', key: 'audit', icon: History, min: 'ADMIN' },
+    { href: '/admin/guide', key: 'guide', icon: BookOpen, min: 'MODERATOR' },
   ] },
   { id: 'members', items: [
     { href: '/admin/users', key: 'users', icon: Users, min: 'MODERATOR' },

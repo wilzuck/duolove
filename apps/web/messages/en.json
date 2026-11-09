@@ -2064,7 +2064,8 @@
       "storage": "File storage",
       "stats": "Statistics",
       "newsletter": "Newsletter",
-      "emails": "Sent emails"
+      "emails": "Sent emails",
+      "guide": "Guide"
     },
     "storage": {
       "title": "File storage",
@@ -2971,6 +2972,121 @@
         "newsletter_confirm": "Newsletter confirmation",
         "newsletter_test": "Newsletter test",
         "other": "Other"
+      }
+    },
+    "guide": {
+      "intro": "The essentials in pictures: where to click, in what order, and who is allowed to do what.",
+      "startTitle": "What do you want to do?",
+      "start": {
+        "a": "Handle a report",
+        "aGo": "Open reports",
+        "b": "Help or sanction a member",
+        "bGo": "Open users",
+        "c": "Send some news",
+        "cGo": "Open the newsletter"
+      },
+      "mapTitle": "The menu at a glance",
+      "legend": "Minimum access:",
+      "roles": {
+        "MODERATOR": "Moderator",
+        "ADMIN": "Admin",
+        "SUPER_ADMIN": "Super admin"
+      },
+      "open": "Open",
+      "what": {
+        "overview": "Key figures and today’s tasks",
+        "moderation": "Photos and verifications to approve",
+        "stats": "Curves and platform health",
+        "audit": "Who did what, and when",
+        "users": "Profile, sanction, gifted plan",
+        "reports": "Reports from members",
+        "contact": "Messages from the Contact form",
+        "newsletter": "Write and send",
+        "emails": "Emails sent, failed",
+        "subscriptions": "Premium and VIP subscribers",
+        "plans": "Plans, prices, features",
+        "promos": "Discount codes",
+        "payments": "Payments and refunds",
+        "refunds": "Requests to approve",
+        "engagement": "Matching, quotas, questions",
+        "speed": "Speed-dating sessions",
+        "blog": "Site articles",
+        "flags": "Emergency switches",
+        "storage": "Where photos are kept"
+      },
+      "flowsTitle": "The workflows in 4 steps",
+      "f1": {
+        "title": "Handle a report",
+        "s1": "Report received",
+        "h1": "A member reports another",
+        "s2": "Review",
+        "h2": "Profile, photos, history",
+        "s3": "Resolve or reject",
+        "h3": "With a short note",
+        "s4": "Sanction if needed",
+        "h4": "Suspend or ban"
+      },
+      "f2": {
+        "title": "Gift a plan",
+        "s1": "Find the member",
+        "h1": "Search by name or email",
+        "s2": "Open their profile",
+        "h2": "Current plan shown",
+        "s3": "Gift a plan",
+        "h3": "Premium or VIP + duration",
+        "s4": "Ends automatically",
+        "h4": "Back to Free at the end date"
+      },
+      "f3": {
+        "title": "Send the newsletter",
+        "s1": "Write",
+        "h1": "Subject, message, button",
+        "s2": "Test",
+        "h2": "Receive it first",
+        "s3": "Send",
+        "h3": "Only once",
+        "s4": "Follow",
+        "h4": "Sent and failures"
+      },
+      "whoTitle": "Who can do what?",
+      "whoCan": "Action",
+      "can": {
+        "reports": "Handle reports",
+        "sanction": "Suspend or ban a member",
+        "members": "See profiles (no email)",
+        "email": "See emails, gift a plan",
+        "money": "Payments, subscriptions, promos",
+        "settings": "Settings, blog, newsletter, statistics",
+        "roles": "Change roles",
+        "staff": "Sanction staff, storage"
+      },
+      "readTitle": "Reading an indicator",
+      "read": {
+        "label": "New members",
+        "hint": "Over the chosen period",
+        "c1": "The indicator name",
+        "c2": "Its value over the period (7 days, 30 days…)",
+        "c3": "Green pill: up; red: down, compared with the previous period",
+        "c4": "The small curve: day by day. Hover the large charts for the exact value."
+      },
+      "target": {
+        "thin": "Members with no profiles to see",
+        "thinHint": "Aim below 30%",
+        "ratio": "Men / women gap",
+        "ratioHint": "Aim for 1.5 to 1 at most",
+        "mail": "Emails delivered",
+        "mailHint": "Aim above 90%"
+      },
+      "safeTitle": "Good habits",
+      "safe": {
+        "log": "Everything is logged",
+        "logHint": "Every admin action is in the Audit log.",
+        "share": "Never share",
+        "shareHint": "Do not lend your account or write down the password.",
+        "kill": "Problem? Switch off",
+        "killHint": "The switches turn a feature off without redeploying.",
+        "privacy": "Personal data",
+        "privacyHint": "Members’ emails are not copied or sent elsewhere."
       }
     }
   },

@@ -2064,7 +2064,8 @@
       "storage": "Stockage des fichiers",
       "stats": "Statistiques",
       "newsletter": "Newsletter",
-      "emails": "E-mails envoyés"
+      "emails": "E-mails envoyés",
+      "guide": "Guide"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -2971,6 +2972,121 @@
         "newsletter_confirm": "Confirmation newsletter",
         "newsletter_test": "Test newsletter",
         "other": "Autre"
+      }
+    },
+    "guide": {
+      "intro": "L’essentiel en images : où cliquer, dans quel ordre, et qui a le droit de quoi.",
+      "startTitle": "Que voulez-vous faire ?",
+      "start": {
+        "a": "Traiter un signalement",
+        "aGo": "Ouvrir les signalements",
+        "b": "Aider ou sanctionner un membre",
+        "bGo": "Ouvrir les utilisateurs",
+        "c": "Envoyer une nouveauté",
+        "cGo": "Ouvrir la newsletter"
+      },
+      "mapTitle": "Le menu en un coup d’œil",
+      "legend": "Accès minimum :",
+      "roles": {
+        "MODERATOR": "Modérateur",
+        "ADMIN": "Admin",
+        "SUPER_ADMIN": "Super admin"
+      },
+      "open": "Ouvrir",
+      "what": {
+        "overview": "Chiffres clés et tâches du jour",
+        "moderation": "Photos et vérifications à valider",
+        "stats": "Courbes et santé de la plateforme",
+        "audit": "Qui a fait quoi, et quand",
+        "users": "Fiche, sanction, formule offerte",
+        "reports": "Signalements des membres",
+        "contact": "Messages du formulaire Contact",
+        "newsletter": "Rédiger et envoyer",
+        "emails": "E-mails envoyés, en échec",
+        "subscriptions": "Abonnés Premium et VIP",
+        "plans": "Formules, prix, fonctionnalités",
+        "promos": "Codes de réduction",
+        "payments": "Paiements et remboursements",
+        "refunds": "Demandes à approuver",
+        "engagement": "Matching, quotas, questions",
+        "speed": "Sessions de speed dating",
+        "blog": "Articles du site",
+        "flags": "Interrupteurs d’urgence",
+        "storage": "Où sont rangées les photos"
+      },
+      "flowsTitle": "Les parcours en 4 étapes",
+      "f1": {
+        "title": "Traiter un signalement",
+        "s1": "Signalement reçu",
+        "h1": "Un membre en signale un autre",
+        "s2": "Examiner",
+        "h2": "Fiche, photos, historique",
+        "s3": "Résoudre ou rejeter",
+        "h3": "Avec une note courte",
+        "s4": "Sanction si besoin",
+        "h4": "Suspendre ou bannir"
+      },
+      "f2": {
+        "title": "Offrir une formule",
+        "s1": "Trouver le membre",
+        "h1": "Recherche par nom ou e-mail",
+        "s2": "Ouvrir sa fiche",
+        "h2": "Plan actuel affiché",
+        "s3": "Offrir une formule",
+        "h3": "Premium ou VIP + durée",
+        "s4": "Fin automatique",
+        "h4": "Retour à Gratuit à l’échéance"
+      },
+      "f3": {
+        "title": "Envoyer la newsletter",
+        "s1": "Rédiger",
+        "h1": "Objet, message, bouton",
+        "s2": "Tester",
+        "h2": "Recevez-le d’abord",
+        "s3": "Envoyer",
+        "h3": "Une seule fois",
+        "s4": "Suivre",
+        "h4": "Envoyés et échecs"
+      },
+      "whoTitle": "Qui peut quoi ?",
+      "whoCan": "Action",
+      "can": {
+        "reports": "Traiter les signalements",
+        "sanction": "Suspendre ou bannir un membre",
+        "members": "Voir les fiches (sans e-mail)",
+        "email": "Voir les e-mails, offrir une formule",
+        "money": "Paiements, abonnements, promos",
+        "settings": "Réglages, blog, newsletter, statistiques",
+        "roles": "Changer les rôles",
+        "staff": "Sanctionner l’équipe, stockage"
+      },
+      "readTitle": "Lire un indicateur",
+      "read": {
+        "label": "Nouveaux membres",
+        "hint": "Sur la période choisie",
+        "c1": "Le nom de l’indicateur",
+        "c2": "Sa valeur sur la période (7 jours, 30 jours…)",
+        "c3": "Pastille verte : en hausse ; rouge : en baisse, face à la période d’avant",
+        "c4": "La petite courbe : jour par jour. Survolez les grands graphiques pour la valeur exacte."
+      },
+      "target": {
+        "thin": "Membres sans profils à voir",
+        "thinHint": "Visez moins de 30 %",
+        "ratio": "Écart hommes / femmes",
+        "ratioHint": "Visez 1,5 pour 1 au plus",
+        "mail": "E-mails réussis",
+        "mailHint": "Visez plus de 90 %"
+      },
+      "safeTitle": "Bons réflexes",
+      "safe": {
+        "log": "Tout est journalisé",
+        "logHint": "Chaque action admin est dans le Journal d’audit.",
+        "share": "Jamais de partage",
+        "shareHint": "Ne prêtez pas votre compte, ne notez pas le mot de passe.",
+        "kill": "Un souci ? Coupez",
+        "killHint": "Les interrupteurs désactivent une fonction sans redéployer.",
+        "privacy": "Données personnelles",
+        "privacyHint": "Les e-mails des membres ne se copient pas, ne s’envoient pas ailleurs."
       }
     }
   },
