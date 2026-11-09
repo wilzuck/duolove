@@ -1738,7 +1738,36 @@
     "interests": "Interests",
     "verifiedOnly": "Verified profiles only",
     "activeRecently": "Recently active (7 days)",
-    "premiumUpsell": "Advanced filters (distance, languages, interests, verified profiles, activity) come with Premium."
+    "premiumUpsell": "Advanced filters (distance, languages, interests, verified profiles, activity) come with Premium.",
+    "crit": {
+      "MEN": {
+        "age": "How old is he?",
+        "country": "Where does he live?",
+        "city": "Which city does he live in?",
+        "intents": "What is he looking for?",
+        "distance": "How far away does he live? (km)",
+        "languages": "Which languages does he speak?",
+        "interests": "What is he into?"
+      },
+      "WOMEN": {
+        "age": "How old is she?",
+        "country": "Where does she live?",
+        "city": "Which city does she live in?",
+        "intents": "What is she looking for?",
+        "distance": "How far away does she live? (km)",
+        "languages": "Which languages does she speak?",
+        "interests": "What is she into?"
+      },
+      "EVERYONE": {
+        "age": "Which age range?",
+        "country": "Where do they live?",
+        "city": "Which city?",
+        "intents": "What are they looking for?",
+        "distance": "Maximum distance (km)",
+        "languages": "Which languages do they speak?",
+        "interests": "Which interests?"
+      }
+    }
   },
   "photos": {
     "add": "Add a photo",
@@ -2177,7 +2206,33 @@
       "price": "Price (XOF)",
       "taglineFr": "Tagline (French)",
       "taglineEn": "Tagline (English)",
-      "taglineHint": "Short text under the plan name on the Pricing page. Leave empty to keep the default text."
+      "taglineHint": "Short text under the plan name on the Pricing page. Leave empty to keep the default text.",
+      "edit": "Edit",
+      "editTitle": "Edit the {name} plan",
+      "editProductTitle": "Edit the {name} pack",
+      "free": "Free",
+      "perMonth": "{price} per month",
+      "unlimited": "Unlimited",
+      "on": "Yes",
+      "off": "No",
+      "hidden": "hidden",
+      "taglineDefault": "Default text",
+      "fl": {
+        "daily_likes_limit": "Likes per day",
+        "super_likes_weekly": "Super Likes per week",
+        "can_see_likes": "See who liked me",
+        "advanced_filters": "Advanced filters",
+        "boosts_monthly": "Boosts per month",
+        "incognito_mode": "Incognito mode",
+        "rewind_enabled": "Rewind",
+        "ads_enabled": "Ads shown",
+        "live_match_enabled": "Live Crush menu",
+        "live_match_trials": "Free Crush menu trials",
+        "match_tokens_monthly": "Crush tokens per month",
+        "chat_images_enabled": "Photos in messages",
+        "read_receipts_control": "Choose to show read receipts",
+        "daily_picks_count": "Daily picks (count)"
+      }
     },
     "refunds": {
       "intro": "A member request is handled by one administrator. A request created by an administrator requires approval by ANOTHER administrator (double validation). Refunds are full: the subscription is cancelled and unused credits are taken back.",

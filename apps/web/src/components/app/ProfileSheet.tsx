@@ -76,7 +76,7 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
         onDragEnd={(_, info) => { if (info.offset.y > 120 || info.velocity.y > 700) onClose(); }}>
         <div className="relative flex shrink-0 touch-none justify-center py-3" onPointerDown={(e) => controls.start(e)} title={t('discover.sheetGrab')}>
           <span className="h-1.5 w-12 rounded-full bg-line" aria-hidden />
-          <button type="button" onClick={onClose} className="absolute top-1.5 right-3 z-10 flex h-9 items-center gap-1.5 rounded-full bg-fg px-3.5 text-sm font-semibold text-bg shadow-pop hover:opacity-90"><X className="size-4" aria-hidden />{t('common.close')}</button>
+          <button type="button" onClick={onClose} aria-label={t('common.close')} className="absolute top-1.5 right-3 z-10 flex size-10 items-center justify-center rounded-full border border-field-line bg-card text-fg shadow-pop transition hover:bg-soft"><X className="size-5" aria-hidden /></button>
         </div>
         <div ref={scroller} tabIndex={-1} className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 pb-6 outline-none">
           <ProfileDetail card={card} hero={hero} onBlocked={onBlocked} onLiked={onLiked} />

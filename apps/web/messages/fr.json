@@ -1738,7 +1738,36 @@
     "interests": "Centres d’intérêt",
     "verifiedOnly": "Profils vérifiés uniquement",
     "activeRecently": "Actifs récemment (7 jours)",
-    "premiumUpsell": "Les filtres avancés (distance, langues, centres d’intérêt, profils vérifiés, activité) sont inclus avec Premium."
+    "premiumUpsell": "Les filtres avancés (distance, langues, centres d’intérêt, profils vérifiés, activité) sont inclus avec Premium.",
+    "crit": {
+      "MEN": {
+        "age": "Quel âge a-t-il ?",
+        "country": "Où vit-il ?",
+        "city": "Dans quelle ville vit-il ?",
+        "intents": "Que recherche-t-il ?",
+        "distance": "À quelle distance vit-il ? (km)",
+        "languages": "Quelles langues parle-t-il ?",
+        "interests": "Quels sont ses centres d’intérêt ?"
+      },
+      "WOMEN": {
+        "age": "Quel âge a-t-elle ?",
+        "country": "Où vit-elle ?",
+        "city": "Dans quelle ville vit-elle ?",
+        "intents": "Que recherche-t-elle ?",
+        "distance": "À quelle distance vit-elle ? (km)",
+        "languages": "Quelles langues parle-t-elle ?",
+        "interests": "Quels sont ses centres d’intérêt ?"
+      },
+      "EVERYONE": {
+        "age": "Quelle tranche d’âge ?",
+        "country": "Où vit la personne ?",
+        "city": "Dans quelle ville ?",
+        "intents": "Que recherche la personne ?",
+        "distance": "Distance maximale (km)",
+        "languages": "Quelles langues parle la personne ?",
+        "interests": "Quels centres d’intérêt ?"
+      }
+    }
   },
   "photos": {
     "add": "Ajouter une photo",
@@ -2177,7 +2206,33 @@
       "price": "Prix (FCFA)",
       "taglineFr": "Accroche (français)",
       "taglineEn": "Accroche (anglais)",
-      "taglineHint": "Texte court sous le nom de la formule sur la page Tarifs. Laissez vide pour garder le texte par défaut."
+      "taglineHint": "Texte court sous le nom de la formule sur la page Tarifs. Laissez vide pour garder le texte par défaut.",
+      "edit": "Modifier",
+      "editTitle": "Modifier la formule {name}",
+      "editProductTitle": "Modifier le pack {name}",
+      "free": "Gratuit",
+      "perMonth": "{price} par mois",
+      "unlimited": "Illimité",
+      "on": "Oui",
+      "off": "Non",
+      "hidden": "masquée",
+      "taglineDefault": "Texte par défaut",
+      "fl": {
+        "daily_likes_limit": "Likes par jour",
+        "super_likes_weekly": "Super Likes par semaine",
+        "can_see_likes": "Voir qui m’a liké",
+        "advanced_filters": "Filtres avancés",
+        "boosts_monthly": "Boosts par mois",
+        "incognito_mode": "Mode discret",
+        "rewind_enabled": "Retour en arrière",
+        "ads_enabled": "Publicités affichées",
+        "live_match_enabled": "Menu Crush en direct",
+        "live_match_trials": "Essais gratuits du menu Crush",
+        "match_tokens_monthly": "Jetons Crush par mois",
+        "chat_images_enabled": "Photos dans les messages",
+        "read_receipts_control": "Choisir d’afficher les accusés de lecture",
+        "daily_picks_count": "Découvertes du jour (nombre)"
+      }
     },
     "refunds": {
       "intro": "Une demande de membre est traitée par un administrateur. Une demande créée par un administrateur exige l’approbation d’un AUTRE administrateur (double validation). Le remboursement est intégral : l’abonnement est résilié et les crédits non utilisés sont repris.",

@@ -9,6 +9,7 @@ import { AuthShell } from '@/components/auth/AuthShell';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { PasswordInput } from '@/components/auth/PasswordInput';
 import { PasswordStrength } from '@/components/auth/PasswordStrength';
+import { CityInput } from '@/components/CityInput';
 import { useApiError } from '@/hooks/useApiError';
 import { Link, useRouter } from '@/i18n/navigation';
 import { ApiError, post } from '@/lib/api';
@@ -101,7 +102,7 @@ function RegisterForm() {
               {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}
             </Select>)}
           </Field>
-          <Field label={t('auth.city')} error={errors.city}>{(p) => <Input {...p} autoComplete="address-level2" value={f.city} onChange={(e) => set('city', e.target.value)} />}</Field>
+          <Field label={t('auth.city')} error={errors.city}>{(p) => <CityInput {...p} country={f.country} value={f.city} onChange={(v) => set('city', v)} />}</Field>
         </div>
         {!googleToken && (showRef
           ? <Field label={t('referral.registerLabel')} hint={t('referral.registerHint')}>{(p) => <Input {...p} autoComplete="off" autoCapitalize="characters" maxLength={32} value={referralCode} onChange={(e) => set('referralCode', e.target.value.toUpperCase())} />}</Field>

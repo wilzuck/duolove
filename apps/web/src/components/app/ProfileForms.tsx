@@ -6,6 +6,7 @@ import { COUNTRIES, countryFlag, INTENTS, INTEREST_SLUGS, LIVING, SEEKING, type 
 import { Button, ChoiceCards, Checkbox, cn, Field, Input, RangeSlider, Select, Textarea } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Limits, MyProfile } from '@/lib/types';
+import { CityInput } from '../CityInput';
 
 export const LANGS = ['fr', 'en', 'fon', 'yo', 'ee', 'wo', 'ha', 'sw', 'ar', 'pt'] as const;
 
@@ -77,7 +78,7 @@ export function AboutFields({ value, onChange, withLocation }: { value: AboutVal
       {withLocation && (
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t('auth.country')}>{(p) => <Select {...p} value={value.country} onChange={(e) => set('country', e.target.value)}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
-          <Field label={t('auth.city')}>{(p) => <Input {...p} value={value.city} onChange={(e) => set('city', e.target.value)} />}</Field>
+          <Field label={t('auth.city')}>{(p) => <CityInput {...p} country={value.country} value={value.city} onChange={(v) => set('city', v)} />}</Field>
         </div>
       )}
       <ChoiceCards legend={t('profile.intent')} value={value.intent} onChange={(v) => set('intent', v)} options={INTENTS.map((i) => ({ value: i, label: t(`intent.${i}`), hint: t(`intentHint.${i}`), icon: INTENT_ICONS[i] }))} />
@@ -106,19 +107,20 @@ export function PreferenceFields({ value, onChange, limits }: { value: Pref; onC
   const locale = useLocale();
   const set = <K extends keyof Pref>(k: K, v: Pref[K]) => onChange({ ...value, [k]: v });
   const locked = !limits.advancedFilters;
+  const c = (k: string) => t(`prefs.crit.${value.seeking}.${k}` as never); // libellés au masculin / féminin / neutre selon la personne recherchée
   const premiumBadge = locked ? <Link href="/premium" className="ml-2 inline-flex items-center gap-1 rounded-full bg-gold/20 px-2 py-0.5 text-xs font-semibold text-gold-ink"><Crown className="size-3" aria-hidden />{t('plans.PREMIUM.name')}</Link> : null;
   return (
     <div className="space-y-6">
       <fieldset><legend className="mb-2 text-sm font-medium">{t('prefs.seeking')}</legend>
         <div className="flex flex-wrap gap-2">{SEEKING.map((s) => <label key={s} className={cn('cursor-pointer rounded-full border px-4 py-2 text-sm font-medium has-[:checked]:border-brand-strong has-[:checked]:bg-brand-strong has-[:checked]:text-white', 'border-line')}><input type="radio" name="seeking" className="sr-only" checked={value.seeking === s} onChange={() => set('seeking', s)} />{t(`seeking.${s}`)}</label>)}</div>
       </fieldset>
-      <RangeSlider label={t('live.ageRange')} min={18} max={99} value={[value.ageMin, value.ageMax]} minLabel={t('prefs.ageMin')} maxLabel={t('prefs.ageMax')}
+      <RangeSlider label={c('age')} min={18} max={99} value={[value.ageMin, value.ageMax]} minLabel={t('prefs.ageMin')} maxLabel={t('prefs.ageMax')}
         valueText={t('live.ageBetween', { min: value.ageMin, max: value.ageMax })} onChange={([a, b]) => onChange({ ...value, ageMin: a, ageMax: b })} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t('prefs.country')}>{(p) => <Select {...p} value={value.country ?? ''} onChange={(e) => set('country', e.target.value || null)}><option value="">{t('prefs.anyCountry')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
-        <Field label={t('prefs.city')} hint={t('prefs.cityHint')}>{(p) => <Input {...p} value={value.city ?? ''} onChange={(e) => set('city', e.target.value || null)} />}</Field>
+        <Field label={c('country')}>{(p) => <Select {...p} value={value.country ?? ''} onChange={(e) => set('country', e.target.value || null)}><option value="">{t('prefs.anyCountry')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+        <Field label={c('city')} hint={t('prefs.cityHint')}>{(p) => <CityInput {...p} country={value.country} value={value.city ?? ''} onChange={(v) => set('city', v || null)} />}</Field>
       </div>
-      <div className="space-y-2"><p className="text-sm font-medium">{t('prefs.intents')}</p><Chips label={t('prefs.intents')} options={INTENTS} value={value.intents} onChange={(v) => set('intents', v)} render={(i) => t(`intent.${i}`)} /></div>
+      <div className="space-y-2"><p className="text-sm font-medium">{c('intents')}</p><Chips label={c('intents')} options={INTENTS} value={value.intents} onChange={(v) => set('intents', v)} render={(i) => t(`intent.${i}`)} /></div>
 
       {locked && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-gold/15 p-4">
@@ -128,9 +130,9 @@ export function PreferenceFields({ value, onChange, limits }: { value: Pref; onC
       )}
       <fieldset disabled={locked} className={cn('space-y-5 rounded-3xl border border-dashed border-line p-5', locked && 'opacity-70')}>
         <legend className="px-2 text-sm font-bold">{t('prefs.advanced')}{premiumBadge}</legend>
-        <Field label={t('prefs.distance')} hint={t('prefs.distanceHint')}>{(p) => <Input {...p} type="number" min={5} max={500} step={5} value={value.maxDistanceKm ?? ''} onChange={(e) => set('maxDistanceKm', e.target.value ? Number(e.target.value) : null)} />}</Field>
-        <div className="space-y-2"><p className="text-sm font-medium">{t('prefs.languages')}</p><Chips label={t('prefs.languages')} options={LANGS} value={value.languages as (typeof LANGS)[number][]} onChange={(v) => set('languages', v)} render={(l) => t(`lang.${l}`)} /></div>
-        <div className="space-y-2"><p className="text-sm font-medium">{t('prefs.interests')}</p><Chips label={t('prefs.interests')} options={INTEREST_SLUGS} value={value.interests as (typeof INTEREST_SLUGS)[number][]} onChange={(v) => set('interests', v)} render={(s) => t(`interest.${s}`)} /></div>
+        <Field label={c('distance')} hint={t('prefs.distanceHint')}>{(p) => <Input {...p} type="number" min={5} max={500} step={5} value={value.maxDistanceKm ?? ''} onChange={(e) => set('maxDistanceKm', e.target.value ? Number(e.target.value) : null)} />}</Field>
+        <div className="space-y-2"><p className="text-sm font-medium">{c('languages')}</p><Chips label={c('languages')} options={LANGS} value={value.languages as (typeof LANGS)[number][]} onChange={(v) => set('languages', v)} render={(l) => t(`lang.${l}`)} /></div>
+        <div className="space-y-2"><p className="text-sm font-medium">{c('interests')}</p><Chips label={c('interests')} options={INTEREST_SLUGS} value={value.interests as (typeof INTEREST_SLUGS)[number][]} onChange={(v) => set('interests', v)} render={(s) => t(`interest.${s}`)} /></div>
         <Checkbox align="center" label={t('prefs.verifiedOnly')} checked={value.verifiedOnly} onChange={(e) => set('verifiedOnly', e.target.checked)} />
         <Checkbox align="center" label={t('prefs.activeRecently')} checked={value.activeRecently} onChange={(e) => set('activeRecently', e.target.checked)} />
       </fieldset>
