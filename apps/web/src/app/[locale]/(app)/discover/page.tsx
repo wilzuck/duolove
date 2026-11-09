@@ -150,7 +150,7 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      <div className="relative mx-auto aspect-[3/4] max-h-[62dvh] w-full">
+      <div className={cn('relative mx-auto w-full', !feed.isLoading && deck.length === 0 ? 'min-h-[16rem]' : 'aspect-[3/4] max-h-[62dvh]')}>
         {feed.isLoading && <Skeleton className="size-full rounded-[2rem]" />}
         {!feed.isLoading && deck.length === 0 && feed.data?.paused && (
           <EmptyState icon={<PauseCircle className="size-8" />} title={t('rhythm.pausedEmptyTitle')}>
