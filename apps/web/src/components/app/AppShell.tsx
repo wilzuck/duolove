@@ -1,9 +1,9 @@
 'use client';
-import { BadgeCheck, Bell, Compass, Crown, Heart, Radio, MessageCircle, ShieldAlert, User } from 'lucide-react';
+import { BadgeCheck, Bell, ChevronLeft, Compass, Crown, Heart, Radio, MessageCircle, ShieldAlert, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Avatar, Button, Logo, cn } from '@duomatch/ui';
-import { Link, usePathname } from '@/i18n/navigation';
+import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import type { Me } from '@/lib/types';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { SiteLinks } from '../SiteLinks';
@@ -33,18 +33,22 @@ const MOBILE_NAV = [NAV[0], NAV[2], NAV[1], NAV[3], NAV[4]] as const;
 export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode; children: ReactNode }) {
   const t = useTranslations();
   const path = usePathname();
+  const router = useRouter();
   const active = (href: string) => (GROUPS[href] ?? [href]).some((x) => path === x || path.startsWith(`${x}/`));
   const staff = me.role !== 'USER';
   const speedOn = useEngagementConfig().data?.flags.speed_dating !== false;
   const group = Object.entries(TABS).find(([, tabs]) => tabs.some((x) => x.href === path))?.[1];
   const sectionTabs = group && (
-    <nav aria-label={t('app.sectionTabs')} className="mx-auto flex max-w-2xl flex-wrap justify-center gap-2 px-4 pt-4 lg:px-8">
+    <nav aria-label={t('app.sectionTabs')} className="flex flex-wrap justify-start gap-2 px-4 pt-4 lg:px-8">
       {group.filter((x) => x.href !== '/speed' || speedOn).map((x) => (
         <Link key={x.href} href={x.href} aria-current={path === x.href ? 'page' : undefined}
           className={cn('rounded-full border px-4 py-2 text-sm font-semibold transition', path === x.href ? 'border-brand-strong bg-soft text-brand-ink' : 'border-field-line bg-field text-muted hover:bg-soft hover:text-fg')}>{t(x.key)}</Link>
       ))}
     </nav>
   );
+  // Page de premier niveau (entrées du menu et leurs onglets) : pas de retour. Toute autre page en propose un, tout en haut de la barre.
+  const topLevel = Object.values(GROUPS).flat().includes(path) || NAV.some((x) => x.href === path);
+  const goBack = () => { if (window.history.length > 1) router.back(); else router.push('/discover'); };
   const inChat = /^\/messages\/.+/.test(path);
 
   // Onboarding : parcours guidé sans navigation (on ne s'échappe pas d'un profil à moitié rempli).
@@ -59,17 +63,17 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
   }
 
   return (
-    <div className="min-h-dvh bg-bg lg:grid lg:grid-cols-[17rem_1fr]">
+    <div className="min-h-dvh bg-bg lg:grid lg:grid-cols-[14.5rem_1fr]">
       <CallLayer />
       <a href="#main" className="skip-link">{t('common.skipToContent')}</a>
       {/* Barre latérale (desktop) */}
-      <aside className="hidden flex-col gap-2 border-r border-line bg-card p-5 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[17rem]">
-        <Link href="/discover" className="mb-4 px-2"><Logo /></Link>
+      <aside className="hidden flex-col gap-1.5 border-r border-line bg-card p-4 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[14.5rem]">
+        <Link href="/discover" className="mb-3 px-2"><Logo /></Link>
         <nav aria-label={t('nav.main')} className="flex flex-col gap-1">
           {NAV.map(({ href, icon: Icon, key }) => (
             <Link key={href} href={href} aria-current={active(href) ? 'page' : undefined}
-              className={cn('flex items-center gap-3 rounded-2xl px-4 py-3 font-semibold transition', active(href) ? 'bg-soft text-brand-ink' : 'text-muted hover:bg-soft hover:text-fg')}>
-              {href === '/match' ? <CrushNavIcon icon={Icon} /> : <Icon className="size-5" aria-hidden />}{t(key)}
+              className={cn('flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition', active(href) ? 'bg-soft text-brand-ink' : 'text-muted hover:bg-soft hover:text-fg')}>
+              {href === '/match' ? <CrushNavIcon icon={Icon} /> : <Icon className="size-[18px]" aria-hidden />}{t(key)}
               {href === '/messages' && null}
             </Link>
           ))}
@@ -96,8 +100,10 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
         {me.profile?.paused && <PauseBanner endsAt={me.profile.pauseEndsAt} />}
         {/* Barre du haut */}
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-bg/90 px-4 backdrop-blur lg:h-16 lg:px-8">
-          <Link href="/discover" className="lg:hidden" aria-label={t('nav.home')}><Logo markOnMobile /></Link>
-          <div className="hidden lg:block" />
+          {topLevel ? <Link href="/discover" className="lg:hidden" aria-label={t('nav.home')}><Logo markOnMobile /></Link> : (
+            <button type="button" onClick={goBack} className="-ml-2 flex shrink-0 items-center gap-1 rounded-full py-2 pr-3 pl-1.5 text-sm font-semibold text-muted transition hover:bg-soft hover:text-fg"><ChevronLeft className="size-5" aria-hidden />{t('common.back')}</button>
+          )}
+          {topLevel && <div className="hidden lg:block" />}
           <div className="flex items-center gap-1">
             {me.entitlement.plan === 'FREE' && <Link href="/premium" aria-label={t('app.goPremium')} className="rounded-full bg-soft p-2.5 text-brand-ink hover:bg-brand/15 sm:hidden"><Crown className="size-5" /></Link>}
             {me.entitlement.plan === 'FREE' && <Link href="/premium" className="hidden sm:block"><Button size="sm" variant="secondary"><Crown className="size-4" aria-hidden />{t('app.goPremium')}</Button></Link>}

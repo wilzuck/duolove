@@ -16,7 +16,7 @@ router = APIRouter(prefix="/engagement", tags=["engagement"])
 async def config(_: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     cfg = await appsettings.all_values(db)
     fl = await flags.all_flags(db)
-    return {"flags": {k: fl[k] for k in ("profile_prompts", "like_comments", "daily_picks", "message_reactions", "message_replies", "icebreakers", "date_proposals", "pause_mode", "profile_tips", "calls", "speed_dating", "daily_question")},
+    return {"flags": {k: fl[k] for k in ("profile_prompts", "like_comments", "daily_picks", "message_reactions", "message_replies", "icebreakers", "date_proposals", "pause_mode", "profile_tips", "calls", "speed_dating", "daily_question", "payments_enabled", "promo_codes", "boosts", "live_match")},
             "prompts": {"min": cfg["prompts.min"], "max": cfg["prompts.max"], "answerMax": promptsvc.ANSWER_MAX}, "commentMax": cfg["likes.comment_max"], "reactionEmojis": list(REACTION_EMOJIS),
             "calls": await callsvc.config(db),
             "dates": {"minNoticeHours": cfg["dates.min_notice_hours"], "maxDaysAhead": cfg["dates.max_days_ahead"]}}

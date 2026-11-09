@@ -13,6 +13,7 @@ import { formatDate } from '@/lib/format';
 import { PromoCard, type AppliedPromo } from '@/components/app/PromoCard';
 import { useUi } from '@/lib/store';
 import { useState } from 'react';
+import { FeatureOffDialog } from '@/components/app/FeatureOffDialog';
 
 export default function PremiumPage() {
   const t = useTranslations();
@@ -27,6 +28,7 @@ export default function PremiumPage() {
   if (!data) return <div className="mx-auto max-w-5xl p-4"><Skeleton className="h-96" /></div>;
   return (
     <div className="mx-auto w-full max-w-5xl space-y-8 px-4 py-6">
+      <FeatureOffDialog flag="payments_enabled" />
       <header className="text-center"><h1 className="text-3xl font-extrabold md:text-4xl">{t('premium.title')}</h1><p className="mx-auto mt-2 max-w-xl text-muted">{t('premium.subtitle')}</p>
         {data.validUntil && <p className="mt-3 inline-block rounded-full bg-soft px-4 py-1.5 text-sm font-semibold text-brand-ink">{data.subscription?.cancelAtPeriodEnd ? t('premium.endsOn', { date: formatDate(data.validUntil, locale) }) : t('premium.renewsOn', { date: formatDate(data.validUntil, locale) })}</p>}
       </header>

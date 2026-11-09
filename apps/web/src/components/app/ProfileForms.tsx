@@ -138,7 +138,15 @@ export function PreferenceFields({ value, onChange, limits }: { value: Pref; onC
       )}
       <fieldset disabled={locked} className={cn('space-y-5 rounded-3xl border border-dashed border-line p-5', locked && 'opacity-70')}>
         <legend className="px-2 text-sm font-bold">{t('prefs.advanced')}{premiumBadge}</legend>
-        <Field label={c('distance')} hint={t('prefs.distanceHint')}>{(p) => <Input {...p} type="number" min={5} max={500} step={5} value={value.maxDistanceKm ?? ''} onChange={(e) => set('maxDistanceKm', e.target.value ? Number(e.target.value) : null)} />}</Field>
+        <div className="space-y-2">
+          <div className="flex items-baseline justify-between gap-3">
+            <label htmlFor="pref-distance" className="text-sm font-medium text-fg">{c('distance')}</label>
+            <output className="text-sm font-semibold text-brand-ink" aria-live="polite">{value.maxDistanceKm == null ? t('prefs.distanceAny') : t('prefs.distanceValue', { km: value.maxDistanceKm })}</output>
+          </div>
+          <input id="pref-distance" type="range" min={5} max={500} step={5} value={value.maxDistanceKm ?? 500} aria-describedby="pref-distance-hint"
+            onChange={(e) => set('maxDistanceKm', Number(e.target.value) >= 500 ? null : Number(e.target.value))} className="block h-8 w-full cursor-pointer accent-brand-strong" />
+          <p id="pref-distance-hint" className="text-sm text-muted">{t('prefs.distanceHint')}</p>
+        </div>
         <div className="space-y-2"><p className="text-sm font-medium">{c('languages')}</p><Chips label={c('languages')} options={LANGS} value={value.languages as (typeof LANGS)[number][]} onChange={(v) => set('languages', v)} render={(l) => t(`lang.${l}`)} /></div>
         <div className="space-y-2"><p className="text-sm font-medium">{c('interests')}</p><Chips label={c('interests')} options={INTEREST_SLUGS} value={value.interests as (typeof INTEREST_SLUGS)[number][]} onChange={(v) => set('interests', v)} render={(s) => t(`interest.${s}`)} /></div>
         <Checkbox align="center" label={t('prefs.verifiedOnly')} checked={value.verifiedOnly} onChange={(e) => set('verifiedOnly', e.target.checked)} />

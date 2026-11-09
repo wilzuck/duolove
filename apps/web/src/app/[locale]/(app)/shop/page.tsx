@@ -13,6 +13,7 @@ import { Link } from '@/i18n/navigation';
 import { PromoCard, discounted, type AppliedPromo } from '@/components/app/PromoCard';
 import { useUi } from '@/lib/store';
 import { useState } from 'react';
+import { FeatureOffDialog } from '@/components/app/FeatureOffDialog';
 
 const BOOSTS = ['BOOST_30', 'BOOST_120', 'BOOST_1440'] as const;
 
@@ -46,6 +47,7 @@ export default function ShopPage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8 px-4 py-4">
+      <FeatureOffDialog flag="payments_enabled" />
       <header><h1 className="text-2xl font-extrabold">{t('shop.title')}</h1><p className="mt-1 text-muted">{t('shop.subtitle')}</p></header>
 
       <section aria-labelledby="bal"><h2 id="bal" className="mb-3 font-bold">{t('shop.balances')}</h2>
