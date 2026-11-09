@@ -90,11 +90,12 @@ _SERIES = {
 }
 
 
-async def _series(db: AsyncSession, key: str, days: int) -> list[dict]:
+async def _series(db: AsyncSession, key: str, days: int, start: datetime.datetime) -> list[dict]:
+    """Valeur par jour calendaire UTC à partir de `start` (minuit UTC du premier jour) : même définition que les totaux, quel que soit le fuseau de la base."""
     table, col, agg, where = _SERIES[key]
     rows = (await db.execute(text(
-        f"SELECT g::date AS day, COALESCE(c.n, 0)::bigint AS n FROM generate_series(date_trunc('day', now()) - (:d - 1) * interval '1 day', date_trunc('day', now()), interval '1 day') g "
-        f"LEFT JOIN (SELECT date_trunc('day', {col}) AS d, {agg} AS n FROM {table} WHERE {col} >= date_trunc('day', now()) - (:d - 1) * interval '1 day' AND {where} GROUP BY 1) c ON c.d = g ORDER BY 1"), {"d": days})).all()
+        f"SELECT g::date AS day, COALESCE(c.n, 0)::bigint AS n FROM generate_series(CAST(:start AS timestamp), CAST(:start AS timestamp) + (:d - 1) * interval '1 day', interval '1 day') g "
+        f"LEFT JOIN (SELECT date_trunc('day', {col}) AS d, {agg} AS n FROM {table} WHERE {col} >= CAST(:start AS timestamp) AND {where} GROUP BY 1) c ON c.d = g ORDER BY 1"), {"d": days, "start": start})).all()
     return [{"day": r.day.isoformat(), "value": int(r.n)} for r in rows]
 
 
@@ -122,11 +123,14 @@ async def overview(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = 
     by_country = (await db.execute(select(Profile.country, func.count().label("n")).group_by(Profile.country).order_by(func.count().desc()).limit(6))).all()
     refunded = (await db.execute(select(func.coalesce(func.sum(Refund.amountXof), 0)).where(Refund.status == "COMPLETED"))).scalar_one()
 
+    start = now.replace(hour=0, minute=0, second=0, microsecond=0) - (days - 1) * DAY  # début du premier jour de la période (aujourd'hui inclus)
+
     async def flow(model, col, *where, summed=None):
         """Valeur sur la période courante et sur la précédente (même durée, juste avant)."""
         agg = func.coalesce(func.sum(summed), 0) if summed is not None else func.count()
-        cur = (await db.execute(select(agg).select_from(model).where(col >= d(days), *where))).scalar_one()
-        prev = (await db.execute(select(agg).select_from(model).where(col >= d(2 * days), col < d(days), *where))).scalar_one()
+        # Mêmes jours calendaires (UTC) que le graphique par jour : le total d'un indicateur est toujours égal à la somme de sa courbe.
+        cur = (await db.execute(select(agg).select_from(model).where(col >= start, *where))).scalar_one()
+        prev = (await db.execute(select(agg).select_from(model).where(col >= start - days * DAY, col < start, *where))).scalar_one()
         return {"current": int(cur), "previous": int(prev)}
 
     period = {
@@ -136,7 +140,7 @@ async def overview(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = 
         "matches": await flow(Match, Match.createdAt),
         "messages": await flow(Message, Message.createdAt),
         "revenue": await flow(Payment, Payment.paidAt, Payment.status == "SUCCEEDED", summed=Payment.amountXof),
-        "series": {k: await _series(db, k, days) for k in _SERIES},
+        "series": {k: await _series(db, k, days, start) for k in _SERIES},
     }
     return {
         "period": period, "generatedAt": now,
