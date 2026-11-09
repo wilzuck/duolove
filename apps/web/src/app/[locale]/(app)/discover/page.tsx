@@ -13,6 +13,7 @@ import { Link } from '@/i18n/navigation';
 import { ApiError, api, del, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import type { Card, Paged, SwipeResult } from '@/lib/types';
+import { SectionTabs } from '@/components/app/SectionTabs';
 
 type Dir = 'left' | 'right' | 'up';
 const SWIPE = { left: 'PASS', right: 'LIKE', up: 'SUPER_LIKE' } as const;
@@ -139,6 +140,7 @@ export default function DiscoverPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-4">
+      <SectionTabs />
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-extrabold">{t('app.nav.discover')}</h1>
         <div className="flex items-center gap-2">

@@ -8,7 +8,6 @@ import type { Me } from '@/lib/types';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { SiteLinks } from '../SiteLinks';
 import { CallLayer } from './CallLayer';
-import { useEngagementConfig } from '@/hooks/useQueries';
 import { CrushNavIcon } from './CrushNavIcon';
 import { PauseBanner } from './PauseBanner';
 import { ThemeToggle } from '../ThemeToggle';
@@ -22,11 +21,6 @@ const NAV = [
 ] as const;
 /** Pages regroupées sous une entrée du menu : l'entrée reste active et la page affiche des onglets pour passer de l'une à l'autre. */
 const GROUPS: Record<string, string[]> = { '/discover': ['/discover', '/daily'], '/match': ['/match', '/speed'], '/profile': ['/profile', '/shop'] };
-const TABS: Record<string, { href: string; key: string }[]> = {
-  '/discover': [{ href: '/discover', key: 'app.nav.discover' }, { href: '/daily', key: 'app.nav.daily' }],
-  '/match': [{ href: '/match', key: 'app.nav.match' }, { href: '/speed', key: 'app.nav.speed' }],
-  '/profile': [{ href: '/profile', key: 'app.nav.profile' }, { href: '/shop', key: 'app.nav.shop' }],
-};
 /** Barre du bas sur téléphone : Crush occupe la place centrale (la plus accessible au pouce), Likes passe en 2e position. */
 const MOBILE_NAV = [NAV[0], NAV[2], NAV[1], NAV[3], NAV[4]] as const;
 
@@ -36,16 +30,6 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
   const router = useRouter();
   const active = (href: string) => (GROUPS[href] ?? [href]).some((x) => path === x || path.startsWith(`${x}/`));
   const staff = me.role !== 'USER';
-  const speedOn = useEngagementConfig().data?.flags.speed_dating !== false;
-  const group = Object.entries(TABS).find(([, tabs]) => tabs.some((x) => x.href === path))?.[1];
-  const sectionTabs = group && (
-    <nav aria-label={t('app.sectionTabs')} className="flex flex-wrap justify-start gap-2 px-4 pt-4 lg:px-8">
-      {group.filter((x) => x.href !== '/speed' || speedOn).map((x) => (
-        <Link key={x.href} href={x.href} aria-current={path === x.href ? 'page' : undefined}
-          className={cn('rounded-full border px-4 py-2 text-sm font-semibold transition', path === x.href ? 'border-brand-strong bg-soft text-brand-ink' : 'border-field-line bg-field text-muted hover:bg-soft hover:text-fg')}>{t(x.key)}</Link>
-      ))}
-    </nav>
-  );
   // Page de premier niveau (entrées du menu et leurs onglets) : pas de retour. Toute autre page en propose un, tout en haut de la barre.
   const topLevel = Object.values(GROUPS).flat().includes(path) || NAV.some((x) => x.href === path);
   const goBack = () => { if (window.history.length > 1) router.back(); else router.push('/discover'); };
@@ -114,7 +98,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
             <Link href="/settings" className="lg:hidden" aria-label={t('app.nav.settings')}><Avatar src={me.profile?.thumbUrl} name={me.profile?.displayName ?? '?'} size={34} /></Link>
           </div>
         </header>
-        <main id="main" className={cn('min-w-0 flex-1', !inChat && 'pb-24 lg:pb-8')}>{sectionTabs}{children}{!inChat && <SiteLinks />}</main>
+        <main id="main" className={cn('min-w-0 flex-1', !inChat && 'pb-24 lg:pb-8')}>{children}{!inChat && <SiteLinks />}</main>
       </div>
 
       {/* Barre d'onglets (mobile) */}

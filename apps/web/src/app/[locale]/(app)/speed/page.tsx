@@ -10,6 +10,7 @@ import { formatDate } from '@/lib/format';
 import { useUi } from '@/lib/store';
 import type { SpeedEventInfo } from '@/lib/types';
 import { FeatureOffDialog } from '@/components/app/FeatureOffDialog';
+import { SectionTabs } from '@/components/app/SectionTabs';
 
 export default function SpeedPage() {
   const t = useTranslations();
@@ -25,6 +26,7 @@ export default function SpeedPage() {
   });
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-4 lg:p-8">
+      <SectionTabs />
       <FeatureOffDialog flag="speed_dating" />
       <header>
         <h1 className="flex items-center gap-3 font-display text-3xl font-extrabold"><Hourglass className="size-8 text-brand" aria-hidden />{t('speed.title')}</h1>

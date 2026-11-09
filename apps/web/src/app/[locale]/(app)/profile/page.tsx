@@ -14,6 +14,7 @@ import { Link } from '@/i18n/navigation';
 import { patch, put, upload } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import type { MyProfile } from '@/lib/types';
+import { SectionTabs } from '@/components/app/SectionTabs';
 
 export default function ProfilePage() {
   const t = useTranslations();
@@ -48,6 +49,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 px-4 py-4">
+      <SectionTabs />
       <div className="flex items-center justify-between"><h1 className="text-2xl font-extrabold">{t('app.nav.profile')}</h1><Link href={`/profile/${p.id}`} className="hidden" aria-hidden /></div>
 
       <Card className={me.entitlement.plan === 'FREE' ? 'flex flex-wrap items-center justify-between gap-4 border-brand/30 bg-linear-to-br from-soft to-card p-5' : 'flex flex-wrap items-center justify-between gap-4 p-5'}>

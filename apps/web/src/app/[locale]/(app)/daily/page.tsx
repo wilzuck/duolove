@@ -18,6 +18,7 @@ import { useUi } from '@/lib/store';
 import type { Card as ProfileCardT, DailyQuestionState, SwipeResult } from '@/lib/types';
 import { VerifiedBadge } from '@/components/app/VerifiedBadge';
 import { FeatureOffDialog } from '@/components/app/FeatureOffDialog';
+import { SectionTabs } from '@/components/app/SectionTabs';
 
 interface Today { day: string; items: ProfileCardT[]; pending: number }
 interface History { days: { day: string; items: ProfileCardT[] }[]; nextCursor: string | null }
@@ -80,6 +81,7 @@ export default function DailyPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-5 px-4 py-4">
+      <SectionTabs />
       <FeatureOffDialog flag="daily_picks" />
       <header><h1 className="text-2xl font-extrabold">{t('engagement.daily.title')}</h1><p className="mt-1 text-muted">{t('engagement.daily.subtitle')}</p></header>
       {paused ? <EmptyState icon={<Sparkles className="size-8" />} title={t('rhythm.pausedEmptyTitle')}>{t('rhythm.pausedEmptyText')}<div className="mt-4"><Button onClick={() => void resume()}>{t('rhythm.resume')}</Button></div></EmptyState> : disabled ? <EmptyState icon={<Sparkles className="size-8" />} title={t('engagement.daily.disabledTitle')}>{t('engagement.daily.disabledText')}</EmptyState> : (
