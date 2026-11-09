@@ -7,9 +7,9 @@ import { cn } from './cn';
  */
 export function Logo({ className, variant = 'auto' }: { className?: string; variant?: 'auto' | 'light' | 'dark' }) {
   return (
-    <span className={cn('inline-flex shrink-0 items-center', className)}>
-      {variant !== 'dark' && <img src="/brand/crushduo-logo-light.webp" alt="CrushDuo" width={573} height={144} className={cn('h-9 w-auto', variant === 'auto' && 'logo-light')} />}
-      {variant !== 'light' && <img src="/brand/crushduo-logo-dark.webp" alt={variant === 'dark' ? 'CrushDuo' : ''} aria-hidden={variant === 'dark' ? undefined : true} width={586} height={144} className={cn('h-9 w-auto', variant === 'auto' && 'logo-dark')} />}
+    <span className={cn('inline-flex shrink-0 items-center leading-none', className)}>
+      {variant !== 'dark' && <img src="/brand/crushduo-logo-light.webp" alt="CrushDuo" width={689} height={144} className={cn('block h-6 w-auto', variant === 'auto' && 'logo-light')} />}
+      {variant !== 'light' && <img src="/brand/crushduo-logo-dark.webp" alt={variant === 'dark' ? 'CrushDuo' : ''} aria-hidden={variant === 'dark' ? undefined : true} width={683} height={144} className={cn('block h-6 w-auto', variant === 'auto' && 'logo-dark')} />}
     </span>
   );
 }
