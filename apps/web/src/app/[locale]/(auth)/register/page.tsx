@@ -57,6 +57,16 @@ function RegisterForm() {
       } else setFormError(err(e));
     },
   });
+  // Clic sur le bouton Google : on essaie d'abord de CONNECTER. Un compte existant entre directement, sans qu'on redemande ses informations ;
+  // seule une personne nouvelle sur CrushDuo (PROFILE_DETAILS_REQUIRED) passe à l'écran de complément.
+  const googleStart = useMutation({
+    mutationFn: (idToken: string) => post('/auth/google', { idToken }),
+    onSuccess: async () => { await qc.invalidateQueries(); router.replace('/discover'); },
+    onError: (e, idToken) => {
+      if (e instanceof ApiError && e.code === 'PROFILE_DETAILS_REQUIRED') { setGoogleToken(idToken); return; }
+      setFormError(err(e));
+    },
+  });
   const google = useMutation({
     mutationFn: () => post('/auth/google', { idToken: googleToken, birthDate: f.birthDate, gender: f.gender, country: f.country, city: f.city, acceptTerms: f.acceptTerms }),
     onSuccess: () => done(),
@@ -78,7 +88,7 @@ function RegisterForm() {
 
   return (
     <AuthShell title={t('auth.registerTitle')} subtitle={t('auth.registerSubtitle')} footer={<>{t('auth.haveAccount')} <Link href="/login" className="font-semibold text-brand-ink underline">{t('nav.login')}</Link></>}>
-      {!googleToken && <GoogleButton onToken={setGoogleToken} />}
+      {!googleToken && <GoogleButton onToken={(tok) => { setFormError(null); googleStart.mutate(tok); }} />}
       {googleToken && <p className="mb-5 rounded-2xl bg-soft p-4 text-sm">{t('auth.googleComplete')}</p>}
       <form onSubmit={submit} className="space-y-4" noValidate>
         {formError && <Alert>{formError}</Alert>}
