@@ -62,7 +62,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const forbidden = !!required && RANK[me.role] < RANK[required.min];
   const active = (href: string) => (href === '/admin' ? path === '/admin' : path.startsWith(href));
   const nav = (
-    <nav aria-label={t('admin.menu')} className="flex flex-1 flex-col gap-5 overflow-y-auto py-2">
+    <nav aria-label={t('admin.menu')} className="scroll-dark flex flex-1 flex-col gap-5 overflow-y-auto py-2 pr-1">
       {SECTIONS.map((s) => {
         const items = s.items.filter((i) => RANK[me.role] >= RANK[i.min]);
         if (!items.length) return null;
@@ -99,7 +99,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="min-h-dvh bg-soft/40 lg:grid lg:grid-cols-[16.5rem_1fr]">
       <a href="#main" className="skip-link">{t('common.skipToContent')}</a>
       <aside className="sticky top-0 hidden h-dvh flex-col gap-3 bg-[#1b1a24] p-4 lg:flex">
-        <Link href="/admin" className="px-2 pt-1 [&_*]:!text-white"><Logo /></Link>
+        <Link href="/admin" className="px-2 pt-1" aria-label="CrushDuo"><Logo variant="dark" /></Link>
         <p className="mx-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white"><ShieldAlert className="size-3.5" aria-hidden />{t('admin.title')}</p>
         {nav}{account}
       </aside>

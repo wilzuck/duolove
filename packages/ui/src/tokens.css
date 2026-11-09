@@ -70,3 +70,24 @@
 .dual-range input[type='range']::-moz-range-thumb { pointer-events: auto; width: 20px; height: 20px; border-radius: 9999px; background: #fff; border: 2px solid var(--brand-strong); cursor: grab; }
 .dual-range input[type='range']:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--brand-strong); outline-offset: 2px; }
 .dual-range input[type='range']:focus-visible::-moz-range-thumb { outline: 2px solid var(--brand-strong); outline-offset: 2px; }
+
+/* Logo : version claire par défaut ; la version sombre prend le relais en thème sombre (réglage manuel ou appareil). */
+.logo-dark { display: none; }
+:root[data-theme='dark'] .logo-light { display: none; }
+:root[data-theme='dark'] .logo-dark { display: inline-block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .logo-light { display: none; }
+  :root:not([data-theme='light']) .logo-dark { display: inline-block; }
+}
+
+/* Barres de défilement : fines et discrètes, teintées de la couleur de marque (thème clair comme sombre), piste transparente.
+   Propriétés standard seulement : `scrollbar-width: thin` n'est pas hérité (d'où le `*`), `scrollbar-color` l'est.
+   Les zones qui masquent déjà leur barre (`[scrollbar-width:none]`) restent masquées : une classe l'emporte sur `*`. */
+:root {
+  --scroll-thumb: color-mix(in srgb, var(--brand-strong) 38%, transparent);
+  --scroll-thumb-hover: color-mix(in srgb, var(--brand-strong) 70%, transparent);
+}
+* { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) transparent; }
+*:hover { scrollbar-color: var(--scroll-thumb-hover) transparent; }
+/* Sur un fond toujours sombre (barre latérale d'administration), même en thème clair : curseur blanc translucide. */
+.scroll-dark { --scroll-thumb: rgb(255 255 255 / .22); --scroll-thumb-hover: rgb(255 255 255 / .42); }
