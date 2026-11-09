@@ -31,7 +31,7 @@ Vérifié le 2026-11-03 : `pnpm lint`, `pnpm typecheck`, `pnpm test` (API 26 + w
 | **KKiaPay** | adaptateur écrit (widget + vérification serveur + webhook), testé avec une **API KKiaPay simulée** ; **jamais exécuté contre le vrai bac à sable** (pas de clés). Le format (en-têtes, champs, statuts) est repris de WaMarcket, où KKiaPay fonctionne en production ; à valider au premier test sandbox de DuoMatch (voir DEPLOYMENT.md). |
 | **Paiement (mock)** | fournisseur `mock` : même chemin que la production (checkout → webhook HMAC → activation) mais **aucun argent réel**. La page `/checkout/mock` et `POST /payments/mock/:ref/complete` sont désactivées en production. |
 | Google OAuth | flux serveur (vérification du jeton d'identité, audience) écrit mais **non testé** sans `GOOGLE_CLIENT_ID` réel |
-| E-mail | SMTP via nodemailer **non testé** avec un vrai serveur ; en dev les e-mails vont dans une boîte mémoire (`/api/dev/outbox`) |
+| E-mail | Envoi par l'API HTTP Brevo (ou SMTP) avec **gabarit HTML aux couleurs de la charte** (carte blanche, logo PNG, bouton rose) et texte brut en repli ; en dev, boîte mémoire (`/api/dev/outbox`). **Envoi réel en ligne non confirmé** : les journaux de production montrent un refus Brevo le 2026-11-06 (« valid sender email required », avant la correction de `MAIL_FROM`) et aucun envoi réussi observable depuis. À valider par un vrai envoi (mot de passe oublié) |
 | Images « après validation » | validation technique (décodage, format, taille, nettoyage) ; **pas de modération automatique du contenu** |
 | Docker / Compose / CI | écrits, **non exécutés** (Docker indisponible localement ; la CI n'a pas tourné sur GitHub) |
 | Textes légaux | brouillons à faire valider par un juriste |

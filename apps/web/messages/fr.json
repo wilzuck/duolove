@@ -1734,6 +1734,8 @@
     "intents": "Intentions recherchées",
     "advanced": "Filtres avancés",
     "distance": "Distance maximale (km)",
+    "distanceAny": "Partout",
+    "distanceValue": "{km} km",
     "distanceHint": "Nécessite que vous partagiez votre position approximative (Paramètres → Confidentialité).",
     "languages": "Langues",
     "interests": "Centres d’intérêt",
@@ -1898,7 +1900,9 @@
       "byEmail": "Par e-mail",
       "inApp": "Dans l’application",
       "push": "Notifications push",
-      "pushText": "Notifications sur votre appareil, après votre consentement."
+      "pushText": "Notifications sur votre appareil, après votre consentement.",
+      "newsletter": "Newsletter",
+      "newsletterText": "Les nouveautés et conseils de CrushDuo par e-mail. Désinscription en un clic."
     },
     "privacy": {
       "visible": "Profil visible",
@@ -1929,7 +1933,9 @@
       "typing": "Indicateur de saisie",
       "typingText": "Montre quand vous écrivez, et vous permet de voir quand l’autre écrit. Désactivé, personne ne voit l’autre écrire.",
       "receiptsLocked": "La gestion des accusés de lecture est réservée aux abonnés Premium et VIP : vos accusés restent actifs.",
-      "receiptsUpgrade": "Passer Premium"
+      "receiptsUpgrade": "Passer Premium",
+      "activity": "Afficher mon activité",
+      "activityText": "Montre « en ligne » ou « actif aujourd’hui » aux personnes avec qui vous avez un match. Désactivé, vous ne voyez pas non plus celui des autres, sauf avec le mode discret."
     },
     "security": {
       "password": "Changer de mot de passe",
@@ -2054,7 +2060,10 @@
       "engagement": "Engagement",
       "speed": "Speed dating",
       "contact": "Messages de contact",
-      "storage": "Stockage des fichiers"
+      "storage": "Stockage des fichiers",
+      "stats": "Statistiques",
+      "newsletter": "Newsletter",
+      "emails": "E-mails envoyés"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -2165,20 +2174,93 @@
       "lang": "Langue"
     },
     "stats": {
-      "users": "Membres",
-      "signups7": "Inscriptions (7 j)",
-      "signups30": "Inscriptions (30 j)",
-      "active7": "Actifs (7 j)",
-      "profilesCompleted": "Profils complétés",
-      "likes": "Likes",
-      "matches": "Matchs",
-      "activeConversations": "Conversations actives (7 j)",
-      "activeSubscriptions": "Abonnements actifs",
-      "revenue": "Revenus cumulés",
-      "revenue30": "Revenus (30 j)",
-      "conversion": "Taux de conversion payant",
-      "retention": "Rétention à 7 jours",
-      "signupsChart": "Inscriptions par jour (14 derniers jours)"
+      "lastDays": "{n} derniers jours",
+      "kpis": "Indicateurs clés",
+      "plans": "Répartition des formules",
+      "note": "Jours calendaires UTC. Les variations comparent la période affichée à la période précédente de même durée. Les graphiques se lisent au survol (ou au toucher).",
+      "p7": "7 jours",
+      "p30": "30 jours",
+      "p90": "3 mois",
+      "p180": "6 mois",
+      "p365": "1 an",
+      "k": {
+        "signups": "Nouveaux membres",
+        "signupsHint": "{total} membres au total",
+        "likes": "Likes envoyés",
+        "matches": "Matchs",
+        "matchesHint": "{rate} des likes donnent un match",
+        "crush": "Invitations Crush",
+        "crushHint": "{rate} acceptées",
+        "subs": "Nouveaux abonnements",
+        "subsHint": "{n} abonnements actifs",
+        "revenue": "Revenus"
+      },
+      "c": {
+        "members": "Membres",
+        "membersSub": "Total cumulé : {n}",
+        "signups": "Inscriptions par jour",
+        "total": "{n} sur les {period}",
+        "likes": "Likes et passes",
+        "likesSub": "Likes envoyés et profils passés, par jour",
+        "matches": "Matchs par jour",
+        "crush": "Crush en direct",
+        "crushSub": "Recherches, invitations et acceptations · {rate} acceptées",
+        "subs": "Abonnements par jour",
+        "revenue": "Revenus par jour",
+        "messages": "Messages par jour"
+      },
+      "l": {
+        "likes": "Likes",
+        "passes": "Passes",
+        "searches": "Recherches",
+        "invites": "Invitations",
+        "accepted": "Acceptées"
+      },
+      "h": {
+        "title": "Santé de la plateforme",
+        "help": "Les membres trouvent-ils assez de monde autour d’eux ? Ce qui compte, ce sont les membres actifs et compatibles, pas le total des inscrits.",
+        "balance": "Équilibre hommes / femmes (membres actifs sur 7 jours)",
+        "women": "Femmes",
+        "men": "Hommes",
+        "other": "Autres",
+        "womenShort": "{n} F",
+        "menShort": "{n} H",
+        "activeShort": "actifs",
+        "ratio": "Écart d’environ {n} pour 1 entre les deux genres. Au-delà de 1,5, le côté minoritaire est submergé et le côté majoritaire ne matche pas.",
+        "noMinority": "Un des deux genres est absent : aucun match possible entre eux.",
+        "active": "Membres actifs (7 jours)",
+        "activeHint": "Connectés dans les 7 derniers jours : la vraie taille de la plateforme.",
+        "thin": "Membres avec moins de {n} profils à voir",
+        "thinHint": "Part des actifs dont la recherche (genre, âge, pays) renvoie trop peu de profils actifs. Visez moins de 30 %.",
+        "median": "Profils à voir (médiane)",
+        "medianHint": "Pour un membre actif type : combien de profils actifs correspondent à sa recherche.",
+        "cities": "Villes les plus actives"
+      },
+      "s": {
+        "title": "Satisfaction des membres",
+        "help": "Des signaux indirects : si ça matche, si on se répond, si on revient et si les rendez-vous se passent bien.",
+        "match": "Likes qui donnent un match",
+        "matchHint": "Taux de match global : un taux trop bas signale un manque de profils compatibles.",
+        "reply": "Conversations qui reçoivent une réponse",
+        "replyHint": "Le premier message est-il suivi d’une réponse ?",
+        "mutual": "Conversations à double sens",
+        "mutualHint": "Les deux personnes ont écrit : la rencontre prend.",
+        "d7": "Retour après 7 jours",
+        "d30": "Retour après 30 jours",
+        "cohort": "Parmi {n} inscrits de la période",
+        "dateNote": "Note moyenne des rendez-vous",
+        "dateNoteHint": "{n} avis laissés après un rendez-vous : la mesure de satisfaction la plus directe.",
+        "dateAccept": "Rendez-vous acceptés",
+        "dateAcceptHint": "Sur {n} propositions",
+        "calls": "Appels décrochés",
+        "callsHint": "Sur {n} appels lancés",
+        "speed": "Intérêt mutuel au speed dating",
+        "speedHint": "Sur {n} paires",
+        "premium": "Conversion vers un abonnement",
+        "premiumHint": "Part des membres ayant déjà payé.",
+        "reports": "Signalements ouverts",
+        "reportsHint": "{n} reçus au total : le signal de mécontentement le plus clair."
+      }
     },
     "plans": {
       "intro": "Les prix, avantages et quotas se règlent ici, sans modifier le code. Une modification ne vaut que pour les achats futurs : les abonnements et paiements existants conservent leur période et leur montant. Toute modification est journalisée.",
@@ -2671,7 +2753,15 @@
         "delete": "Supprimer",
         "empty": "Aucune question."
       },
-      "edit": "Modifier"
+      "edit": "Modifier",
+      "g": {
+        "daily": "Découvertes du jour",
+        "profiles": "Profils et échanges",
+        "dates": "Rendez-vous",
+        "account": "Compte et notifications",
+        "meet": "Rencontres en direct",
+        "calls": "Appels"
+      }
     },
     "speed": {
       "title": "Speed dating",
@@ -2781,7 +2871,10 @@
       "subscriptions": "Les abonnements Premium et VIP, leur état et leur date de fin.",
       "refunds": "Les demandes de remboursement à approuver ou à rejeter.",
       "audit": "Qui a fait quoi dans l’administration, avec la date : utile pour comprendre un changement.",
-      "moderation": "Les selfies à vérifier, les recours des membres sanctionnés et les photos publiées."
+      "moderation": "Les selfies à vérifier, les recours des membres sanctionnés et les photos publiées.",
+      "stats": "L’évolution dans le temps : membres, likes, matchs, Crush, abonnements et revenus, comparés à la période précédente.",
+      "newsletter": "Rédigez et envoyez une newsletter aux abonnés, avec un test avant l’envoi et le suivi de la diffusion.",
+      "emails": "Chaque e-mail envoyé par la plateforme (confirmation, mot de passe, notifications, newsletter) avec son état : envoyé ou en échec, et pourquoi."
     },
     "strip": {
       "total": "Membres",
@@ -2804,6 +2897,80 @@
       "give": "Offrir",
       "revoke": "Retirer la formule",
       "until": "jusqu’au {date}"
+    },
+    "nl": {
+      "campaigns": "Envois",
+      "help": "Un envoi est un brouillon tant qu’il n’est pas lancé. Faites un test pour recevoir l’e-mail avant de l’envoyer.",
+      "new": "Nouvel envoi",
+      "editTitle": "Modifier l’envoi",
+      "subject": "Objet",
+      "preheader": "Texte d’aperçu",
+      "preheaderHint": "Affiché à côté de l’objet dans la boîte de réception.",
+      "body": "Message",
+      "bodyHint": "Séparez les paragraphes par une ligne vide. Pas de HTML : le texte est mis en forme avec la charte.",
+      "ctaLabel": "Texte du bouton (facultatif)",
+      "ctaUrl": "Lien du bouton",
+      "ctaUrlHint": "Doit commencer par https://",
+      "statuses": {
+        "DRAFT": "Brouillon",
+        "SENDING": "En cours",
+        "SENT": "Envoyé"
+      },
+      "delivery": "Diffusion",
+      "failedN": "{n} en échec",
+      "test": "M’envoyer un test",
+      "send": "Envoyer…",
+      "delete": "Supprimer",
+      "empty": "Aucun envoi pour le moment.",
+      "saved": "Envoi enregistré.",
+      "deleted": "Brouillon supprimé.",
+      "testSent": "Test envoyé à {to}.",
+      "testFail": "Le test n’a pas pu être envoyé à {to} : voir E-mails envoyés.",
+      "started": "Envoi lancé vers {n} abonné(s).",
+      "sendTitle": "Envoyer la newsletter ?",
+      "sendText": "« {subject} » sera envoyée à {n} abonné(s) actif(s). Cette action ne peut pas être annulée.",
+      "sendNow": "Envoyer maintenant",
+      "subActive": "Abonnés actifs",
+      "subActiveHint": "Membres et visiteurs confirmés : ceux qui recevront l’envoi.",
+      "subPending": "En attente de confirmation",
+      "subPendingHint": "Visiteurs qui n’ont pas encore cliqué le lien de confirmation : aucun envoi ne leur est fait.",
+      "subUnsub": "Désabonnés",
+      "privacyNote": "Chaque e-mail contient un lien de désabonnement en un clic. Les ouvertures et les clics ne sont pas mesurés : le suivi porte sur l’envoi (envoyé ou en échec)."
+    },
+    "em": {
+      "sent": "E-mails envoyés",
+      "sentShort": "envoyés",
+      "failed": "En échec",
+      "failedHint": "Refusés par le fournisseur ou non envoyés.",
+      "rate": "Taux de réussite",
+      "rateHint": "Envoyés sur le total des tentatives.",
+      "provider": "Fournisseur : {name}",
+      "devProvider": "aucun (développement)",
+      "noProviderTitle": "Aucun fournisseur d’e-mail configuré",
+      "noProvider": "En l’état, aucun e-mail réel ne part. Renseignez BREVO_API_KEY (ou SMTP_URL) et MAIL_FROM dans les variables du service.",
+      "lastFailure": "Dernier échec {when}",
+      "noError": "Aucun détail fourni par le fournisseur.",
+      "chart": "Envoyés et en échec par jour",
+      "byKind": "Par type d’e-mail",
+      "all": "Tous",
+      "empty": "Aucun e-mail pour le moment.",
+      "to": "Destinataire",
+      "subject": "Objet",
+      "kind": "Type",
+      "statuses": {
+        "SENT": "Envoyé",
+        "FAILED": "En échec"
+      },
+      "kinds": {
+        "verification": "Code de confirmation",
+        "password_reset": "Mot de passe oublié",
+        "magic_link": "Lien de connexion",
+        "notification": "Notification",
+        "newsletter": "Newsletter",
+        "newsletter_confirm": "Confirmation newsletter",
+        "newsletter_test": "Test newsletter",
+        "other": "Autre"
+      }
     }
   },
   "pricingFaq": {
@@ -3481,5 +3648,47 @@
     "text": "Le lien est peut-être cassé, ou la page a été déplacée. Pas de panique : l’amour, lui, n’est jamais très loin.",
     "discover": "Découvrir des profils",
     "usefulLinks": "Liens utiles"
+  },
+  "featureOff": {
+    "title": "Fonctionnalité indisponible",
+    "text": "Elle est momentanément désactivée par l’équipe CrushDuo. Revenez un peu plus tard : tout redeviendra comme avant.",
+    "back": "Retour à la découverte",
+    "names": {
+      "speed_dating": "Speed dating",
+      "payments_enabled": "Paiements en ligne",
+      "promo_codes": "Codes promo",
+      "boosts": "Boosts",
+      "live_match": "Crush en direct",
+      "daily_picks": "Découvertes du jour"
+    }
+  },
+  "activity": {
+    "online": "En ligne",
+    "today": "Actif aujourd’hui",
+    "week": "Actif cette semaine",
+    "seen": "Vu {when}"
+  },
+  "newsletter": {
+    "title": "La newsletter",
+    "text": "Les nouveautés et conseils de CrushDuo, pas plus.",
+    "email": "Votre adresse e-mail",
+    "placeholder": "vous@exemple.com",
+    "subscribe": "S’abonner",
+    "sent": "Presque fini : un e-mail de confirmation vient de vous être envoyé. Cliquez sur le lien qu’il contient.",
+    "error": "Adresse invalide ou trop de tentatives. Réessayez dans un moment.",
+    "confirm": {
+      "okTitle": "Inscription confirmée",
+      "okText": "Merci ! Vous recevrez la newsletter CrushDuo. Chaque e-mail contient un lien pour vous désabonner."
+    },
+    "unsubscribe": {
+      "okTitle": "Vous êtes désabonné(e)",
+      "okText": "Vous ne recevrez plus la newsletter. Vos e-mails de compte (code, mot de passe) continuent d’arriver."
+    },
+    "badTitle": "Lien invalide",
+    "badText": "Ce lien n’est plus valable ou a déjà été utilisé.",
+    "notifications": {
+      "okTitle": "Vous ne recevrez plus ces e-mails",
+      "okText": "Les e-mails de notification (likes, matchs, messages) sont coupés. Vous gardez les notifications dans l’application, et les e-mails de compte (code, mot de passe) continuent d’arriver. Vous pouvez changer cela à tout moment dans Paramètres › Notifications."
+    }
   }
 }

@@ -1734,6 +1734,8 @@
     "intents": "Intentions sought",
     "advanced": "Advanced filters",
     "distance": "Maximum distance (km)",
+    "distanceAny": "Anywhere",
+    "distanceValue": "{km} km",
     "distanceHint": "Requires sharing your approximate location (Settings → Privacy).",
     "languages": "Languages",
     "interests": "Interests",
@@ -1898,7 +1900,9 @@
       "byEmail": "By email",
       "inApp": "In the app",
       "push": "Push notifications",
-      "pushText": "Notifications on your device, after your consent."
+      "pushText": "Notifications on your device, after your consent.",
+      "newsletter": "Newsletter",
+      "newsletterText": "CrushDuo news and tips by email. One-click unsubscribe."
     },
     "privacy": {
       "visible": "Visible profile",
@@ -1929,7 +1933,9 @@
       "typing": "Typing indicator",
       "typingText": "Shows when you are typing and lets you see when the other person is. When off, nobody sees the other typing.",
       "receiptsLocked": "Managing read receipts is reserved for Premium and VIP members: your receipts stay on.",
-      "receiptsUpgrade": "Go Premium"
+      "receiptsUpgrade": "Go Premium",
+      "activity": "Show my activity",
+      "activityText": "Shows “online” or “active today” to people you have a match with. When off, you do not see theirs either, unless you have discreet mode."
     },
     "security": {
       "password": "Change password",
@@ -2054,7 +2060,10 @@
       "engagement": "Engagement",
       "speed": "Speed dating",
       "contact": "Contact messages",
-      "storage": "File storage"
+      "storage": "File storage",
+      "stats": "Statistics",
+      "newsletter": "Newsletter",
+      "emails": "Sent emails"
     },
     "storage": {
       "title": "File storage",
@@ -2165,20 +2174,93 @@
       "lang": "Language"
     },
     "stats": {
-      "users": "Members",
-      "signups7": "Sign-ups (7 d)",
-      "signups30": "Sign-ups (30 d)",
-      "active7": "Active (7 d)",
-      "profilesCompleted": "Completed profiles",
-      "likes": "Likes",
-      "matches": "Matches",
-      "activeConversations": "Active conversations (7 d)",
-      "activeSubscriptions": "Active subscriptions",
-      "revenue": "Total revenue",
-      "revenue30": "Revenue (30 d)",
-      "conversion": "Paid conversion rate",
-      "retention": "7-day retention",
-      "signupsChart": "Sign-ups per day (last 14 days)"
+      "lastDays": "last {n} days",
+      "kpis": "Key figures",
+      "plans": "Plan distribution",
+      "note": "UTC calendar days. Changes compare the shown period with the previous period of the same length. Hover (or touch) the charts to read values.",
+      "p7": "7 days",
+      "p30": "30 days",
+      "p90": "3 months",
+      "p180": "6 months",
+      "p365": "1 year",
+      "k": {
+        "signups": "New members",
+        "signupsHint": "{total} members in total",
+        "likes": "Likes sent",
+        "matches": "Matches",
+        "matchesHint": "{rate} of likes lead to a match",
+        "crush": "Crush invitations",
+        "crushHint": "{rate} accepted",
+        "subs": "New subscriptions",
+        "subsHint": "{n} active subscriptions",
+        "revenue": "Revenue"
+      },
+      "c": {
+        "members": "Members",
+        "membersSub": "Running total: {n}",
+        "signups": "Sign-ups per day",
+        "total": "{n} over the {period}",
+        "likes": "Likes and passes",
+        "likesSub": "Likes sent and profiles passed, per day",
+        "matches": "Matches per day",
+        "crush": "Live Crush",
+        "crushSub": "Searches, invitations and acceptances · {rate} accepted",
+        "subs": "Subscriptions per day",
+        "revenue": "Revenue per day",
+        "messages": "Messages per day"
+      },
+      "l": {
+        "likes": "Likes",
+        "passes": "Passes",
+        "searches": "Searches",
+        "invites": "Invitations",
+        "accepted": "Accepted"
+      },
+      "h": {
+        "title": "Platform health",
+        "help": "Do members find enough people around them? What matters is active, compatible members — not the total of sign-ups.",
+        "balance": "Men / women balance (members active in the last 7 days)",
+        "women": "Women",
+        "men": "Men",
+        "other": "Others",
+        "womenShort": "{n} W",
+        "menShort": "{n} M",
+        "activeShort": "active",
+        "ratio": "Gap of about {n} to 1 between the two genders. Above 1.5, the minority side is overwhelmed and the majority side does not match.",
+        "noMinority": "One of the two genders is missing: no match is possible between them.",
+        "active": "Active members (7 days)",
+        "activeHint": "Seen in the last 7 days: the real size of the platform.",
+        "thin": "Members with fewer than {n} profiles to see",
+        "thinHint": "Share of active members whose search (gender, age, country) returns too few active profiles. Aim below 30%.",
+        "median": "Profiles to see (median)",
+        "medianHint": "For a typical active member: how many active profiles match their search.",
+        "cities": "Most active cities"
+      },
+      "s": {
+        "title": "Member satisfaction",
+        "help": "Indirect signals: whether people match, answer each other, come back, and whether dates go well.",
+        "match": "Likes that become a match",
+        "matchHint": "Overall match rate: a low rate points to a lack of compatible profiles.",
+        "reply": "Conversations that get a reply",
+        "replyHint": "Is the first message followed by an answer?",
+        "mutual": "Two-way conversations",
+        "mutualHint": "Both people wrote: the connection is taking.",
+        "d7": "Back after 7 days",
+        "d30": "Back after 30 days",
+        "cohort": "Among {n} sign-ups in the period",
+        "dateNote": "Average date rating",
+        "dateNoteHint": "{n} reviews left after a date: the most direct satisfaction measure.",
+        "dateAccept": "Dates accepted",
+        "dateAcceptHint": "Out of {n} proposals",
+        "calls": "Calls answered",
+        "callsHint": "Out of {n} calls started",
+        "speed": "Mutual interest in speed dating",
+        "speedHint": "Out of {n} pairs",
+        "premium": "Conversion to a subscription",
+        "premiumHint": "Share of members who have ever paid.",
+        "reports": "Open reports",
+        "reportsHint": "{n} received in total: the clearest sign of dissatisfaction."
+      }
     },
     "plans": {
       "intro": "Prices, benefits and quotas are set here, without changing code. A change only applies to future purchases: existing subscriptions and payments keep their period and amount. Every change is logged.",
@@ -2671,7 +2753,15 @@
         "delete": "Delete",
         "empty": "No questions."
       },
-      "edit": "Edit"
+      "edit": "Edit",
+      "g": {
+        "daily": "Daily picks",
+        "profiles": "Profiles and conversations",
+        "dates": "Dates",
+        "account": "Account and notifications",
+        "meet": "Live meetings",
+        "calls": "Calls"
+      }
     },
     "speed": {
       "title": "Speed dating",
@@ -2781,7 +2871,10 @@
       "subscriptions": "Premium and VIP subscriptions, their status and end date.",
       "refunds": "Refund requests waiting to be approved or rejected.",
       "audit": "Who did what in the administration, and when: useful to understand a change.",
-      "moderation": "Selfies to verify, appeals from sanctioned members and published photos."
+      "moderation": "Selfies to verify, appeals from sanctioned members and published photos.",
+      "stats": "Evolution over time: members, likes, matches, Crush, subscriptions and revenue, compared with the previous period.",
+      "newsletter": "Write and send a newsletter to subscribers, with a test before sending and delivery tracking.",
+      "emails": "Every email the platform sends (confirmation, password, notifications, newsletter) with its state: sent or failed, and why."
     },
     "strip": {
       "total": "Members",
@@ -2804,6 +2897,80 @@
       "give": "Gift",
       "revoke": "Remove plan",
       "until": "until {date}"
+    },
+    "nl": {
+      "campaigns": "Sendings",
+      "help": "A sending stays a draft until you launch it. Send yourself a test to see the email before sending.",
+      "new": "New sending",
+      "editTitle": "Edit sending",
+      "subject": "Subject",
+      "preheader": "Preview text",
+      "preheaderHint": "Shown next to the subject in the inbox.",
+      "body": "Message",
+      "bodyHint": "Separate paragraphs with a blank line. No HTML: the text is styled with the brand look.",
+      "ctaLabel": "Button text (optional)",
+      "ctaUrl": "Button link",
+      "ctaUrlHint": "Must start with https://",
+      "statuses": {
+        "DRAFT": "Draft",
+        "SENDING": "Sending",
+        "SENT": "Sent"
+      },
+      "delivery": "Delivery",
+      "failedN": "{n} failed",
+      "test": "Send me a test",
+      "send": "Send…",
+      "delete": "Delete",
+      "empty": "No sending yet.",
+      "saved": "Sending saved.",
+      "deleted": "Draft deleted.",
+      "testSent": "Test sent to {to}.",
+      "testFail": "The test could not be sent to {to}: see Sent emails.",
+      "started": "Sending started to {n} subscriber(s).",
+      "sendTitle": "Send the newsletter?",
+      "sendText": "“{subject}” will be sent to {n} active subscriber(s). This cannot be undone.",
+      "sendNow": "Send now",
+      "subActive": "Active subscribers",
+      "subActiveHint": "Confirmed members and visitors: those who will receive the sending.",
+      "subPending": "Awaiting confirmation",
+      "subPendingHint": "Visitors who have not clicked the confirmation link yet: nothing is sent to them.",
+      "subUnsub": "Unsubscribed",
+      "privacyNote": "Every email contains a one-click unsubscribe link. Opens and clicks are not measured: tracking covers delivery (sent or failed)."
+    },
+    "em": {
+      "sent": "Emails sent",
+      "sentShort": "sent",
+      "failed": "Failed",
+      "failedHint": "Rejected by the provider or not sent.",
+      "rate": "Success rate",
+      "rateHint": "Sent out of all attempts.",
+      "provider": "Provider: {name}",
+      "devProvider": "none (development)",
+      "noProviderTitle": "No email provider configured",
+      "noProvider": "As things stand, no real email is sent. Set BREVO_API_KEY (or SMTP_URL) and MAIL_FROM in the service variables.",
+      "lastFailure": "Last failure {when}",
+      "noError": "No detail given by the provider.",
+      "chart": "Sent and failed per day",
+      "byKind": "By email type",
+      "all": "All",
+      "empty": "No email yet.",
+      "to": "Recipient",
+      "subject": "Subject",
+      "kind": "Type",
+      "statuses": {
+        "SENT": "Sent",
+        "FAILED": "Failed"
+      },
+      "kinds": {
+        "verification": "Confirmation code",
+        "password_reset": "Password reset",
+        "magic_link": "Sign-in link",
+        "notification": "Notification",
+        "newsletter": "Newsletter",
+        "newsletter_confirm": "Newsletter confirmation",
+        "newsletter_test": "Newsletter test",
+        "other": "Other"
+      }
     }
   },
   "pricingFaq": {
@@ -3481,5 +3648,47 @@
     "text": "The link may be broken, or the page may have moved. Don’t worry: love is never far away.",
     "discover": "Discover profiles",
     "usefulLinks": "Useful links"
+  },
+  "featureOff": {
+    "title": "Feature unavailable",
+    "text": "It is temporarily turned off by the CrushDuo team. Please come back a little later: everything will be back soon.",
+    "back": "Back to Discover",
+    "names": {
+      "speed_dating": "Speed dating",
+      "payments_enabled": "Online payments",
+      "promo_codes": "Promo codes",
+      "boosts": "Boosts",
+      "live_match": "Live Crush",
+      "daily_picks": "Daily picks"
+    }
+  },
+  "activity": {
+    "online": "Online",
+    "today": "Active today",
+    "week": "Active this week",
+    "seen": "Seen {when}"
+  },
+  "newsletter": {
+    "title": "The newsletter",
+    "text": "CrushDuo news and tips, nothing more.",
+    "email": "Your email address",
+    "placeholder": "you@example.com",
+    "subscribe": "Subscribe",
+    "sent": "Almost done: a confirmation email has just been sent. Click the link inside.",
+    "error": "Invalid address or too many attempts. Try again in a moment.",
+    "confirm": {
+      "okTitle": "Subscription confirmed",
+      "okText": "Thank you! You will receive the CrushDuo newsletter. Every email has a link to unsubscribe."
+    },
+    "unsubscribe": {
+      "okTitle": "You are unsubscribed",
+      "okText": "You will no longer receive the newsletter. Your account emails (code, password) keep arriving."
+    },
+    "badTitle": "Invalid link",
+    "badText": "This link is no longer valid or has already been used.",
+    "notifications": {
+      "okTitle": "You will no longer receive these emails",
+      "okText": "Notification emails (likes, matches, messages) are turned off. You keep in-app notifications, and account emails (code, password) keep arriving. You can change this any time in Settings › Notifications."
+    }
   }
 }

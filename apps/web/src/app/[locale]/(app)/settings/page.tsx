@@ -29,11 +29,14 @@ function NotificationsTab() {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ['notif-prefs'], queryFn: () => api<Record<string, boolean>>('/notifications/preferences') });
   const m = useMutation({ mutationFn: (b: Record<string, boolean>) => put<Record<string, boolean>>('/notifications/preferences', b), onSuccess: (d) => qc.setQueryData(['notif-prefs'], d) });
+  const nl = useQuery({ queryKey: ['newsletter', 'me'], queryFn: () => api<{ subscribed: boolean }>('/newsletter/me') });
+  const setNl = useMutation({ mutationFn: (subscribed: boolean) => put<{ subscribed: boolean }>('/newsletter/me', { subscribed }), onSuccess: (d) => qc.setQueryData(['newsletter', 'me'], d) });
   if (!q.data) return <Skeleton className="h-64" />;
   return (
     <div className="space-y-8">
     <Card className="divide-y divide-line px-5">
       {NOTIF.map(([k, kind]) => <Row key={k} title={t(`settings.notif.${kind}`)} text={t(k.startsWith('email') ? 'settings.notif.byEmail' : 'settings.notif.inApp')}><Switch checked={!!q.data[k]} onChange={(v) => m.mutate({ [k]: v })} label={`${t(`settings.notif.${kind}`)} — ${t(k.startsWith('email') ? 'settings.notif.byEmail' : 'settings.notif.inApp')}`} /></Row>)}
+      <Row title={t('settings.notif.newsletter')} text={t('settings.notif.newsletterText')}><Switch checked={!!nl.data?.subscribed} disabled={!nl.data || setNl.isPending} onChange={(v) => setNl.mutate(v)} label={t('settings.notif.newsletter')} /></Row>
       <Row title={t('settings.notif.push')} text={t('settings.notif.pushText')}><Badge tone="neutral">{t('common.soon')}</Badge></Row>
     </Card>
     <section aria-labelledby="rhythm-t"><h2 id="rhythm-t" className="mb-3 text-xl font-extrabold">{t('rhythm.title')}</h2><RhythmCard /></section>
@@ -69,10 +72,10 @@ function PrivacyTab() {
           <span className="flex items-center gap-3">{p.readReceiptsLocked && <Link href="/premium" className="text-sm font-semibold text-brand-ink underline">{t('settings.privacy.receiptsUpgrade')}</Link>}
             <Switch checked={p.readReceipts} disabled={p.readReceiptsLocked} onChange={(v) => set.mutate({ readReceipts: v })} label={t('settings.privacy.receipts')} /></span></Row>
         <Row title={t('settings.privacy.typing')} text={t('settings.privacy.typingText')}><Switch checked={p.typingIndicator} onChange={(v) => set.mutate({ typingIndicator: v })} label={t('settings.privacy.typing')} /></Row>
+        <Row title={t('settings.privacy.activity')} text={t('settings.privacy.activityText')}><Switch checked={p.showActivity} onChange={(v) => set.mutate({ showActivity: v })} label={t('settings.privacy.activity')} /></Row>
         <Row title={t('settings.privacy.incognito')} text={me.entitlement.limits.incognito ? t('settings.privacy.incognitoText') : t('settings.privacy.incognitoLocked')}><Switch checked={p.incognito} disabled={!me.entitlement.limits.incognito} onChange={(v) => set.mutate({ incognito: v })} label={t('settings.privacy.incognito')} /></Row>
         <Row title={t('settings.privacy.marketing')} text={t('settings.privacy.marketingText')}><Switch checked={me.marketingConsent} onChange={(v) => consent.mutate(v)} label={t('settings.privacy.marketing')} /></Row>
       </Card>
-        <Row title={t('settings.privacy.activity')} text={t('settings.privacy.activityText')}><Switch checked={p.showActivity} onChange={(v) => set.mutate({ showActivity: v })} label={t('settings.privacy.activity')} /></Row>
       <Card className="space-y-3 p-5"><h3 className="flex items-center gap-2 font-bold"><MapPin className="size-5 text-brand" aria-hidden />{t('settings.privacy.location')}</h3><p className="text-sm text-muted">{t('settings.privacy.locationText')}</p>
         <div className="flex gap-2"><Button variant="outline" size="sm" onClick={() => geo.mutate()} loading={geo.isPending}>{t('settings.privacy.locationShare')}</Button><Button variant="ghost" size="sm" onClick={() => clearGeo.mutate()}>{t('settings.privacy.locationClear')}</Button></div>
       </Card>

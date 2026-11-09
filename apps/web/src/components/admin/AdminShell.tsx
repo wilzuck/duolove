@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, BadgeCheck, CloudUpload, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, MailCheck, Megaphone, ChartLine, BadgeCheck, CloudUpload, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -18,12 +18,15 @@ const SECTIONS: { id: string; items: Item[] }[] = [
   { id: 'pilot', items: [
     { href: '/admin', key: 'overview', icon: LayoutDashboard, min: 'ADMIN' },
     { href: '/admin/moderation', key: 'moderation', icon: ShieldCheck, min: 'MODERATOR', badge: 'moderation' },
+    { href: '/admin/stats', key: 'stats', icon: ChartLine, min: 'ADMIN' },
     { href: '/admin/audit-log', key: 'audit', icon: History, min: 'ADMIN' },
   ] },
   { id: 'members', items: [
     { href: '/admin/users', key: 'users', icon: Users, min: 'MODERATOR' },
     { href: '/admin/reports', key: 'reports', icon: Flag, min: 'MODERATOR', badge: 'reports' },
     { href: '/admin/contact', key: 'contact', icon: Inbox, min: 'ADMIN' },
+    { href: '/admin/newsletter', key: 'newsletter', icon: Megaphone, min: 'ADMIN' },
+    { href: '/admin/emails', key: 'emails', icon: MailCheck, min: 'ADMIN' },
   ] },
   { id: 'revenue', items: [
     { href: '/admin/subscriptions', key: 'subscriptions', icon: CreditCard, min: 'ADMIN' },
@@ -103,7 +106,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <p className="mx-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white"><ShieldAlert className="size-3.5" aria-hidden />{t('admin.title')}</p>
         {nav}{account}
       </aside>
-      {open && <div className="fixed inset-0 z-50 lg:hidden"><button aria-label={t('common.close')} className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} /><aside className="absolute inset-y-0 left-0 flex w-72 flex-col gap-3 bg-[#1b1a24] p-4 shadow-pop"><div className="flex items-center justify-between px-2"><span className="[&_*]:!text-white"><Logo /></span><button aria-label={t('common.close')} className="rounded-full p-2 text-white" onClick={() => setOpen(false)}><X className="size-5" /></button></div>{nav}{account}</aside></div>}
+      {open && <div className="fixed inset-0 z-50 lg:hidden"><button aria-label={t('common.close')} className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} /><aside className="absolute inset-y-0 left-0 flex w-72 flex-col gap-3 bg-[#1b1a24] p-4 shadow-pop"><div className="flex items-center justify-between px-2"><Logo variant="dark" /><button aria-label={t('common.close')} className="rounded-full p-2 text-white" onClick={() => setOpen(false)}><X className="size-5" /></button></div>{nav}{account}</aside></div>}
       <div className="flex min-w-0 flex-col lg:col-start-2">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-line bg-bg/90 px-4 backdrop-blur lg:px-8">
           <IconButton label={t('nav.menu')} tone="plain" className="lg:hidden" aria-expanded={open} onClick={() => setOpen(true)}><Menu className="size-5" /></IconButton>
