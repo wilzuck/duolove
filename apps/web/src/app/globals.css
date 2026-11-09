@@ -77,3 +77,26 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .rdp-root.rdp-root .rdp-today:not(.rdp-outside) { font-weight: 700; }
 .rdp-root.rdp-root .rdp-dropdown { background: var(--card); color: var(--fg); }
 .rdp-root.rdp-root .rdp-dropdowns { gap: .25rem; }
+
+/* Éditeur riche des articles : même mise en forme que le rendu public (components/marketing/Markdown). */
+.rte { font-size: 1.0625rem; line-height: 1.7; }
+.rte > * + * { margin-top: 1rem; }
+.rte h2 { font-size: 1.5rem; font-weight: 700; padding-top: 0.75rem; }
+.rte h3 { font-size: 1.25rem; font-weight: 700; padding-top: 0.25rem; }
+.rte ul { list-style: disc; padding-left: 1.5rem; }
+.rte ol { list-style: decimal; padding-left: 1.5rem; }
+.rte li > p { margin: 0; }
+.rte blockquote { border-left: 4px solid var(--brand); background: var(--soft); border-radius: 0 1rem 1rem 0; padding: 0.75rem 1.25rem; font-weight: 500; }
+.rte a { color: var(--brand-ink); font-weight: 600; text-decoration: underline; }
+.rte img { display: block; max-width: 100%; margin: 1rem 0; border-radius: 1rem; }
+.rte img.ProseMirror-selectednode { outline: 3px solid var(--brand); }
+.rte p.is-editor-empty:first-child::before { content: attr(data-placeholder); float: left; height: 0; pointer-events: none; color: var(--muted); }
+
+/* Page 404 : le cœur brisé respire doucement, ses deux moitiés s'écartent puis se rejoignent. Immobile si l'utilisateur réduit les animations. */
+.nf-beat { animation: nf-float 4.5s ease-in-out infinite; }
+.nf-left { transform-origin: 60px 102px; animation: nf-left 4.5s ease-in-out infinite; }
+.nf-right { transform-origin: 60px 102px; animation: nf-right 4.5s ease-in-out infinite; }
+@keyframes nf-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes nf-left { 0%, 100% { transform: translate(-2px, 0) rotate(-3deg); } 50% { transform: translate(-5px, 0) rotate(-7deg); } }
+@keyframes nf-right { 0%, 100% { transform: translate(2px, 0) rotate(3deg); } 50% { transform: translate(5px, 0) rotate(7deg); } }
+@media (prefers-reduced-motion: reduce) { .nf-beat, .nf-left, .nf-right { animation: none; } }

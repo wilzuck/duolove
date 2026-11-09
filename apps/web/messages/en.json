@@ -1518,7 +1518,8 @@
     "CALL_LIMIT": "You have reached today’s call limit.",
     "CALL_NOT_ACTIVE": "This call is no longer in progress.",
     "CALLS_UNAVAILABLE": "Calls are not available right now.",
-    "UPLOAD_TIMEOUT": "The upload took too long. Check your connection, then try again."
+    "UPLOAD_TIMEOUT": "The upload took too long. Check your connection, then try again.",
+    "PAYMENTS_UNAVAILABLE": "Online payments are not available yet. Please try again later."
   },
   "app": {
     "nav": {
@@ -2480,7 +2481,7 @@
       "slugHint": "Lowercase letters, digits and hyphens. Address: /blog/your-link",
       "excerpt": "Summary (shown in the list)",
       "body": "Content",
-      "bodyHint": "Headings: ## Title · Lists: - item · **bold** · *italic* · > quote · [text](https://link)",
+      "bodyHint": "Select text to format it. Images are saved to the blog library; remember to describe them.",
       "tabWrite": "Write",
       "tabPreview": "Preview",
       "previewEmpty": "Nothing to show yet.",
@@ -2501,7 +2502,31 @@
       "publishedOk": "Article published.",
       "unpublishedOk": "Article unpublished.",
       "deleted": "Article deleted.",
-      "coverUploaded": "Image uploaded."
+      "coverUploaded": "Image uploaded.",
+      "rte": {
+        "label": "Article content",
+        "placeholder": "Write your article here… Format with the toolbar, or drag and drop an image.",
+        "toolbar": "Formatting",
+        "h2": "Heading",
+        "h3": "Subheading",
+        "bold": "Bold",
+        "italic": "Italic",
+        "link": "Link",
+        "unlink": "Remove link",
+        "ul": "Bulleted list",
+        "ol": "Numbered list",
+        "quote": "Quote",
+        "image": "Insert image",
+        "uploading": "Uploading image…",
+        "undo": "Undo",
+        "redo": "Redo",
+        "linkUrl": "Link address",
+        "apply": "Apply",
+        "cancel": "Cancel",
+        "imageAlt": "Alt text",
+        "imageAltHint": "Describe the image for people who can’t see it",
+        "imageRemove": "Remove image"
+      }
     },
     "eng": {
       "title": "Engagement and matching",
@@ -2771,6 +2796,14 @@
       "pastDue": "Payment overdue",
       "canceled": "Canceled",
       "expired": "Expired"
+    },
+    "grant": {
+      "title": "Gift a plan",
+      "plan": "Plan",
+      "reason": "Reason (internal)",
+      "give": "Gift",
+      "revoke": "Remove plan",
+      "until": "until {date}"
     }
   },
   "pricingFaq": {
@@ -3441,5 +3474,12 @@
     "done": "Done",
     "loadMore": "Load more",
     "actions": "Actions"
+  },
+  "notFound": {
+    "badge": "Error 404",
+    "title": "Oops, this page ran away",
+    "text": "The link may be broken, or the page may have moved. Don’t worry: love is never far away.",
+    "discover": "Discover profiles",
+    "usefulLinks": "Useful links"
   }
 }

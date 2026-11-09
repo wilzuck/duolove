@@ -2,9 +2,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ImagePlus, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Badge, Button, Card, Dialog, Field, Input, Select, Spinner, Tabs, Textarea } from '@duomatch/ui';
 import { refreshBlogCache } from '@/app/actions/blog';
+import { RichTextEditor } from '@/components/admin/RichTextEditor';
 import { Markdown } from '@/components/marketing/Markdown';
 import { useApiError } from '@/hooks/useApiError';
 import { Link, useRouter } from '@/i18n/navigation';
@@ -22,7 +23,6 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
   const router = useRouter();
   const qc = useQueryClient();
   const toast = useUi((s) => s.toast);
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
   const [f, setF] = useState(() => ({
     locale: post?.locale ?? 'fr', title: post?.title ?? '', slug: post?.slug ?? '', excerpt: post?.excerpt ?? '', body: post?.body ?? '',
     coverKey: post?.coverKey ?? null as string | null, coverUrl: post?.coverUrl ?? null as string | null, coverAlt: post?.coverAlt ?? '', status: post?.status ?? 'DRAFT' as 'DRAFT' | 'PUBLISHED',
@@ -53,13 +53,6 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
   });
   const inline = useMutation({
     mutationFn: (file: File) => upload<Uploaded>('/admin/blog/images', file, file.name),
-    onSuccess: (r) => {
-      const ta = bodyRef.current;
-      const at = ta?.selectionStart ?? f.body.length;
-      const md = `\n\n![${t('admin.blog.insertedAlt')}](${r.url})\n\n`;
-      setF((s) => ({ ...s, body: s.body.slice(0, at) + md + s.body.slice(at) }));
-      toast('success', t('admin.blog.coverUploaded'));
-    },
     onError: (e) => toast('error', err(e)),
   });
   const remove = useMutation({
@@ -109,12 +102,8 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
           </div>
           {tab === 'write' ? (
             <div role="tabpanel" className="space-y-3">
-              <Textarea ref={bodyRef} aria-label={t('admin.blog.body')} required minLength={20} maxLength={40000} className="min-h-96 font-mono text-sm" value={f.body} onChange={(e) => set('body', e.target.value)} />
+              <RichTextEditor value={f.body} onChange={(md) => set('body', md)} busy={inline.isPending} uploadImage={async (file) => (await inline.mutateAsync(file)).url} />
               <p className="text-xs text-muted">{t('admin.blog.bodyHint')}</p>
-              <label className="inline-flex">
-                <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" aria-label={t('admin.blog.insertImage')} onChange={(e) => { const file = e.target.files?.[0]; if (file) inline.mutate(file); e.target.value = ''; }} />
-                <span className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold hover:bg-soft has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand"><ImagePlus className="size-4" aria-hidden />{inline.isPending ? t('admin.blog.uploading') : t('admin.blog.insertImage')}</span>
-              </label>
             </div>
           ) : (
             <div role="tabpanel" className="rounded-2xl border border-line p-5">{f.body.trim() ? <Markdown source={f.body} /> : <p className="text-muted">{t('admin.blog.previewEmpty')}</p>}</div>

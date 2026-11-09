@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 /** Rendu d'un Markdown restreint SANS HTML brut : titres, listes, gras, italique, citations, liens http(s) et images du blog. */
-const INLINE = /(!\[[^\]]*\]\([^)\s]+\)|\[[^\]]+\]\([^)\s]+\)|\*\*[^*]+\*\*|\*[^*\n]+\*)/g;
+const INLINE = /(!\[[^\]]*\]\([^)\s]+\)|\[[^\]]+\]\([^)\s]+\)|\*\*(?:[^*]|\*[^*\n]+\*)+\*\*|\*[^*\n]+\*)/g;
 const IMG_OK = /^\/api\/media\/blog\/[a-f0-9]{32}(_t)?\.webp$/;
 const LINK_OK = /^(https?:\/\/|\/(?!\/))/;
 
@@ -11,9 +11,9 @@ function inline(text: string, keyBase: string): ReactNode[] {
     let m = /^!\[([^\]]*)\]\(([^)\s]+)\)$/.exec(part);
     if (m) return IMG_OK.test(m[2]) ? <img key={key} src={m[2]} alt={m[1]} loading="lazy" className="my-6 w-full rounded-2xl" /> : null;
     m = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(part);
-    if (m) return LINK_OK.test(m[2]) ? <a key={key} href={m[2]} rel="noopener noreferrer nofollow" className="font-semibold text-brand-ink underline">{m[1]}</a> : m[1];
-    m = /^\*\*([^*]+)\*\*$/.exec(part);
-    if (m) return <strong key={key}>{m[1]}</strong>;
+    if (m) return LINK_OK.test(m[2]) ? <a key={key} href={m[2]} rel="noopener noreferrer nofollow" className="font-semibold text-brand-ink underline">{inline(m[1], key)}</a> : inline(m[1], key);
+    m = /^\*\*((?:[^*]|\*[^*\n]+\*)+)\*\*$/.exec(part);
+    if (m) return <strong key={key}>{inline(m[1], key)}</strong>;
     m = /^\*([^*\n]+)\*$/.exec(part);
     if (m) return <em key={key}>{m[1]}</em>;
     return part;

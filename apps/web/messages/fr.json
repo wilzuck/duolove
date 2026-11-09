@@ -1518,7 +1518,8 @@
     "CALL_LIMIT": "Vous avez atteint le nombre d’appels possibles aujourd’hui.",
     "CALL_NOT_ACTIVE": "Cet appel n’est plus en cours.",
     "CALLS_UNAVAILABLE": "Les appels ne sont pas disponibles pour le moment.",
-    "UPLOAD_TIMEOUT": "L'envoi a pris trop de temps. Vérifiez votre connexion, puis réessayez."
+    "UPLOAD_TIMEOUT": "L'envoi a pris trop de temps. Vérifiez votre connexion, puis réessayez.",
+    "PAYMENTS_UNAVAILABLE": "Les paiements en ligne ne sont pas encore disponibles. Réessayez plus tard."
   },
   "app": {
     "nav": {
@@ -2480,7 +2481,7 @@
       "slugHint": "Minuscules, chiffres et tirets. Adresse : /blog/votre-lien",
       "excerpt": "Résumé (affiché dans la liste)",
       "body": "Contenu",
-      "bodyHint": "Titres : ## Titre · Listes : - élément · **gras** · *italique* · > citation · [texte](https://lien)",
+      "bodyHint": "Sélectionnez du texte pour le mettre en forme. Les images sont enregistrées dans la bibliothèque du blog ; pensez à les décrire.",
       "tabWrite": "Rédiger",
       "tabPreview": "Aperçu",
       "previewEmpty": "Rien à afficher pour l’instant.",
@@ -2501,7 +2502,31 @@
       "publishedOk": "Article publié.",
       "unpublishedOk": "Article dépublié.",
       "deleted": "Article supprimé.",
-      "coverUploaded": "Image téléversée."
+      "coverUploaded": "Image téléversée.",
+      "rte": {
+        "label": "Contenu de l’article",
+        "placeholder": "Rédigez votre article ici… Mettez en forme avec la barre d’outils, ou glissez-déposez une image.",
+        "toolbar": "Mise en forme",
+        "h2": "Titre",
+        "h3": "Sous-titre",
+        "bold": "Gras",
+        "italic": "Italique",
+        "link": "Lien",
+        "unlink": "Retirer le lien",
+        "ul": "Liste à puces",
+        "ol": "Liste numérotée",
+        "quote": "Citation",
+        "image": "Insérer une image",
+        "uploading": "Envoi de l’image…",
+        "undo": "Annuler",
+        "redo": "Rétablir",
+        "linkUrl": "Adresse du lien",
+        "apply": "Appliquer",
+        "cancel": "Annuler",
+        "imageAlt": "Texte alternatif",
+        "imageAltHint": "Décrivez l’image pour les personnes qui ne la voient pas",
+        "imageRemove": "Supprimer l’image"
+      }
     },
     "eng": {
       "title": "Engagement et matching",
@@ -2771,6 +2796,14 @@
       "pastDue": "Paiement en retard",
       "canceled": "Annulés",
       "expired": "Expirés"
+    },
+    "grant": {
+      "title": "Offrir une formule",
+      "plan": "Formule",
+      "reason": "Motif (interne)",
+      "give": "Offrir",
+      "revoke": "Retirer la formule",
+      "until": "jusqu’au {date}"
     }
   },
   "pricingFaq": {
@@ -3441,5 +3474,12 @@
     "done": "Terminé",
     "loadMore": "Charger plus",
     "actions": "Actions"
+  },
+  "notFound": {
+    "badge": "Erreur 404",
+    "title": "Oups, cette page a pris la fuite",
+    "text": "Le lien est peut-être cassé, ou la page a été déplacée. Pas de panique : l’amour, lui, n’est jamais très loin.",
+    "discover": "Découvrir des profils",
+    "usefulLinks": "Liens utiles"
   }
 }
