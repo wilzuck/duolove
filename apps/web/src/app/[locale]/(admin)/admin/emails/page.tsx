@@ -1,6 +1,6 @@
 'use client';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, MailCheck, MailWarning, Percent, ShieldOff, Unlock } from 'lucide-react';
+import { AlertTriangle, MailCheck, MailWarning, Percent, Send, ShieldOff, Unlock } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, Button, Card, DataTableView, Skeleton, cn } from '@duomatch/ui';
@@ -10,7 +10,7 @@ import { LineChart } from '@/components/admin/StatsCharts';
 import { useAdminList } from '@/hooks/useAdmin';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
-import { api, del } from '@/lib/api';
+import { api, del, post, put } from '@/lib/api';
 import { timeAgo } from '@/lib/format';
 import { useUi } from '@/lib/store';
 
@@ -30,6 +30,53 @@ function Banner({ tone, title, children }: { tone: 'warning' | 'danger'; title: 
       <p className="flex items-center gap-2 font-bold"><AlertTriangle className="size-4 shrink-0" aria-hidden />{title}</p>
       {children && <div className="mt-1">{children}</div>}
     </div>
+  );
+}
+
+interface ProviderView { choice: 'auto' | 'brevo' | 'smtp'; active: 'brevo' | 'smtp' | 'dev'; configured: { brevo: boolean; smtp: boolean } }
+
+/** Choix du fournisseur d'envoi. Les identifiants restent dans les variables du serveur ; ici on ne choisit que celui qui est actif. */
+function ProviderCard() {
+  const t = useTranslations();
+  const err = useApiError();
+  const toast = useUi((u) => u.toast);
+  const qc = useQueryClient();
+  const view = useQuery({ queryKey: ['admin', 'emails', 'provider'], queryFn: () => api<ProviderView>('/admin/emails/provider') });
+  const [pick, setPick] = useState<ProviderView['choice'] | null>(null);
+  const v = view.data;
+  const value = pick ?? v?.choice ?? 'auto';
+  const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin', 'emails'] }); };
+  const save = useMutation({ mutationFn: () => put<ProviderView>('/admin/emails/provider', { provider: value }), onSuccess: () => { setPick(null); toast('success', t('admin.em.provider.saved')); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const test = useMutation({ mutationFn: () => post<{ ok: boolean; to: string }>('/admin/emails/provider/test'), onSuccess: (r) => { toast(r.ok ? 'success' : 'error', t(r.ok ? 'admin.em.provider.testOk' : 'admin.em.provider.testFail', { to: r.to })); refresh(); }, onError: (e) => toast('error', err(e)) });
+  if (!v) return <Skeleton className="h-40" />;
+  const options = [
+    { key: 'auto' as const, label: t('admin.em.provider.auto'), ok: true },
+    { key: 'brevo' as const, label: t('admin.em.provider.brevo'), ok: v.configured.brevo },
+    { key: 'smtp' as const, label: t('admin.em.provider.smtp'), ok: v.configured.smtp },
+  ];
+  return (
+    <Card className="space-y-4 p-5">
+      <div>
+        <h2 className="font-bold">{t('admin.em.provider.title')}</h2>
+        <p className="mt-1 text-sm text-muted">{t('admin.em.provider.text')}</p>
+      </div>
+      <div role="radiogroup" aria-label={t('admin.em.provider.title')} className="grid gap-2 sm:grid-cols-3">
+        {options.map((o) => (
+          <label key={o.key} className={cn('flex cursor-pointer flex-col gap-1 rounded-2xl border p-3 text-sm', value === o.key ? 'border-brand-strong bg-soft' : 'border-line', !o.ok && 'cursor-not-allowed opacity-60')}>
+            <span className="flex items-center gap-2 font-semibold"><input type="radio" name="provider" className="accent-brand-strong" checked={value === o.key} disabled={!o.ok} onChange={() => setPick(o.key)} />{o.label}</span>
+            {o.key !== 'auto' && <Badge tone={o.ok ? 'success' : 'neutral'}>{o.ok ? t('admin.em.provider.configured') : t('admin.em.provider.notConfigured')}</Badge>}
+          </label>
+        ))}
+      </div>
+      <p className="text-sm">{t('admin.em.provider.active', { name: v.active === 'brevo' ? 'Brevo' : v.active === 'smtp' ? t('admin.em.provider.smtpShort') : t('admin.em.devProvider') })}</p>
+      {v.choice !== 'auto' && v.choice !== v.active && <Banner tone="warning" title={t('admin.em.provider.fallback')} />}
+      {value === 'smtp' && <p className="text-xs text-muted">{t('admin.em.provider.sesNote')}</p>}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button size="sm" loading={save.isPending} disabled={pick === null || pick === v.choice} onClick={() => save.mutate()}>{t('admin.em.provider.save')}</Button>
+        <Button size="sm" variant="secondary" loading={test.isPending} onClick={() => test.mutate()}><Send className="size-4" aria-hidden />{t('admin.em.provider.test')}</Button>
+        <span className="text-xs text-muted">{t('admin.em.provider.superOnly')}</span>
+      </div>
+    </Card>
   );
 }
 
@@ -56,6 +103,7 @@ export default function AdminEmails() {
           {PERIODS.map((p) => <button key={p} type="button" aria-pressed={days === p} onClick={() => setDays(p)} className={cn('rounded-full px-3.5 py-1.5 text-sm font-semibold transition', days === p ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>{t(`admin.dash.p${p}`)}</button>)}
         </div>
       </PageHeader>
+      <ProviderCard />
       {s?.provider === 'dev' && <Banner tone="warning" title={t('admin.em.noProviderTitle')}>{t('admin.em.noProvider')}</Banner>}
       {!s ? <Skeleton className="h-32" /> : (
         <>

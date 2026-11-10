@@ -67,3 +67,46 @@ def test_mail_from_avec_guillemets_saisis_par_erreur(monkeypatch):
     monkeypatch.setattr(st, "mail_from", "CrushDuo")
     with pytest.raises(RuntimeError, match="MAIL_FROM invalide"):
         mail.sender()
+
+
+async def test_choix_du_fournisseur_par_l_administration(app, db, monkeypatch):
+    """Brevo et SMTP configurés : « auto » préfère Brevo ; le super-administrateur peut basculer sur SMTP ; un fournisseur non configuré est refusé."""
+    from app.core import mail_config
+    from tests.helpers import uid
+    from tests.support_c import member, set_role
+
+    st = get_settings()
+    monkeypatch.setattr(st, "brevo_api_key", "xkeysib-test")
+    monkeypatch.setattr(st, "smtp_url", "smtp://u:p@smtp.example.com:587")
+    mail_config.invalidate()
+    sup = await member(app, db)
+    await set_role(sup.id, "SUPER_ADMIN")
+    view = (await sup.agent.get("/api/admin/emails/provider")).json()
+    assert view["choice"] == "auto" and view["active"] == "brevo" and view["configured"] == {"brevo": True, "smtp": True}
+
+    brevo_calls, smtp_calls = [], []
+
+    async def fake_brevo(to, subject, text, html=None, headers=None):  # on remplace l'envoi lui-même : patcher httpx gênerait les appels de test à l'API
+        brevo_calls.append(to)
+    monkeypatch.setattr(mail, "_send_brevo", fake_brevo)
+    import aiosmtplib
+
+    async def fake_smtp(msg, **kw):
+        smtp_calls.append(msg["To"])
+    monkeypatch.setattr(aiosmtplib, "send", fake_smtp)
+
+    to = f"choix-{uid()}@duo.test"
+    assert await mail.send(to, "Sujet", "Corps") and len(brevo_calls) == 1 and smtp_calls == []
+    r = await sup.agent.put("/api/admin/emails/provider", json={"provider": "smtp"})
+    assert r.status_code == 200 and r.json()["active"] == "smtp"
+    assert await mail.send(to, "Sujet", "Corps") and smtp_calls == [to] and len(brevo_calls) == 1
+    t = (await sup.agent.post("/api/admin/emails/provider/test")).json()
+    assert t["ok"] is True and t["provider"] == "smtp"
+    assert (await sup.agent.put("/api/admin/emails/provider", json={"provider": "inconnu"})).status_code == 400
+    monkeypatch.setattr(st, "smtp_url", None)  # SMTP n'est plus configuré : on retombe sur Brevo au lieu de ne plus rien envoyer
+    assert mail_config.resolve("smtp") == "brevo"
+    assert (await sup.agent.put("/api/admin/emails/provider", json={"provider": "smtp"})).status_code == 400
+    assert (await sup.agent.put("/api/admin/emails/provider", json={"provider": "auto"})).status_code == 200
+    u = await member(app, db)
+    assert (await u.agent.put("/api/admin/emails/provider", json={"provider": "brevo"})).status_code == 403
+    mail_config.invalidate()

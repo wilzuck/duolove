@@ -11,14 +11,14 @@ from pydantic import BaseModel, StringConstraints, field_validator
 from sqlalchemy import delete, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.admin import ADM, DAY, after_cursor, audit, iso, page, paged
-from app.core import mail, newslettersvc
+from app.api.admin import ADM, DAY, SUP, after_cursor, audit, iso, page, paged
+from app.core import mail, mail_config, newslettersvc
 from app.core.auth import AuthUser, current_user
 from app.core.errors import bad_request, not_found
 from app.core.ids import utcnow
 from app.core.ratelimit import limit
 from app.db.session import get_db
-from app.models.models import EmailLog, EmailSuppression, NewsletterCampaign, NewsletterSubscriber
+from app.models.models import EmailLog, EmailSuppression, NewsletterCampaign, NewsletterSubscriber, SystemSetting
 
 router = APIRouter(tags=["newsletter"])
 Trim = lambda lo, hi: Annotated[str, StringConstraints(strip_whitespace=True, min_length=lo, max_length=hi)]  # noqa: E731
@@ -200,7 +200,7 @@ async def email_stats(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession
         {"d": days, "start": start})).all()
     last_fail = (await db.execute(select(EmailLog).where(EmailLog.status == "FAILED").order_by(EmailLog.createdAt.desc()).limit(1))).scalar_one_or_none()
     sent, failed = by_status.get("SENT", 0), by_status.get("FAILED", 0)
-    return {"days": days, "provider": mail.provider_name(), "sent": sent, "failed": failed, "successRate": round(sent / (sent + failed) * 1000) / 10 if sent + failed else None,
+    return {"days": days, "provider": await mail.provider_name(), "sent": sent, "failed": failed, "successRate": round(sent / (sent + failed) * 1000) / 10 if sent + failed else None,
             "byKind": by_kind, "series": {"sent": [{"day": r.day.isoformat(), "value": int(r.s)} for r in rows], "failed": [{"day": r.day.isoformat(), "value": int(r.f)} for r in rows]},
             "lastFailure": _log(last_fail) if last_fail else None, "generatedAt": now}
 
@@ -227,3 +227,47 @@ async def unsuppress(suppression_id: str, a: AuthUser = ADM, db: AsyncSession = 
     await db.commit()
     await audit(db, a.id, "email.unsuppress", "EmailSuppression", suppression_id, {"email": row.email, "reason": row.reason})
     return {"ok": True}
+
+
+# ── Administration : fournisseur d'envoi (Brevo ou SMTP, par exemple Amazon SES) ───────────────────────────────────────────
+
+class ProviderIn(BaseModel):
+    provider: str
+
+
+async def _provider_view() -> dict:
+    ch = await mail_config.choice()
+    return {"choice": ch, "active": mail_config.resolve(ch), "configured": mail_config.configured()}
+
+
+@router.get("/admin/emails/provider")
+async def provider_get(_: AuthUser = ADM):
+    return await _provider_view()
+
+
+@router.put("/admin/emails/provider")
+async def provider_set(body: ProviderIn, a: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
+    """Choisit le fournisseur d'envoi (réservé au super-administrateur). Les identifiants restent dans les variables du serveur : rien de secret n'est stocké ici."""
+    if body.provider not in mail_config.CHOICES:
+        raise bad_request("INVALID_PROVIDER", "Fournisseur inconnu : auto, brevo ou smtp.")
+    ok = mail_config.configured()
+    if body.provider in ("brevo", "smtp") and not ok[body.provider]:
+        raise bad_request("PROVIDER_NOT_CONFIGURED", "Ce fournisseur n'est pas configuré sur le serveur (variable manquante).")
+    before = await mail_config.choice()
+    row = await db.get(SystemSetting, mail_config.KEY)
+    if row:
+        row.value = {"provider": body.provider}
+    else:
+        db.add(SystemSetting(key=mail_config.KEY, value={"provider": body.provider}))
+    await db.commit()
+    mail_config.invalidate()
+    await audit(db, a.id, "email.provider", "SystemSetting", mail_config.KEY, {"before": before, "after": body.provider})
+    return await _provider_view()
+
+
+@router.post("/admin/emails/provider/test", dependencies=[limit(10, 3600)])
+async def provider_test(a: AuthUser = ADM):
+    """Envoie un e-mail de test à l'administrateur qui le demande, par le fournisseur actif : sert à vérifier un changement avant de s'y fier."""
+    prov = await mail_config.active()
+    ok = await mail.send(a.email, "Test d'envoi — CrushDuo", f"Cet e-mail confirme que l'envoi fonctionne (fournisseur : {prov}).", kind="admin_test")
+    return {"ok": ok, "provider": prov, "to": a.email}

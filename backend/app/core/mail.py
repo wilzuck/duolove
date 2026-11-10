@@ -64,9 +64,11 @@ async def _blocked(to: str, kind: str) -> str | None:
         return None
 
 
-def provider_name() -> str:
-    s = get_settings()
-    return "brevo" if s.brevo_api_key else "smtp" if s.smtp_url else "dev"
+async def provider_name() -> str:
+    """Fournisseur actif : le choix de l'administration (voir mail_config), à défaut Brevo puis SMTP."""
+    from app.core import mail_config
+
+    return await mail_config.active()
 
 
 async def send(to: str, subject: str, text: str, html: str | None = None, *, kind: str = "other", campaign_id: str | None = None, headers: dict | None = None) -> bool:
@@ -74,23 +76,24 @@ async def send(to: str, subject: str, text: str, html: str | None = None, *, kin
     try:
         blocked = await _blocked(to, kind)
         if blocked:  # rebond définitif ou plainte : on n'écrit plus à cette adresse (protège la réputation de l'expéditeur)
-            await _record(to, subject, kind, "SKIPPED", provider_name(), "Adresse bloquée : " + ("rebond définitif" if blocked == "BOUNCE" else "plainte pour spam"), campaign_id)
+            await _record(to, subject, kind, "SKIPPED", await provider_name(), "Adresse bloquée : " + ("rebond définitif" if blocked == "BOUNCE" else "plainte pour spam"), campaign_id)
             return False
         sent = await _send(to, subject, text, html, headers)
-        await _record(to, subject, kind, "SENT" if sent else "FAILED", provider_name(), None if sent else "Aucun fournisseur d'e-mail configuré en production", campaign_id)
+        await _record(to, subject, kind, "SENT" if sent else "FAILED", await provider_name(), None if sent else "Aucun fournisseur d'e-mail configuré en production", campaign_id)
         return sent
     except Exception as e:
         log.exception("Envoi d'e-mail impossible (%s)", subject)
-        await _record(to, subject, kind, "FAILED", provider_name(), str(e), campaign_id)
+        await _record(to, subject, kind, "FAILED", await provider_name(), str(e), campaign_id)
         return False
 
 
 async def _send(to: str, subject: str, text: str, html: str | None = None, headers: dict | None = None) -> bool:
     s = get_settings()
-    if s.brevo_api_key:
+    prov = await provider_name()
+    if prov == "brevo":
         await _send_brevo(to, subject, text, html, headers)
         return True
-    if s.smtp_url:
+    if prov == "smtp":
         import aiosmtplib
 
         u = urlsplit(s.smtp_url)
