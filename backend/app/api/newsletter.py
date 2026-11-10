@@ -18,7 +18,7 @@ from app.core.errors import bad_request, not_found
 from app.core.ids import utcnow
 from app.core.ratelimit import limit
 from app.db.session import get_db
-from app.models.models import EmailLog, NewsletterCampaign, NewsletterSubscriber
+from app.models.models import EmailLog, EmailSuppression, NewsletterCampaign, NewsletterSubscriber
 
 router = APIRouter(tags=["newsletter"])
 Trim = lambda lo, hi: Annotated[str, StringConstraints(strip_whitespace=True, min_length=lo, max_length=hi)]  # noqa: E731
@@ -173,7 +173,7 @@ async def email_log(status: str | None = None, kind: str | None = None, q: str |
                     _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     take = page(limit)
     stmt = select(EmailLog).order_by(EmailLog.createdAt.desc(), EmailLog.id.desc())
-    if status in ("SENT", "FAILED"):
+    if status in ("SENT", "FAILED", "SKIPPED"):
         stmt = stmt.where(EmailLog.status == status)
     if kind:
         stmt = stmt.where(EmailLog.kind == kind)
@@ -203,3 +203,27 @@ async def email_stats(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession
     return {"days": days, "provider": mail.provider_name(), "sent": sent, "failed": failed, "successRate": round(sent / (sent + failed) * 1000) / 10 if sent + failed else None,
             "byKind": by_kind, "series": {"sent": [{"day": r.day.isoformat(), "value": int(r.s)} for r in rows], "failed": [{"day": r.day.isoformat(), "value": int(r.f)} for r in rows]},
             "lastFailure": _log(last_fail) if last_fail else None, "generatedAt": now}
+
+
+@router.get("/admin/emails/suppressions")
+async def suppressions(q: str | None = None, _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Adresses bloquées après un rebond définitif ou une plainte (retours d'Amazon SES) : les 200 plus récentes et le total par motif."""
+    stmt = select(EmailSuppression).order_by(EmailSuppression.createdAt.desc())
+    if q and q.strip():
+        stmt = stmt.where(func.lower(EmailSuppression.email).like(f"%{q.strip().lower()}%"))
+    rows = (await db.execute(stmt.limit(200))).scalars().all()
+    totals = dict((await db.execute(select(EmailSuppression.reason, func.count()).group_by(EmailSuppression.reason))).all())
+    return {"items": [{"id": r.id, "email": r.email, "reason": r.reason, "detail": r.detail, "createdAt": iso(r.createdAt)} for r in rows],
+            "totals": {"BOUNCE": totals.get("BOUNCE", 0), "COMPLAINT": totals.get("COMPLAINT", 0)}}
+
+
+@router.delete("/admin/emails/suppressions/{suppression_id}")
+async def unsuppress(suppression_id: str, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Débloque une adresse (ex. rebond dû à une erreur de frappe corrigée depuis). À utiliser avec prudence : renvoyer à une adresse en rebond nuit à la réputation."""
+    row = await db.get(EmailSuppression, suppression_id)
+    if row is None:
+        raise not_found("SUPPRESSION_NOT_FOUND", "Adresse introuvable.")
+    await db.execute(delete(EmailSuppression).where(EmailSuppression.id == suppression_id))
+    await db.commit()
+    await audit(db, a.id, "email.unsuppress", "EmailSuppression", suppression_id, {"email": row.email, "reason": row.reason})
+    return {"ok": True}

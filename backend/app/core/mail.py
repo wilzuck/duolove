@@ -51,6 +51,19 @@ async def _record(to: str, subject: str, kind: str, status: str, provider: str, 
         log.exception("Journal d'e-mail impossible")
 
 
+async def _blocked(to: str, kind: str) -> str | None:
+    """Raison du blocage de l'adresse, ou None. Si la base est injoignable on envoie quand même : mieux vaut un e-mail de trop qu'un code de connexion perdu."""
+    try:
+        from app.core import suppression
+        from app.db.session import session_maker
+
+        async with session_maker()() as db:
+            return await suppression.blocked_reason(db, to, kind)
+    except Exception:
+        log.exception("Liste de blocage illisible")
+        return None
+
+
 def provider_name() -> str:
     s = get_settings()
     return "brevo" if s.brevo_api_key else "smtp" if s.smtp_url else "dev"
@@ -59,6 +72,10 @@ def provider_name() -> str:
 async def send(to: str, subject: str, text: str, html: str | None = None, *, kind: str = "other", campaign_id: str | None = None, headers: dict | None = None) -> bool:
     """Un échec d'envoi est journalisé sans jamais faire échouer l'inscription ou la connexion de l'utilisateur. Retourne True si l'envoi a réussi."""
     try:
+        blocked = await _blocked(to, kind)
+        if blocked:  # rebond définitif ou plainte : on n'écrit plus à cette adresse (protège la réputation de l'expéditeur)
+            await _record(to, subject, kind, "SKIPPED", provider_name(), "Adresse bloquée : " + ("rebond définitif" if blocked == "BOUNCE" else "plainte pour spam"), campaign_id)
+            return False
         sent = await _send(to, subject, text, html, headers)
         await _record(to, subject, kind, "SENT" if sent else "FAILED", provider_name(), None if sent else "Aucun fournisseur d'e-mail configuré en production", campaign_id)
         return sent

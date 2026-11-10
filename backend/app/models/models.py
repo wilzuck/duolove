@@ -684,6 +684,22 @@ class EmailLog(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class EmailSuppression(Base):
+    """Adresses auxquelles on n'écrit plus : rebond définitif (adresse inexistante) ou plainte « spam » signalés par le fournisseur d'e-mail (Amazon SES)."""
+    __tablename__ = 'EmailSuppression'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='EmailSuppression_pkey'),
+        Index('EmailSuppression_email_key', 'email', unique=True),
+        Index('EmailSuppression_createdAt_idx', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    email: Mapped[str] = mapped_column(Text, nullable=False)  # toujours en minuscules
+    reason: Mapped[str] = mapped_column(Text, nullable=False)  # BOUNCE | COMPLAINT
+    detail: Mapped[Optional[str]] = mapped_column(Text)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
 class NewsletterSubscriber(Base):
     """Abonné à la newsletter : membre (userId) ou visiteur (confirmation par e-mail, double opt-in). Statut : PENDING, ACTIVE, UNSUBSCRIBED."""
     __tablename__ = 'NewsletterSubscriber'

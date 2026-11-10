@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     # E-mail par l'API HTTP de Brevo (prioritaire sur SMTP_URL) : fonctionne sur tous les forfaits Railway, sans port SMTP.
     brevo_api_key: str | None = Field(None, alias="BREVO_API_KEY")
     mail_from: str = Field("CrushDuo <no-reply@crushduo.com>", alias="MAIL_FROM")
+    # Retours d'Amazon SES (rebonds, plaintes) reçus via Amazon SNS : seul ce sujet SNS est accepté. Sans lui, le point d'entrée /webhooks/ses refuse tout.
+    ses_sns_topic_arn: str | None = Field(None, alias="SES_SNS_TOPIC_ARN")
     upload_dir: str = Field("./uploads", alias="UPLOAD_DIR")
     # Stockage des fichiers : « local » (dossier UPLOAD_DIR, volume) ou « s3 » (stockage objet compatible S3 : Railway Buckets, Cloudflare R2, AWS).
     storage_driver: str = Field("local", alias="STORAGE_DRIVER")
