@@ -42,6 +42,8 @@
     "product": "Produit",
     "company": "CrushDuo",
     "legal": "Légal",
+    "adultsShort": "18 ans et plus",
+    "short": { "install": "Installer l’app", "terms": "Conditions", "privacy": "Confidentialité", "cookies": "Cookies", "community": "Règles" },
     "adults": "Réservé aux personnes majeures (18 ans et plus).",
     "rights": "Tous droits réservés.",
     "links": "Liens du site"
