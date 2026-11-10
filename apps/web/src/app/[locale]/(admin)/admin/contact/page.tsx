@@ -26,6 +26,12 @@ export default function AdminContact() {
   const [status, setStatus] = useState<Status>('NEW');
   const list = useAdminList<Msg>(['contact', status], `/admin/contact-messages?status=${status}`);
   const move = useMutation({ mutationFn: ({ id, s }: { id: string; s: Status }) => patch(`/admin/contact-messages/${id}`, { status: s }), onSuccess: () => qc.invalidateQueries({ queryKey: ['admin'] }), onError: (e) => toast('error', err(e)) });
+  const moveMany = async (rows: Msg[], s: Status) => {
+    try {
+      await Promise.all(rows.map((m) => patch(`/admin/contact-messages/${m.id}`, { status: s })));
+      toast('success', t('admin.contactBox.movedN', { n: rows.length }));
+    } catch (e) { toast('error', err(e)); throw e; } finally { void qc.invalidateQueries({ queryKey: ['admin'] }); }
+  };
   const c = useAdminSummary().data?.contact as Record<Status, number> | undefined;
   return (
     <div className="space-y-4">
@@ -34,6 +40,11 @@ export default function AdminContact() {
       {list.isLoading ? <Skeleton className="h-40" /> : (
         <DataTableView
           minWidth="48rem" rows={list.items} rowKey={(m) => m.id} empty={t('admin.contactBox.empty')} labels={tableLabels} exportName="messages-contact"
+          bulkActions={[
+            ...(status === 'NEW' ? [{ key: 'read', label: t('admin.contactBox.markRead'), icon: <MailOpen className="size-4" aria-hidden />, onRun: (rows: Msg[]) => moveMany(rows, 'READ') }] : []),
+            ...(status !== 'ANSWERED' && status !== 'ARCHIVED' ? [{ key: 'answered', label: t('admin.contactBox.answered'), icon: <CheckCheck className="size-4" aria-hidden />, onRun: (rows: Msg[]) => moveMany(rows, 'ANSWERED') }] : []),
+            status !== 'ARCHIVED' ? { key: 'archive', label: t('admin.contactBox.archive'), icon: <Archive className="size-4" aria-hidden />, onRun: (rows: Msg[]) => moveMany(rows, 'ARCHIVED') } : { key: 'restore', label: t('admin.contactBox.restore'), icon: <ArchiveRestore className="size-4" aria-hidden />, onRun: (rows: Msg[]) => moveMany(rows, 'NEW') },
+          ]}
           hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
           rowActions={(m) => [
             { label: t('admin.contactBox.reply'), icon: <Mail className="size-4" aria-hidden />, href: `mailto:${m.email}?subject=${encodeURIComponent('Re: CrushDuo')}`, onSelect: () => { if (m.status === 'NEW') move.mutate({ id: m.id, s: 'READ' }); } },

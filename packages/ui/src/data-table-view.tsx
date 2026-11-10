@@ -1,9 +1,10 @@
 'use client';
 
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Columns3, Download, Search, SlidersHorizontal } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Columns3, Download, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Button } from './button';
 import { DataTable, type Column, type SortState } from './data-table';
+import { Dialog } from './dialog';
 import { Popover } from './popover';
 import { RowMenu, type RowAction } from './row-menu';
 import { Input, Select } from './field';
@@ -39,6 +40,29 @@ export interface DataTableLabels {
   close: string;
   /** Menu de choix des colonnes affichées. */
   columnsMenu: string;
+  /** Sélection multiple : noms accessibles des cases, compteur (« 3 sélectionnées »), « sélectionner les N résultats », vider, export de la sélection. */
+  selectRow: string;
+  selectAll: string;
+  selectedCount: (n: number) => string;
+  selectResults: (n: number) => string;
+  clearSelection: string;
+  exportSelected: string;
+  cancel: string;
+}
+
+/** Action appliquée aux lignes cochées (supprimer, archiver, changer de statut…). */
+export interface BulkAction<T> {
+  key: string;
+  label: string;
+  icon?: ReactNode;
+  /** `danger` : bouton rouge (action destructrice). */
+  tone?: 'danger';
+  /** Demande une confirmation avant d'agir ; conseillé pour toute suppression. */
+  confirm?: { title: string; message: (count: number) => string; confirmLabel: string };
+  /** Reçoit les lignes cochées. Si la promesse réussit la sélection est vidée ; si elle échoue (l'appelant signale l'erreur), elle est conservée. */
+  onRun: (rows: T[]) => void | Promise<unknown>;
+  /** Faux : bouton grisé pour la sélection actuelle (ex. « Supprimer » quand une ligne n'est plus supprimable). */
+  enabled?: (rows: T[]) => boolean;
 }
 
 const NARROW = '(max-width: 767px)';
@@ -75,7 +99,7 @@ function downloadCsv(name: string, head: string[], lines: unknown[][]) {
  * pagination (10, 20, 30, 50, 100 lignes) avec compteur. Les colonnes participent via `value` (et `filter`).
  * Avec `exportName`, un bouton exporte en CSV toutes les lignes filtrées et triées (pas seulement la page affichée).
  */
-export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidth, defaultPageSize = 10, toolbar, exportName, serverSearch, hasMore, onLoadMore, loadingMore, rowActions }: {
+export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidth, defaultPageSize = 10, toolbar, exportName, serverSearch, hasMore, onLoadMore, loadingMore, rowActions, selectable, bulkActions }: {
   columns: readonly Column<T>[];
   rows: readonly T[];
   rowKey: (row: T) => string;
@@ -95,8 +119,15 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
   loadingMore?: boolean;
   /** Actions d'une ligne : un bouton « ⋯ » (icône seule) ouvre un menu ; sur téléphone il se place en haut à droite de la carte. */
   rowActions?: (row: T) => RowAction[];
+  /** Cases à cocher + barre d'actions. Avec `exportName` la barre propose d'exporter la sélection ; `bulkActions` y ajoute d'autres actions. */
+  selectable?: boolean;
+  bulkActions?: readonly BulkAction<T>[];
 }) {
   const [q, setQ] = useState('');
+  const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
+  const [pending, setPending] = useState<BulkAction<T> | null>(null);
+  const [running, setRunning] = useState<string | null>(null);
+  const canSelect = !!selectable || (bulkActions?.length ?? 0) > 0;
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [sort, setSort] = useState<SortState>(null);
   const [size, setSize] = useState<number>(defaultPageSize);
@@ -140,6 +171,17 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
   const from = result.length === 0 ? 0 : (current - 1) * size + 1;
   const to = Math.min(current * size, result.length);
   const visible = result.slice((current - 1) * size, current * size);
+  const selectedRows = useMemo(() => (canSelect ? rows.filter((r) => selected.has(rowKey(r))) : []), [canSelect, rows, selected, rowKey]);
+  const count = selectedRows.length;
+  const visibleKeys = visible.map(rowKey);
+  const allVisibleSelected = visibleKeys.length > 0 && visibleKeys.every((k) => selected.has(k));
+  const toggle = (k: string) => setSelected((s0) => { const n = new Set(s0); if (n.has(k)) n.delete(k); else n.add(k); return n; });
+  const toggleKeys = (keys: string[], on: boolean) => setSelected((s0) => { const n = new Set(s0); keys.forEach((k) => (on ? n.add(k) : n.delete(k))); return n; });
+  const run = async (a: BulkAction<T>) => {
+    setRunning(a.key);
+    try { await a.onRun(selectedRows); setSelected(new Set()); } catch { /* l'appelant a déjà signalé l'erreur : on garde la sélection pour réessayer */ } finally { setRunning(null); setPending(null); }
+  };
+  const exportHead = searchable.map((c) => (typeof c.header === 'string' ? c.header : c.filterLabel ?? c.key));
   const go = (p: number) => setPage(Math.min(Math.max(1, p), pages));
   const onSort = (key: string) => { setSort((s) => (s?.key !== key ? { key, dir: 'asc' } : s.dir === 'asc' ? { key, dir: 'desc' } : null)); setPage(1); };
   const reset = () => { setQ(''); setFilters({}); setPage(1); };
@@ -164,7 +206,7 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
         )}
         {exportName && (
           <Button type="button" variant="outline" size="sm" className="h-10 shrink-0 border-field-line" aria-label={labels.export} disabled={result.length === 0}
-            onClick={() => downloadCsv(exportName, searchable.map((c) => (typeof c.header === 'string' ? c.header : c.filterLabel ?? c.key)), result.map((r) => searchable.map((c) => c.value!(r))))}>
+            onClick={() => downloadCsv(exportName, exportHead, result.map((r) => searchable.map((c) => c.value!(r))))}>
             <Download className="size-4" aria-hidden /><span className="max-sm:sr-only">{labels.export}</span>
           </Button>
         )}
@@ -212,7 +254,34 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
         </fieldset>
       </Popover>
 
+      {canSelect && count > 0 && (
+        <div role="region" aria-live="polite" className="flex flex-wrap items-center gap-2 rounded-2xl border border-brand-strong/30 bg-soft px-4 py-2.5 text-sm">
+          <span className="font-semibold">{labels.selectedCount(count)}</span>
+          {allVisibleSelected && result.length > visible.length && count < result.length && (
+            <button type="button" className="font-semibold text-brand-ink underline-offset-4 hover:underline" onClick={() => toggleKeys(result.map(rowKey), true)}>{labels.selectResults(result.length)}</button>
+          )}
+          <span className="ml-auto flex flex-wrap items-center gap-2">
+            {(bulkActions ?? []).map((a) => (
+              <Button key={a.key} type="button" size="sm" variant={a.tone === 'danger' ? 'danger' : 'outline'} loading={running === a.key} disabled={(a.enabled ? !a.enabled(selectedRows) : false) || running !== null}
+                onClick={() => (a.confirm ? setPending(a) : void run(a))}>{a.icon}{a.label}</Button>
+            ))}
+            {exportName && (
+              <Button type="button" size="sm" variant="outline" onClick={() => downloadCsv(exportName, exportHead, selectedRows.map((r) => searchable.map((c) => c.value!(r))))}><Download className="size-4" aria-hidden />{labels.exportSelected}</Button>
+            )}
+            <Button type="button" size="sm" variant="ghost" aria-label={labels.clearSelection} onClick={() => setSelected(new Set())}><X className="size-4" aria-hidden /><span className="max-sm:sr-only">{labels.clearSelection}</span></Button>
+          </span>
+        </div>
+      )}
+      <Dialog open={!!pending} onClose={() => setPending(null)} title={pending?.confirm?.title ?? ''} closeLabel={labels.close} dismissible={running === null}>
+        <p className="text-sm text-muted">{pending?.confirm?.message(count)}</p>
+        <div className="mt-5 flex justify-end gap-2">
+          <Button type="button" variant="outline" onClick={() => setPending(null)} disabled={running !== null}>{labels.cancel}</Button>
+          <Button type="button" variant={pending?.tone === 'danger' ? 'danger' : 'primary'} loading={running !== null} onClick={() => pending && void run(pending)}>{pending?.confirm?.confirmLabel}</Button>
+        </div>
+      </Dialog>
+
       <DataTable columns={displayed} rows={visible} rowKey={rowKey} minWidth={minWidth} stacked={narrow} sort={sort} onSort={onSort} sortLabel={labels.sortBy}
+        selection={canSelect ? { selected, onToggle: toggle, onToggleAll: (on) => toggleKeys(visibleKeys, on), rowLabel: labels.selectRow, allLabel: labels.selectAll } : undefined}
         empty={rows.length === 0 ? empty : result.length === 0 ? labels.noResults : undefined} />
 
       {hasMore && <div className="text-center"><Button type="button" variant="outline" size="sm" onClick={onLoadMore} loading={loadingMore}>{labels.loadMore}</Button></div>}

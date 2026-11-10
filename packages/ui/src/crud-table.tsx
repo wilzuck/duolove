@@ -6,7 +6,7 @@ import { Button } from './button';
 import { Pencil } from 'lucide-react';
 import type { Column } from './data-table';
 import type { RowAction } from './row-menu';
-import { DataTableView, type DataTableLabels } from './data-table-view';
+import { DataTableView, type BulkAction, type DataTableLabels } from './data-table-view';
 import { Dialog } from './dialog';
 
 /**
@@ -19,7 +19,7 @@ import { Dialog } from './dialog';
  *   reçoivent alors la ligne (`null` pour un ajout), et l'appelant adapte `dialogTitle` / `submitLabel`.
  */
 export function CrudTable<T>({
-  title, description, intro, addLabel, editLabel, rowActions, columns, rows, rowKey, empty, loading, minWidth, tableLabels, exportName,
+  title, description, intro, addLabel, editLabel, rowActions, bulkActions, columns, rows, rowKey, empty, loading, minWidth, tableLabels, exportName,
   dialogTitle, submitLabel, cancelLabel, closeLabel, submitting, onOpen, onSubmit, children, footnote,
 }: {
   title: string;
@@ -31,6 +31,8 @@ export function CrudTable<T>({
   editLabel?: string;
   /** Autres actions de ligne (menu « ⋯ »), après « Modifier ». */
   rowActions?: (row: T) => RowAction[];
+  /** Cases à cocher et actions groupées (supprimer, exporter la sélection…) : voir `DataTableView`. */
+  bulkActions?: readonly BulkAction<T>[];
   columns: readonly Column<T>[];
   rows: readonly T[] | undefined;
   rowKey: (row: T) => string;
@@ -72,7 +74,7 @@ export function CrudTable<T>({
         <Button onClick={() => show(null)}><Plus className="size-4" aria-hidden />{addLabel}</Button>
       </header>
       {intro}
-      {rows === undefined ? loading : <DataTableView columns={columns} rowActions={menu} rows={rows} rowKey={rowKey} empty={empty} minWidth={minWidth} labels={tableLabels} exportName={exportName} />}
+      {rows === undefined ? loading : <DataTableView columns={columns} rowActions={menu} rows={rows} rowKey={rowKey} empty={empty} minWidth={minWidth} labels={tableLabels} exportName={exportName} bulkActions={bulkActions} />}
       <Dialog open={open} onClose={() => setOpen(false)} title={dialogTitle} closeLabel={closeLabel} className="w-[min(92vw,34rem)]">
         <form onSubmit={submit} className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2 [&>*:only-child]:sm:col-span-2">{children}</div>

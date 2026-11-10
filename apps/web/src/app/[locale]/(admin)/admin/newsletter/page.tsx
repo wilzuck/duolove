@@ -52,6 +52,14 @@ export default function AdminNewsletter() {
         tableLabels={labels} submitting={save.isPending} rows={q.data?.items} rowKey={(c) => c.id} loading={<Skeleton className="h-40" />} empty={t('admin.nl.empty')} minWidth="46rem"
         onOpen={(c) => { setEditId(c?.id ?? null); setF(c ? { subject: c.subject, preheader: c.preheader, body: c.body, ctaLabel: c.ctaLabel ?? '', ctaUrl: c.ctaUrl ?? '' } : blank); }}
         onSubmit={() => save.mutateAsync()}
+        bulkActions={[{
+          key: 'delete', label: t('admin.nl.delete'), icon: <Trash2 className="size-4" aria-hidden />, tone: 'danger',
+          enabled: (rows) => rows.every((c) => c.status === 'DRAFT'),
+          confirm: { title: t('admin.nl.bulkDeleteTitle'), message: (n) => t('admin.nl.bulkDeleteText', { n }), confirmLabel: t('admin.nl.delete') },
+          onRun: async (rows) => {
+            try { await Promise.all(rows.map((c) => del(`/admin/newsletter/${c.id}`))); toast('success', t('admin.nl.deletedN', { n: rows.length })); } catch (e) { toast('error', err(e)); throw e; } finally { refresh(); }
+          },
+        }]}
         rowActions={(c) => [
           { label: t('admin.nl.test'), icon: <FlaskConical className="size-4" aria-hidden />, onSelect: () => test.mutate(c.id) },
           ...(c.status === 'DRAFT' ? [{ label: t('admin.nl.send'), icon: <Send className="size-4" aria-hidden />, onSelect: () => setConfirm(c) }, { label: t('admin.nl.delete'), icon: <Trash2 className="size-4" aria-hidden />, tone: 'danger' as const, onSelect: () => remove.mutate(c.id) }] : []),
