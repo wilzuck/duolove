@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     brevo_api_key: str | None = Field(None, alias="BREVO_API_KEY")
     mail_from: str = Field("CrushDuo <no-reply@crushduo.com>", alias="MAIL_FROM")
     # Retours d'Amazon SES (rebonds, plaintes) reçus via Amazon SNS : seul ce sujet SNS est accepté. Sans lui, le point d'entrée /webhooks/ses refuse tout.
+    # Pool de connexions à la base : ajuster selon `max_connections` de PostgreSQL (somme de tous les processus < max_connections).
+    db_pool_size: int = Field(10, alias="DB_POOL_SIZE", ge=1, le=200)
+    db_max_overflow: int = Field(10, alias="DB_MAX_OVERFLOW", ge=0, le=200)
     ses_sns_topic_arn: str | None = Field(None, alias="SES_SNS_TOPIC_ARN")
     upload_dir: str = Field("./uploads", alias="UPLOAD_DIR")
     # Stockage des fichiers : « local » (dossier UPLOAD_DIR, volume) ou « s3 » (stockage objet compatible S3 : Railway Buckets, Cloudflare R2, AWS).

@@ -87,6 +87,9 @@ async def create(db: AsyncSession, user_id: str, type_: str, data: dict | None =
             base = get_settings().app_url.rstrip("/")
             unsub = None if essential else f"{base}/notifications-unsubscribe?token={unsub_token(user_id)}"
             text = f"{copy[1]}\n\n{base}" + (f"\n\nNe plus recevoir ces e-mails : {unsub}" if unsub else "")
+            # Libère la connexion de la requête AVANT l'envoi : le journal et la liste de blocage d'e-mail ouvrent leur propre session. Sans cela,
+            # quand toutes les connexions du pool sont tenues par des requêtes qui en attendent une deuxième, plus rien n'avance (blocage jusqu'au délai du pool).
+            await db.commit()
             await mail.send(u, copy[0], text, mail.notification_html(copy[0], copy[1], unsub), kind="notification",
                             headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"} if unsub else None)
             if n is not None:
