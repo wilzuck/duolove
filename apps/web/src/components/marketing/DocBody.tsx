@@ -1,5 +1,6 @@
 import { CheckCircle2, Heart, Info, XCircle, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { DocToc } from './DocToc';
 
 export type ListKind = 'do' | 'dont' | 'info';
 export interface DocSection { id: string; h: string; intro?: string; paras?: string[]; lists?: { kind: ListKind; items: string[] }[] }
@@ -15,13 +16,7 @@ const LIST_META: Record<ListKind, { icon: LucideIcon; tone: string }> = {
 export function DocBody({ sections, icons, tocLabel, listLabels, extra, footer }: {
   sections: DocSection[]; icons: Record<string, LucideIcon>; tocLabel: string; listLabels: Record<ListKind, string>; extra?: (id: string) => ReactNode; footer?: ReactNode;
 }) {
-  const toc = (
-    <ol className="space-y-1 text-sm">
-      {sections.map((s, i) => (
-        <li key={s.id}><a href={`#${s.id}`} className="flex gap-2 rounded-xl px-3 py-2 text-muted hover:bg-soft hover:text-brand-ink"><span className="font-semibold tabular-nums text-brand-ink">{String(i + 1).padStart(2, '0')}</span>{s.h}</a></li>
-      ))}
-    </ol>
-  );
+  const toc = <DocToc items={sections.map((s) => ({ id: s.id, label: s.h }))} />;
   return (
     <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 pb-16 lg:grid-cols-[15rem_1fr]">
       <aside className="lg:sticky lg:top-24 lg:self-start">
