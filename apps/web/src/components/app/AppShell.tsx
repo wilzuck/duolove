@@ -98,7 +98,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
             <Link href="/settings" className="lg:hidden" aria-label={t('app.nav.settings')}><Avatar src={me.profile?.thumbUrl} name={me.profile?.displayName ?? '?'} size={34} /></Link>
           </div>
         </header>
-        <main id="main" className={cn('min-w-0 flex-1', !inChat && 'pb-24 lg:pb-8')}>{children}{!inChat && <SiteLinks />}</main>
+        <main id="main" className={cn('flex min-w-0 flex-1 flex-col', !inChat && 'pb-24 lg:pb-8')}><div className="min-w-0 flex-1">{children}</div>{!inChat && <SiteLinks variant="app" className={path === '/profile' ? '' : 'max-lg:hidden'} />}</main>
       </div>
 
       {/* Barre d'onglets (mobile) */}
