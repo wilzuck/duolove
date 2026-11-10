@@ -3,7 +3,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ban } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { COUNTRIES, countryFlag } from '@duomatch/types';
 import { Badge, CrudTable, Field, Input, RangeSlider, Select, Textarea } from '@duomatch/ui';
+import { CityInput } from '@/components/CityInput';
 import { PageLoader } from '@/components/PageLoader';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -24,7 +26,7 @@ export default function AdminSpeed() {
   const toast = useUi((s) => s.toast);
   const q = useQuery({ queryKey: ['admin', 'speed'], queryFn: () => api<{ items: AdminSpeedRow[]; stats: { events: number; registrations: number; pairs: number; mutualInterests: number } }>('/admin/speed-events'), refetchInterval: 15_000 });
   const tableLabels = useTableLabels();
-  const blank = () => ({ title: '', description: '', city: '', intent: '', ageMin: 18, ageMax: 99, capacity: 20, roundSeconds: 180, rounds: 4, startsAt: localInput(new Date(Date.now() + 24 * 3600_000)) });
+  const blank = () => ({ title: '', description: '', country: 'BJ', city: '', intent: '', ageMin: 18, ageMax: 99, capacity: 20, roundSeconds: 180, rounds: 4, startsAt: localInput(new Date(Date.now() + 24 * 3600_000)) });
   const [f, setF] = useState(blank);
   const create = useMutation({
     mutationFn: () => post('/admin/speed-events', { title: f.title, description: f.description, city: f.city.trim() || null, intent: f.intent || null, ageMin: f.ageMin, ageMax: f.ageMax, capacity: f.capacity, roundSeconds: f.roundSeconds, rounds: f.rounds, startsAt: new Date(f.startsAt).toISOString() }),
@@ -60,7 +62,8 @@ export default function AdminSpeed() {
       <div className="sm:col-span-2"><Field label={t('admin.speed.name')}>{(p) => <Input {...p} required minLength={3} maxLength={80} value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />}</Field></div>
       <div className="sm:col-span-2"><Field label={t('admin.speed.description')}>{(p) => <Textarea {...p} maxLength={600} className="min-h-20" value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} />}</Field></div>
       <Field label={t('admin.speed.startsAt')}>{(p) => <Input {...p} type="datetime-local" required value={f.startsAt} onChange={(e) => setF({ ...f, startsAt: e.target.value })} />}</Field>
-      <Field label={t('admin.speed.city')}>{(p) => <Input {...p} maxLength={80} value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} />}</Field>
+      <Field label={t('admin.speed.country')}>{(p) => <Select {...p} value={f.country} onChange={(e) => setF({ ...f, country: e.target.value, city: '' })}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+      <Field label={t('admin.speed.city')}>{(p) => <CityInput {...p} country={f.country} value={f.city} onChange={(v) => setF({ ...f, city: v })} />}</Field>
       <Field label={t('admin.speed.intent')}>{(p) => <Select {...p} value={f.intent} onChange={(e) => setF({ ...f, intent: e.target.value })}><option value="">{t('admin.speed.anyIntent')}</option>{INTENTS.map((i) => <option key={i} value={i}>{t(`intent.${i}` as never)}</option>)}</Select>}</Field>
       <Field label={t('admin.speed.capacity')}>{(p) => <Input {...p} type="number" min={4} max={100} value={f.capacity} onChange={(e) => setF({ ...f, capacity: num(e.target.value, 20) })} />}</Field>
       <div className="sm:col-span-2"><RangeSlider label={t('live.ageRange')} min={18} max={99} value={[f.ageMin, f.ageMax]} minLabel={t('admin.speed.ageMin')} maxLabel={t('admin.speed.ageMax')}

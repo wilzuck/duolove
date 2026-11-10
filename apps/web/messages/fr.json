@@ -2774,6 +2774,7 @@
       "new": "Nouvelle session",
       "name": "Titre",
       "description": "Description (facultative)",
+      "country": "Pays (pour proposer les villes)",
       "city": "Ville (facultative)",
       "intent": "Intention (facultative)",
       "anyIntent": "Toutes",

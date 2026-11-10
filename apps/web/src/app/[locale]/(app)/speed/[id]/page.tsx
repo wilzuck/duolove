@@ -87,7 +87,7 @@ export default function SpeedRoomPage({ params }: { params: Promise<{ id: string
       {!registered && ev.phase !== 'CANCELED' && (
         <Card className="space-y-3 p-5">
           <p>{room.eligible ? t(`speed.reason.${room.eligible}` as never) : t('speed.subtitle')}</p>
-          <Link href="/speed"><Button variant="outline">{t('speed.title')}</Button></Link>
+          <Link href="/speed" className="block w-fit"><Button variant="outline">{t('speed.title')}</Button></Link>
         </Card>
       )}
 

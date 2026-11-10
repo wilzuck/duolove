@@ -188,8 +188,8 @@ export default function DiscoverPage() {
         <div className="space-y-4">
           <div className="flex size-14 items-center justify-center rounded-full bg-soft text-brand"><Crown className="size-7" /></div>
           <p className="text-muted">{t(upsell === 'DAILY_LIMIT' ? 'discover.limitText' : upsell === 'NO_SUPER_LIKES' ? 'discover.noSuperText' : 'discover.planText')}</p>
-          <Link href="/premium"><Button className="w-full" size="lg">{t('app.goPremium')}</Button></Link>
-          {upsell === 'NO_SUPER_LIKES' && <Link href="/shop"><Button className="w-full" size="lg" variant="outline">{t('discover.buyPack')}</Button></Link>}
+          <Link href="/premium" className="block"><Button className="w-full" size="lg">{t('app.goPremium')}</Button></Link>
+          {upsell === 'NO_SUPER_LIKES' && <Link href="/shop#prod-SUPER_LIKE_PACK" className="block"><Button className="w-full" size="lg" variant="outline">{t('discover.buyPack')}</Button></Link>}
         </div>
       </Dialog>
     </div>
