@@ -1,6 +1,7 @@
 """Données de DÉVELOPPEMENT uniquement (refuse de tourner en production).
 Tous les comptes ont une adresse en @duo.test ; mot de passe commun affiché à la fin.
-Usage : cd backend && .venv/bin/python -m scripts.seed   (SEED_PASSWORD pour fixer le mot de passe, sinon tirage aléatoire)"""
+Usage : cd backend && .venv/bin/python -m scripts.seed   (SEED_PASSWORD pour fixer le mot de passe, sinon tirage aléatoire ;
+SEED_MEMBERS=500 pour une foule plus grande, 100 par défaut ; relancer ajoute seulement les comptes manquants)"""
 from __future__ import annotations
 
 import asyncio
@@ -28,6 +29,7 @@ if get_settings().is_prod:
 PASSWORD = os.environ.get("SEED_PASSWORD") or f"{secrets.token_urlsafe(9)}aA1!"
 ROOT = Path(get_settings().upload_dir).resolve()
 DAY = datetime.timedelta(days=1)
+MEMBERS = max(0, min(int(os.environ.get("SEED_MEMBERS", "100")), 5000))
 
 PEOPLE = [
     ("Aminata", "WOMAN", 27, "SN", "Dakar", "SERIOUS", ["music", "cooking", "travel"]),
@@ -151,11 +153,11 @@ def birth_for(age: int, day: int | None = None) -> datetime.datetime:
 
 
 async def seed_crowd(db, pw_hash: str, interests: dict[str, str]) -> int:
-    """100 membres de démonstration variés (déterministes)."""
+    """`MEMBERS` membres de démonstration variés (déterministes ; 100 par défaut)."""
     r = Rng(20261103)
     created = 0
-    for i in range(1, 101):
-        email = f"membre{i:03d}@duo.test"
+    for i in range(1, MEMBERS + 1):
+        email = f"membre{i:04d}@duo.test" if MEMBERS > 999 else f"membre{i:03d}@duo.test"
         if (await db.execute(select(User.id).where(User.email == email))).first():
             continue
         roll = r()
@@ -272,6 +274,10 @@ async def seed_blog(db) -> int:
 async def main() -> None:
     pw_hash = await hash_password(PASSWORD)
     async with session_maker()() as db:
+        # Base déjà semée : les nouveaux comptes reprennent le mot de passe des comptes existants (un seul mot de passe à retenir).
+        known = (await db.execute(select(User.passwordHash).where(User.email == "aminata@duo.test"))).scalar_one_or_none()
+        if known:
+            pw_hash = known
         # Offres, prix et produits : créés au démarrage de l'API (plan_config.ensure_defaults), jamais par le seed.
         have = {i.slug for i in (await db.execute(select(Interest))).scalars()}
         for slug in INTEREST_SLUGS:
@@ -308,7 +314,7 @@ async def main() -> None:
         blog_posts = await seed_blog(db)
     print(f"Blog : {blog_posts} articles créés (images de couverture décoratives).")
     print(f"Seed OK : {crowd} membres de démonstration supplémentaires, {created} membres créés, {len(staff)} comptes staff (si absents).")
-    print(f"Mot de passe de TOUS les comptes seed : {PASSWORD}  (domaine @duo.test ; les comptes déjà existants gardent leur mot de passe)")
+    print(f"Mot de passe de TOUS les comptes seed : {PASSWORD}  (domaine @duo.test ; les comptes déjà existants gardent leur mot de passe)" if not known else "Mot de passe : celui des comptes déjà semés (inchangé).")
     await dispose()
 
 
