@@ -16,3 +16,4 @@ export * from './row-menu';
 export * from './crud-table';
 export * from './range';
 export * from './radio';
+export * from './password-input';

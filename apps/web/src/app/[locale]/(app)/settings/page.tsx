@@ -4,7 +4,8 @@ import { Download, LogOut, MapPin, Monitor, Receipt, ShieldCheck, Trash2 } from 
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
-import { Alert, Badge, Button, Card, cn, Dialog, EmptyState, Field, Input, Skeleton, Switch, Textarea } from '@duomatch/ui';
+import { Alert, Badge, Button, Card, cn, Dialog, EmptyState, Field, Skeleton, Switch, Textarea } from '@duomatch/ui';
+import { PasswordInput } from '@/components/PasswordInput';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useApiError } from '@/hooks/useApiError';
@@ -84,7 +85,7 @@ function PrivacyTab() {
       <Dialog open={confirm} onClose={() => setConfirm(false)} title={t('settings.privacy.deleteConfirmTitle')} closeLabel={t('common.close')}>
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); remove.mutate(); }}>
           <p className="text-sm text-muted">{t('settings.privacy.deleteConfirmText')}</p>
-          <Field label={t('auth.password')}>{(pr) => <Input {...pr} type="password" autoComplete="current-password" value={pw} onChange={(e) => setPw(e.target.value)} />}</Field>
+          <Field label={t('auth.password')}>{(pr) => <PasswordInput {...pr} autoComplete="current-password" value={pw} onChange={(e) => setPw(e.target.value)} />}</Field>
           <div className="flex justify-end gap-2"><Button variant="ghost" onClick={() => setConfirm(false)}>{t('common.cancel')}</Button><Button type="submit" variant="danger" loading={remove.isPending}>{t('settings.privacy.deleteFinal')}</Button></div>
         </form>
       </Dialog>
@@ -108,8 +109,8 @@ function SecurityTab() {
     <div className="space-y-5">
       <Card className="p-5"><h3 className="mb-4 font-bold">{t('settings.security.password')}</h3>
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); change.mutate(); }}>
-          <Field label={t('settings.security.current')}>{(p) => <Input {...p} type="password" autoComplete="current-password" value={cur} onChange={(e) => setCur(e.target.value)} required />}</Field>
-          <Field label={t('auth.newPassword')} hint={t('auth.passwordHint')}>{(p) => <Input {...p} type="password" autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} required />}</Field>
+          <Field label={t('settings.security.current')}>{(p) => <PasswordInput {...p} autoComplete="current-password" value={cur} onChange={(e) => setCur(e.target.value)} required />}</Field>
+          <Field label={t('auth.newPassword')} hint={t('auth.passwordHint')}>{(p) => <PasswordInput {...p} autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} required />}</Field>
           <Button type="submit" loading={change.isPending}>{t('settings.security.update')}</Button>
         </form>
       </Card>

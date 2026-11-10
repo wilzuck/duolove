@@ -1278,6 +1278,8 @@
     }
   },
   "auth": {
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
     "loginTitle": "Bon retour !",
     "loginSubtitle": "Connectez-vous pour retrouver vos matchs.",
     "registerTitle": "Créer mon compte",

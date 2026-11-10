@@ -4,6 +4,7 @@ import { CloudUpload, HardDrive } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Alert, Badge, Button, Card, Dialog, Field, Input, Skeleton } from '@duomatch/ui';
+import { PasswordInput } from '@/components/PasswordInput';
 import { useApiError } from '@/hooks/useApiError';
 import { ApiError, api, post, put } from '@/lib/api';
 import { useUi } from '@/lib/store';
@@ -81,7 +82,7 @@ export default function AdminStorage() {
               <Field label={t('admin.storage.prefix')} hint={t('admin.storage.prefixHint')}>{(p) => <Input {...p} autoComplete="off" value={f.prefix} onChange={(e) => set('prefix', e.target.value)} />}</Field>
               <span className="hidden sm:block" />
               <Field label={t('admin.storage.accessKey')} hint={v.accessKeyIdMasked ? t('admin.storage.keepHint', { masked: v.accessKeyIdMasked }) : undefined}>{(p) => <Input {...p} autoComplete="off" value={f.accessKeyId} onChange={(e) => set('accessKeyId', e.target.value)} required={!v.accessKeyIdMasked} />}</Field>
-              <Field label={t('admin.storage.secret')} hint={v.hasSecret ? t('admin.storage.secretKeep') : t('admin.storage.secretHint')}>{(p) => <Input {...p} type="password" autoComplete="new-password" value={f.secretAccessKey} onChange={(e) => set('secretAccessKey', e.target.value)} required={!v.hasSecret} />}</Field>
+              <Field label={t('admin.storage.secret')} hint={v.hasSecret ? t('admin.storage.secretKeep') : t('admin.storage.secretHint')}>{(p) => <PasswordInput {...p} autoComplete="new-password" value={f.secretAccessKey} onChange={(e) => set('secretAccessKey', e.target.value)} required={!v.hasSecret} />}</Field>
               <div className="flex flex-wrap gap-2 sm:col-span-2">
                 <Button type="button" variant="outline" onClick={() => test.mutate()} loading={test.isPending}>{t('admin.storage.test')}</Button>
                 <Button type="submit" loading={save.isPending}>{t('admin.storage.save')}</Button>

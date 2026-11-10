@@ -1278,6 +1278,8 @@
     }
   },
   "auth": {
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
     "loginTitle": "Welcome back!",
     "loginSubtitle": "Log in to find your matches.",
     "registerTitle": "Create my account",
