@@ -110,3 +110,11 @@ async def test_choix_du_fournisseur_par_l_administration(app, db, monkeypatch):
     u = await member(app, db)
     assert (await u.agent.put("/api/admin/emails/provider", json={"provider": "brevo"})).status_code == 403
     mail_config.invalidate()
+
+
+def test_nom_du_fournisseur_dans_le_journal(monkeypatch):
+    st = get_settings()
+    monkeypatch.setattr(st, "smtp_url", "smtp://u:p@email-smtp.eu-north-1.amazonaws.com:587")
+    assert mail.log_provider("smtp") == "ses" and mail.log_provider("brevo") == "brevo" and mail.log_provider("dev") == "dev"
+    monkeypatch.setattr(st, "smtp_url", "smtp://u:p@smtp.example.com:587")
+    assert mail.log_provider("smtp") == "smtp"

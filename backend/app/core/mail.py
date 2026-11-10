@@ -38,6 +38,15 @@ async def _send_brevo(to: str, subject: str, text: str, html: str | None = None,
         raise RuntimeError(f"Brevo HTTP {r.status_code}: {r.text[:300]}")
 
 
+def log_provider(provider: str) -> str:
+    """Nom enregistré dans le journal : « ses » quand le SMTP pointe vers Amazon SES (le serveur finit par amazonaws.com), sinon « brevo », « smtp » ou « dev »."""
+    if provider == "smtp":
+        host = (urlsplit(get_settings().smtp_url or "").hostname or "").lower()
+        if host.endswith(".amazonaws.com"):
+            return "ses"
+    return provider
+
+
 async def _record(to: str, subject: str, kind: str, status: str, provider: str, error: str | None, campaign_id: str | None) -> None:
     """Une ligne de journal par envoi (jamais le contenu). Un échec d'écriture du journal ne doit rien casser."""
     try:
@@ -45,7 +54,7 @@ async def _record(to: str, subject: str, kind: str, status: str, provider: str, 
         from app.models.models import EmailLog
 
         async with session_maker()() as db:
-            db.add(EmailLog(toEmail=to, subject=subject[:200], kind=kind, status=status, provider=provider, error=(error or None) and error[:500], campaignId=campaign_id))
+            db.add(EmailLog(toEmail=to, subject=subject[:200], kind=kind, status=status, provider=log_provider(provider), error=(error or None) and error[:500], campaignId=campaign_id))
             await db.commit()
     except Exception:
         log.exception("Journal d'e-mail impossible")

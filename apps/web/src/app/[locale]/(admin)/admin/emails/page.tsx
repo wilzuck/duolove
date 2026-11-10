@@ -1,6 +1,6 @@
 'use client';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, MailCheck, MailWarning, Percent, Send, ShieldOff, Unlock } from 'lucide-react';
+import { AlertTriangle, MailCheck, MailWarning, Percent, Send, ShieldOff, Unlock, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, Button, Card, DataTableView, Skeleton, cn } from '@duomatch/ui';
@@ -24,10 +24,12 @@ interface Blocked { id: string; email: string; reason: 'BOUNCE' | 'COMPLAINT'; d
 interface BlockedList { items: Blocked[]; totals: { BOUNCE: number; COMPLAINT: number } }
 const PERIODS = [7, 30, 90] as const;
 
-function Banner({ tone, title, children }: { tone: 'warning' | 'danger'; title: string; children?: React.ReactNode }) {
+
+function Banner({ tone, title, children, onClose, closeLabel }: { tone: 'warning' | 'danger'; title: string; children?: React.ReactNode; onClose?: () => void; closeLabel?: string }) {
   return (
-    <div role={tone === 'danger' ? 'alert' : 'status'} className={cn('rounded-2xl border px-4 py-3 text-sm', tone === 'danger' ? 'border-danger/30 bg-danger/10 text-danger-ink' : 'border-gold/40 bg-gold/10 text-gold-ink')}>
-      <p className="flex items-center gap-2 font-bold"><AlertTriangle className="size-4 shrink-0" aria-hidden />{title}</p>
+    <div role={tone === 'danger' ? 'alert' : 'status'} className={cn('relative rounded-2xl border px-4 py-3 text-sm', tone === 'danger' ? 'border-danger/30 bg-danger/10 text-danger-ink' : 'border-gold/40 bg-gold/10 text-gold-ink')}>
+      {onClose && <button type="button" onClick={onClose} aria-label={closeLabel} title={closeLabel} className="absolute right-2 top-2 grid size-7 place-items-center rounded-full hover:bg-black/10 focus-visible:outline focus-visible:outline-2"><X className="size-4" aria-hidden /></button>}
+      <p className={cn('flex items-center gap-2 font-bold', onClose && 'pr-8')}><AlertTriangle className="size-4 shrink-0" aria-hidden />{title}</p>
       {children && <div className="mt-1">{children}</div>}
     </div>
   );
@@ -88,6 +90,7 @@ export default function AdminEmails() {
   const err = useApiError();
   const toast = useUi((u) => u.toast);
   const qc = useQueryClient();
+  const [hiddenFail, setHiddenFail] = useState<string | null>(null);
   const [status, setStatus] = useState<'ALL' | 'SENT' | 'FAILED' | 'SKIPPED'>('ALL');
   const blocked = useQuery({ queryKey: ['admin', 'emails', 'suppressions'], queryFn: () => api<BlockedList>('/admin/emails/suppressions') });
   const unblock = useMutation({ mutationFn: (id: string) => del(`/admin/emails/suppressions/${id}`), onSuccess: () => { toast('success', t('admin.em.unblocked')); void qc.invalidateQueries({ queryKey: ['admin', 'emails'] }); }, onError: (e) => toast('error', err(e)) });
@@ -95,6 +98,7 @@ export default function AdminEmails() {
   const list = useAdminList<Row>(['emails', status], `/admin/emails${status === 'ALL' ? '' : `?status=${status}`}`);
   const s = stats.data;
   const nf = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'fr-FR');
+  const providerName = (p: string) => (p === 'brevo' ? 'Brevo' : p === 'ses' ? 'Amazon SES' : p === 'smtp' ? 'SMTP' : t('admin.em.devProvider'));
   const kindName = (k: string) => t(`admin.em.kinds.${(KINDS as readonly string[]).includes(k) ? k : 'other'}` as never);
   return (
     <div className="space-y-6">
@@ -108,12 +112,12 @@ export default function AdminEmails() {
       {!s ? <Skeleton className="h-32" /> : (
         <>
           <section className="grid gap-3 sm:grid-cols-3">
-            <KpiCard label={t('admin.em.sent')} value={nf.format(s.sent)} icon={<MailCheck className="size-5" />} series={s.series.sent} hint={t('admin.em.provider', { name: s.provider === 'brevo' ? 'Brevo' : s.provider === 'smtp' ? 'SMTP' : t('admin.em.devProvider') })} />
+            <KpiCard label={t('admin.em.sent')} value={nf.format(s.sent)} icon={<MailCheck className="size-5" />} series={s.series.sent} hint={t('admin.em.providerHint', { name: s.provider === 'brevo' ? 'Brevo' : s.provider === 'smtp' ? 'SMTP' : t('admin.em.devProvider') })} />
             <KpiCard label={t('admin.em.failed')} value={nf.format(s.failed)} icon={<MailWarning className="size-5" />} series={s.series.failed} hint={t('admin.em.failedHint')} />
             <KpiCard label={t('admin.em.rate')} value={s.successRate == null ? t('admin.eng.m.none') : `${nf.format(s.successRate)} %`} icon={<Percent className="size-5" />} hint={t('admin.em.rateHint')} />
           </section>
-          {s.lastFailure && (
-            <Banner tone="danger" title={t('admin.em.lastFailure', { when: timeAgo(s.lastFailure.createdAt, locale) })}>
+          {s.lastFailure && s.lastFailure.id !== hiddenFail && (
+            <Banner tone="danger" closeLabel={t('admin.em.dismiss')} onClose={() => setHiddenFail(s.lastFailure?.id ?? null)} title={t('admin.em.lastFailure', { when: timeAgo(s.lastFailure.createdAt, locale) })}>
               <span className="block"><span className="font-semibold">{kindName(s.lastFailure.kind)}</span> · {s.lastFailure.to}</span>
               <span className="mt-1 block break-words font-mono text-xs">{s.lastFailure.error ?? t('admin.em.noError')}</span>
             </Banner>
@@ -135,12 +139,13 @@ export default function AdminEmails() {
         <StatusTabs label={t('admin.status')} value={status} onChange={setStatus} options={[{ key: 'ALL', label: t('admin.em.all') }, { key: 'SENT', label: t('admin.em.statuses.SENT') }, { key: 'FAILED', label: t('admin.em.statuses.FAILED') }, { key: 'SKIPPED', label: t('admin.em.statuses.SKIPPED') }]} />
         {list.isLoading ? <Skeleton className="h-40" /> : (
           <DataTableView
-            minWidth="52rem" rows={list.items} rowKey={(r) => r.id} empty={t('admin.em.empty')} labels={labels} exportName="emails-envoyes"
+            minWidth="52rem" rows={list.items} rowKey={(r) => r.id} empty={t('admin.em.empty')} labels={labels} exportName="emails-envoyes" selectable
             hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
             columns={[
               { key: 'to', header: t('admin.em.to'), value: (r) => r.to, filter: 'text', cell: (r) => r.to },
               { key: 'subject', header: t('admin.em.subject'), value: (r) => r.subject, cellClassName: 'max-w-xs truncate', cell: (r) => r.subject },
               { key: 'kind', header: t('admin.em.kind'), value: (r) => r.kind, filter: { options: KINDS.map((k) => ({ value: k, label: kindName(k) })) }, cell: (r) => <Badge tone="neutral">{kindName(r.kind)}</Badge> },
+              { key: 'provider', header: t('admin.em.providerCol'), value: (r) => r.provider, filter: { options: [{ value: 'brevo', label: 'Brevo' }, { value: 'ses', label: 'Amazon SES' }, { value: 'smtp', label: 'SMTP' }, { value: 'dev', label: t('admin.em.devProvider') }] }, cell: (r) => <Badge tone={r.provider === 'brevo' ? 'brand' : 'neutral'}>{providerName(r.provider)}</Badge> },
               { key: 'status', header: t('admin.status'), value: (r) => r.status, cell: (r) => r.status === 'SENT' ? <Badge tone="success">{t('admin.em.statuses.SENT')}</Badge> : r.status === 'SKIPPED' ? <span><Badge tone="neutral"><ShieldOff className="size-3" aria-hidden />{t('admin.em.statuses.SKIPPED')}</Badge>{r.error && <span className="mt-1 block max-w-xs break-words text-xs text-muted">{r.error}</span>}</span> : <span><Badge tone="danger"><AlertTriangle className="size-3" aria-hidden />{t('admin.em.statuses.FAILED')}</Badge>{r.error && <span className="mt-1 block max-w-xs break-words text-xs text-muted">{r.error}</span>}</span> },
               { key: 'date', mobileHidden: true, header: t('admin.cols.date'), value: (r) => r.createdAt, cellClassName: 'text-muted', cell: (r) => timeAgo(r.createdAt, locale) },
             ]}
