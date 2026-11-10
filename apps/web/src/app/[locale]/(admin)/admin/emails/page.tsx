@@ -1,23 +1,27 @@
 'use client';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { AlertTriangle, MailCheck, MailWarning, Percent } from 'lucide-react';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AlertTriangle, MailCheck, MailWarning, Percent, ShieldOff, Unlock } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Card, DataTableView, Skeleton, cn } from '@duomatch/ui';
+import { Badge, Button, Card, DataTableView, Skeleton, cn } from '@duomatch/ui';
 import { KpiCard, type SeriesPoint } from '@/components/admin/DashboardParts';
 import { PageHeader, StatusTabs } from '@/components/admin/PageParts';
 import { LineChart } from '@/components/admin/StatsCharts';
 import { useAdminList } from '@/hooks/useAdmin';
+import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
-import { api } from '@/lib/api';
+import { api, del } from '@/lib/api';
 import { timeAgo } from '@/lib/format';
+import { useUi } from '@/lib/store';
 
 const KINDS = ['verification', 'password_reset', 'magic_link', 'notification', 'newsletter', 'newsletter_confirm', 'newsletter_test', 'other'] as const;
-interface Row { id: string; to: string; subject: string; kind: string; status: 'SENT' | 'FAILED'; provider: string; error: string | null; createdAt: string }
+interface Row { id: string; to: string; subject: string; kind: string; status: 'SENT' | 'FAILED' | 'SKIPPED'; provider: string; error: string | null; createdAt: string }
 interface Stats {
   days: number; provider: 'brevo' | 'smtp' | 'dev'; sent: number; failed: number; successRate: number | null; byKind: { kind: string; sent: number; failed: number }[];
   series: { sent: SeriesPoint[]; failed: SeriesPoint[] }; lastFailure: Row | null;
 }
+interface Blocked { id: string; email: string; reason: 'BOUNCE' | 'COMPLAINT'; detail: string | null; createdAt: string }
+interface BlockedList { items: Blocked[]; totals: { BOUNCE: number; COMPLAINT: number } }
 const PERIODS = [7, 30, 90] as const;
 
 function Banner({ tone, title, children }: { tone: 'warning' | 'danger'; title: string; children?: React.ReactNode }) {
@@ -34,7 +38,12 @@ export default function AdminEmails() {
   const locale = useLocale();
   const labels = useTableLabels();
   const [days, setDays] = useState<(typeof PERIODS)[number]>(30);
-  const [status, setStatus] = useState<'ALL' | 'SENT' | 'FAILED'>('ALL');
+  const err = useApiError();
+  const toast = useUi((u) => u.toast);
+  const qc = useQueryClient();
+  const [status, setStatus] = useState<'ALL' | 'SENT' | 'FAILED' | 'SKIPPED'>('ALL');
+  const blocked = useQuery({ queryKey: ['admin', 'emails', 'suppressions'], queryFn: () => api<BlockedList>('/admin/emails/suppressions') });
+  const unblock = useMutation({ mutationFn: (id: string) => del(`/admin/emails/suppressions/${id}`), onSuccess: () => { toast('success', t('admin.em.unblocked')); void qc.invalidateQueries({ queryKey: ['admin', 'emails'] }); }, onError: (e) => toast('error', err(e)) });
   const stats = useQuery({ queryKey: ['admin', 'emails', 'stats', days], queryFn: () => api<Stats>(`/admin/emails/stats?days=${days}`), placeholderData: keepPreviousData, refetchInterval: 60_000 });
   const list = useAdminList<Row>(['emails', status], `/admin/emails${status === 'ALL' ? '' : `?status=${status}`}`);
   const s = stats.data;
@@ -75,7 +84,7 @@ export default function AdminEmails() {
         </>
       )}
       <section className="space-y-3">
-        <StatusTabs label={t('admin.status')} value={status} onChange={setStatus} options={[{ key: 'ALL', label: t('admin.em.all') }, { key: 'SENT', label: t('admin.em.statuses.SENT') }, { key: 'FAILED', label: t('admin.em.statuses.FAILED') }]} />
+        <StatusTabs label={t('admin.status')} value={status} onChange={setStatus} options={[{ key: 'ALL', label: t('admin.em.all') }, { key: 'SENT', label: t('admin.em.statuses.SENT') }, { key: 'FAILED', label: t('admin.em.statuses.FAILED') }, { key: 'SKIPPED', label: t('admin.em.statuses.SKIPPED') }]} />
         {list.isLoading ? <Skeleton className="h-40" /> : (
           <DataTableView
             minWidth="52rem" rows={list.items} rowKey={(r) => r.id} empty={t('admin.em.empty')} labels={labels} exportName="emails-envoyes"
@@ -84,10 +93,30 @@ export default function AdminEmails() {
               { key: 'to', header: t('admin.em.to'), value: (r) => r.to, filter: 'text', cell: (r) => r.to },
               { key: 'subject', header: t('admin.em.subject'), value: (r) => r.subject, cellClassName: 'max-w-xs truncate', cell: (r) => r.subject },
               { key: 'kind', header: t('admin.em.kind'), value: (r) => r.kind, filter: { options: KINDS.map((k) => ({ value: k, label: kindName(k) })) }, cell: (r) => <Badge tone="neutral">{kindName(r.kind)}</Badge> },
-              { key: 'status', header: t('admin.status'), value: (r) => r.status, cell: (r) => r.status === 'SENT' ? <Badge tone="success">{t('admin.em.statuses.SENT')}</Badge> : <span><Badge tone="danger"><AlertTriangle className="size-3" aria-hidden />{t('admin.em.statuses.FAILED')}</Badge>{r.error && <span className="mt-1 block max-w-xs break-words text-xs text-muted">{r.error}</span>}</span> },
+              { key: 'status', header: t('admin.status'), value: (r) => r.status, cell: (r) => r.status === 'SENT' ? <Badge tone="success">{t('admin.em.statuses.SENT')}</Badge> : r.status === 'SKIPPED' ? <span><Badge tone="neutral"><ShieldOff className="size-3" aria-hidden />{t('admin.em.statuses.SKIPPED')}</Badge>{r.error && <span className="mt-1 block max-w-xs break-words text-xs text-muted">{r.error}</span>}</span> : <span><Badge tone="danger"><AlertTriangle className="size-3" aria-hidden />{t('admin.em.statuses.FAILED')}</Badge>{r.error && <span className="mt-1 block max-w-xs break-words text-xs text-muted">{r.error}</span>}</span> },
               { key: 'date', mobileHidden: true, header: t('admin.cols.date'), value: (r) => r.createdAt, cellClassName: 'text-muted', cell: (r) => timeAgo(r.createdAt, locale) },
             ]}
           />
+        )}
+      </section>
+      <section className="space-y-3">
+        <h2 className="flex items-center gap-2 text-lg font-bold"><ShieldOff className="size-5 text-muted" aria-hidden />{t('admin.em.blockedTitle')}</h2>
+        <p className="text-sm text-muted">{t('admin.em.blockedText')}</p>
+        {blocked.isLoading ? <Skeleton className="h-24" /> : (
+          <Card className="p-0">
+            <p className="border-b border-line px-5 py-3 text-sm"><span className="font-bold">{blocked.data?.totals.BOUNCE ?? 0}</span> {t('admin.em.bounces')} · <span className="font-bold">{blocked.data?.totals.COMPLAINT ?? 0}</span> {t('admin.em.complaints')}</p>
+            {(blocked.data?.items.length ?? 0) === 0 ? <p className="px-5 py-6 text-sm text-muted">{t('admin.em.blockedEmpty')}</p> : (
+              <ul className="divide-y divide-line text-sm">
+                {blocked.data?.items.map((b) => (
+                  <li key={b.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3">
+                    <span className="min-w-0"><span className="block break-all font-semibold">{b.email}</span><span className="block text-xs text-muted">{b.detail ?? '—'} · {timeAgo(b.createdAt, locale)}</span></span>
+                    <span className="flex items-center gap-2"><Badge tone={b.reason === 'BOUNCE' ? 'danger' : 'gold'}>{t(`admin.em.reasons.${b.reason}` as never)}</Badge>
+                      <Button size="sm" variant="secondary" loading={unblock.isPending && unblock.variables === b.id} onClick={() => unblock.mutate(b.id)}><Unlock className="size-4" aria-hidden />{t('admin.em.unblock')}</Button></span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
         )}
       </section>
     </div>

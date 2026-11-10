@@ -2961,7 +2961,8 @@
       "kind": "Type",
       "statuses": {
         "SENT": "Envoyé",
-        "FAILED": "En échec"
+        "FAILED": "En échec",
+        "SKIPPED": "Bloqué"
       },
       "kinds": {
         "verification": "Code de confirmation",
@@ -2972,6 +2973,17 @@
         "newsletter_confirm": "Confirmation newsletter",
         "newsletter_test": "Test newsletter",
         "other": "Autre"
+      },
+      "blockedTitle": "Adresses bloquées",
+      "blockedText": "Quand Amazon SES signale une adresse inexistante (rebond définitif) ou un signalement comme spam, CrushDuo cesse de lui écrire pour protéger la réputation de l’expéditeur. Une plainte laisse passer les e-mails de sécurité (code, mot de passe) que la personne demande elle-même.",
+      "blockedEmpty": "Aucune adresse bloquée pour le moment.",
+      "bounces": "rebonds définitifs",
+      "complaints": "plaintes",
+      "unblock": "Débloquer",
+      "unblocked": "Adresse débloquée.",
+      "reasons": {
+        "BOUNCE": "Rebond",
+        "COMPLAINT": "Plainte"
       }
     },
     "guide": {

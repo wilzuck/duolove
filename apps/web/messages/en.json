@@ -2961,7 +2961,8 @@
       "kind": "Type",
       "statuses": {
         "SENT": "Sent",
-        "FAILED": "Failed"
+        "FAILED": "Failed",
+        "SKIPPED": "Blocked"
       },
       "kinds": {
         "verification": "Confirmation code",
@@ -2972,6 +2973,17 @@
         "newsletter_confirm": "Newsletter confirmation",
         "newsletter_test": "Newsletter test",
         "other": "Other"
+      },
+      "blockedTitle": "Blocked addresses",
+      "blockedText": "When Amazon SES reports a non-existent address (hard bounce) or a spam complaint, CrushDuo stops emailing it to protect the sender reputation. A complaint still lets security emails (code, password) through when the person asks for them.",
+      "blockedEmpty": "No blocked address yet.",
+      "bounces": "hard bounces",
+      "complaints": "complaints",
+      "unblock": "Unblock",
+      "unblocked": "Address unblocked.",
+      "reasons": {
+        "BOUNCE": "Bounce",
+        "COMPLAINT": "Complaint"
       }
     },
     "guide": {
