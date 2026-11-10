@@ -19,7 +19,7 @@ from app.core.ids import utcnow
 from app.core.profile_card import thumb_key
 from app.db.session import get_db
 from app.models.models import (
-    AuditLog, ContactMessage, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Preference, Product, Profile, ProfilePhoto,
+    AppInstall, AuditLog, ContactMessage, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Preference, Product, Profile, ProfilePhoto,
     PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, SystemSetting, User, VerificationRequest,
 )
 from app.schemas.admin import (
@@ -98,6 +98,7 @@ _STATS_SERIES = {
     "crushInvites": ('"LiveInvite"', '"createdAt"', "COUNT(*)", "TRUE"),
     "crushAccepted": ('"LiveInvite"', '"respondedAt"', "COUNT(*)", "\"status\" IN ('ACCEPTED','CHOSEN')"),
     "subscriptions": ('"Subscription"', '"createdAt"', "COUNT(*)", "\"status\" <> 'PENDING'"),
+    "installs": ('"AppInstall"', '"createdAt"', "COUNT(*)", "TRUE"),
 }
 
 
@@ -188,8 +189,10 @@ async def stats(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = Dep
         members.append({"day": p["day"], "value": run})
     series["members"] = members
     plans = (await db.execute(select(Entitlement.plan, func.count()).group_by(Entitlement.plan))).all()
+    by_platform = dict((await db.execute(select(AppInstall.platform, func.count()).group_by(AppInstall.platform))).all())
     sent = flows["crushInvites"]["current"]
     return {"days": days, "generatedAt": now, "series": series, "flows": flows,
+            "installs": {"total": sum(by_platform.values()), "ios": by_platform.get("ios", 0), "android": by_platform.get("android", 0), "desktop": by_platform.get("desktop", 0)},
             "totals": {"members": run, "activeSubscriptions": (await db.execute(select(func.count()).select_from(Subscription).where(Subscription.status == "ACTIVE"))).scalar_one()},
             "crushAcceptRate": round(flows["crushAccepted"]["current"] / sent * 1000) / 10 if sent else None,
             "matchRate": round(flows["matches"]["current"] / flows["likes"]["current"] * 1000) / 10 if flows["likes"]["current"] else None,

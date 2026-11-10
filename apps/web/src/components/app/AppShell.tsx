@@ -9,6 +9,7 @@ import { LocaleSwitcher } from '../LocaleSwitcher';
 import { SiteLinks } from '../SiteLinks';
 import { CallLayer } from './CallLayer';
 import { CrushNavIcon } from './CrushNavIcon';
+import { InstallBanner } from './InstallBanner';
 import { PauseBanner } from './PauseBanner';
 import { ThemeToggle } from '../ThemeToggle';
 
@@ -98,6 +99,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
             <Link href="/settings" className="lg:hidden" aria-label={t('app.nav.settings')}><Avatar src={me.profile?.thumbUrl} name={me.profile?.displayName ?? '?'} size={34} /></Link>
           </div>
         </header>
+        {!inChat && <InstallBanner />}
         <main id="main" className={cn('flex min-w-0 flex-1 flex-col', !inChat && 'pb-24 lg:pb-8')}><div className="min-w-0 flex-1">{children}</div>{!inChat && <SiteLinks variant="app" className={path === '/profile' ? '' : 'max-lg:hidden'} />}</main>
       </div>
 

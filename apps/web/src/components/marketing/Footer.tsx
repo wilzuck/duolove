@@ -5,7 +5,7 @@ import { SUPPORT_EMAIL } from '@/lib/site';
 
 const COLS = [
   ['footer.product', [['/how-it-works', 'nav.how'], ['/pricing', 'nav.pricing'], ['/blog', 'nav.blog'], ['/register', 'nav.register'], ['/login', 'nav.login']]],
-  ['footer.company', [['/about', 'nav.about'], ['/contact', 'nav.contact'], ['/help', 'nav.help']]],
+  ['footer.company', [['/about', 'nav.about'], ['/contact', 'nav.contact'], ['/help', 'nav.help'], ['/install', 'nav.install']]],
   ['footer.legal', [['/legal/terms', 'legal.terms.title'], ['/legal/privacy', 'legal.privacy.title'], ['/legal/cookies', 'legal.cookies.title'], ['/legal/community', 'legal.community.title']]],
 ] as const;
 

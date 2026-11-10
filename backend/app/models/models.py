@@ -684,6 +684,20 @@ class EmailLog(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class AppInstall(Base):
+    """Une application installée (PWA) = un appareil, repéré par un identifiant aléatoire tiré par l'appareil lui-même : aucune donnée personnelle, aucun lien avec un compte."""
+    __tablename__ = 'AppInstall'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='AppInstall_pkey'),
+        Index('AppInstall_createdAt_idx', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
+    platform: Mapped[str] = mapped_column(Text, nullable=False)  # ios | android | desktop
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    lastSeenAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
 class EmailSuppression(Base):
     """Adresses auxquelles on n'écrit plus : rebond définitif (adresse inexistante) ou plainte « spam » signalés par le fournisseur d'e-mail (Amazon SES)."""
     __tablename__ = 'EmailSuppression'

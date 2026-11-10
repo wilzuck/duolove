@@ -1,6 +1,6 @@
 'use client';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { CreditCard, Heart, HeartHandshake, Radio, RefreshCw, UserPlus, Wallet } from 'lucide-react';
+import { CreditCard, Heart, HeartHandshake, Radio, RefreshCw, Smartphone, UserPlus, Wallet } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, Card, Skeleton, cn } from '@duomatch/ui';
@@ -10,9 +10,9 @@ import { LineChart } from '@/components/admin/StatsCharts';
 import { api } from '@/lib/api';
 import { formatXof } from '@/lib/format';
 
-type Key = 'signups' | 'members' | 'likes' | 'passes' | 'matches' | 'crushSearches' | 'crushInvites' | 'crushAccepted' | 'subscriptions' | 'messages' | 'revenue';
+type Key = 'signups' | 'members' | 'likes' | 'passes' | 'matches' | 'crushSearches' | 'crushInvites' | 'crushAccepted' | 'subscriptions' | 'messages' | 'revenue' | 'installs';
 interface Stats {
-  days: number; generatedAt: string; series: Record<Key, SeriesPoint[]>; flows: Record<Exclude<Key, 'members'>, Flow>; totals: { members: number; activeSubscriptions: number };
+  days: number; generatedAt: string; series: Record<Key, SeriesPoint[]>; flows: Record<Exclude<Key, 'members'>, Flow>; totals: { members: number; activeSubscriptions: number }; installs: { total: number; ios: number; android: number; desktop: number };
   crushAcceptRate: number | null; matchRate: number | null; planDistribution: { plan: string; count: number }[];
 }
 interface Health { activeMembers: number; gender: { men: number; women: number; other: number }; threshold: number; thinPoolShare: number | null; medianPool: number | null; topCities: { city: string; country: string; active: number; men: number; women: number }[] }
@@ -57,6 +57,7 @@ export default function AdminStats() {
             <KpiCard label={t('admin.stats.k.matches')} value={n(d.flows.matches.current)} flow={d.flows.matches} series={d.series.matches} icon={<HeartHandshake className="size-5" />} hint={t('admin.stats.k.matchesHint', { rate: pct(d.matchRate) })} />
             <KpiCard label={t('admin.stats.k.crush')} value={n(d.flows.crushInvites.current)} flow={d.flows.crushInvites} series={d.series.crushInvites} icon={<Radio className="size-5" />} hint={t('admin.stats.k.crushHint', { rate: pct(d.crushAcceptRate) })} />
             <KpiCard label={t('admin.stats.k.subs')} value={n(d.flows.subscriptions.current)} flow={d.flows.subscriptions} series={d.series.subscriptions} icon={<CreditCard className="size-5" />} hint={t('admin.stats.k.subsHint', { n: n(d.totals.activeSubscriptions) })} />
+            <KpiCard label={t('admin.stats.k.installs')} value={n(d.flows.installs.current)} flow={d.flows.installs} series={d.series.installs} icon={<Smartphone className="size-5" />} hint={t('admin.stats.k.installsHint', { total: n(d.installs.total), ios: n(d.installs.ios), android: n(d.installs.android), desktop: n(d.installs.desktop) })} />
             <KpiCard label={t('admin.stats.k.revenue')} value={xof(d.flows.revenue.current)} flow={d.flows.revenue} series={d.series.revenue} icon={<Wallet className="size-5" />} />
           </section>
 

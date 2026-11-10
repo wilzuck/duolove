@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
 const LINKS = [
-  ['/about', 'nav.about'], ['/blog', 'nav.blog'], ['/help', 'nav.help'], ['/contact', 'nav.contact'],
+  ['/about', 'nav.about'], ['/blog', 'nav.blog'], ['/help', 'nav.help'], ['/contact', 'nav.contact'], ['/install', 'nav.install'],
   ['/legal/terms', 'legal.terms.title'], ['/legal/privacy', 'legal.privacy.title'], ['/legal/cookies', 'legal.cookies.title'], ['/legal/community', 'legal.community.title'],
 ] as const;
 

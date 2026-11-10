@@ -1,4 +1,5 @@
 import { CookieNotice } from '@/components/CookieNotice';
+import { InstallCapture } from '@/components/InstallCapture';
 import type { Metadata, Viewport } from 'next';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
@@ -46,7 +47,7 @@ export default async function RootLayout({ children, params }: { children: React
       <head><script dangerouslySetInnerHTML={{ __html: THEME_INIT }} /></head>
       <body className="min-h-dvh">
         <NextIntlClientProvider>
-          <Providers>{children}<CookieNotice /></Providers>
+          <Providers>{children}<CookieNotice /><InstallCapture /></Providers>
         </NextIntlClientProvider>
       </body>
     </html>
