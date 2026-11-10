@@ -35,7 +35,8 @@
     "help": "Help center",
     "contact": "Contact",
     "login": "Log in",
-    "register": "Create my account"
+    "register": "Create my account",
+    "install": "Install the app"
   },
   "footer": {
     "product": "Product",
@@ -2195,7 +2196,9 @@
         "crushHint": "{rate} accepted",
         "subs": "New subscriptions",
         "subsHint": "{n} active subscriptions",
-        "revenue": "Revenue"
+        "revenue": "Revenue",
+        "installs": "App installs",
+        "installsHint": "{total} in total · iPhone {ios} · Android {android} · computer {desktop}"
       },
       "c": {
         "members": "Members",
@@ -2814,7 +2817,8 @@
       "answered": "Answered",
       "archive": "Archive",
       "restore": "Move back to new",
-      "from": "From {name}"
+      "from": "From {name}",
+      "movedN": "{n, plural, one {# message moved.} other {# messages moved.}}"
     },
     "dash": {
       "title": "Overview",
@@ -2937,7 +2941,10 @@
       "subPending": "Awaiting confirmation",
       "subPendingHint": "Visitors who have not clicked the confirmation link yet: nothing is sent to them.",
       "subUnsub": "Unsubscribed",
-      "privacyNote": "Every email contains a one-click unsubscribe link. Opens and clicks are not measured: tracking covers delivery (sent or failed)."
+      "privacyNote": "Every email contains a one-click unsubscribe link. Opens and clicks are not measured: tracking covers delivery (sent or failed).",
+      "bulkDeleteTitle": "Delete these drafts?",
+      "bulkDeleteText": "{n, plural, one {# draft will be permanently deleted.} other {# drafts will be permanently deleted.}} Sends already started cannot be deleted.",
+      "deletedN": "{n, plural, one {# draft deleted.} other {# drafts deleted.}}"
     },
     "em": {
       "sent": "Emails sent",
@@ -2946,6 +2953,8 @@
       "failedHint": "Rejected by the provider or not sent.",
       "rate": "Success rate",
       "rateHint": "Sent out of all attempts.",
+      "providerHint": "Provider: {name}",
+      "dismiss": "Dismiss",
       "provider": {
         "title": "Sending provider",
         "text": "Choose which service sends the emails. Credentials stay in the server variables (BREVO_API_KEY, SMTP_URL): nothing secret is stored here.",
@@ -3002,7 +3011,8 @@
       "reasons": {
         "BOUNCE": "Bounce",
         "COMPLAINT": "Complaint"
-      }
+      },
+      "providerCol": "Provider"
     },
     "guide": {
       "intro": "The essentials in pictures: where to click, in what order, and who is allowed to do what.",
@@ -3787,7 +3797,13 @@
     "filters": "Filters",
     "done": "Done",
     "loadMore": "Load more",
-    "actions": "Actions"
+    "actions": "Actions",
+    "selectRow": "Select this row",
+    "selectAll": "Select all displayed rows",
+    "selectedCount": "{n, plural, one {# selected} other {# selected}}",
+    "selectResults": "Select all {n} results",
+    "clearSelection": "Clear selection",
+    "exportSelected": "Export selection"
   },
   "notFound": {
     "badge": "Error 404",
@@ -3838,5 +3854,57 @@
       "okText": "Notification emails (likes, matches, messages) are turned off. You keep in-app notifications, and account emails (code, password) keep arriving. You can change this any time in Settings › Notifications."
     },
     "privacy": "An email now and then. One-click unsubscribe, any time."
+  },
+  "install": {
+    "title": "Install CrushDuo on your phone",
+    "lead": "One-tap access from your home screen, full screen, without going through an app store.",
+    "ready": "Install CrushDuo",
+    "readyText": "Your browser can install CrushDuo in a few seconds.",
+    "cta": "Install the app",
+    "refused": "No problem: you can install it later, any time, from this page.",
+    "manualText": "Your browser does not offer an install button: follow the steps below, it takes less than a minute.",
+    "installedTitle": "CrushDuo is already installed",
+    "installedText": "You are using the app installed on this device.",
+    "open": "Open CrushDuo",
+    "benefitsTitle": "Why install CrushDuo",
+    "b1Title": "One-tap access",
+    "b1Text": "An icon on your home screen, like any other app.",
+    "b2Title": "Full screen",
+    "b2Text": "No browser address bar: more room for profiles and conversations.",
+    "b3Title": "Light and up to date",
+    "b3Text": "No heavy download and no updates to run: you always have the latest version.",
+    "howTitle": "How to install it",
+    "tabAndroid": "Android",
+    "tabIos": "iPhone / iPad",
+    "tabDesktop": "Computer",
+    "yours": "Your device",
+    "androidS1": "Open CrushDuo in the Chrome browser.",
+    "androidS2": "Tap the ⋮ menu at the top right.",
+    "androidS3": "Tap “Install app” (or “Add to Home screen”).",
+    "androidS4": "Confirm: the CrushDuo icon appears on your home screen.",
+    "iosS1": "Open CrushDuo in Safari.",
+    "iosS2": "Tap the Share button (the square with an arrow pointing up).",
+    "iosS3": "Scroll down and tap “Add to Home Screen”.",
+    "iosS4": "Tap “Add”: the CrushDuo icon appears on your home screen.",
+    "iosNote": "On iPhone and iPad, installing is done from Safari. If you are inside another app (Instagram, Facebook…), open this link in Safari first.",
+    "desktopS1": "Open CrushDuo in Chrome or Edge.",
+    "desktopS2": "Click the install icon on the right of the address bar (a screen with an arrow).",
+    "desktopS3": "Click “Install”: CrushDuo opens in its own window.",
+    "desktopNote": "Firefox and Safari on a computer do not offer installation: you can simply use CrushDuo in your browser.",
+    "faqTitle": "Frequently asked questions",
+    "f1q": "Does it take up space on my phone?",
+    "f1a": "Very little: it is the website, not a heavy app. There is nothing to download from a store.",
+    "f2q": "Does the app see more of my data?",
+    "f2a": "No. It is the same website with the same privacy policy: installing does not give any extra access to your phone.",
+    "f3q": "How do I uninstall it?",
+    "f3a": "Like any app: long-press the CrushDuo icon and choose to remove it. Your account is not deleted.",
+    "banner": {
+      "title": "Install CrushDuo",
+      "text": "One-tap access, full screen.",
+      "cta": "Install",
+      "how": "How to",
+      "later": "Later"
+    },
+    "count": "{n, plural, one {# person has already installed CrushDuo} other {# people have already installed CrushDuo}}"
   }
 }

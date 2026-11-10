@@ -35,7 +35,8 @@
     "help": "Centre d’aide",
     "contact": "Contact",
     "login": "Se connecter",
-    "register": "Créer mon compte"
+    "register": "Créer mon compte",
+    "install": "Installer l’application"
   },
   "footer": {
     "product": "Produit",
@@ -2195,7 +2196,9 @@
         "crushHint": "{rate} acceptées",
         "subs": "Nouveaux abonnements",
         "subsHint": "{n} abonnements actifs",
-        "revenue": "Revenus"
+        "revenue": "Revenus",
+        "installs": "Installations de l’app",
+        "installsHint": "{total} au total · iPhone {ios} · Android {android} · ordinateur {desktop}"
       },
       "c": {
         "members": "Membres",
@@ -2814,7 +2817,8 @@
       "answered": "Répondu",
       "archive": "Archiver",
       "restore": "Remettre en nouveau",
-      "from": "De {name}"
+      "from": "De {name}",
+      "movedN": "{n, plural, one {# message déplacé.} other {# messages déplacés.}}"
     },
     "dash": {
       "title": "Vue d’ensemble",
@@ -2937,7 +2941,10 @@
       "subPending": "En attente de confirmation",
       "subPendingHint": "Visiteurs qui n’ont pas encore cliqué le lien de confirmation : aucun envoi ne leur est fait.",
       "subUnsub": "Désabonnés",
-      "privacyNote": "Chaque e-mail contient un lien de désabonnement en un clic. Les ouvertures et les clics ne sont pas mesurés : le suivi porte sur l’envoi (envoyé ou en échec)."
+      "privacyNote": "Chaque e-mail contient un lien de désabonnement en un clic. Les ouvertures et les clics ne sont pas mesurés : le suivi porte sur l’envoi (envoyé ou en échec).",
+      "bulkDeleteTitle": "Supprimer ces brouillons ?",
+      "bulkDeleteText": "{n, plural, one {# brouillon sera supprimé définitivement.} other {# brouillons seront supprimés définitivement.}} Les envois déjà lancés ne peuvent pas être supprimés.",
+      "deletedN": "{n, plural, one {# brouillon supprimé.} other {# brouillons supprimés.}}"
     },
     "em": {
       "sent": "E-mails envoyés",
@@ -2946,6 +2953,8 @@
       "failedHint": "Refusés par le fournisseur ou non envoyés.",
       "rate": "Taux de réussite",
       "rateHint": "Envoyés sur le total des tentatives.",
+      "providerHint": "Fournisseur : {name}",
+      "dismiss": "Fermer",
       "provider": {
         "title": "Fournisseur d’envoi",
         "text": "Choisissez par quel service partent les e-mails. Les identifiants restent dans les variables du serveur (BREVO_API_KEY, SMTP_URL) : rien de secret n’est enregistré ici.",
@@ -3002,7 +3011,8 @@
       "reasons": {
         "BOUNCE": "Rebond",
         "COMPLAINT": "Plainte"
-      }
+      },
+      "providerCol": "Fournisseur"
     },
     "guide": {
       "intro": "L’essentiel en images : où cliquer, dans quel ordre, et qui a le droit de quoi.",
@@ -3787,7 +3797,13 @@
     "filters": "Filtres",
     "done": "Terminé",
     "loadMore": "Charger plus",
-    "actions": "Actions"
+    "actions": "Actions",
+    "selectRow": "Sélectionner cette ligne",
+    "selectAll": "Sélectionner toutes les lignes affichées",
+    "selectedCount": "{n, plural, one {# sélectionnée} other {# sélectionnées}}",
+    "selectResults": "Sélectionner les {n} résultats",
+    "clearSelection": "Tout désélectionner",
+    "exportSelected": "Exporter la sélection"
   },
   "notFound": {
     "badge": "Erreur 404",
@@ -3838,5 +3854,57 @@
       "okText": "Les e-mails de notification (likes, matchs, messages) sont coupés. Vous gardez les notifications dans l’application, et les e-mails de compte (code, mot de passe) continuent d’arriver. Vous pouvez changer cela à tout moment dans Paramètres › Notifications."
     },
     "privacy": "Un e-mail de temps en temps. Désinscription en un clic, à tout moment."
+  },
+  "install": {
+    "title": "Installer CrushDuo sur votre téléphone",
+    "lead": "Un accès en un geste depuis votre écran d’accueil, en plein écran, sans passer par un magasin d’applications.",
+    "ready": "Installer CrushDuo",
+    "readyText": "Votre navigateur peut installer CrushDuo en quelques secondes.",
+    "cta": "Installer l’application",
+    "refused": "Pas de souci : vous pourrez l’installer plus tard, à tout moment, depuis cette page.",
+    "manualText": "Votre navigateur ne propose pas de bouton d’installation : suivez les étapes ci-dessous, elles prennent moins d’une minute.",
+    "installedTitle": "CrushDuo est déjà installée",
+    "installedText": "Vous utilisez l’application installée sur cet appareil.",
+    "open": "Ouvrir CrushDuo",
+    "benefitsTitle": "Pourquoi installer CrushDuo",
+    "b1Title": "Un accès en un geste",
+    "b1Text": "Une icône sur votre écran d’accueil, comme n’importe quelle application.",
+    "b2Title": "En plein écran",
+    "b2Text": "Sans la barre d’adresse du navigateur : plus de place pour les profils et les conversations.",
+    "b3Title": "Légère et à jour",
+    "b3Text": "Aucun téléchargement lourd, aucune mise à jour à faire : vous avez toujours la dernière version.",
+    "howTitle": "Comment l’installer",
+    "tabAndroid": "Android",
+    "tabIos": "iPhone / iPad",
+    "tabDesktop": "Ordinateur",
+    "yours": "Votre appareil",
+    "androidS1": "Ouvrez CrushDuo dans le navigateur Chrome.",
+    "androidS2": "Touchez le menu ⋮ en haut à droite.",
+    "androidS3": "Touchez « Installer l’application » (ou « Ajouter à l’écran d’accueil »).",
+    "androidS4": "Confirmez : l’icône CrushDuo apparaît sur votre écran d’accueil.",
+    "iosS1": "Ouvrez CrushDuo dans Safari.",
+    "iosS2": "Touchez le bouton Partager (le carré avec une flèche vers le haut).",
+    "iosS3": "Faites défiler et touchez « Sur l’écran d’accueil ».",
+    "iosS4": "Touchez « Ajouter » : l’icône CrushDuo apparaît sur votre écran d’accueil.",
+    "iosNote": "Sur iPhone et iPad, l’installation se fait depuis Safari. Si vous êtes dans une autre application (Instagram, Facebook…), ouvrez d’abord ce lien dans Safari.",
+    "desktopS1": "Ouvrez CrushDuo dans Chrome ou Edge.",
+    "desktopS2": "Cliquez sur l’icône d’installation, à droite de la barre d’adresse (un écran avec une flèche).",
+    "desktopS3": "Cliquez sur « Installer » : CrushDuo s’ouvre dans sa propre fenêtre.",
+    "desktopNote": "Firefox et Safari sur ordinateur ne proposent pas l’installation : vous pouvez simplement utiliser CrushDuo dans votre navigateur.",
+    "faqTitle": "Questions fréquentes",
+    "f1q": "Cela prend-il de la place sur mon téléphone ?",
+    "f1a": "Très peu : c’est le site, pas une application lourde. Il n’y a rien à télécharger depuis un magasin.",
+    "f2q": "L’application voit-elle plus de données sur moi ?",
+    "f2a": "Non. C’est le même site avec la même politique de confidentialité : l’installation ne donne aucun accès supplémentaire à votre téléphone.",
+    "f3q": "Comment la désinstaller ?",
+    "f3a": "Comme n’importe quelle application : appuyez longuement sur l’icône CrushDuo puis choisissez de la supprimer. Votre compte n’est pas supprimé.",
+    "banner": {
+      "title": "Installez CrushDuo",
+      "text": "Accès en un geste, en plein écran.",
+      "cta": "Installer",
+      "how": "Comment faire",
+      "later": "Plus tard"
+    },
+    "count": "{n, plural, one {# personne a déjà installé CrushDuo} other {# personnes ont déjà installé CrushDuo}}"
   }
 }
