@@ -217,6 +217,64 @@ async def seed_activity(db) -> None:
     await db.commit()
 
 
+async def seed_moderation(db) -> int:
+    """Scénarios de vérification des conversations et des signalements (comptes membre001…membre012, même mot de passe que les autres comptes de démonstration).
+    Chaque scénario crée un match, une conversation avec des messages, et le signalement correspondant. Idempotent (marqueur « [démo] »)."""
+    from app.models.models import Block, Report
+
+    if (await db.execute(select(Report.id).where(Report.details.like("[démo]%")).limit(1))).first():
+        return 0
+    users = {u.email: u for u in (await db.execute(select(User).where(User.email.in_([f"membre{i:03d}@duo.test" for i in range(1, 13)]) | (User.email == "admin@duo.test")))).scalars()}
+    if len(users) < 13:
+        return 0
+    m = lambda n: users[f"membre{n:03d}@duo.test"]  # noqa: E731
+    now = utcnow()
+
+    async def talk(a: User, b: User, lines: list[tuple[User, str]]) -> None:
+        x, y = sorted([a.id, b.id])
+        match = Match(userAId=x, userBId=y)
+        db.add(match)
+        await db.flush()
+        conv = Conversation(matchId=match.id)
+        db.add(conv)
+        await db.flush()
+        for k, (who, body) in enumerate(lines):
+            db.add(Message(conversationId=conv.id, senderId=who.id, body=body, createdAt=now - datetime.timedelta(minutes=len(lines) - k), readAt=now if k < len(lines) - 1 else None))
+        conv.lastMessageAt = now
+
+    def report(by: User, target: User, reason: str, status: str = "OPEN", note: str = "") -> None:
+        r = Report(reporterId=by.id, targetId=target.id, reason=reason, details=f"[démo] {note}".strip(), status=status)
+        if status in ("RESOLVED", "DISMISSED"):
+            r.resolvedById, r.resolvedAt = users["admin@duo.test"].id, now
+        db.add(r)
+
+    # 1. Conversation saine (rien à signaler).
+    await talk(m(1), m(2), [(m(1), "Salut ! Ton profil m’a plu."), (m(2), "Merci, le tien aussi 😊 Tu fais quoi ce week-end ?"), (m(1), "Marché le matin, puis cinéma. Et toi ?"), (m(2), "Pareil, on pourrait s’y croiser !")])
+    # 2. Harcèlement : insistance après refus → signalement ouvert.
+    await talk(m(3), m(4), [(m(3), "Pourquoi tu ne réponds pas ?"), (m(4), "Je ne suis pas intéressée, merci de me laisser tranquille."), (m(3), "Tu te crois meilleure que les autres ? Réponds-moi."),
+                            (m(3), "Je sais où tu travailles, ne m’ignore pas."), (m(4), "Je te signale.")])
+    report(m(4), m(3), "HARASSMENT", "OPEN", "insiste après un refus et fait allusion à son lieu de travail")
+    # 3. Arnaque (argent) → en cours d'examen.
+    await talk(m(5), m(6), [(m(5), "Bonjour belle personne, je pense déjà à toi 💕"), (m(5), "J’ai un souci urgent : peux-tu m’envoyer 50 000 FCFA par Orange Money ? Je te rembourse demain."),
+                            (m(6), "On ne se connaît pas depuis longtemps…"), (m(5), "Fais-moi confiance, c’est pour un billet, envoie vite sur le 07 00 00 00 00.")])
+    report(m(6), m(5), "SCAM", "REVIEWING", "demande d’argent dès le deuxième message")
+    # 4. Spam commercial → traité.
+    await talk(m(7), m(8), [(m(7), "Gagne 500 000 FCFA par semaine, clique ici : http://exemple.invalid/gain"), (m(7), "Offre limitée, partage à tes amis !"), (m(8), "C’est du spam.")])
+    report(m(8), m(7), "SPAM", "RESOLVED", "lien promotionnel envoyé à plusieurs membres ; compte averti")
+    # 5. Blocage sans signalement.
+    await talk(m(9), m(10), [(m(9), "Coucou"), (m(10), "Bonjour"), (m(9), "Tu veux ma photo ?"), (m(10), "Non merci.")])
+    db.add(Block(blockerId=m(10).id, blockedId=m(9).id, createdAt=now))
+    # 6. Faux profil signalé par trois membres (regroupement par cible).
+    for n in (1, 2, 4):
+        report(m(n), m(11), "FAKE_PROFILE", "OPEN", "photos trouvées ailleurs sur Internet")
+    # 7. Mineur présumé : à traiter en priorité.
+    report(m(3), m(12), "UNDERAGE", "OPEN", "dit être en classe de troisième")
+    # 8. Signalement non fondé (classé sans suite).
+    report(m(6), m(2), "OTHER", "DISMISSED", "désaccord sur un rendez-vous annulé ; rien d’anormal dans la conversation")
+    await db.commit()
+    return 8
+
+
 async def seed_lifestyle(db) -> None:
     """Mode de vie des profils de démonstration (taille, enfants, animaux…) : permet de tester les critères du menu Match. Idempotent."""
     rows = (await db.execute(select(Profile).join(User, User.id == Profile.userId).where(Profile.heightCm.is_(None), User.email.like("%@duo.test"), User.role == "USER")
@@ -310,8 +368,10 @@ async def main() -> None:
         await db.commit()
         crowd = await seed_crowd(db, pw_hash, interests)
         await seed_activity(db)
+        moderation = await seed_moderation(db)
         await seed_lifestyle(db)
         blog_posts = await seed_blog(db)
+    print(f"Modération : {moderation} scénarios de conversation et de signalement créés (membre001…membre012 ; voir docs/STATUS.md).")
     print(f"Blog : {blog_posts} articles créés (images de couverture décoratives).")
     print(f"Seed OK : {crowd} membres de démonstration supplémentaires, {created} membres créés, {len(staff)} comptes staff (si absents).")
     print(f"Mot de passe de TOUS les comptes seed : {PASSWORD}  (domaine @duo.test ; les comptes déjà existants gardent leur mot de passe)" if not known else "Mot de passe : celui des comptes déjà semés (inchangé).")
