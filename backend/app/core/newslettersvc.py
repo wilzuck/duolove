@@ -88,7 +88,7 @@ def render_campaign(c: NewsletterCampaign, token: str) -> tuple[str, str, dict]:
     blocks = [p(esc(x).replace("\n", "<br>")) for x in paras]
     if c.ctaLabel and c.ctaUrl:
         blocks.append(button(c.ctaLabel, c.ctaUrl))
-    footer = f'<p style="margin:8px 0 0;font-size:12px;color:#ffffff;text-align:center;">Vous recevez cet e-mail car vous êtes abonné(e) à la newsletter. <a href="{esc(unsub)}" style="color:#ffffff;text-decoration:underline;">Se désabonner</a></p>'
+    footer = f'<p style="margin:8px 0 0;font-size:13px;color:#45434F;text-align:center;">Vous recevez cet e-mail car vous êtes abonné(e) à la newsletter. <a href="{esc(unsub)}" style="color:#C2185B;font-weight:700;text-decoration:underline;">Se désabonner</a></p>'
     html = render_email(c.subject, blocks, preheader=c.preheader or "", footer=footer)
     text = "\n\n".join(paras) + (f"\n\n{c.ctaLabel} : {c.ctaUrl}" if c.ctaLabel and c.ctaUrl else "") + f"\n\n—\nSe désabonner : {unsub}"
     return html, text, {"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"}

@@ -17,6 +17,7 @@ BODY = "#45434F"
 MUTED = "#6B6A76"          # --muted (5,32:1 sur blanc)
 LINE = "#EEE7EB"           # --line
 PAGE = "#FBF5F8"
+FOOT = "#FDE7F0"           # pied de carte : rose très pâle (texte sombre dessus, jamais de blanc sur rose clair)
 FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif"
 
 
@@ -26,14 +27,14 @@ def esc(value) -> str:
 
 def p(html_text: str) -> str:
     """Paragraphe. `html_text` doit déjà être échappé si besoin."""
-    return f'<p style="margin:14px 0 0;font-size:15px;line-height:1.65;color:{BODY};">{html_text}</p>'
+    return f'<p style="margin:16px 0 0;font-size:16px;line-height:1.65;color:{FG};">{html_text}</p>'
 
 
 def button(label: str, url: str) -> str:
     """Bouton d'action principal : le seul élément plein de la couleur de marque."""
-    return ('<table role="presentation" cellpadding="0" cellspacing="0" style="margin:26px 0 0;"><tr>'
-            f'<td style="border-radius:999px;background:{BRAND_ACTION};"><a href="{esc(url)}" style="display:inline-block;padding:13px 28px;font-family:{FONT};'
-            f'font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:999px;">{esc(label)}</a></td></tr></table>')
+    return ('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0 0;"><tr>'
+            f'<td align="center" style="border-radius:999px;background:{BRAND_ACTION};"><a href="{esc(url)}" style="display:block;padding:16px 28px;font-family:{FONT};text-align:center;'
+            f'font-size:17px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:999px;">{esc(label)}</a></td></tr></table>')
 
 
 def code_box(code: str) -> str:
@@ -51,7 +52,7 @@ def highlight(html_text: str) -> str:
 
 def note(html_text: str) -> str:
     """Petit texte gris : durée de validité, avertissement de sécurité."""
-    return f'<p style="margin:24px 0 0;font-size:12px;line-height:1.6;color:{MUTED};">{html_text}</p>'
+    return f'<p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:{MUTED};">{html_text}</p>'
 
 
 def render_email(title: str, blocks: list[str], preheader: str = "", footer: str = "") -> str:
@@ -69,20 +70,20 @@ def render_email(title: str, blocks: list[str], preheader: str = "", footer: str
 {pre}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{PAGE};">
 <tr><td align="center" style="padding:32px 16px;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border:1px solid {LINE};border-radius:20px;border-collapse:separate;overflow:hidden;">
-<tr><td style="padding:28px 32px 4px;"><a href="{esc(base)}"><img src="{esc(base)}/brand/crushduo-logo-email.png" alt="CrushDuo" width="140" height="29" style="display:block;width:140px;height:29px;border:0;outline:none;text-decoration:none;"></a></td></tr>
-<tr><td style="padding:22px 32px 32px;font-family:{FONT};">
-<p style="margin:0;font-size:22px;font-weight:800;line-height:1.3;color:{FG};">{esc(title)}</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid {LINE};border-radius:20px;border-collapse:separate;overflow:hidden;">
+<tr><td style="padding:36px 40px 4px;"><a href="{esc(base)}"><img src="{esc(base)}/brand/crushduo-logo-email.png" alt="CrushDuo" width="168" height="35" style="display:block;width:168px;height:35px;border:0;outline:none;text-decoration:none;"></a></td></tr>
+<tr><td style="padding:26px 40px 36px;font-family:{FONT};">
+<p style="margin:0;font-size:30px;font-weight:800;line-height:1.2;letter-spacing:-.01em;color:{FG};">{esc(title)}</p>
 {"".join(blocks)}
 </td></tr>
-<tr><td align="center" style="background:{BRAND_ACTION};border-radius:0 0 20px 20px;padding:22px 32px;text-align:center;">
-<p style="margin:0;font-family:{FONT};font-size:14px;font-weight:800;color:#ffffff;">CrushDuo</p>
-<p style="margin:4px 0 0;font-family:{FONT};font-size:12px;color:#ffffff;">Deux cœurs, une belle histoire.</p>
+<tr><td align="center" style="background:{FOOT};border-radius:0 0 20px 20px;padding:28px 40px 30px;text-align:center;">
+<p style="margin:0;font-family:{FONT};font-size:22px;font-weight:800;color:{FG};">CrushDuo</p>
+<p style="margin:8px 0 0;font-family:{FONT};font-size:16px;color:{FG};">Deux cœurs, une belle histoire.</p>
 {footer}
-<p style="margin:8px 0 0;font-family:{FONT};font-size:12px;color:#ffffff;">Une question ? <a href="{esc(base)}/contact" style="color:#ffffff;text-decoration:underline;">Contactez-nous</a></p>
+<p style="margin:14px 0 0;font-family:{FONT};font-size:16px;color:{FG};">Une question ? <a href="{esc(base)}/contact" style="color:{BRAND_INK};font-weight:700;text-decoration:underline;">Contactez-nous</a></p>
 </td></tr>
 </table>
-<p style="margin:14px 0 0;font-family:{FONT};font-size:11px;color:{MUTED};text-align:center;">© 2026 CrushDuo · Réservé aux personnes majeures (18 ans et plus)</p>
+<p style="margin:14px 0 0;font-family:{FONT};font-size:13px;color:{MUTED};text-align:center;">© 2026 CrushDuo · Réservé aux personnes majeures (18 ans et plus)</p>
 </td></tr>
 </table>
 </body>

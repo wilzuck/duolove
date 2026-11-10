@@ -165,7 +165,7 @@ async def send_magic_link(to: str, name: str, token: str, remember: bool = True)
 
 def notification_html(title: str, body: str, unsub_url: str | None = None) -> str:
     """E-mail de notification (message, match, like…) : même carte, bouton vers l'application et, si la notification est facultative, un lien de désabonnement."""
-    footer = (f'<p style="margin:8px 0 0;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;font-size:12px;color:#ffffff;text-align:center;">'
-              f'<a href="{esc_(unsub_url)}" style="color:#ffffff;text-decoration:underline;">Ne plus recevoir ces e-mails</a></p>') if unsub_url else ""
+    footer = (f'<p style="margin:8px 0 0;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;font-size:13px;color:#45434F;text-align:center;">'
+              f'<a href="{esc_(unsub_url)}" style="color:#C2185B;font-weight:700;text-decoration:underline;">Ne plus recevoir ces e-mails</a></p>') if unsub_url else ""
     return render_email(title, [p(esc_(body)), button("Ouvrir CrushDuo", get_settings().app_url),
                                 note("Vous recevez ce message selon vos préférences de notification : vous pouvez les modifier dans Paramètres › Notifications.")], preheader=body, footer=footer)
