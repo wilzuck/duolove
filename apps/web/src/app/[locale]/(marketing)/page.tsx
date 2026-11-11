@@ -94,7 +94,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      <section id="faq" className="mx-auto max-w-3xl scroll-mt-24 px-4 pb-20" aria-labelledby="faq-title">
+      <section id="faq" className="mx-auto max-w-3xl scroll-mt-24 px-4 py-16 md:py-20" aria-labelledby="faq-title">
         <h2 id="faq-title" className="text-center text-3xl font-extrabold md:text-4xl">{t('home.faqTitle')}</h2>
         <div className="mt-10 space-y-3">
           {FAQ.map((k) => (

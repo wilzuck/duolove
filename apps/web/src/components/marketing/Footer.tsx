@@ -2,6 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { SUPPORT_EMAIL } from '@/lib/site';
+import { SocialIcons } from './SocialIcons';
 
 const COLS = [
   ['footer.product', [['/how-it-works', 'nav.how'], ['/pricing', 'nav.pricing'], ['/blog', 'nav.blog'], ['/register', 'nav.register'], ['/login', 'nav.login']]],
@@ -18,6 +19,7 @@ export function MarketingFooter() {
           <p className="max-w-xs text-sm text-muted">{t('meta.tagline')}</p>
           <p className="text-sm text-muted">{t('footer.adults')}</p>
           <p className="text-sm"><a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium text-brand-ink underline-offset-4 hover:underline">{SUPPORT_EMAIL}</a></p>
+          <SocialIcons className="pt-1" />
         </div>
         {/* Ordinateur : colonnes ouvertes */}
         {COLS.map(([title, links]) => (
