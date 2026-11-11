@@ -117,7 +117,7 @@ export default function DailyPage() {
         </>
       )}
       <Dialog open={!!open} onClose={() => setOpen(null)} title={open?.displayName ?? ''} closeLabel={t('common.close')} className="w-[min(94vw,32rem)]">
-        {open && <ProfileDetail card={open} onBlocked={() => { setOpen(null); refresh(); }} onLiked={(r) => { setOpen(null); done(open)(r); }} />}
+        {open && <ProfileDetail card={open} layout="stack" onBlocked={() => { setOpen(null); refresh(); }} onLiked={(r) => { setOpen(null); done(open)(r); }} />}
       </Dialog>
       {liking && <LikeComposer card={liking} open onClose={() => setLiking(null)} onDone={done(liking)} />}
     </div>

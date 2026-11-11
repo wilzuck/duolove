@@ -2,7 +2,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { Ban, Briefcase, Flag, Heart, Home, Languages, MapPin, PawPrint, Baby, Ruler } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { Badge, Button, buttonVariants, cn } from '@duomatch/ui';
 import { ActionButton } from './ActionButton';
 import { useApiError } from '@/hooks/useApiError';
@@ -14,17 +14,28 @@ import type { Card, SwipeResult } from '@/lib/types';
 import { countryName } from './ProfileCard';
 import { AffinityPanel } from './AffinityPanel';
 import { LikeComposer, type LikeTarget } from './LikeComposer';
-import { ProfileCard } from './ProfileCard';
+import { ProfileGallery } from './ProfileGallery';
+import { ProfileIdentity } from './ProfileIdentity';
 import { PromptList } from './PromptList';
 import { ReportDialog } from './ReportDialog';
 import type { ReactNode } from 'react';
 
-/** Profil complet d'un autre membre, avec Bloquer / Signaler. */
-export function ProfileDetail({ card, onBlocked, onLiked, hero }: { card: Card; onBlocked?: () => void; onLiked?: (r: SwipeResult) => void; hero?: ReactNode }) {
+const WIDE = '(min-width: 1024px)';
+const useWide = () => useSyncExternalStore(
+  (cb) => { const m = window.matchMedia(WIDE); m.addEventListener('change', cb); return () => m.removeEventListener('change', cb); },
+  () => window.matchMedia(WIDE).matches, () => false);
+
+/**
+ * Profil complet d'un autre membre, avec Bloquer / Signaler.
+ * `layout="split"` (page profil) : sur ordinateur, photos à gauche (grande photo + vignettes, fixes pendant la lecture) et infos à droite ; sur téléphone, mosaïque en haut.
+ * `layout="stack"` (feuille de la découverte, colonne étroite) : mosaïque puis infos.
+ */
+export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split' }: { card: Card; onBlocked?: () => void; onLiked?: (r: SwipeResult) => void; hero?: ReactNode; layout?: 'split' | 'stack' }) {
   const t = useTranslations();
   const locale = useLocale();
   const err = useApiError();
   const toast = useUi((s) => s.toast);
+  const wide = useWide() && layout === 'split';
   const [report, setReport] = useState(false);
   const [composer, setComposer] = useState<LikeTarget | null>(null);
   const { data: cfg } = useEngagementConfig();
@@ -35,9 +46,12 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero }: { card: Card; 
     onError: (e) => toast('error', err(e)),
   });
   return (
-    <div className="space-y-6">
-      {hero ?? <div className="mx-auto aspect-[4/5] w-full max-w-md"><ProfileCard card={card} compact /></div>}
-      <div className="mx-auto max-w-md space-y-5">
+    <div className={wide ? 'grid grid-cols-[minmax(0,26rem)_minmax(0,1fr)] items-start gap-10' : 'space-y-6'}>
+      <div className={wide ? 'sticky top-24' : 'mx-auto w-full max-w-md'}>
+        {hero ?? <ProfileGallery card={card} variant={wide ? 'stage' : 'mosaic'} />}
+      </div>
+      <div className={wide ? 'space-y-5' : 'mx-auto max-w-md space-y-5'}>
+        {!hero && <ProfileIdentity card={card} />}
         {card.affinity && <AffinityPanel affinity={card.affinity} />}
         {card.bio && <section><h3 className="mb-1 font-bold">{t('profileView.about')}</h3><p className="whitespace-pre-line text-muted">{card.bio}</p></section>}
         <dl className="space-y-2 text-sm">
