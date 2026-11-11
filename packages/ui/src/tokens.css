@@ -14,7 +14,7 @@
   --line: #eee7eb;
   /* Champs de saisie : distincts de la carte qui les contient (clair : blanc + bordure franche ; sombre : plus foncé que la carte). */
   --field: #ffffff;
-  --field-line: #d9cfd5;
+  --field-line: #9c8f99;
   --navy: #22212b;
   --success: #22c55e;
   --success-ink: #166534;
@@ -34,7 +34,7 @@
   --muted: #a9a4b3;
   --line: #2c2836;
   --field: #110f16;
-  --field-line: #5a546a;
+  --field-line: #7a7490;
   --soft: #2a1a24;
   --brand-ink: #ff8fae;
   --navy: #3a3647;
@@ -51,7 +51,7 @@
     --muted: #a9a4b3;
     --line: #2c2836;
     --field: #110f16;
-    --field-line: #5a546a;
+    --field-line: #7a7490;
     --soft: #2a1a24;
     --brand-ink: #ff8fae;
     --navy: #3a3647;

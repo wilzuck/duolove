@@ -90,7 +90,7 @@ Source de vérité : `packages/ui/src/logo.tsx`. Ne pas redessiner : réexporter
 | Fond | Autorisé | Notes |
 |---|---|---|
 | Blanc, rose pâle (`#FFF0F5`) | ✅ | Rendu de référence |
-| Fond sombre (`#14121A`, `#1D1A25`) | ⚠️ | Le texte passe en clair automatiquement ; **le cœur droit s'assombrit** (voir écart E3, chapitre 15) |
+| Fond sombre (`#14121A`, `#1D1A25`) | ✅ | Le texte passe en clair automatiquement ; le cœur droit reste rose plein (écart E3 corrigé, chapitre 15) |
 | Photo | ⚠️ | Seulement si la zone sous le logo est uniforme et que le contraste texte/fond ≥ 4,5:1 |
 | Rose plein `#E91E63` | ❌ | Perte de lecture de la marque : utiliser la version négative |
 
@@ -131,7 +131,7 @@ Toutes les couleurs sont des **jetons** (variables CSS) définis dans `packages/
 | `--muted` | `#6B6A76` | `#A9A4B3` | Texte secondaire, aides, placeholders |
 | `--line` | `#EEE7EB` | `#2C2836` | Séparateurs et bordures de cartes |
 | `--field` | `#FFFFFF` | `#110F16` | Fond des champs de saisie |
-| `--field-line` | `#D9CFD5` | `#5A546A` | Bordure des champs |
+| `--field-line` | `#9C8F99` | `#7A7490` | Bordure des champs (≥ 3:1, WCAG 1.4.11) |
 | `--navy` | `#22212B` | `#3A3647` | Bouton « dark », barre d'administration |
 
 ### 3.3 Couleurs de statut
@@ -163,7 +163,7 @@ Seuils : texte courant ≥ **4,5:1** · grand texte (≥ 24 px, ou ≥ 18,7 px e
 | Erreur `#B91C1C` sur blanc | 6,47 | ✅ |
 | Or `#8A6400` sur blanc | 5,38 | ✅ |
 | Blanc sur rose de marque `#E91E63` | **4,35** | ⚠️ grands éléments seulement |
-| Bordure de champ `#D9CFD5` sur blanc | **1,52** | ❌ sous 3:1 (écart E1) |
+| Bordure de champ `#9C8F99` sur blanc | **3,09** | ✅ (écart E1 corrigé le 2026-11-11 ; était `#D9CFD5`, 1,52) |
 
 **Thème sombre**
 
@@ -177,7 +177,7 @@ Seuils : texte courant ≥ **4,5:1** · grand texte (≥ 24 px, ou ≥ 18,7 px e
 | Succès `#4ADE80` sur carte | 9,82 | ✅ |
 | Erreur `#FCA5A5` sur carte | 9,02 | ✅ |
 | Or `#FCD34D` sur carte | 11,87 | ✅ |
-| Bordure de champ `#5A546A` sur `#110F16` | **2,64** | ⚠️ sous 3:1 (écart E1) |
+| Bordure de champ `#7A7490` sur `#110F16` | **4,28** | ✅ (écart E1 corrigé le 2026-11-11 ; était `#5A546A`, 2,64) |
 
 À toute nouvelle couleur : calculer le rapport avant de l'adopter, et l'ajouter à ce tableau.
 
@@ -531,9 +531,9 @@ Constatés à la rédaction de ce document (non corrigés, sauf mention). À tra
 
 | Réf. | Écart | Gravité | Piste |
 |---|---|---|---|
-| E1 | **Bordure des champs sous 3:1** : 1,52:1 en clair (`#D9CFD5` sur blanc), 2,64:1 en sombre. Le critère WCAG 1.4.11 (contraste des composants) peut ne pas être satisfait ; l'outil axe ne le détecte pas | Moyenne | Assombrir `--field-line` (≈ `#8F8590` en clair pour atteindre 3:1 sur blanc, ≈ `#7A7490` en sombre) puis revérifier tous les écrans |
+| E1 | **Corrigé (2026-11-11)** — Bordure des champs sous 3:1 : `--field-line` passe de `#D9CFD5` à `#9C8F99` en clair (3,09:1 sur blanc) et de `#5A546A` à `#7A7490` en sombre (4,28:1 sur `#110F16`, 3,85:1 sur une carte). À revérifier à l'œil sur les écrans qui utilisent des champs et des puces | Corrigé | Fait dans `packages/ui/src/tokens.css` |
 | E2 | **Rose de marque `#E91E63` sur blanc à 4,35:1** : conforme seulement pour les grands éléments ; risque d'un usage en texte par un nouveau contributeur | Faible | Règle déjà documentée (3.1) ; ajouter une vérification automatique |
-| E3 | **Logo en thème sombre** : le second cœur utilise un mélange `multiply` qui, sur fond sombre, le rend bordeaux très foncé (constaté dans le navigateur) ; la marque change d'aspect entre thèmes | Moyenne (identité) | Remplacer par des teintes fixes sans mode de fusion, validées sur fonds clair et sombre |
+| E3 | **Corrigé (constaté 2026-11-11)** — Logo en thème sombre : les fichiers livrés (`/brand/crushduo-logo-dark.webp`, `crushduo-mark-dark.webp`) utilisent des teintes fixes sans mode de fusion : cœur gauche blanc, cœur droit rose plein ≈ `#E80850` (lisible sur `#14121A`). Le défaut décrit (mélange `multiply` qui rendait le second cœur bordeaux) ne concerne plus les fichiers actuels | Corrigé | Rien à faire ; contrôle visuel fait sur fond `#14121A` |
 | E4 | ~~Icônes d'application~~ — **résolu** : PNG 192/512, maskable, apple-touch-icon et favicon.ico générés depuis le nouveau logo et déclarés dans le manifeste | — | — |
 | E5 | **Aucun logo monochrome ni négatif** | Faible | Dessiner et ajouter au kit (14.1) |
 | E6 | **Badge Premium/VIP absent** : aucune distinction visible d'un abonné | À décider | Voir 8.9 |
@@ -555,7 +555,7 @@ Source : `packages/ui/src/tokens.css` (la copie ci-dessous peut dériver : le fi
   --brand-strong: #d81b60;    --brand-strong-2: #c2185b;   --brand-ink: #c2185b;
   --soft: #fff0f5;            --bg: #ffffff;               --card: #ffffff;
   --fg: #22212b;              --muted: #6b6a76;            --line: #eee7eb;
-  --field: #ffffff;           --field-line: #d9cfd5;       --navy: #22212b;
+  --field: #ffffff;           --field-line: #9c8f99;       --navy: #22212b;
   --success: #22c55e;         --success-ink: #166534;
   --danger: #ef4444;          --danger-strong: #dc2626;    --danger-ink: #b91c1c;
   --gold: #f5b301;            --gold-ink: #8a6400;
@@ -564,7 +564,7 @@ Source : `packages/ui/src/tokens.css` (la copie ci-dessous peut dériver : le fi
 }
 [data-theme='dark'] {
   --bg: #14121a;  --card: #1d1a25;  --fg: #f4f1f6;  --muted: #a9a4b3;  --line: #2c2836;
-  --field: #110f16;  --field-line: #5a546a;  --soft: #2a1a24;  --brand-ink: #ff8fae;
+  --field: #110f16;  --field-line: #7a7490;  --soft: #2a1a24;  --brand-ink: #ff8fae;
   --navy: #3a3647;  --success-ink: #4ade80;  --danger-ink: #fca5a5;  --gold-ink: #fcd34d;
   --shadow-soft: 0 6px 24px -10px rgb(0 0 0 / .6);
 }
