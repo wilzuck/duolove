@@ -92,6 +92,8 @@ async def unreact(message_id: str, u: AuthUser = Depends(verified_user), db: Asy
 async def icebreakers_for(conversation_id: str, seed: int = Query(0, ge=0, le=1000), locale: str = Query("fr", pattern="^(fr|en)$"),
                           u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     """« Besoin d'une idée pour commencer ? » : sujets déduits des éléments communs. Rien n'est envoyé : le membre choisit et édite le texte."""
+    if not (await entitlements.get(db, u.id))["limits"]["chatSuggestions"]:
+        raise forbidden("PLAN_REQUIRED", "Les idées pour briser la glace sont réservées aux abonnés Premium et VIP")
     return await icebreakers.suggestions(db, u.id, conversation_id, seed, locale)
 
 

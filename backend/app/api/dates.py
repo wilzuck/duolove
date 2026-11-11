@@ -2,7 +2,8 @@
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import datesvc
+from app.core import datesvc, entitlements
+from app.core.errors import forbidden
 from app.core.ratelimit import limit
 from app.core.auth import AuthUser, verified_user
 from app.db.session import get_db
@@ -27,6 +28,9 @@ async def list_dates(conversation_id: str, u: AuthUser = U, db: AsyncSession = D
 
 @router.post("/conversations/{conversation_id}/dates", status_code=201)
 async def propose(conversation_id: str, body: DateIn, u: AuthUser = U, db: AsyncSession = Depends(get_db)):
+    # Proposer un rendez-vous est réservé aux formules qui l'incluent ; répondre à une proposition reste possible pour tous.
+    if not (await entitlements.get(db, u.id))["limits"]["dates"]:
+        raise forbidden("PLAN_REQUIRED", "Les rendez-vous sont réservés aux abonnés Premium et VIP")
     return await datesvc.propose(db, u.id, conversation_id, body.model_dump())
 
 

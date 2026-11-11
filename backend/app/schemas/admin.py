@@ -102,6 +102,9 @@ class PlanFeatures(BaseModel):
     chat_images_enabled: bool = Field(False, strict=True)
     read_receipts_control: bool = Field(False, strict=True)
     daily_picks_count: int = Field(5, ge=1, le=30, strict=True)
+    chat_suggestions_enabled: bool = Field(False, strict=True)
+    calls_enabled: bool = Field(False, strict=True)
+    dates_enabled: bool = Field(False, strict=True)
 
 
 class PriceIn(BaseModel):

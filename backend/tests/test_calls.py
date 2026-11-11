@@ -14,7 +14,17 @@ from app.core.realtime import emitted
 from app.db.session import session_maker
 from app.models.models import CallSession, FeatureFlag, Notification, SystemSetting
 from tests.helpers import new_agent
-from tests.support_c import matched, member
+from tests.support_c import member
+from tests.helpers import make_premium
+from tests.support_c import matched as _matched
+
+
+async def matched(app, db):
+    """Appels, rendez-vous et idées de messagerie sont réservés aux formules qui les incluent : les deux membres sont Premium."""
+    w, m, conv = await _matched(app, db)
+    await make_premium(w.id)
+    await make_premium(m.id)
+    return w, m, conv
 
 
 @pytest.fixture(autouse=True)
@@ -77,6 +87,7 @@ async def test_decline_cancel_and_roles(app, db):
     c2 = (await call(w, conv)).json()
     assert (await w.agent.post(f"/api/calls/{c2['id']}/cancel")).json()["status"] == "CANCELED"
     out = await member(app, db)
+    await make_premium(out.id)  # le refus attendu est celui de la conversation (404), pas celui de la formule
     assert (await out.agent.post(f"/api/calls/{c2['id']}/end")).status_code == 404
     assert (await out.agent.get(f"/api/calls/{c2['id']}/token")).status_code == 404
     assert (await call(out, conv)).status_code == 404

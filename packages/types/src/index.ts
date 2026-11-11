@@ -74,6 +74,10 @@ export const planFeaturesSchema = z.object({
   chat_images_enabled: z.boolean().default(false),
   read_receipts_control: z.boolean().default(false),
   daily_picks_count: z.number().int().min(1).max(30).default(5),
+  /** Messagerie : idées pour briser la glace, appels audio / vidéo (lancer), rendez-vous (proposer). Réservés aux formules qui les incluent. */
+  chat_suggestions_enabled: z.boolean().default(false),
+  calls_enabled: z.boolean().default(false),
+  dates_enabled: z.boolean().default(false),
 });
 export type PlanFeatures = z.infer<typeof planFeaturesSchema>;
 export const PLAN_FEATURE_KEYS = Object.keys(planFeaturesSchema.shape) as (keyof PlanFeatures)[];
@@ -85,6 +89,7 @@ export const UNLIMITED_LIKES_CAP = 1000;
 export interface Limits {
   dailyLikes: number; unlimitedLikes: boolean; superLikesWeekly: number; seeLikers: boolean; advancedFilters: boolean;
   rewind: boolean; boostsMonthly: number; incognito: boolean; ads: boolean; liveMatch: boolean; liveMatchTrials: number; matchTokensMonthly: number; chatImages: boolean; readReceiptsControl: boolean; dailyPicksCount: number;
+  chatSuggestions: boolean; calls: boolean; dates: boolean;
 }
 export function limitsFromFeatures(f: PlanFeatures): Limits {
   const unlimited = f.daily_likes_limit < 0;
@@ -92,6 +97,7 @@ export function limitsFromFeatures(f: PlanFeatures): Limits {
     dailyLikes: unlimited ? UNLIMITED_LIKES_CAP : f.daily_likes_limit, unlimitedLikes: unlimited, superLikesWeekly: f.super_likes_weekly,
     seeLikers: f.can_see_likes, advancedFilters: f.advanced_filters, rewind: f.rewind_enabled, boostsMonthly: f.boosts_monthly, incognito: f.incognito_mode, ads: f.ads_enabled,
     liveMatch: f.live_match_enabled, liveMatchTrials: f.live_match_trials, matchTokensMonthly: f.match_tokens_monthly, chatImages: f.chat_images_enabled, readReceiptsControl: f.read_receipts_control, dailyPicksCount: f.daily_picks_count,
+    chatSuggestions: f.chat_suggestions_enabled, calls: f.calls_enabled, dates: f.dates_enabled,
   };
 }
 
@@ -108,9 +114,9 @@ export function priceForDuration(monthlyXof: number, months: number, discountPer
 
 /** Valeurs initiales (création si absentes uniquement : une modification d'administrateur n'est JAMAIS écrasée). */
 export const DEFAULT_PLANS: Record<PlanCode, { name: string; priceXof: number; featured: boolean; sortOrder: number; features: PlanFeatures }> = {
-  FREE: { name: 'Gratuit', priceXof: 0, featured: false, sortOrder: 0, features: { daily_likes_limit: 20, super_likes_weekly: 0, can_see_likes: false, advanced_filters: false, boosts_monthly: 0, incognito_mode: false, rewind_enabled: false, ads_enabled: true, live_match_enabled: false, live_match_trials: 2, match_tokens_monthly: 0, chat_images_enabled: false, read_receipts_control: false, daily_picks_count: 5 } },
-  PREMIUM: { name: 'Premium', priceXof: 2500, featured: true, sortOrder: 1, features: { daily_likes_limit: -1, super_likes_weekly: 5, can_see_likes: true, advanced_filters: true, boosts_monthly: 0, incognito_mode: false, rewind_enabled: true, ads_enabled: false, live_match_enabled: true, live_match_trials: 0, match_tokens_monthly: 5, chat_images_enabled: true, read_receipts_control: true, daily_picks_count: 10 } },
-  VIP: { name: 'VIP', priceXof: 5000, featured: false, sortOrder: 2, features: { daily_likes_limit: -1, super_likes_weekly: 15, can_see_likes: true, advanced_filters: true, boosts_monthly: 2, incognito_mode: true, rewind_enabled: true, ads_enabled: false, live_match_enabled: true, live_match_trials: 0, match_tokens_monthly: 15, chat_images_enabled: true, read_receipts_control: true, daily_picks_count: 10 } },
+  FREE: { name: 'Gratuit', priceXof: 0, featured: false, sortOrder: 0, features: { daily_likes_limit: 20, super_likes_weekly: 0, can_see_likes: false, advanced_filters: false, boosts_monthly: 0, incognito_mode: false, rewind_enabled: false, ads_enabled: true, live_match_enabled: false, live_match_trials: 2, match_tokens_monthly: 0, chat_images_enabled: false, read_receipts_control: false, daily_picks_count: 5, chat_suggestions_enabled: false, calls_enabled: false, dates_enabled: false } },
+  PREMIUM: { name: 'Premium', priceXof: 2500, featured: true, sortOrder: 1, features: { daily_likes_limit: -1, super_likes_weekly: 5, can_see_likes: true, advanced_filters: true, boosts_monthly: 0, incognito_mode: false, rewind_enabled: true, ads_enabled: false, live_match_enabled: true, live_match_trials: 0, match_tokens_monthly: 5, chat_images_enabled: true, read_receipts_control: true, daily_picks_count: 10, chat_suggestions_enabled: true, calls_enabled: true, dates_enabled: true } },
+  VIP: { name: 'VIP', priceXof: 5000, featured: false, sortOrder: 2, features: { daily_likes_limit: -1, super_likes_weekly: 15, can_see_likes: true, advanced_filters: true, boosts_monthly: 2, incognito_mode: true, rewind_enabled: true, ads_enabled: false, live_match_enabled: true, live_match_trials: 0, match_tokens_monthly: 15, chat_images_enabled: true, read_receipts_control: true, daily_picks_count: 10, chat_suggestions_enabled: true, calls_enabled: true, dates_enabled: true } },
 };
 
 export const CREDIT_TYPES = ['SUPER_LIKE', 'BOOST_30', 'BOOST_120', 'BOOST_1440', 'MATCH_TOKEN'] as const;

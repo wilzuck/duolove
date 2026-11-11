@@ -136,6 +136,10 @@ async def test_reactions_and_replies_flags(app, db):
 # ───────── brise-glace ─────────
 async def test_icebreakers_use_only_shared_info_and_never_send(app, db):
     w, m, conv = await matched(app, db)
+    from tests.helpers import make_premium
+
+    await make_premium(w.id)  # idées de messagerie : réservées aux formules qui les incluent
+    await make_premium(m.id)
     await give_interests(w.id, ["cooking", "travel", "music"])
     await give_interests(m.id, ["cooking", "travel", "sport"])
     res = (await w.agent.get(f"/api/conversations/{conv}/icebreakers")).json()
@@ -152,6 +156,10 @@ async def test_icebreakers_use_only_shared_info_and_never_send(app, db):
 
 async def test_icebreakers_without_common_ground_are_neutral_and_regenerable(app, db):
     w, m, conv = await matched(app, db)
+    from tests.helpers import make_premium
+
+    await make_premium(w.id)  # idées de messagerie : réservées aux formules qui les incluent
+    await make_premium(m.id)
     await give_interests(w.id, ["music"])
     await give_interests(m.id, ["sport"])
     async with session_maker()() as s:
@@ -169,9 +177,14 @@ async def test_icebreakers_without_common_ground_are_neutral_and_regenerable(app
 async def test_icebreakers_access_count_flag_and_admin_templates(app, db):
     a = await admin(app, db)
     w, m, conv = await matched(app, db)
+    from tests.helpers import make_premium
+
+    await make_premium(w.id)  # idées de messagerie : réservées aux formules qui les incluent
+    await make_premium(m.id)
     await give_interests(w.id, ["art"])
     await give_interests(m.id, ["art"])
     outsider = await member(app, db)
+    await make_premium(outsider.id)  # le refus attendu est celui de la conversation (404), pas celui de la formule
     assert (await outsider.agent.get(f"/api/conversations/{conv}/icebreakers")).status_code == 404
     assert (await new_agent(app).get(f"/api/conversations/{conv}/icebreakers")).status_code == 401
     # Réglage admin du nombre de suggestions.

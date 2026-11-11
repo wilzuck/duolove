@@ -9,7 +9,17 @@ from app.core.ids import utcnow
 from app.db.session import session_maker
 from app.models.models import DateProposal, FeatureFlag, Notification, NotificationPreference, Profile, SystemSetting
 from tests.helpers import new_agent, uid
-from tests.support_c import admin, matched, member
+from tests.support_c import admin, member
+from tests.helpers import make_premium
+from tests.support_c import matched as _matched
+
+
+async def matched(app, db):
+    """Appels, rendez-vous et idées de messagerie sont réservés aux formules qui les incluent : les deux membres sont Premium."""
+    w, m, conv = await _matched(app, db)
+    await make_premium(w.id)
+    await make_premium(m.id)
+    return w, m, conv
 from tests.test_dates import accepted
 
 

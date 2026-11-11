@@ -3,8 +3,9 @@ from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import callsvc
+from app.core import callsvc, entitlements
 from app.core.auth import AuthUser, verified_user
+from app.core.errors import forbidden
 from app.core.ratelimit import limit
 from app.db.session import get_db
 
@@ -18,6 +19,9 @@ class CallIn(BaseModel):
 
 @router.post("/conversations/{conversation_id}/calls", status_code=201, dependencies=[limit(10, 60)])
 async def start(conversation_id: str, body: CallIn, u: AuthUser = U, db: AsyncSession = Depends(get_db)):
+    # Lancer un appel est réservé aux formules qui l'incluent ; répondre à un appel reste possible pour tous.
+    if not (await entitlements.get(db, u.id))["limits"]["calls"]:
+        raise forbidden("PLAN_REQUIRED", "Les appels sont réservés aux abonnés Premium et VIP")
     return await callsvc.start(db, u.id, conversation_id, body.kind)
 
 

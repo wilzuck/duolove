@@ -29,6 +29,8 @@ PLAN_FEATURE_DEFAULTS: dict = {
     "boosts_monthly": 0, "incognito_mode": False, "rewind_enabled": False, "ads_enabled": True,
     "live_match_enabled": False, "live_match_trials": 2, "match_tokens_monthly": 0, "chat_images_enabled": False,
     "read_receipts_control": False, "daily_picks_count": 5,
+    # Messagerie : idées pour briser la glace, appels audio / vidéo, rendez-vous. Réservés aux formules qui les incluent (réglable en administration).
+    "chat_suggestions_enabled": False, "calls_enabled": False, "dates_enabled": False,
 }
 
 DEFAULT_PLANS = {
@@ -37,11 +39,13 @@ DEFAULT_PLANS = {
     "PREMIUM": {"name": "Premium", "priceXof": 2500, "featured": True, "sortOrder": 1,
                 "features": {"daily_likes_limit": -1, "super_likes_weekly": 5, "can_see_likes": True, "advanced_filters": True,
                              "boosts_monthly": 0, "incognito_mode": False, "rewind_enabled": True, "ads_enabled": False,
-                             "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 5, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 10}},
+                             "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 5, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 10,
+                             "chat_suggestions_enabled": True, "calls_enabled": True, "dates_enabled": True}},
     "VIP": {"name": "VIP", "priceXof": 5000, "featured": False, "sortOrder": 2,
             "features": {"daily_likes_limit": -1, "super_likes_weekly": 15, "can_see_likes": True, "advanced_filters": True,
                          "boosts_monthly": 2, "incognito_mode": True, "rewind_enabled": True, "ads_enabled": False,
-                         "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 15, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 10}},
+                         "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 15, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 10,
+                         "chat_suggestions_enabled": True, "calls_enabled": True, "dates_enabled": True}},
 }
 
 DEFAULT_PRODUCTS = (
@@ -126,6 +130,7 @@ def limits_from_features(f: dict) -> dict:
         "superLikesWeekly": f["super_likes_weekly"], "seeLikers": f["can_see_likes"], "advancedFilters": f["advanced_filters"],
         "rewind": f["rewind_enabled"], "boostsMonthly": f["boosts_monthly"], "incognito": f["incognito_mode"], "ads": f["ads_enabled"],
         "liveMatch": f["live_match_enabled"], "liveMatchTrials": f["live_match_trials"], "matchTokensMonthly": f["match_tokens_monthly"], "chatImages": f.get("chat_images_enabled", False), "readReceiptsControl": f.get("read_receipts_control", False), "dailyPicksCount": f.get("daily_picks_count", 5),
+        "chatSuggestions": f.get("chat_suggestions_enabled", False), "calls": f.get("calls_enabled", False), "dates": f.get("dates_enabled", False),
     }
 
 
