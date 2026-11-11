@@ -11,7 +11,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: path === '' ? 'weekly' as const : 'monthly' as const,
       priority: path === '' ? 1 : 0.7,
-      alternates: { languages: Object.fromEntries(routing.locales.map((l) => [l, url(l, path) || SITE_URL])) },
+      // `x-default` : la page à proposer quand la langue du visiteur n'est ni le français ni l'anglais (la version française, sans préfixe).
+      alternates: { languages: { ...Object.fromEntries(routing.locales.map((l) => [l, url(l, path) || SITE_URL])), 'x-default': url(routing.defaultLocale, path) || SITE_URL } },
     })),
   );
   // Articles publiés : une entrée par langue (pas d'alternates : les articles ne sont pas forcément traduits).
