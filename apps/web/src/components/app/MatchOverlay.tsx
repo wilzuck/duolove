@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Heart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@duomatch/ui';
@@ -10,7 +10,7 @@ import { api } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import type { Card } from '@/lib/types';
 
-/** Célébration d'un match mutuel (déclenchée par la réponse au swipe ou par l'événement temps réel). */
+/** Célébration d'un duo (like réciproque) (déclenchée par la réponse au swipe ou par l'événement temps réel). */
 export function MatchOverlay() {
   const t = useTranslations();
   const router = useRouter();
@@ -23,11 +23,16 @@ export function MatchOverlay() {
   });
   const o = match?.user?.photos.length ? match.user : other.data;
   const close = () => show(null);
+  const still = useReducedMotion();
   return (
     <AnimatePresence>
       {match && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} role="dialog" aria-modal="true" aria-label={t('match.title')}
-          className="fixed inset-0 z-[70] flex flex-col items-center justify-center gap-8 bg-linear-to-b from-brand-strong to-brand-strong-2 p-6 text-white">
+          className="fixed inset-0 z-[70] flex flex-col items-center justify-center gap-8 overflow-hidden p-6 text-white"
+          style={{ background: 'radial-gradient(70% 55% at 15% 10%, rgb(255 138 166 / .55), transparent 62%), radial-gradient(60% 50% at 90% 20%, rgb(255 190 120 / .38), transparent 60%), radial-gradient(80% 60% at 50% 105%, rgb(88 16 110 / .85), transparent 70%), linear-gradient(160deg, #e0185f 0%, #b3125a 48%, #6a1b9a 100%)' }}>
+          {[{ c: 'bg-pink-300/45 -top-28 -left-24 size-80', d: 9 }, { c: 'bg-amber-300/30 top-1/3 -right-28 size-72', d: 11 }, { c: 'bg-fuchsia-400/35 -bottom-32 left-1/4 size-96', d: 13 }].map((o, i) => (
+            <motion.span key={i} aria-hidden className={`pointer-events-none absolute rounded-full blur-3xl ${o.c}`} animate={still ? undefined : { x: [0, 30, -20, 0], y: [0, -24, 18, 0], scale: [1, 1.08, 0.95, 1] }} transition={{ duration: o.d, repeat: Infinity, ease: 'easeInOut' }} />
+          ))}
           {Array.from({ length: 14 }).map((_, i) => (
             <motion.span key={i} aria-hidden initial={{ y: 40, opacity: 0, scale: 0.4 }} animate={{ y: -420 - (i % 5) * 60, opacity: [0, 1, 0], scale: 1 }} transition={{ duration: 3.2 + (i % 4) * 0.5, repeat: Infinity, delay: i * 0.25 }}
               style={{ left: `${(i * 7 + 5) % 95}%` }} className="pointer-events-none absolute bottom-0"><Heart className="size-6 fill-white/70 text-white/70" /></motion.span>
