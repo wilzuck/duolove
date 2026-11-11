@@ -36,7 +36,7 @@ export default function LikesPage() {
   return (
     <div className="mx-auto w-full max-w-2xl space-y-5 px-4 py-4">
       <h1 className="text-2xl font-extrabold">{t('likes.heading')}</h1>
-      <Tabs label={t('likes.heading')} value={tab} onChange={setTab} tabs={[{ key: 'received', label: `${t('likes.tab.received')}${q.data ? ` (${q.data.count})` : ''}` }, { key: 'sent', label: t('likes.tab.sent') }, { key: 'visitors', label: `${t('likes.tab.visitors')}${visitors.data ? ` (${visitors.data.count})` : ''}` }]} />
+      <Tabs label={t('likes.heading')} value={tab} onChange={setTab} tabs={[{ key: 'received', label: `${t('likes.tab.received')}${q.data ? ` (${q.data.count})` : ''}` }, { key: 'visitors', label: `${t('likes.tab.visitors')}${visitors.data ? ` (${visitors.data.count})` : ''}` }, { key: 'sent', label: t('likes.tab.sent') }]} />
       {tab === 'sent' && (
         <div role="tabpanel" className="space-y-3">
           {sent.isLoading && <><Skeleton className="h-24" /><Skeleton className="h-24" /></>}
