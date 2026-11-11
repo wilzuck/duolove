@@ -28,8 +28,8 @@
   --color-gold-ink: var(--gold-ink);
   --shadow-soft: var(--shadow-soft);
   --shadow-pop: var(--shadow-pop);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 html { background: var(--bg); color-scheme: light; }

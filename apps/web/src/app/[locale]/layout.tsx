@@ -1,7 +1,7 @@
 import { CookieNotice } from '@/components/CookieNotice';
 import { InstallCapture } from '@/components/InstallCapture';
 import type { Metadata, Viewport } from 'next';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -11,8 +11,8 @@ import { routing } from '@/i18n/routing';
 import { SITE_URL } from '@/lib/site';
 import '../globals.css';
 
-const inter = Inter({ subsets: ['latin', 'latin-ext'], variable: '--font-inter', display: 'swap' });
-const jakarta = Plus_Jakarta_Sans({ subsets: ['latin', 'latin-ext'], variable: '--font-jakarta', display: 'swap' });
+// Une seule famille, très épurée, pour les titres comme pour le texte (DM Sans, variable : poids 100 à 1000).
+const dmSans = DM_Sans({ subsets: ['latin', 'latin-ext'], variable: '--font-dm-sans', display: 'swap' });
 
 export const viewport: Viewport = { themeColor: '#e91e63', width: 'device-width', initialScale: 1 };
 
@@ -43,7 +43,7 @@ export default async function RootLayout({ children, params }: { children: React
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   return (
-    <html lang={locale} className={`${inter.variable} ${jakarta.variable}`} suppressHydrationWarning>
+    <html lang={locale} className={dmSans.variable} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: THEME_INIT }} /></head>
       <body className="min-h-dvh">
         <NextIntlClientProvider>
