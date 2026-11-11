@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: t('meta.description'),
     applicationName: 'Crushduo',
     manifest: '/manifest.webmanifest',
-    openGraph: { type: 'website', siteName: 'Crushduo', title: t('meta.title'), description: t('meta.description'), locale: locale === 'en' ? 'en_US' : 'fr_FR', images: [{ url: '/og.jpg', width: 1200, height: 630, type: 'image/jpeg', alt: 'Crushduo — Deux cœurs, une belle histoire' }] },
+    openGraph: { type: 'website', siteName: 'Crushduo', title: t('meta.title'), description: t('meta.description'), locale: locale === 'en' ? 'en_US' : 'fr_FR', images: [{ url: '/og.jpg?v=2', width: 1200, height: 630, type: 'image/jpeg', alt: 'Crushduo — Deux cœurs, une belle histoire' }] },
     twitter: { card: 'summary_large_image', title: t('meta.title'), description: t('meta.description') },
     icons: { icon: [{ url: '/favicon.ico?v=2', sizes: 'any' }, { url: '/favicon-32.png?v=2', sizes: '32x32', type: 'image/png' }, { url: '/icon-192.png?v=2', sizes: '192x192', type: 'image/png' }], apple: '/apple-touch-icon.png?v=2' },
   };
