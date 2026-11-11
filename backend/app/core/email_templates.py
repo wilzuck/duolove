@@ -71,7 +71,7 @@ def render_email(title: str, blocks: list[str], preheader: str = "", footer: str
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{PAGE};">
 <tr><td align="center" style="padding:32px 16px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid {LINE};border-radius:20px;border-collapse:separate;overflow:hidden;">
-<tr><td style="padding:36px 40px 4px;"><a href="{esc(base)}"><img src="{esc(base)}/brand/crushduo-logo-email.png" alt="CrushDuo" width="168" height="35" style="display:block;width:168px;height:35px;border:0;outline:none;text-decoration:none;"></a></td></tr>
+<tr><td style="padding:36px 40px 4px;"><a href="{esc(base)}"><img src="{esc(base)}/brand/crushduo-logo-email.png" alt="CrushDuo" width="190" height="37" style="display:block;width:190px;height:37px;border:0;outline:none;text-decoration:none;"></a></td></tr>
 <tr><td style="padding:26px 40px 36px;font-family:{FONT};">
 <p style="margin:0;font-size:30px;font-weight:800;line-height:1.2;letter-spacing:-.01em;color:{FG};">{esc(title)}</p>
 {"".join(blocks)}
