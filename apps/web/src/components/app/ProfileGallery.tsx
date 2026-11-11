@@ -9,7 +9,7 @@ type Photo = Card['photos'][number];
 
 /**
  * Photos d'un profil, toutes visibles sans défiler ni faire glisser :
- * - `mosaic` (téléphone, colonne étroite) : une grande photo et deux petites, « +N » sur la dernière s'il y en a davantage ;
+ * - `mosaic` (téléphone, colonne étroite) : une grande photo, puis une rangée de trois vignettes (« + de N » sur la dernière s'il en reste) ; un clic ouvre la photo en grand ;
  * - `stage` (ordinateur) : une grande photo et la rangée de vignettes dessous (un clic change la photo).
  * Un clic sur une photo l'ouvre en grand (visionneuse : flèches, ← →, Échap).
  */
@@ -46,13 +46,23 @@ export function ProfileGallery({ card, variant, className }: { card: Card; varia
           )}
         </div>
       ) : (
-        <div className={cn('grid gap-1.5 overflow-hidden rounded-3xl', photos.length === 1 ? 'aspect-[4/5] grid-cols-1' : photos.length === 2 ? 'aspect-[4/3] grid-cols-2' : 'aspect-[4/3] grid-cols-[2fr_1fr] grid-rows-2')}>
-          <div className={cn('min-h-0 overflow-hidden bg-soft', photos.length > 2 && 'row-span-2')}>{open(0)}</div>
-          {photos.length > 1 && <div className="relative min-h-0 overflow-hidden bg-soft">{open(1)}</div>}
-          {photos.length > 2 && (
-            <div className="relative min-h-0 overflow-hidden bg-soft">{open(2)}
-              {photos.length > 3 && <span aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/55 text-lg font-bold text-white">+{photos.length - 3}</span>}
-            </div>
+        <div className="space-y-2">
+          <div className="aspect-[4/5] overflow-hidden rounded-3xl bg-soft shadow-soft">{open(0)}</div>
+          {photos.length > 1 && (
+            <ul className="grid grid-cols-3 gap-2" aria-label={t('gallery.thumbs')}>
+              {photos.slice(1, 4).map((p, k) => {
+                const n = k + 1;
+                const more = n === 3 && photos.length > 4;
+                return (
+                  <li key={p.id} className="relative aspect-[3/4] overflow-hidden rounded-xl bg-soft">
+                    <button type="button" onClick={() => setViewer(n)} aria-label={more ? t('gallery.moreOpen', { n: photos.length - 4 }) : t('gallery.open', { n: n + 1 })} className="block size-full">
+                      <img src={p.thumbUrl} alt="" draggable={false} className="size-full object-cover" />
+                      {more && <span aria-hidden className="absolute inset-0 flex items-center justify-center bg-black/55 text-base font-bold text-white">{t('gallery.more', { n: photos.length - 4 })}</span>}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
           )}
         </div>
       )}

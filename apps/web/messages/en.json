@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Crushduo — Two hearts, one beautiful story",
-    "description": "Crushduo, the dating platform for serious adults: verified profiles, smart matching, private and secure messaging.",
+    "title": "Crushduo: serious dating site for French-speaking Africa",
+    "description": "Serious dating site for adults in French-speaking Africa: verified profiles, smart matching and private, secure messaging. Free sign-up, 18 and over.",
     "tagline": "Two hearts, one beautiful story."
   },
   "common": {
@@ -3951,7 +3951,9 @@
   "gallery": {
     "open": "View photo {n} larger",
     "show": "Show photo {n}",
-    "thumbs": "Photos"
+    "thumbs": "Photos",
+    "more": "+ {n} more",
+    "moreOpen": "See {n} more photos"
   },
   "toc": {
     "onPage": "On this page",

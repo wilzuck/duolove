@@ -52,6 +52,12 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
     <div className={wide ? 'grid grid-cols-[minmax(0,26rem)_minmax(0,1fr)] items-start gap-10' : 'space-y-6'}>
       <div className={wide ? 'sticky top-24' : 'mx-auto w-full max-w-md'}>
         {hero ?? <ProfileGallery card={card} variant={wide ? 'stage' : 'mosaic'} />}
+        {!hero && !wide && layout === 'split' && canComment && (
+          <div className="mt-4 flex justify-center gap-3">
+            <ActionButton kind="super" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} className={cn(buttonVariants({ size: 'lg' }), 'bg-violet-700 text-white hover:bg-violet-800')}><Star className="size-5" aria-hidden />{t('engagement.composer.superButton')}</ActionButton>
+            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }))}><Heart className="size-5" aria-hidden />{t('discover.likeBtn')}</ActionButton>
+          </div>
+        )}
       </div>
       <div className={wide ? 'space-y-5' : 'mx-auto max-w-md space-y-5'}>
         {!hero && <ProfileIdentity card={card} />}
@@ -116,7 +122,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
             })}</ul>
           </section>
         )}
-        {canComment && (
+        {canComment && (wide || layout === 'stack' || !!hero) && (
           <div className="flex gap-3">
             <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({}), 'min-w-0 flex-1')}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</ActionButton>
             <ActionButton kind="super" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} className={cn(buttonVariants({ variant: 'outline' }), 'shrink-0 border-sky-500 text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-950/30')}><Star className="size-4" aria-hidden />{t('engagement.composer.superButton')}</ActionButton>

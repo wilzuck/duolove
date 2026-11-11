@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Crushduo — Deux cœurs, une belle histoire",
-    "description": "Crushduo, la plateforme de rencontres sérieuses pour les adultes : profils vérifiés, matching intelligent, messagerie privée et sécurisée.",
+    "title": "Crushduo : site de rencontre sérieuse en Afrique francophone",
+    "description": "Site de rencontre sérieuse en Afrique francophone : profils vérifiés, matching intelligent, messagerie privée et sécurisée. Inscription gratuite, 18+.",
     "tagline": "Deux cœurs, une belle histoire."
   },
   "common": {
@@ -3951,7 +3951,9 @@
   "gallery": {
     "open": "Voir la photo {n} en grand",
     "show": "Afficher la photo {n}",
-    "thumbs": "Photos"
+    "thumbs": "Photos",
+    "more": "+ de {n}",
+    "moreOpen": "Voir {n} photos de plus"
   },
   "toc": {
     "onPage": "Sur cette page",
