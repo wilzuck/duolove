@@ -20,7 +20,7 @@ PREF = {"LIKE": ("inAppLikes", "emailLikes"), "MATCH": ("inAppMatches", "emailMa
 ESSENTIAL = {"SECURITY_ALERT", "SUBSCRIPTION_ACTIVATED", "SUBSCRIPTION_EXPIRING", "REFUND_UPDATE"}
 EMAIL_COPY = {
     "LIKE": ("Quelqu’un vous a liké sur CrushDuo", "Une personne s’intéresse à vous. Ouvrez CrushDuo pour la découvrir."),
-    "MATCH": ("C’est un match sur CrushDuo !", "Vous avez un nouveau match. Dites-lui bonjour !"),
+    "MATCH": ("C’est un duo sur CrushDuo !", "Vous avez un nouveau duo. Dites-lui bonjour !"),
     "MESSAGE": ("Nouveau message sur CrushDuo", "Vous avez reçu un nouveau message."),
 }
 HOUR = datetime.timedelta(hours=1)

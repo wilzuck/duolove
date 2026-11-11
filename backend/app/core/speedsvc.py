@@ -384,7 +384,7 @@ async def send_message(db: AsyncSession, user_id: str, ev_id: str, body: str) ->
     if not body or len(body) > cfg["speed.message_max"]:
         raise bad_request("INVALID_MESSAGE", "Message vide ou trop long", {"max": cfg["speed.message_max"]})
     if contact_info(body):
-        raise bad_request("CONTACT_INFO", "Pour votre sécurité, gardez vos coordonnées pour après le match.")
+        raise bad_request("CONTACT_INFO", "Pour votre sécurité, gardez vos coordonnées pour après le duo.")
     pair, _ = await _current_pair(db, user_id, ev_id, ev, cfg, utcnow())
     other = _other(pair, user_id)
     if (await db.execute(select(SpeedRegistration.status).where(SpeedRegistration.eventId == ev_id, SpeedRegistration.userId == other))).scalar_one_or_none() != "REGISTERED":
