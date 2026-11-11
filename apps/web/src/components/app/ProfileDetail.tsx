@@ -22,6 +22,7 @@ import { ProfileIdentity } from './ProfileIdentity';
 import { PromptList } from './PromptList';
 import { ReportDialog } from './ReportDialog';
 import { SimilarProfiles } from './SimilarProfiles';
+import { SuperLikeButton } from './SuperLikeButton';
 import type { ReactNode } from 'react';
 
 const WIDE = '(min-width: 1024px)';
@@ -55,7 +56,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
         {hero ?? <ProfileGallery card={card} variant={wide ? 'stage' : 'mosaic'} />}
         {!hero && layout === 'split' && canComment && (
           <div className="mt-4 flex justify-center gap-3">
-            <ActionButton kind="super" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} className={cn(buttonVariants({ size: 'lg' }), 'bg-violet-700 text-white hover:bg-violet-800')}><Star className="size-5" aria-hidden />{t('engagement.composer.superButton')}</ActionButton>
+            <SuperLikeButton onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} />
             <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }))}><Heart className="size-5" aria-hidden />{t('discover.likeBtn')}</ActionButton>
           </div>
         )}
@@ -125,8 +126,8 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
         )}
         {canComment && (layout === 'stack' || !!hero) && (
           <div className="flex flex-wrap gap-3">
-            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({}), 'min-w-0 flex-1 basis-56')}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</ActionButton>
-            <ActionButton kind="super" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} className={cn(buttonVariants({ variant: 'outline' }), 'shrink-0 border-sky-500 text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-950/30')}><Star className="size-4" aria-hidden />{t('engagement.composer.superButton')}</ActionButton>
+            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }), 'min-w-0 flex-1 basis-56')}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</ActionButton>
+            <SuperLikeButton onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} className="shrink-0" />
           </div>
         )}
         <div className="flex flex-wrap gap-3 border-t border-line pt-5">
