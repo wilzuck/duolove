@@ -1578,7 +1578,8 @@
     "SOCIAL_URL_INVALID": "Link rejected: use the account's full https address on the network's own domain.",
     "SOCIAL_URL_REQUIRED": "Enter at least one link to show this network.",
     "INVALID_LIFE_VALUE": "Value rejected: 2 to 24 characters, no digits or links.",
-    "TOO_MANY_LIFE_VALUES": "3 values at most."
+    "TOO_MANY_LIFE_VALUES": "3 values at most.",
+    "INVALID_PERIOD": "Invalid period: start before end, end no later than today, 366 days at most."
   },
   "app": {
     "nav": {
@@ -2352,7 +2353,12 @@
         "premiumHint": "Share of members who have ever paid.",
         "reports": "Open reports",
         "reportsHint": "{n} received in total: the clearest sign of dissatisfaction."
-      }
+      },
+      "custom": "Custom",
+      "from": "From",
+      "to": "To",
+      "range": "{from} to {to}",
+      "rangeInvalid": "Pick a start before the end, an end that is not in the future, and {max} days at most."
     },
     "plans": {
       "intro": "Prices, benefits and quotas are set here, without changing code. A change only applies to future purchases: existing subscriptions and payments keep their period and amount. Every change is logged.",
@@ -3997,7 +4003,8 @@
     "selectedCount": "{n, plural, one {# selected} other {# selected}}",
     "selectResults": "Select all {n} results",
     "clearSelection": "Clear selection",
-    "exportSelected": "Export selection"
+    "exportSelected": "Export selection",
+    "details": "Details"
   },
   "notFound": {
     "badge": "Error 404",

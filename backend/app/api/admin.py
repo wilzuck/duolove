@@ -171,11 +171,22 @@ async def overview(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = 
 
 
 @router.get("/stats")
-async def stats(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
-    """Évolution dans le temps : une série par jour (jours calendaires UTC) et le total comparé à la période précédente, pour chaque indicateur."""
-    days = days if days in (7, 30, 90, 180, 365) else 30
+async def stats(days: int = Query(30), date_from: str | None = Query(None, alias="from"), date_to: str | None = Query(None, alias="to"), _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Évolution dans le temps : une série par jour (jours calendaires UTC) et le total comparé à la période précédente, pour chaque indicateur.
+    Période : `days` (7, 30, 90, 180, 365) ou dates `from` et `to` (AAAA-MM-JJ, bornes incluses, 366 jours au plus, pas dans le futur) ; la comparaison porte sur la période de même durée juste avant."""
     now = utcnow()
-    start = now.replace(hour=0, minute=0, second=0, microsecond=0) - (days - 1) * DAY
+    if date_from or date_to:
+        try:
+            first, last = datetime.date.fromisoformat(date_from or ""), datetime.date.fromisoformat(date_to or "")
+        except ValueError:
+            raise bad_request("INVALID_PERIOD", "Dates attendues au format AAAA-MM-JJ") from None
+        if first > last or last > now.date() or (last - first).days + 1 > 366:
+            raise bad_request("INVALID_PERIOD", "Période invalide : début avant fin, fin au plus aujourd'hui, 366 jours au plus")
+        days = (last - first).days + 1
+        start = datetime.datetime.combine(first, datetime.time.min)
+    else:
+        days = days if days in (7, 30, 90, 180, 365) else 30
+        start = now.replace(hour=0, minute=0, second=0, microsecond=0) - (days - 1) * DAY
     series = {k: await _series(db, k, days, start) for k in _STATS_SERIES}
     flows = {}
     for k, pts in series.items():
@@ -191,7 +202,7 @@ async def stats(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = Dep
     plans = (await db.execute(select(Entitlement.plan, func.count()).group_by(Entitlement.plan))).all()
     by_platform = dict((await db.execute(select(AppInstall.platform, func.count()).group_by(AppInstall.platform))).all())
     sent = flows["crushInvites"]["current"]
-    return {"days": days, "generatedAt": now, "series": series, "flows": flows,
+    return {"days": days, "from": start.date().isoformat(), "to": (start + (days - 1) * DAY).date().isoformat(), "generatedAt": now, "series": series, "flows": flows,
             "installs": {"total": sum(by_platform.values()), "ios": by_platform.get("ios", 0), "android": by_platform.get("android", 0), "desktop": by_platform.get("desktop", 0)},
             "totals": {"members": run, "activeSubscriptions": (await db.execute(select(func.count()).select_from(Subscription).where(Subscription.status == "ACTIVE"))).scalar_one()},
             "crushAcceptRate": round(flows["crushAccepted"]["current"] / sent * 1000) / 10 if sent else None,

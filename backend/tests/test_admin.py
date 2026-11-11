@@ -145,6 +145,24 @@ async def test_statistiques_evolution(app, db):
     assert (await ad.agent.get("/api/admin/stats?days=999")).json()["days"] == 30
 
 
+async def test_statistiques_periode_personnalisee(app, db):
+    import datetime
+
+    ad = await admin(app, db)
+    today = datetime.datetime.now(datetime.timezone.utc).date()
+    first = today - datetime.timedelta(days=9)
+    r = (await ad.agent.get(f"/api/admin/stats?from={first}&to={today}")).json()
+    assert r["days"] == 10 and r["from"] == str(first) and r["to"] == str(today) and len(r["series"]["signups"]) == 10
+    assert r["series"]["signups"][0]["day"] == str(first) and r["series"]["signups"][-1]["day"] == str(today)
+    assert r["flows"]["signups"]["current"] == sum(p["value"] for p in r["series"]["signups"])  # le total est la somme de la courbe
+    one = (await ad.agent.get(f"/api/admin/stats?from={today}&to={today}")).json()  # un seul jour
+    assert one["days"] == 1 and len(one["series"]["members"]) == 1
+    past = today - datetime.timedelta(days=400)
+    for q in (f"from={today}&to={first}", f"from={first}&to={today + datetime.timedelta(days=1)}", f"from={past}&to={today}", "from=2026-13-40&to=2026-01-01", f"from={first}"):
+        res = await ad.agent.get(f"/api/admin/stats?{q}")
+        assert res.status_code == 400 and res.json()["error"]["code"] == "INVALID_PERIOD", q
+
+
 async def test_sante_plateforme(app, db):
     ad, u = await admin(app, db), await member(app, db)
     assert (await u.agent.get("/api/admin/stats/health")).status_code == 403

@@ -1578,7 +1578,8 @@
     "SOCIAL_URL_INVALID": "Adresse refusée : utilisez l'adresse https complète du compte, sur le domaine du réseau.",
     "SOCIAL_URL_REQUIRED": "Renseignez au moins une adresse pour afficher ce réseau.",
     "INVALID_LIFE_VALUE": "Valeur refusée : 2 à 24 caractères, sans chiffre ni lien.",
-    "TOO_MANY_LIFE_VALUES": "3 valeurs au plus."
+    "TOO_MANY_LIFE_VALUES": "3 valeurs au plus.",
+    "INVALID_PERIOD": "Période invalide : début avant fin, fin au plus aujourd'hui, 366 jours au plus."
   },
   "app": {
     "nav": {
@@ -2352,7 +2353,12 @@
         "premiumHint": "Part des membres ayant déjà payé.",
         "reports": "Signalements ouverts",
         "reportsHint": "{n} reçus au total : le signal de mécontentement le plus clair."
-      }
+      },
+      "custom": "Personnalisée",
+      "from": "Du",
+      "to": "Au",
+      "range": "du {from} au {to}",
+      "rangeInvalid": "Choisissez un début avant la fin, une fin qui n'est pas dans le futur, et {max} jours au plus."
     },
     "plans": {
       "intro": "Les prix, avantages et quotas se règlent ici, sans modifier le code. Une modification ne vaut que pour les achats futurs : les abonnements et paiements existants conservent leur période et leur montant. Toute modification est journalisée.",
@@ -3997,7 +4003,8 @@
     "selectedCount": "{n, plural, one {# sélectionnée} other {# sélectionnées}}",
     "selectResults": "Sélectionner les {n} résultats",
     "clearSelection": "Tout désélectionner",
-    "exportSelected": "Exporter la sélection"
+    "exportSelected": "Exporter la sélection",
+    "details": "Détail"
   },
   "notFound": {
     "badge": "Erreur 404",
