@@ -105,7 +105,7 @@
     "subtitle": "CrushDuo vous aide à rencontrer des personnes compatibles : mêmes intentions, mêmes valeurs, même ville ou presque. Simple, élégant et sécurisé.",
     "ctaRegister": "Créer mon compte",
     "ctaLogin": "Se connecter",
-    "heroMatch": "C’est un match !",
+    "heroMatch": "C’est un duo !",
     "trust": {
       "adults": "18 ans et plus uniquement",
       "verified": "Badge « profil vérifié »",
@@ -129,7 +129,7 @@
       },
       "chat": {
         "title": "Messagerie privée",
-        "text": "Échangez en temps réel après un match : texte, photos et émojis, avec des règles claires contre le spam."
+        "text": "Échangez en temps réel après un duo : texte, photos et émojis, avec des règles claires contre le spam."
       },
       "safety": {
         "title": "Sécurité et vie privée",
@@ -153,7 +153,7 @@
       },
       "speed": {
         "title": "Speed dating en texte",
-        "text": "Des soirées à heure fixe : de courtes conversations écrites avec plusieurs personnes, puis une décision privée. Il n’y a match que si l’intérêt est réciproque."
+        "text": "Des soirées à heure fixe : de courtes conversations écrites avec plusieurs personnes, puis une décision privée. Il n’y a un duo que si l’intérêt est réciproque."
       }
     }
   },
@@ -178,10 +178,10 @@
       },
       "like": {
         "title": "Dites ce qui vous plaît",
-        "text": "Aimez un profil, une photo, une réponse ou un centre d’intérêt, et ajoutez un petit mot si vous le souhaitez. Il deviendra votre premier message en cas de match."
+        "text": "Aimez un profil, une photo, une réponse ou un centre d’intérêt, et ajoutez un petit mot si vous le souhaitez. Il deviendra votre premier message en cas de duo."
       },
       "match": {
-        "title": "C’est un match",
+        "title": "C’est un duo",
         "text": "Quand l’intérêt est réciproque, vous êtes prévenus tous les deux et la conversation s’ouvre."
       },
       "chat": {
@@ -194,7 +194,7 @@
       },
       "premium": {
         "title": "Allez plus loin avec Premium / VIP (facultatif)",
-        "text": "Plus de visibilité et d’outils, sans jamais garantir un match. Le blocage, le signalement et la sécurité restent gratuits pour tous."
+        "text": "Plus de visibilité et d’outils, sans jamais garantir un duo. Le blocage, le signalement et la sécurité restent gratuits pour tous."
       }
     },
     "whyTitle": "Ce qui change ici",
@@ -249,7 +249,7 @@
     },
     "free": {
       "q": "CrushDuo est-il gratuit ?",
-      "a": "Oui : profil, découverte, matchs et messagerie après match sont gratuits, avec un nombre de likes quotidien. Premium et VIP débloquent plus de fonctions."
+      "a": "Oui : profil, découverte, duos et messagerie après un duo sont gratuits, avec un nombre de likes quotidien. Premium et VIP débloquent plus de fonctions."
     },
     "safety": {
       "q": "Comment êtes-vous protégé(e) ?",
@@ -295,8 +295,8 @@
       "signup": "Inscription et profil complet",
       "discover": "Découverte des profils",
       "likesFree": "{likes} likes par jour",
-      "matches": "Matchs illimités",
-      "chat": "Messagerie après match",
+      "matches": "Duos illimités",
+      "chat": "Messagerie après un duo",
       "basicFilters": "Filtres de base (âge, pays, ville, intention)",
       "likesPremium": "{likes} likes par jour",
       "superLikes3": "3 Super Likes par jour",
@@ -320,8 +320,8 @@
     "feat": {
       "signup": "Inscription et profil complet",
       "discover": "Découverte des profils",
-      "matches": "Matchs réciproques",
-      "chat": "Messagerie gratuite après un match",
+      "matches": "Duos réciproques",
+      "chat": "Messagerie gratuite après un duo",
       "safety": "Signalement, blocage et filtres de base",
       "allFree": "Tout ce qui est inclus gratuitement",
       "likes": "{n} likes par jour",
@@ -509,7 +509,7 @@
         },
         {
           "q": "CrushDuo est-il gratuit ?",
-          "a": "Oui pour commencer : profil, découverte, découvertes du jour, matchs et messagerie sont gratuits, avec un nombre de likes quotidien. Premium et VIP ajoutent des fonctions, sans jamais garantir un match."
+          "a": "Oui pour commencer : profil, découverte, découvertes du jour, duos et messagerie sont gratuits, avec un nombre de likes quotidien. Premium et VIP ajoutent des fonctions, sans jamais garantir un duo."
         },
         {
           "q": "Je n’ai pas reçu l’e-mail de confirmation",
@@ -535,7 +535,7 @@
         },
         {
           "q": "Comment envoyer un J’aime avec un commentaire ?",
-          "a": "Ouvrez un profil, choisissez ce qui vous plaît (le profil, une photo, une réponse ou un intérêt), ajoutez un mot si vous le souhaitez. En cas de match, ce mot devient votre premier message."
+          "a": "Ouvrez un profil, choisissez ce qui vous plaît (le profil, une photo, une réponse ou un intérêt), ajoutez un mot si vous le souhaitez. En cas de duo, ce mot devient votre premier message."
         },
         {
           "q": "Pourquoi n’ai-je plus de likes aujourd’hui ?",
@@ -543,7 +543,7 @@
         },
         {
           "q": "À quoi sert le menu Crush ?",
-          "a": "Il lance une recherche en direct auprès des personnes en ligne qui correspondent à vos critères. Celles qui acceptent apparaissent : discuter avec l’une d’elles coûte un jeton Match, et vous pouvez toujours aimer gratuitement."
+          "a": "Il lance une recherche en direct auprès des personnes en ligne qui correspondent à vos critères. Celles qui acceptent apparaissent : discuter avec l’une d’elles coûte un jeton Crush, et vous pouvez toujours aimer gratuitement."
         }
       ],
       "chat": [
@@ -1283,7 +1283,7 @@
     "showPassword": "Afficher le mot de passe",
     "hidePassword": "Masquer le mot de passe",
     "loginTitle": "Bon retour !",
-    "loginSubtitle": "Connectez-vous pour retrouver vos matchs.",
+    "loginSubtitle": "Connectez-vous pour retrouver vos duos.",
     "registerTitle": "Créer mon compte",
     "registerSubtitle": "Gratuit, en moins de deux minutes. Pas de carte bancaire.",
     "email": "Adresse e-mail",
@@ -1510,7 +1510,7 @@
     "CODE_LOCKED": "Trop d’essais. Demandez un nouveau code.",
     "RESEND_TOO_SOON": "Patientez un instant avant de redemander un code.",
     "INVALID_CODE": "Code incorrect.",
-    "CONTACT_INFO": "Pour votre sécurité, gardez vos coordonnées pour après le match.",
+    "CONTACT_INFO": "Pour votre sécurité, gardez vos coordonnées pour après le duo.",
     "NOT_IN_ROUND": "L’échange est terminé.",
     "RESTING": "Vous vous reposez pendant cet échange.",
     "PARTNER_LEFT": "Votre binôme a quitté la session.",
@@ -1596,7 +1596,7 @@
     "sheetGrab": "Poignée : faire glisser vers le bas pour fermer"
   },
   "match": {
-    "title": "C’est un match !",
+    "title": "C’est un duo !",
     "text": "Vous et {name} vous plaisez mutuellement.",
     "textGeneric": "Vous vous plaisez mutuellement.",
     "chat": "Discuter maintenant",
@@ -1634,8 +1634,8 @@
   "chat": {
     "title": "Messages",
     "search": "Rechercher une conversation",
-    "newMatches": "Nouveaux matchs",
-    "empty": "Aucune conversation. Likez des profils pour obtenir des matchs !",
+    "newMatches": "Nouveaux duos",
+    "empty": "Aucune conversation. Likez des profils pour obtenir des duos !",
     "noResults": "Aucun résultat.",
     "you": "vous",
     "photo": "Photo",
@@ -1648,12 +1648,12 @@
     "typingDots": "…",
     "viewProfile": "Voir le profil",
     "options": "Options de la conversation",
-    "unmatch": "Mettre fin au match",
-    "unmatched": "Match supprimé.",
+    "unmatch": "Mettre fin au duo",
+    "unmatched": "Duo supprimé.",
     "history": "Historique de la conversation",
     "closed": "Cette conversation n’est plus disponible.",
     "older": "Messages précédents",
-    "firstMessage": "Vous avez matché avec {name}. Envoyez le premier message !",
+    "firstMessage": "Vous formez un duo avec {name}. Envoyez le premier message !",
     "imageAlt": "Image envoyée",
     "read": "Lu",
     "sent": "Envoyé",
@@ -1686,11 +1686,11 @@
   },
   "profile": {
     "completeness": "Complétude du profil",
-    "planTitle": "Formule {plan}",
+    "planTitle": "Formule <p>{plan}</p>",
     "planFreeText": "Plus de likes, voir qui vous a liké, filtres avancés, boosts…",
     "planPaidText": "Merci pour votre soutien ! Gérez votre abonnement ici.",
     "planManage": "Gérer l’abonnement",
-    "completenessTip": "Ajoutez une description, au moins 3 centres d’intérêt et 3 photos pour obtenir plus de matchs.",
+    "completenessTip": "Ajoutez une description, au moins 3 centres d’intérêt et 3 photos pour obtenir plus de duos.",
     "level": {
       "INCOMPLETE": "Profil incomplet",
       "IN_PROGRESS": "Profil en cours",
@@ -1844,7 +1844,7 @@
     "unread": "Non lue",
     "types": {
       "LIKE": "Quelqu’un vous a liké.",
-      "MATCH": "C’est un match ! Dites bonjour.",
+      "MATCH": "C’est un duo ! Dites bonjour.",
       "MESSAGE": "Vous avez reçu un nouveau message.",
       "PROFILE_VERIFIED": "Votre profil est vérifié.",
       "SUBSCRIPTION_ACTIVATED": "Votre abonnement {plan} est activé.",
@@ -1906,7 +1906,7 @@
     },
     "notif": {
       "likes": "Nouveaux likes",
-      "matches": "Nouveaux matchs",
+      "matches": "Nouveaux duos",
       "messages": "Nouveaux messages",
       "byEmail": "Par e-mail",
       "inApp": "Dans l’application",
@@ -1946,7 +1946,7 @@
       "receiptsLocked": "La gestion des accusés de lecture est réservée aux abonnés Premium et VIP : vos accusés restent actifs.",
       "receiptsUpgrade": "Passer Premium",
       "activity": "Afficher mon activité",
-      "activityText": "Montre « en ligne » ou « actif aujourd’hui » aux personnes avec qui vous avez un match. Désactivé, vous ne voyez pas non plus celui des autres, sauf avec le mode discret."
+      "activityText": "Montre « en ligne » ou « actif aujourd’hui » aux personnes avec qui vous avez un duo. Désactivé, vous ne voyez pas non plus celui des autres, sauf avec le mode discret."
     },
     "security": {
       "password": "Changer de mot de passe",
@@ -2199,8 +2199,8 @@
         "signups": "Nouveaux membres",
         "signupsHint": "{total} membres au total",
         "likes": "Likes envoyés",
-        "matches": "Matchs",
-        "matchesHint": "{rate} des likes donnent un match",
+        "matches": "Duos",
+        "matchesHint": "{rate} des likes donnent un duo",
         "crush": "Invitations Crush",
         "crushHint": "{rate} acceptées",
         "subs": "Nouveaux abonnements",
@@ -2216,7 +2216,7 @@
         "total": "{n} sur les {period}",
         "likes": "Likes et passes",
         "likesSub": "Likes envoyés et profils passés, par jour",
-        "matches": "Matchs par jour",
+        "matches": "Duos par jour",
         "crush": "Crush en direct",
         "crushSub": "Recherches, invitations et acceptations · {rate} acceptées",
         "subs": "Abonnements par jour",
@@ -2241,7 +2241,7 @@
         "menShort": "{n} H",
         "activeShort": "actifs",
         "ratio": "Écart d’environ {n} pour 1 entre les deux genres. Au-delà de 1,5, le côté minoritaire est submergé et le côté majoritaire ne matche pas.",
-        "noMinority": "Un des deux genres est absent : aucun match possible entre eux.",
+        "noMinority": "Un des deux genres est absent : aucun duo possible entre eux.",
         "active": "Membres actifs (7 jours)",
         "activeHint": "Connectés dans les 7 derniers jours : la vraie taille de la plateforme.",
         "thin": "Membres avec moins de {n} profils à voir",
@@ -2252,9 +2252,9 @@
       },
       "s": {
         "title": "Satisfaction des membres",
-        "help": "Des signaux indirects : si ça matche, si on se répond, si on revient et si les rendez-vous se passent bien.",
-        "match": "Likes qui donnent un match",
-        "matchHint": "Taux de match global : un taux trop bas signale un manque de profils compatibles.",
+        "help": "Des signaux indirects : si ça fonctionne, si on se répond, si on revient et si les rendez-vous se passent bien.",
+        "match": "Likes qui donnent un duo",
+        "matchHint": "Taux de duos global : un taux trop bas signale un manque de profils compatibles.",
         "reply": "Conversations qui reçoivent une réponse",
         "replyHint": "Le premier message est-il suivi d’une réponse ?",
         "mutual": "Conversations à double sens",
@@ -2473,7 +2473,7 @@
         "like_comments": {
           "name": "Likes avec commentaire",
           "what": "Permet de cibler un élément (photo, réponse, intérêt) et d’ajouter un commentaire à un J’aime.",
-          "on": "Le commentaire accompagne le J’aime et devient le premier message en cas de match.",
+          "on": "Le commentaire accompagne le J’aime et devient le premier message en cas de duo.",
           "off": "Seul le J’aime simple reste possible.",
           "useWhen": "Si les commentaires sont détournés (spam, harcèlement)."
         },
@@ -2528,7 +2528,7 @@
         },
         "calls": {
           "name": "Appels audio et vidéo",
-          "what": "Permet à deux membres d’un match actif de s’appeler (audio ou vidéo) via un service tiers. Rien n’est enregistré.",
+          "what": "Permet à deux membres d’un duo actif de s’appeler (audio ou vidéo) via un service tiers. Rien n’est enregistré.",
           "on": "Les boutons d’appel apparaissent dans la conversation.",
           "off": "Plus de nouvel appel ; les appels en cours peuvent se terminer.",
           "useWhen": "En cas d’abus, de coût inattendu ou d’incident chez le fournisseur vidéo."
@@ -2674,8 +2674,8 @@
         "profilesWithPrompts": "Profils avec questions",
         "likes": "J’aime envoyés",
         "likesWithComment": "J’aime avec commentaire",
-        "matches": "Matchs",
-        "matchRate": "Taux de match (part des J’aime aboutis)",
+        "matches": "Duos",
+        "matchRate": "Taux de duos (part des J’aime aboutis)",
         "conversations": "Conversations démarrées",
         "firstResponseRate": "Taux de première réponse",
         "reciprocalConversations": "Conversations réciproques",
@@ -2845,7 +2845,7 @@
       "membersHint": "{n} nouveaux sur la période",
       "revenue": "Chiffre d’affaires",
       "revenueHint": "Paiements réussis sur la période",
-      "matches": "Nouveaux matchs",
+      "matches": "Nouveaux duos",
       "matchesHint": "Deux personnes qui se sont likées",
       "subscribers": "Abonnés actifs",
       "subscribersHint": "{rate} % des membres ont déjà payé",
@@ -2888,7 +2888,7 @@
       "refunds": "Les demandes de remboursement à approuver ou à rejeter.",
       "audit": "Qui a fait quoi dans l’administration, avec la date : utile pour comprendre un changement.",
       "moderation": "Les selfies à vérifier, les recours des membres sanctionnés et les photos publiées.",
-      "stats": "L’évolution dans le temps : membres, likes, matchs, Crush, abonnements et revenus, comparés à la période précédente.",
+      "stats": "L’évolution dans le temps : membres, likes, duos, Crush, abonnements et revenus, comparés à la période précédente.",
       "newsletter": "Rédigez et envoyez une newsletter aux abonnés, avec un test avant l’envoi et le suivi de la diffusion.",
       "emails": "Chaque e-mail envoyé par la plateforme (confirmation, mot de passe, notifications, newsletter) avec son état : envoyé ou en échec, et pourquoi."
     },
@@ -3158,8 +3158,8 @@
       "a": "Écrivez-nous via la page Contact avec la référence de votre paiement : chaque demande est examinée, notamment en cas de double paiement ou d’erreur."
     },
     "guarantee": {
-      "q": "Premium garantit-il des matchs ?",
-      "a": "Non. Aucun abonnement ne garantit un match ni une relation : il vous donne plus de visibilité et d’outils."
+      "q": "Premium garantit-il des duos ?",
+      "a": "Non. Aucun abonnement ne garantit un duo ni une relation : il vous donne plus de visibilité et d’outils."
     },
     "credits": {
       "q": "Mes boosts et Super Likes expirent-ils ?",
@@ -3312,16 +3312,16 @@
     "pass": "Passer",
     "likeAria": "Aimer {name}",
     "passAria": "Passer {name}",
-    "likeDone": "Like envoyé. Si cette personne vous aime aussi, c’est un match.",
-    "matchDone": "C’est un match ! Vous pouvez discuter gratuitement.",
+    "likeDone": "Like envoyé. Si cette personne vous aime aussi, c’est un duo.",
+    "matchDone": "C’est un duo ! Vous pouvez discuter gratuitement.",
     "passDone": "Cette personne a été retirée de vos propositions.",
     "guideTitle": "Quelqu’un a accepté ! Il vous faut {n} jeton pour lui parler",
-    "guideIntro": "Un jeton Match ouvre une conversation avec une personne qui a accepté votre recherche. Vous n’en avez pas pour l’instant. Voici quoi faire :",
+    "guideIntro": "Un jeton Crush ouvre une conversation avec une personne qui a accepté votre recherche. Vous n’en avez pas pour l’instant. Voici quoi faire :",
     "guideStep1": "Obtenez au moins 1 jeton :",
     "guideProfile": "Compléter mon profil ({n} jetons offerts)",
     "guidePromo": "J’ai un code promo",
     "guideStep2": "Revenez sur cette page : le bouton « Discuter ({n} jeton) » apparaît sur la carte de la personne.",
-    "guideStep3": "Sans jeton, vous pouvez déjà cliquer sur « J’aime » : si la personne vous aime aussi, c’est un match et la conversation s’ouvre gratuitement. « Passer » la retire de vos propositions.",
+    "guideStep3": "Sans jeton, vous pouvez déjà cliquer sur « J’aime » : si la personne vous aime aussi, c’est un duo et la conversation s’ouvre gratuitement. « Passer » la retire de vos propositions.",
     "guideAvailability": "Chaque personne reste disponible jusqu’à l’heure indiquée sur sa carte (2 heures après sa réponse, ou la fin de votre recherche).",
     "availableUntil": "Disponible jusqu’à {time}",
     "ageRange": "Tranche d’âge",
@@ -3442,7 +3442,7 @@
         "p20": "Plutôt thé ou café ? Dis-moi, ça compte pour la suite 😄"
       },
       "counter": "{n} / {max}",
-      "hint": "En cas de match, votre commentaire devient votre premier message.",
+      "hint": "En cas de duo, votre commentaire devient votre premier message.",
       "sending": "Envoi en cours…",
         "superTitle": "Envoyer en Super Like",
         "superHint": "Votre message est mis en avant : la personne le voit en priorité. Il vous reste {n} Super Like(s).",
@@ -3640,7 +3640,7 @@
     "title": "Votre rythme",
     "intro": "Rencontrer quelqu’un n’est pas une course. Réglez CrushDuo à votre rythme : vous gardez toujours la main.",
     "pauseTitle": "Mode pause",
-    "pauseText": "Vous êtes invisible dans les découvertes, vous ne recevez plus d’alertes et vous ne pouvez plus liker, le temps de souffler. Vos conversations et vos matchs restent là.",
+    "pauseText": "Vous êtes invisible dans les découvertes, vous ne recevez plus d’alertes et vous ne pouvez plus liker, le temps de souffler. Vos conversations et vos duos restent là.",
     "pauseFor": "Durée de la pause",
     "days": "{n, plural, one {# jour} other {# jours}}",
     "pauseUntilMax": "Jusqu’à {n} jours (maximum)",
@@ -3699,8 +3699,8 @@
     "how": "Comment ça se passe",
     "h1": "Vous vous inscrivez à une session qui vous correspond.",
     "h2": "À l’heure dite, vous échangez quelques minutes par écrit avec une personne à la fois.",
-    "h3": "À la fin, vous indiquez en privé qui vous aimeriez revoir. Il y a match seulement si c’est réciproque.",
-    "safe": "Pour votre sécurité : gardez vos coordonnées pour après le match, vous pouvez signaler, bloquer ou quitter à tout moment.",
+    "h3": "À la fin, vous indiquez en privé qui vous aimeriez revoir. Il y a un duo seulement si c’est réciproque.",
+    "safe": "Pour votre sécurité : gardez vos coordonnées pour après le duo, vous pouvez signaler, bloquer ou quitter à tout moment.",
     "empty": "Aucune session n’est annoncée pour le moment. Revenez bientôt : de nouvelles sessions sont publiées régulièrement.",
     "when": "Début : {date}",
     "spots": "{n} places restantes",
@@ -3746,12 +3746,12 @@
     "leave": "Quitter la session",
     "leaveConfirm": "Quitter la session ? Votre binôme en sera informé sans détail.",
     "decisionTitle": "Qui aimeriez-vous revoir ?",
-    "decisionText": "Il y a match seulement si vous vous choisissez mutuellement. Sinon, personne n’en saura rien.",
+    "decisionText": "Il y a un duo seulement si vous vous choisissez mutuellement. Sinon, personne n’en saura rien.",
     "meetingRound": "Échange {n}",
     "resultsTitle": "Merci pour cette belle soirée",
-    "matches": "Vous avez un match !",
+    "matches": "Vous avez un duo !",
     "matchesText": "Vous vous êtes choisis mutuellement. La conversation est ouverte.",
-    "noMatch": "Pas de match cette fois, et c’est normal : une rencontre, ça prend parfois plusieurs essais. Une prochaine session vous attend.",
+    "noMatch": "Pas de duo cette fois, et c’est normal : une rencontre, ça prend parfois plusieurs essais. Une prochaine session vous attend.",
     "openChat": "Ouvrir la conversation",
     "closed": "Les choix sont clos."
   },
@@ -3887,7 +3887,7 @@
     "badText": "Ce lien n’est plus valable ou a déjà été utilisé.",
     "notifications": {
       "okTitle": "Vous ne recevrez plus ces e-mails",
-      "okText": "Les e-mails de notification (likes, matchs, messages) sont coupés. Vous gardez les notifications dans l’application, et les e-mails de compte (code, mot de passe) continuent d’arriver. Vous pouvez changer cela à tout moment dans Paramètres › Notifications."
+      "okText": "Les e-mails de notification (likes, duos, messages) sont coupés. Vous gardez les notifications dans l’application, et les e-mails de compte (code, mot de passe) continuent d’arriver. Vous pouvez changer cela à tout moment dans Paramètres › Notifications."
     },
     "privacy": "Un e-mail de temps en temps. Désinscription en un clic, à tout moment."
   },

@@ -105,7 +105,7 @@
     "subtitle": "CrushDuo helps you meet compatible people: same intentions, same values, same city or close. Simple, elegant and secure.",
     "ctaRegister": "Create my account",
     "ctaLogin": "Log in",
-    "heroMatch": "It’s a match!",
+    "heroMatch": "It’s a Duo!",
     "trust": {
       "adults": "18 and over only",
       "verified": "“Verified profile” badge",
@@ -129,7 +129,7 @@
       },
       "chat": {
         "title": "Private messaging",
-        "text": "Chat in real time after a match: text, photos and emojis, with clear anti-spam rules."
+        "text": "Chat in real time after a duo: text, photos and emojis, with clear anti-spam rules."
       },
       "safety": {
         "title": "Safety and privacy",
@@ -153,7 +153,7 @@
       },
       "speed": {
         "title": "Text speed dating",
-        "text": "Scheduled evenings: short written chats with several people, then a private decision. It’s a match only if the interest is mutual."
+        "text": "Scheduled evenings: short written chats with several people, then a private decision. It’s a Duo only if the interest is mutual."
       }
     }
   },
@@ -178,10 +178,10 @@
       },
       "like": {
         "title": "Say what you like",
-        "text": "Like a profile, a photo, an answer or an interest, and add a short note if you wish. It becomes your first message if you match."
+        "text": "Like a profile, a photo, an answer or an interest, and add a short note if you wish. It becomes your first message if you form a duo."
       },
       "match": {
-        "title": "It’s a match",
+        "title": "It’s a Duo",
         "text": "When interest is mutual, you are both notified and the conversation opens."
       },
       "chat": {
@@ -194,7 +194,7 @@
       },
       "premium": {
         "title": "Go further with Premium / VIP (optional)",
-        "text": "More visibility and tools, never a guaranteed match. Blocking, reporting and safety stay free for everyone."
+        "text": "More visibility and tools, never a guaranteed duo. Blocking, reporting and safety stay free for everyone."
       }
     },
     "whyTitle": "What is different here",
@@ -249,7 +249,7 @@
     },
     "free": {
       "q": "Is CrushDuo free?",
-      "a": "Yes: profile, discovery, matches and post-match messaging are free, with a daily like limit. Premium and VIP unlock more features."
+      "a": "Yes: profile, discovery, duos and post-duo messaging are free, with a daily like limit. Premium and VIP unlock more features."
     },
     "safety": {
       "q": "How are you protected?",
@@ -295,8 +295,8 @@
       "signup": "Sign-up and full profile",
       "discover": "Profile discovery",
       "likesFree": "{likes} likes per day",
-      "matches": "Unlimited matches",
-      "chat": "Messaging after a match",
+      "matches": "Unlimited duos",
+      "chat": "Messaging after a duo",
       "basicFilters": "Basic filters (age, country, city, intent)",
       "likesPremium": "{likes} likes per day",
       "superLikes3": "3 Super Likes per day",
@@ -320,8 +320,8 @@
     "feat": {
       "signup": "Sign-up and full profile",
       "discover": "Profile discovery",
-      "matches": "Mutual matches",
-      "chat": "Free messaging after a match",
+      "matches": "Mutual duos",
+      "chat": "Free messaging after a duo",
       "safety": "Reporting, blocking and basic filters",
       "allFree": "Everything included for free",
       "likes": "{n} likes per day",
@@ -509,14 +509,14 @@
         },
         {
           "q": "Is CrushDuo free?",
-          "a": "Yes to get started: profile, discovery, daily picks, matches and messaging are free, with a daily number of likes. Premium and VIP add features, without ever guaranteeing a match."
+          "a": "Yes to get started: profile, discovery, daily picks, duos and messaging are free, with a daily number of likes. Premium and VIP add features, without ever guaranteeing a duo."
         },
         {
           "q": "I did not receive the confirmation email",
           "a": "Check your spam folder, then use “Resend” in the banner at the top of the app."
         },
         {
-          "q": "How do I get better matches?",
+          "q": "How do I get better duos?",
           "a": "Complete your profile: several photos, an honest introduction, your interests and 3 to 5 personality questions. Answers make people want to write to you."
         },
         {
@@ -535,7 +535,7 @@
         },
         {
           "q": "How do I send a Like with a comment?",
-          "a": "Open a profile, pick what you like (the profile, a photo, an answer or an interest) and add a note if you wish. If you match, the note becomes your first message."
+          "a": "Open a profile, pick what you like (the profile, a photo, an answer or an interest) and add a note if you wish. If you form a duo, the note becomes your first message."
         },
         {
           "q": "Why have I run out of likes today?",
@@ -543,7 +543,7 @@
         },
         {
           "q": "What is the Crush menu for?",
-          "a": "It starts a live search among online people who fit your criteria. Those who accept appear: chatting with one costs a Match token, and you can always like for free."
+          "a": "It starts a live search among online people who fit your criteria. Those who accept appear: chatting with one costs a Crush token, and you can always like for free."
         }
       ],
       "chat": [
@@ -1283,7 +1283,7 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "loginTitle": "Welcome back!",
-    "loginSubtitle": "Log in to find your matches.",
+    "loginSubtitle": "Log in to find your duos.",
     "registerTitle": "Create my account",
     "registerSubtitle": "Free, in under two minutes. No credit card.",
     "email": "Email address",
@@ -1510,7 +1510,7 @@
     "CODE_LOCKED": "Too many attempts. Ask for a new code.",
     "RESEND_TOO_SOON": "Please wait a moment before asking for a code again.",
     "INVALID_CODE": "Wrong code.",
-    "CONTACT_INFO": "For your safety, keep your contact details for after the match.",
+    "CONTACT_INFO": "For your safety, keep your contact details for after the duo.",
     "NOT_IN_ROUND": "The chat is over.",
     "RESTING": "You are resting during this chat.",
     "PARTNER_LEFT": "Your partner left the session.",
@@ -1562,7 +1562,7 @@
   },
   "card": {
     "verified": "Verified profile",
-    "compat": "{n}% match",
+    "compat": "{n}% compatible",
     "distance": "{km} km away",
     "prevPhoto": "Previous photo",
     "nextPhoto": "Next photo"
@@ -1596,7 +1596,7 @@
     "sheetGrab": "Handle: drag down to close"
   },
   "match": {
-    "title": "It’s a match!",
+    "title": "It’s a Duo!",
     "text": "You and {name} like each other.",
     "textGeneric": "You like each other.",
     "chat": "Chat now",
@@ -1634,8 +1634,8 @@
   "chat": {
     "title": "Messages",
     "search": "Search conversations",
-    "newMatches": "New matches",
-    "empty": "No conversations yet. Like profiles to get matches!",
+    "newMatches": "New duos",
+    "empty": "No conversations yet. Like profiles to get duos!",
     "noResults": "No results.",
     "you": "you",
     "photo": "Photo",
@@ -1649,11 +1649,11 @@
     "viewProfile": "View profile",
     "options": "Conversation options",
     "unmatch": "Unmatch",
-    "unmatched": "Match removed.",
+    "unmatched": "Duo removed.",
     "history": "Conversation history",
     "closed": "This conversation is no longer available.",
     "older": "Older messages",
-    "firstMessage": "You matched with {name}. Send the first message!",
+    "firstMessage": "You formed a duo with {name}. Send the first message!",
     "imageAlt": "Sent image",
     "read": "Read",
     "sent": "Sent",
@@ -1686,11 +1686,11 @@
   },
   "profile": {
     "completeness": "Profile completeness",
-    "planTitle": "{plan} plan",
+    "planTitle": "<p>{plan}</p> plan",
     "planFreeText": "More likes, see who liked you, advanced filters, boosts…",
     "planPaidText": "Thanks for your support! Manage your subscription here.",
     "planManage": "Manage subscription",
-    "completenessTip": "Add a description, at least 3 interests and 3 photos to get more matches.",
+    "completenessTip": "Add a description, at least 3 interests and 3 photos to get more duos.",
     "level": {
       "INCOMPLETE": "Incomplete profile",
       "IN_PROGRESS": "Profile in progress",
@@ -1844,7 +1844,7 @@
     "unread": "Unread",
     "types": {
       "LIKE": "Someone liked you.",
-      "MATCH": "It’s a match! Say hello.",
+      "MATCH": "It’s a Duo! Say hello.",
       "MESSAGE": "You received a new message.",
       "PROFILE_VERIFIED": "Your profile is verified.",
       "SUBSCRIPTION_ACTIVATED": "Your {plan} subscription is active.",
@@ -1906,7 +1906,7 @@
     },
     "notif": {
       "likes": "New likes",
-      "matches": "New matches",
+      "matches": "New duos",
       "messages": "New messages",
       "byEmail": "By email",
       "inApp": "In the app",
@@ -1946,7 +1946,7 @@
       "receiptsLocked": "Managing read receipts is reserved for Premium and VIP members: your receipts stay on.",
       "receiptsUpgrade": "Go Premium",
       "activity": "Show my activity",
-      "activityText": "Shows “online” or “active today” to people you have a match with. When off, you do not see theirs either, unless you have discreet mode."
+      "activityText": "Shows “online” or “active today” to people you have a duo with. When off, you do not see theirs either, unless you have discreet mode."
     },
     "security": {
       "password": "Change password",
@@ -2199,8 +2199,8 @@
         "signups": "New members",
         "signupsHint": "{total} members in total",
         "likes": "Likes sent",
-        "matches": "Matches",
-        "matchesHint": "{rate} of likes lead to a match",
+        "matches": "Duos",
+        "matchesHint": "{rate} of likes lead to a duo",
         "crush": "Crush invitations",
         "crushHint": "{rate} accepted",
         "subs": "New subscriptions",
@@ -2216,7 +2216,7 @@
         "total": "{n} over the {period}",
         "likes": "Likes and passes",
         "likesSub": "Likes sent and profiles passed, per day",
-        "matches": "Matches per day",
+        "matches": "Duos per day",
         "crush": "Live Crush",
         "crushSub": "Searches, invitations and acceptances · {rate} accepted",
         "subs": "Subscriptions per day",
@@ -2240,8 +2240,8 @@
         "womenShort": "{n} W",
         "menShort": "{n} M",
         "activeShort": "active",
-        "ratio": "Gap of about {n} to 1 between the two genders. Above 1.5, the minority side is overwhelmed and the majority side does not match.",
-        "noMinority": "One of the two genders is missing: no match is possible between them.",
+        "ratio": "Gap of about {n} to 1 between the two genders. Above 1.5, the minority side is overwhelmed and the majority side does not find a duo.",
+        "noMinority": "One of the two genders is missing: no duo is possible between them.",
         "active": "Active members (7 days)",
         "activeHint": "Seen in the last 7 days: the real size of the platform.",
         "thin": "Members with fewer than {n} profiles to see",
@@ -2252,9 +2252,9 @@
       },
       "s": {
         "title": "Member satisfaction",
-        "help": "Indirect signals: whether people match, answer each other, come back, and whether dates go well.",
-        "match": "Likes that become a match",
-        "matchHint": "Overall match rate: a low rate points to a lack of compatible profiles.",
+        "help": "Indirect signals: whether people click, answer each other, come back, and whether dates go well.",
+        "match": "Likes that become a duo",
+        "matchHint": "Overall duo rate: a low rate points to a lack of compatible profiles.",
         "reply": "Conversations that get a reply",
         "replyHint": "Is the first message followed by an answer?",
         "mutual": "Two-way conversations",
@@ -2473,7 +2473,7 @@
         "like_comments": {
           "name": "Likes with comments",
           "what": "Lets members target an item (photo, answer, interest) and add a comment to a Like.",
-          "on": "The comment goes with the Like and becomes the first message on a match.",
+          "on": "The comment goes with the Like and becomes the first message on a duo.",
           "off": "Only the plain Like remains possible.",
           "useWhen": "If comments are abused (spam, harassment)."
         },
@@ -2528,7 +2528,7 @@
         },
         "calls": {
           "name": "Audio and video calls",
-          "what": "Lets two members of an active match call each other (audio or video) through a third-party service. Nothing is recorded.",
+          "what": "Lets two members of an active duo call each other (audio or video) through a third-party service. Nothing is recorded.",
           "on": "Call buttons appear in the conversation.",
           "off": "No new calls; ongoing calls may finish.",
           "useWhen": "In case of abuse, unexpected cost or an incident at the video provider."
@@ -2674,8 +2674,8 @@
         "profilesWithPrompts": "Profiles with questions",
         "likes": "Likes sent",
         "likesWithComment": "Likes with a comment",
-        "matches": "Matches",
-        "matchRate": "Match rate (share of Likes that led to a match)",
+        "matches": "Duos",
+        "matchRate": "Duo rate (share of Likes that led to a duo)",
         "conversations": "Conversations started",
         "firstResponseRate": "First-reply rate",
         "reciprocalConversations": "Two-way conversations",
@@ -2845,7 +2845,7 @@
       "membersHint": "{n} new in this period",
       "revenue": "Revenue",
       "revenueHint": "Successful payments in this period",
-      "matches": "New matches",
+      "matches": "New duos",
       "matchesHint": "Two people who liked each other",
       "subscribers": "Active subscribers",
       "subscribersHint": "{rate}% of members have paid at least once",
@@ -2888,7 +2888,7 @@
       "refunds": "Refund requests waiting to be approved or rejected.",
       "audit": "Who did what in the administration, and when: useful to understand a change.",
       "moderation": "Selfies to verify, appeals from sanctioned members and published photos.",
-      "stats": "Evolution over time: members, likes, matches, Crush, subscriptions and revenue, compared with the previous period.",
+      "stats": "Evolution over time: members, likes, duos, Crush, subscriptions and revenue, compared with the previous period.",
       "newsletter": "Write and send a newsletter to subscribers, with a test before sending and delivery tracking.",
       "emails": "Every email the platform sends (confirmation, password, notifications, newsletter) with its state: sent or failed, and why."
     },
@@ -3158,8 +3158,8 @@
       "a": "Write to us via the Contact page with your payment reference: each request is reviewed, notably for double payments or errors."
     },
     "guarantee": {
-      "q": "Does Premium guarantee matches?",
-      "a": "No. No subscription guarantees a match or a relationship: it gives you more visibility and tools."
+      "q": "Does Premium guarantee duos?",
+      "a": "No. No subscription guarantees a duo or a relationship: it gives you more visibility and tools."
     },
     "credits": {
       "q": "Do my boosts and Super Likes expire?",
@@ -3312,16 +3312,16 @@
     "pass": "Pass",
     "likeAria": "Like {name}",
     "passAria": "Pass on {name}",
-    "likeDone": "Like sent. If they like you back, it’s a match.",
-    "matchDone": "It’s a match! You can chat for free.",
+    "likeDone": "Like sent. If they like you back, it’s a duo.",
+    "matchDone": "It’s a Duo! You can chat for free.",
     "passDone": "This person was removed from your suggestions.",
     "guideTitle": "Someone accepted! You need {n} token to talk to them",
-    "guideIntro": "A Match token opens a conversation with someone who accepted your search. You have none right now. Here is what to do:",
+    "guideIntro": "A Crush token opens a conversation with someone who accepted your search. You have none right now. Here is what to do:",
     "guideStep1": "Get at least 1 token:",
     "guideProfile": "Complete my profile ({n} free tokens)",
     "guidePromo": "I have a promo code",
     "guideStep2": "Come back to this page: the “Chat ({n} token)” button appears on the person’s card.",
-    "guideStep3": "Without a token you can already tap “Like”: if they like you back, it’s a match and the chat opens for free. “Pass” removes them from your suggestions.",
+    "guideStep3": "Without a token you can already tap “Like”: if they like you back, it’s a duo and the chat opens for free. “Pass” removes them from your suggestions.",
     "guideAvailability": "Each person stays available until the time shown on their card (2 hours after they answered, or the end of your search).",
     "availableUntil": "Available until {time}",
     "ageRange": "Age range",
@@ -3442,7 +3442,7 @@
         "p20": "Tea or coffee? Tell me, it matters for what comes next 😄"
       },
       "counter": "{n} / {max}",
-      "hint": "If you match, your comment becomes your first message.",
+      "hint": "If you form a duo, your comment becomes your first message.",
       "sending": "Sending…",
         "superTitle": "Send as a Super Like",
         "superHint": "Your message stands out: the person sees it first. You have {n} Super Like(s) left.",
@@ -3640,7 +3640,7 @@
     "title": "Your pace",
     "intro": "Meeting someone is not a race. Set CrushDuo to your own pace: you always stay in control.",
     "pauseTitle": "Pause mode",
-    "pauseText": "You are invisible in discovery, you stop receiving alerts and you cannot like, while you catch your breath. Your conversations and matches stay right here.",
+    "pauseText": "You are invisible in discovery, you stop receiving alerts and you cannot like, while you catch your breath. Your conversations and duos stay right here.",
     "pauseFor": "Length of the pause",
     "days": "{n, plural, one {# day} other {# days}}",
     "pauseUntilMax": "Up to {n} days (maximum)",
@@ -3699,8 +3699,8 @@
     "how": "How it works",
     "h1": "You sign up for a session that suits you.",
     "h2": "At the set time, you chat in writing for a few minutes with one person at a time.",
-    "h3": "At the end, you privately say who you would like to see again. It is a match only if it is mutual.",
-    "safe": "For your safety: keep your contact details for after the match; you can report, block or leave at any time.",
+    "h3": "At the end, you privately say who you would like to see again. It is a duo only if it is mutual.",
+    "safe": "For your safety: keep your contact details for after the duo; you can report, block or leave at any time.",
     "empty": "No session is announced right now. Come back soon: new sessions are published regularly.",
     "when": "Starts: {date}",
     "spots": "{n} spots left",
@@ -3746,12 +3746,12 @@
     "leave": "Leave the session",
     "leaveConfirm": "Leave the session? Your partner will be told, without details.",
     "decisionTitle": "Who would you like to see again?",
-    "decisionText": "It is a match only if you choose each other. Otherwise nobody will know.",
+    "decisionText": "It is a duo only if you choose each other. Otherwise nobody will know.",
     "meetingRound": "Chat {n}",
     "resultsTitle": "Thank you for this lovely evening",
-    "matches": "You have a match!",
+    "matches": "You have a duo!",
     "matchesText": "You chose each other. The conversation is open.",
-    "noMatch": "No match this time, and that is normal: meeting someone sometimes takes a few tries. Another session awaits you.",
+    "noMatch": "No duo this time, and that is normal: meeting someone sometimes takes a few tries. Another session awaits you.",
     "openChat": "Open the conversation",
     "closed": "Choices are closed."
   },
@@ -3887,7 +3887,7 @@
     "badText": "This link is no longer valid or has already been used.",
     "notifications": {
       "okTitle": "You will no longer receive these emails",
-      "okText": "Notification emails (likes, matches, messages) are turned off. You keep in-app notifications, and account emails (code, password) keep arriving. You can change this any time in Settings › Notifications."
+      "okText": "Notification emails (likes, duos, messages) are turned off. You keep in-app notifications, and account emails (code, password) keep arriving. You can change this any time in Settings › Notifications."
     },
     "privacy": "An email now and then. One-click unsubscribe, any time."
   },
