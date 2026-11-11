@@ -155,3 +155,33 @@ async def test_boost_activation_atomic(app, db):
         await set_flag("boosts", True)
     tx = (await a.agent.get("/api/credits")).json()["transactions"]
     assert {t["reason"] for t in tx} == {"ADMIN_GRANT", "CONSUME"}
+
+
+async def test_signalement_avec_preuves_de_conversation(app, db):
+    from tests.support_c import admin
+
+    a, b, conv = await pair(app, db)
+    chat_service.reset_send_log()
+    for who, text in ((a, "Salut"), (b, "Envoie-moi de l'argent"), (b, "Vite")):
+        assert (await who.agent.post(f"/api/conversations/{conv}/messages", json={"body": text})).status_code in (200, 201)
+    # Sans accord (shareMessages) : aucun message n'est joint.
+    assert (await a.agent.post("/api/reports", json={"targetId": b.id, "reason": "SCAM", "conversationId": conv})).status_code == 201
+    # Avec accord : copie figée des derniers messages.
+    r = await a.agent.post("/api/reports", json={"targetId": b.id, "reason": "SCAM", "details": "demande d'argent", "conversationId": conv, "shareMessages": True})
+    assert r.status_code == 201, r.text
+    ad = await admin(app, db)
+    rows = (await ad.agent.get("/api/admin/reports?status=OPEN&limit=100")).json()["items"]
+    mine = [x for x in rows if x["reporter"]["id"] == a.id]
+    assert sorted(x["evidenceCount"] for x in mine) == [0, 3]
+    rid = next(x["id"] for x in mine if x["evidenceCount"] == 3)
+    ev = (await ad.agent.get(f"/api/admin/reports/{rid}/evidence")).json()
+    assert [(m["from"], m["body"]) for m in ev["messages"]] == [("reporter", "Salut"), ("target", "Envoie-moi de l'argent"), ("target", "Vite")]
+    assert ev["conversationId"] == conv and ev["capturedAt"]
+    # Chaque consultation est journalisée ; un membre ordinaire n'y accède pas.
+    logs = (await ad.agent.get("/api/admin/audit-logs?action=report.evidence.view")).json()["items"]
+    assert any(l["targetId"] == rid for l in logs)
+    assert (await a.agent.get(f"/api/admin/reports/{rid}/evidence")).status_code == 403
+    # Une conversation qui n'est pas celle des deux comptes est refusée.
+    c, d, other = await pair(app, db)
+    bad = await a.agent.post("/api/reports", json={"targetId": b.id, "reason": "SCAM", "conversationId": other, "shareMessages": True})
+    assert bad.status_code == 400 and bad.json()["error"]["code"] == "INVALID_CONVERSATION"

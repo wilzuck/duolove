@@ -1220,6 +1220,8 @@ class Report(Base):
     details: Mapped[Optional[str]] = mapped_column(Text)
     resolvedById: Mapped[Optional[str]] = mapped_column(Text)
     resolvedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    conversationId: Mapped[Optional[str]] = mapped_column(Text)
+    evidence: Mapped[Optional[dict]] = mapped_column(JSONB)  # extrait de conversation joint par la personne qui signale : {capturedAt, messages[]}
 
     User_: Mapped['User'] = relationship('User', foreign_keys=[reporterId], back_populates='Report_reporterId')
     User1: Mapped['User'] = relationship('User', foreign_keys=[targetId], back_populates='Report_targetId')

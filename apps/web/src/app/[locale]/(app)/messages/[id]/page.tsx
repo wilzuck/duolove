@@ -235,7 +235,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         <div className="mt-4 flex justify-end gap-2"><Button variant="ghost" onClick={() => setUpsell(null)}>{t('common.close')}</Button><Link href="/premium"><Button>{t('chat.seePlans')}</Button></Link></div>
       </Dialog>
       {conv && <DatesPanel conversationId={id} name={conv.user.displayName} open={datesOpen} onClose={() => setDatesOpen(false)} />}
-      {conv && <ReportDialog userId={conv.user.id} open={report} onClose={() => setReport(false)} />}
+      {conv && <ReportDialog userId={conv.user.id} conversationId={id} open={report} onClose={() => setReport(false)} />}
     </div>
   );
 }

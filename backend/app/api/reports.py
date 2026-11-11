@@ -13,7 +13,7 @@ from app.core.ids import new_id, utcnow
 from app.core.jsonfmt import iso
 from app.core.ratelimit import limit
 from app.db.session import get_db
-from app.models.models import Block, Match, Profile, Report, User
+from app.models.models import Block, Conversation, Match, Message, MessageAttachment, Profile, Report, User
 
 router = APIRouter(tags=["reports"])
 
@@ -22,6 +22,9 @@ class ReportIn(BaseModel):
     targetId: str
     reason: Literal["FAKE_PROFILE", "SCAM", "HARASSMENT", "INAPPROPRIATE_CONTENT", "UNDERAGE", "SPAM", "OTHER"]
     details: str | None = None
+    # Preuves : conversation d'où part le signalement + accord explicite de la personne pour que la modération lise les derniers messages.
+    conversationId: str | None = None
+    shareMessages: bool = False
 
     @field_validator("targetId")
     @classmethod
@@ -41,13 +44,31 @@ class ReportIn(BaseModel):
         return v
 
 
+EVIDENCE_MESSAGES = 20  # derniers messages joints (ce que la personne voyait dans la conversation)
+EVIDENCE_BODY_MAX = 1000
+
+
+async def _snapshot(db: AsyncSession, reporter_id: str, target_id: str, conversation_id: str) -> tuple[str, dict]:
+    """Copie figée des derniers messages non supprimés d'une conversation entre le signalant et la personne signalée. Refusé pour toute autre conversation."""
+    row = (await db.execute(select(Conversation.id, Match.userAId, Match.userBId).join(Match, Match.id == Conversation.matchId).where(Conversation.id == conversation_id))).first()
+    if not row or {row.userAId, row.userBId} != {reporter_id, target_id}:
+        raise AppError(400, "INVALID_CONVERSATION", "Cette conversation n'est pas celle des deux comptes concernés")
+    msgs = list((await db.execute(select(Message).where(Message.conversationId == conversation_id, Message.deletedAt.is_(None)).order_by(Message.createdAt.desc()).limit(EVIDENCE_MESSAGES))).scalars())[::-1]
+    with_image = set((await db.execute(select(MessageAttachment.messageId).where(MessageAttachment.messageId.in_([m.id for m in msgs])))).scalars()) if msgs else set()
+    return conversation_id, {"capturedAt": iso(utcnow()), "messages": [
+        {"from": "reporter" if m.senderId == reporter_id else "target", "body": m.body[:EVIDENCE_BODY_MAX], "image": m.id in with_image, "at": iso(m.createdAt)} for m in msgs]}
+
+
 @router.post("/reports", status_code=201, dependencies=[limit(10, 3600)])
 async def report(body: ReportIn, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
     if body.targetId == u.id:
         raise AppError(400, "INVALID_TARGET")
     if not (await db.execute(select(User.id).where(User.id == body.targetId))).first():
         raise not_found("USER_NOT_FOUND")
-    db.add(Report(reporterId=u.id, targetId=body.targetId, reason=body.reason, details=body.details))
+    conversation_id, evidence = None, None
+    if body.conversationId and body.shareMessages:
+        conversation_id, evidence = await _snapshot(db, u.id, body.targetId, body.conversationId)
+    db.add(Report(reporterId=u.id, targetId=body.targetId, reason=body.reason, details=body.details, conversationId=conversation_id, evidence=evidence))
     await db.commit()
     return {"ok": True}
 

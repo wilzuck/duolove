@@ -412,9 +412,20 @@ async def reports(status: str = "OPEN", cursor: str | None = None, limit: str | 
     targets = {u.id: u for u in (await db.execute(select(User).where(User.id.in_([r.targetId for r in page_rows])))).scalars()}
     totals = dict((await db.execute(select(Report.targetId, func.count()).where(Report.targetId.in_([r.targetId for r in page_rows])).group_by(Report.targetId))).all())
     return paged(rows, take, [{"id": r.id, "reason": ev(r.reason), "details": r.details, "status": ev(r.status), "createdAt": r.createdAt,
+                               "evidenceCount": len((r.evidence or {}).get("messages", [])),
                                "reporter": {"id": r.reporterId, "displayName": names.get(r.reporterId)},
                                "target": {"id": r.targetId, "displayName": names.get(r.targetId), "status": ev(targets[r.targetId].status), "totalReports": totals.get(r.targetId, 0)}}
                               for r in page_rows])
+
+
+@router.get("/reports/{report_id}/evidence")
+async def report_evidence(report_id: str, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    """Extrait de conversation joint au signalement (copie figée des derniers messages, fournie par la personne qui signale). Chaque consultation est journalisée."""
+    r = await db.get(Report, report_id)
+    if not r:
+        raise not_found("REPORT_NOT_FOUND")
+    await audit(db, a.id, "report.evidence.view", "Report", report_id, {"messages": len((r.evidence or {}).get("messages", []))})
+    return {"conversationId": r.conversationId, "capturedAt": (r.evidence or {}).get("capturedAt"), "messages": (r.evidence or {}).get("messages", [])}
 
 
 @router.post("/reports/{report_id}/resolve")

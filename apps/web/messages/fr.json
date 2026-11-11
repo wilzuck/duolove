@@ -845,7 +845,11 @@
         },
         {
           "h": "Localisation",
-          "p": "Votre position précise n’est jamais conservée ni affichée : si vous la partagez, elle est arrondie (environ 11 km) avant enregistrement."
+          "p": "Votre position précise n’est jamais conservée ni affichée : si vous la partagez, elle est arrondie (environ 11 km) avant enregistrement. Sans partage de position, la distance affichée est estimée à partir de la ville de votre profil et arrondie à 5 km."
+        },
+        {
+          "h": "Signalements et messages joints",
+          "p": "Un signalement est examiné par la modération. Quand vous signalez quelqu'un depuis une conversation, vous pouvez joindre les 20 derniers messages échangés : une copie est conservée avec le signalement et seuls les modérateurs habilités peuvent la lire, chaque consultation étant enregistrée. Si vous ne cochez pas cette option, la modération n'a accès à aucun message. Le reste de votre messagerie n'est pas consulté."
         },
         {
           "h": "Photos",
@@ -1579,7 +1583,8 @@
     "SOCIAL_URL_REQUIRED": "Renseignez au moins une adresse pour afficher ce réseau.",
     "INVALID_LIFE_VALUE": "Valeur refusée : 2 à 24 caractères, sans chiffre ni lien.",
     "TOO_MANY_LIFE_VALUES": "3 valeurs au plus.",
-    "INVALID_PERIOD": "Période invalide : début avant fin, fin au plus aujourd'hui, 366 jours au plus."
+    "INVALID_PERIOD": "Période invalide : début avant fin, fin au plus aujourd'hui, 366 jours au plus.",
+    "INVALID_CONVERSATION": "Cette conversation n'est pas celle des deux comptes concernés."
   },
   "app": {
     "nav": {
@@ -1914,7 +1919,9 @@
       "UNDERAGE": "Personne mineure",
       "SPAM": "Spam",
       "OTHER": "Autre"
-    }
+    },
+    "shareMessages": "Joindre les derniers messages de cette conversation",
+    "shareHint": "Jusqu'à 20 messages, copiés avec votre signalement : la modération pourra les lire pour vérifier les faits. Rien d'autre de votre messagerie n'est accessible. Décochez pour ne rien joindre."
   },
   "notifications": {
     "readAll": "Tout marquer comme lu",
@@ -3245,6 +3252,18 @@
       "youtube": "YouTube",
       "x": "X (Twitter)",
       "badUrl": "Adresse refusée : elle doit être sur {domain} (vérifiez l'orthographe). Les autres réseaux ne sont pas concernés."
+    },
+    "reports": null,
+    "evidence": {
+      "evidenceTitle": "Messages joints",
+      "evidenceShow": "Voir les messages joints ({n})",
+      "evidenceNone": "Aucun message joint par la personne qui signale.",
+      "evidenceNote": "Copie figée de la conversation au moment du signalement. Chaque consultation est enregistrée dans le journal d'audit.",
+      "evidenceReporter": "Signalant",
+      "evidenceTarget": "Signalé",
+      "evidenceImage": "[photo envoyée]",
+      "evidenceCol": "Preuves",
+      "evidenceAt": "Copié le {date}"
     }
   },
   "pricingFaq": {

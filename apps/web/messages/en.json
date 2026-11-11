@@ -845,7 +845,11 @@
         },
         {
           "h": "Location",
-          "p": "Your exact position is never stored or shown: if you share it, it is rounded (about 11 km) before it is saved."
+          "p": "Your precise location is never stored or shown: if you share it, it is rounded (about 11 km) before saving. Without sharing, the distance shown is estimated from your profile city and rounded to 5 km."
+        },
+        {
+          "h": "Reports and attached messages",
+          "p": "A report is reviewed by moderators. When you report someone from a conversation, you can attach the last 20 messages exchanged: a copy is kept with the report and only authorised moderators can read it, every view being logged. If you do not tick this option, moderators have no access to any message. The rest of your messages is not reviewed."
         },
         {
           "h": "Photos",
@@ -1579,7 +1583,8 @@
     "SOCIAL_URL_REQUIRED": "Enter at least one link to show this network.",
     "INVALID_LIFE_VALUE": "Value rejected: 2 to 24 characters, no digits or links.",
     "TOO_MANY_LIFE_VALUES": "3 values at most.",
-    "INVALID_PERIOD": "Invalid period: start before end, end no later than today, 366 days at most."
+    "INVALID_PERIOD": "Invalid period: start before end, end no later than today, 366 days at most.",
+    "INVALID_CONVERSATION": "This conversation does not belong to the two accounts concerned."
   },
   "app": {
     "nav": {
@@ -1914,7 +1919,9 @@
       "UNDERAGE": "Underage person",
       "SPAM": "Spam",
       "OTHER": "Other"
-    }
+    },
+    "shareMessages": "Attach the latest messages of this conversation",
+    "shareHint": "Up to 20 messages, copied with your report: moderators can read them to check the facts. Nothing else in your messages is accessible. Untick to attach nothing."
   },
   "notifications": {
     "readAll": "Mark all as read",
@@ -3245,6 +3252,18 @@
       "youtube": "YouTube",
       "x": "X (Twitter)",
       "badUrl": "Link rejected: it must be on {domain} (check the spelling). Other networks are not affected."
+    },
+    "reports": null,
+    "evidence": {
+      "evidenceTitle": "Attached messages",
+      "evidenceShow": "View attached messages ({n})",
+      "evidenceNone": "No messages attached by the reporter.",
+      "evidenceNote": "Frozen copy of the conversation when the report was made. Every view is recorded in the audit log.",
+      "evidenceReporter": "Reporter",
+      "evidenceTarget": "Reported",
+      "evidenceImage": "[photo sent]",
+      "evidenceCol": "Evidence",
+      "evidenceAt": "Copied on {date}"
     }
   },
   "pricingFaq": {
