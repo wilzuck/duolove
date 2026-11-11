@@ -3478,9 +3478,8 @@
       "webhookSecret": "Webhook secret (secret hash)",
       "webhookSecretHint": "The same value as in the webhook created at KKiaPay.",
       "keepSecret": "Leave empty to keep the saved secret.",
-      "sandboxSwitch": "Sandbox mode",
-      "sandboxOn": "No real money is charged: use the test keys.",
-      "sandboxOff": "Payments are real: use the production keys.",
+      "sandboxOn": "Test mode: no real money is charged. Use the test keys.",
+      "sandboxOff": "Production mode: payments are real. Use the production keys.",
       "webhookTitle": "Webhook address to enter at KKiaPay",
       "webhookHelp": "Developers › Webhook › Add a webhook: tick “Successful transactions” and “Failed transactions”, and enter the same secret hash as above.",
       "test": "Test the keys",
@@ -3498,7 +3497,10 @@
       "codeHelp": "A 6-digit code is sent to your account's e-mail address.",
       "sendCode": "Send the code",
       "code": "Code received by e-mail",
-      "codeSent": "Code sent: check your inbox (and spam). It is valid for 10 minutes."
+      "codeSent": "Code sent: check your inbox (and spam). It is valid for 10 minutes.",
+      "mode": "Mode",
+      "modeTest": "Test (sandbox)",
+      "modeProduction": "Production (real payments)"
     }
   },
   "pricingFaq": {

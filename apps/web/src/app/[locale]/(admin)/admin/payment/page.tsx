@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CreditCard, FlaskConical } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Alert, Badge, Button, Card, Dialog, Field, Input, RadioChips, Skeleton, Switch } from '@duomatch/ui';
+import { Alert, Badge, Button, Card, Dialog, Field, Input, RadioChips, Select, Skeleton } from '@duomatch/ui';
 import { PasswordInput } from '@/components/PasswordInput';
 import { useApiError } from '@/hooks/useApiError';
 import { ApiError, api, post, put } from '@/lib/api';
@@ -68,10 +68,12 @@ export default function AdminPaymentConfig() {
                 <Field label={t('admin.pay.publicKey')} hint={t('admin.pay.publicKeyHint')}>{(p) => <Input {...p} autoComplete="off" value={f.publicKey} onChange={(e) => set('publicKey', e.target.value)} required />}</Field>
                 <Field label={t('admin.pay.privateKey')} hint={v.hasPrivateKey ? t('admin.pay.keep', { masked: v.privateKeyMasked ?? '' }) : t('admin.pay.privateKeyHint')}>{(p) => <PasswordInput {...p} autoComplete="new-password" value={f.privateKey} onChange={(e) => set('privateKey', e.target.value)} required={!v.hasPrivateKey} />}</Field>
                 <Field label={t('admin.pay.webhookSecret')} hint={v.hasWebhookSecret ? t('admin.pay.keepSecret') : t('admin.pay.webhookSecretHint')}>{(p) => <PasswordInput {...p} autoComplete="new-password" value={f.webhookSecret} onChange={(e) => set('webhookSecret', e.target.value)} required={!v.hasWebhookSecret} />}</Field>
-                <div className="space-y-2">
-                  <Switch checked={f.sandbox} onChange={(c) => set('sandbox', c)} label={t('admin.pay.sandboxSwitch')} />
-                  <p className="text-sm text-muted">{t(f.sandbox ? 'admin.pay.sandboxOn' : 'admin.pay.sandboxOff')}</p>
-                </div>
+                <Field label={t('admin.pay.mode')} hint={t(f.sandbox ? 'admin.pay.sandboxOn' : 'admin.pay.sandboxOff')}>{(p) => (
+                  <Select {...p} value={f.sandbox ? 'test' : 'production'} onChange={(e) => set('sandbox', e.target.value !== 'production')}>
+                    <option value="test">{t('admin.pay.modeTest')}</option>
+                    <option value="production">{t('admin.pay.modeProduction')}</option>
+                  </Select>
+                )}</Field>
                 <div className="sm:col-span-2 rounded-2xl bg-soft p-4 text-sm">
                   <p className="font-semibold">{t('admin.pay.webhookTitle')}</p>
                   <p className="mt-1 break-all font-mono text-xs">{v.webhookUrl}</p>
