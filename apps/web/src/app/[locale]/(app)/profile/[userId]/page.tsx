@@ -17,7 +17,7 @@ export default function ProfileView({ params }: { params: Promise<{ userId: stri
   const showMatch = useUi((s) => s.showMatch);
   const q = useQuery({ queryKey: ['profile', userId], queryFn: () => api<Card>(`/profiles/${userId}`), retry: false });
   return (
-    <div className="mx-auto w-full max-w-lg space-y-4 px-4 py-4 lg:max-w-5xl">
+    <div className="mx-auto w-full max-w-lg space-y-4 px-4 py-4 lg:max-w-5xl xl:max-w-7xl">
       {q.isLoading && <Skeleton className="aspect-[4/5] rounded-[2rem]" />}
       {q.isError && <EmptyState icon={<Lock className="size-8" aria-hidden />} title={t('profileView.unavailable')}><Link href="/discover" className="font-semibold text-brand-ink underline">{t('profileView.back')}</Link></EmptyState>}
       {q.data && <ProfileDetail card={q.data} onBlocked={() => router.replace('/discover')} onLiked={(r) => { if (r.matched && r.match) showMatch({ matchId: r.match.id, conversationId: r.match.conversationId, user: r.match.user ?? q.data ?? null }); }} />}

@@ -1816,7 +1816,8 @@
     "noPets": "Doesn’t like animals",
     "from": "Originally from {country}",
     "lifestyle": "Lifestyle",
-    "seeProfile": "View profile"
+    "seeProfile": "View profile",
+    "similar": "Similar profiles"
   },
   "prefs": {
     "title": "My dating preferences",

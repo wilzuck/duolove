@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import activity, discoverysvc, profilesvc, visitsvc
+from app.core import activity, discoverysvc, profilesvc, similarsvc, visitsvc
 from app.core.auth import AuthUser, current_user
 from app.core.errors import AppError, bad_request, not_found
 from app.core.profile_card import load_card, to_card
@@ -114,3 +114,13 @@ async def view(user_id: str, u: AuthUser = Depends(current_user), db: AsyncSessi
     await visitsvc.record(db, u.id, user_id)
     affinity = await discoverysvc.explain_for(db, u.id, p, [card]) if user_id != u.id else None
     return to_card(card, viewer_interests=list(mine), affinity=affinity, score=affinity["score"] if affinity else None)
+
+
+@router.get("/{user_id}/similar")
+async def similar(user_id: str, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    """Jusqu'à trois profils proches de celui-ci (colonne « Profils similaires »). Mêmes refus que la fiche : bloqué, suspendu ou masqué."""
+    p = (await db.execute(select(Profile).join(User, User.id == Profile.userId).where(Profile.userId == user_id, User.status == "ACTIVE"))).scalar_one_or_none()
+    block = (await db.execute(select(Block.id).where(or_((Block.blockerId == u.id) & (Block.blockedId == user_id), (Block.blockerId == user_id) & (Block.blockedId == u.id))).limit(1))).first()
+    if not p or block or (p.visibility.value == "HIDDEN" and user_id != u.id):
+        raise not_found("PROFILE_NOT_FOUND")
+    return {"items": await similarsvc.similar(db, u.id, p)}

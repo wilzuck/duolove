@@ -1816,7 +1816,8 @@
     "noPets": "N’aime pas les animaux",
     "from": "Originaire de {country}",
     "lifestyle": "Mode de vie",
-    "seeProfile": "Voir le profil"
+    "seeProfile": "Voir le profil",
+    "similar": "Profils similaires"
   },
   "prefs": {
     "title": "Mes critères de rencontre",
