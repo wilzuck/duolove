@@ -1,14 +1,17 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
-import { Heart } from 'lucide-react';
+import { Heart, Loader2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Button, Dialog, Textarea, cn } from '@duomatch/ui';
+import { Dialog, Textarea, buttonVariants, cn } from '@duomatch/ui';
+import { ActionButton } from './ActionButton';
 import { useApiError } from '@/hooks/useApiError';
 import { useEngagementConfig } from '@/hooks/useQueries';
 import { post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import type { Card, LikeKind, SwipeResult } from '@/lib/types';
+
+const PLACEHOLDERS = 20;
 
 export interface LikeTarget { kind: LikeKind; ref: string | null }
 
@@ -21,6 +24,9 @@ export function LikeComposer({ card, open, initial, onClose, onDone }: { card: C
   const { data: cfg } = useEngagementConfig();
   const [target, setTarget] = useState<LikeTarget>(initial ?? { kind: 'PROFILE', ref: null });
   const [comment, setComment] = useState('');
+  // Une accroche au hasard parmi 20, tirée à l'ouverture (le composeur n'est monté qu'après un clic : pas de décalage serveur / client).
+  const [pick] = useState(() => 1 + Math.floor(Math.random() * PLACEHOLDERS));
+  const placeholder = t(`engagement.composer.placeholders.p${pick}` as never);
   const max = cfg?.commentMax ?? 200;
   const kinds = (['PROFILE', ...(card.photos.length ? ['PHOTO'] : []), ...(card.prompts?.length ? ['PROMPT'] : []), ...(card.interests.length ? ['INTEREST'] : [])]) as LikeKind[];
   const send = useMutation({
@@ -55,10 +61,10 @@ export function LikeComposer({ card, open, initial, onClose, onDone }: { card: C
         )}
         <div className="space-y-1.5">
           <label htmlFor="like-comment" className="block text-sm font-semibold">{t('engagement.composer.comment')}</label>
-          <Textarea id="like-comment" maxLength={max} className="min-h-24" placeholder={t('engagement.composer.placeholder')} value={comment} onChange={(e) => setComment(e.target.value)} />
+          <Textarea id="like-comment" maxLength={max} className="min-h-24" placeholder={placeholder} value={comment} onChange={(e) => setComment(e.target.value)} />
           <p className="flex justify-between text-xs text-muted"><span>{t('engagement.composer.hint')}</span><span>{t('engagement.composer.counter', { n: comment.length, max })}</span></p>
         </div>
-        <Button type="submit" size="lg" className="w-full" loading={send.isPending} disabled={!ready}><Heart className="size-5 fill-current" aria-hidden />{t('engagement.composer.send')}</Button>
+        <ActionButton kind="like" type="submit" reach={120} disabled={!ready || send.isPending} className={cn(buttonVariants({ size: 'lg' }), 'w-full')}>{send.isPending ? <Loader2 className="size-5 animate-spin" aria-hidden /> : <Heart className="size-5 fill-current" aria-hidden />}{send.isPending ? t('engagement.composer.sending') : t('engagement.composer.send')}</ActionButton>
       </form>
     </Dialog>
   );

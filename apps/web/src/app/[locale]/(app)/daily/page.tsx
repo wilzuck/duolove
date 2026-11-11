@@ -1,9 +1,10 @@
 'use client';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Heart, MapPin, Sparkles, X } from 'lucide-react';
+import { Heart, Loader2, MapPin, Sparkles, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Avatar, Badge, Button, Card, Dialog, EmptyState, Skeleton, Tabs } from '@duomatch/ui';
+import { Avatar, Badge, Button, Card, Dialog, EmptyState, Skeleton, Tabs, buttonVariants } from '@duomatch/ui';
+import { ActionButton } from '@/components/app/ActionButton';
 import { DailyQuestionCard, dailyQuestionKey } from '@/components/app/DailyQuestionCard';
 import { HighlightCarousel } from '@/components/app/HighlightCarousel';
 import { IntentionSentence } from '@/components/app/IntentionSentence';
@@ -42,7 +43,7 @@ function PickCard({ card, onOpen, onLike, onPass, busy }: { card: ProfileCardT; 
       <div className="flex flex-wrap items-center gap-2">
         {card.decision
           ? <Badge tone="neutral">{t(card.decision === 'PASS' ? 'engagement.daily.passed' : 'engagement.daily.liked')}</Badge>
-          : (<><Button onClick={onLike} loading={busy}><Heart className="size-4 fill-current" aria-hidden />{t('engagement.daily.like')}</Button>
+          : (<><ActionButton kind="like" reach={90} disabled={busy} onAct={onLike} className={buttonVariants({})}>{busy ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Heart className="size-4 fill-current" aria-hidden />}{t('engagement.daily.like')}</ActionButton>
               <Button variant="outline" onClick={onPass} disabled={busy}><X className="size-4" aria-hidden />{t('engagement.daily.pass')}</Button></>)}
         <Button variant="ghost" onClick={onOpen}>{t('engagement.daily.details')}</Button>
       </div>

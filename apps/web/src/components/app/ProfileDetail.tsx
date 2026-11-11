@@ -3,7 +3,8 @@ import { useMutation } from '@tanstack/react-query';
 import { Ban, Briefcase, Flag, Heart, Home, Languages, MapPin, PawPrint, Baby, Ruler } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button } from '@duomatch/ui';
+import { Badge, Button, buttonVariants, cn } from '@duomatch/ui';
+import { ActionButton } from './ActionButton';
 import { useApiError } from '@/hooks/useApiError';
 import { useEngagementConfig } from '@/hooks/useQueries';
 import { post } from '@/lib/api';
@@ -63,7 +64,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero }: { card: Card; 
             })}</ul>
           </section>
         )}
-        {canComment && <Button className="w-full" onClick={() => setComposer({ kind: 'PROFILE', ref: null })}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</Button>}
+        {canComment && <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({}), 'w-full')}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</ActionButton>}
         <div className="flex gap-3 border-t border-line pt-5">
           <Button variant="outline" size="sm" onClick={() => setReport(true)}><Flag className="size-4" aria-hidden />{t('report.cta')}</Button>
           <Button variant="outline" size="sm" onClick={() => block.mutate()} loading={block.isPending}><Ban className="size-4" aria-hidden />{t('report.block')}</Button>

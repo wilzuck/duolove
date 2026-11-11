@@ -33,8 +33,8 @@ function burst(kind: Kind, reach: number): Particle[] {
  * rebond du bouton, onde, gerbe de cœurs / étoiles (poussière grise pour « passer »). Respecte « réduire les animations ».
  * `delay` retarde l'action pour laisser voir l'animation quand l'écran se ferme juste après (fiche de profil).
  */
-export function ActionButton({ kind, onAct, label, className, children, reach = 110, delay = 0 }: {
-  kind: Kind; onAct: () => void; label: string; className: string; children: ReactNode; reach?: number; delay?: number;
+export function ActionButton({ kind, onAct, label, className, children, reach = 110, delay = 0, type = 'button', disabled }: {
+  kind: Kind; onAct?: () => void; label?: string; className: string; children: ReactNode; reach?: number; delay?: number; type?: 'button' | 'submit'; disabled?: boolean;
 }) {
   const reduce = useReducedMotion();
   const controls = useAnimationControls();
@@ -45,16 +45,17 @@ export function ActionButton({ kind, onAct, label, className, children, reach = 
   useEffect(() => () => { clearTimeout(timer.current); clearTimeout(wait.current); }, []);
 
   const click = () => {
-    if (wait.current) return; // un seul déclenchement pendant l'animation différée
+    if (wait.current || disabled) return; // un seul déclenchement pendant l'animation différée
     setRun((r) => r + 1);
     if (!reduce) void controls.start(kind === 'pass' ? { rotate: [0, -14, 12, -6, 0], x: [0, -3, 3, -1, 0], scale: [1, 0.9, 1.05, 1] } : { scale: [1, 0.78, 1.32, 0.96, 1], rotate: kind === 'super' ? [0, -12, 12, 0] : [0, -6, 6, 0] }, { duration: kind === 'pass' ? 0.4 : 0.55, ease: 'easeOut' });
     if (!reduce) { setParts(burst(kind, reach)); clearTimeout(timer.current); timer.current = setTimeout(() => setParts([]), 1300); }
+    if (!onAct) return; // bouton d'envoi de formulaire : l'action est celle du formulaire, ici seulement l'animation
     if (delay > 0) wait.current = setTimeout(() => { wait.current = undefined; onAct(); }, delay); else onAct();
   };
 
   return (
     <span className="relative inline-flex">
-      <motion.button type="button" onClick={click} aria-label={label} className={className} animate={controls} whileTap={reduce ? undefined : { scale: 0.9 }}>
+      <motion.button type={type} disabled={disabled} onClick={click} aria-label={label} className={className} animate={controls} whileTap={reduce ? undefined : { scale: 0.9 }}>
         {children}
       </motion.button>
       {!reduce && parts.length > 0 && (

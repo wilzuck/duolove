@@ -1,8 +1,9 @@
 'use client';
-import { ChevronLeft, ChevronRight, Heart, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, Loader2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
-import { Badge, Button, IconButton, cn } from '@duomatch/ui';
+import { Badge, Button, IconButton, buttonVariants, cn } from '@duomatch/ui';
+import { ActionButton } from '@/components/app/ActionButton';
 import { DuoGauge } from '@/components/app/DuoGauge';
 import { countryName } from '@/components/app/ProfileCard';
 import type { Card, DailyQuestionState } from '@/lib/types';
@@ -63,7 +64,7 @@ export function HighlightCarousel({ items, question, busy, likeWithWord, onLike,
                   <div className="flex flex-wrap items-center gap-2">
                     {c.decision
                       ? <Badge tone="neutral">{t(c.decision === 'PASS' ? 'engagement.daily.passed' : 'engagement.daily.liked')}</Badge>
-                      : (<><Button onClick={() => onLike(c)} loading={busy === c.id} className="flex-1"><Heart className="size-4 fill-current" aria-hidden />{likeWithWord ? t('engagement.carousel.likeWithWord') : t('engagement.daily.like')}</Button>
+                      : (<><ActionButton kind="like" reach={80} disabled={busy === c.id} onAct={() => onLike(c)} className={cn(buttonVariants({}), 'flex-1')}>{busy === c.id ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Heart className="size-4 fill-current" aria-hidden />}{likeWithWord ? t('engagement.carousel.likeWithWord') : t('engagement.daily.like')}</ActionButton>
                           <Button variant="outline" onClick={() => onPass(c)} disabled={busy === c.id}><X className="size-4" aria-hidden />{t('engagement.daily.pass')}</Button></>)}
                     <Button variant="ghost" onClick={() => onOpen(c)}>{t('engagement.daily.details')}</Button>
                   </div>
