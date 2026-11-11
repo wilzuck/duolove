@@ -336,6 +336,9 @@
       "liveMatch": "Menu Crush en direct (illimité)",
       "liveMatchTrials": "Menu Crush : {n} essais gratuits",
       "matchTokensMonthly": "{n} jetons Crush par mois",
+      "chatSuggestions": "Idées pour briser la glace",
+      "calls": "Appels audio et vidéo",
+      "dates": "Rendez-vous",
       "chatImages": "Envoi de photos dans les messages",
       "readReceipts": "Gestion des accusés de lecture (« vu »)",
       "dailyPicks": "{n, plural, one {# découverte du jour} other {# découvertes du jour}}"
@@ -1632,6 +1635,13 @@
     "visitCount": "{n, plural, one {# visite} other {# visites}}"
   },
   "chat": {
+    "callsLocked": "Appels : réservés à Premium et VIP",
+    "datesLocked": "Rendez-vous : réservés à Premium et VIP",
+    "ideasLocked": "Idées pour commencer : réservées à Premium et VIP",
+    "planGate": {"ideas": {"title": "Des idées pour briser la glace", "text": "Les idées de sujets, tirées de ce que vous avez en commun, sont réservées aux abonnés Premium et VIP."}, "calls": {"title": "Appels audio et vidéo", "text": "Lancer un appel est réservé aux abonnés Premium et VIP. Vous pouvez toujours répondre à un appel reçu."}, "dates": {"title": "Proposer un rendez-vous", "text": "Proposer un rendez-vous est réservé aux abonnés Premium et VIP. Vous pouvez toujours répondre à une proposition reçue."}},
+    "imagePreview": "Photo prête à envoyer",
+    "imageHint": "Elle part quand vous cliquez sur Envoyer ou appuyez sur Entrée.",
+    "removeImage": "Retirer la photo",
     "title": "Messages",
     "search": "Rechercher une conversation",
     "newMatches": "Nouveaux duos",
@@ -2328,6 +2338,9 @@
         "match_tokens_monthly": "Jetons Crush par mois",
         "chat_images_enabled": "Photos dans les messages",
         "read_receipts_control": "Choisir d’afficher les accusés de lecture",
+        "chat_suggestions_enabled": "Idées pour briser la glace",
+        "calls_enabled": "Lancer des appels audio et vidéo",
+        "dates_enabled": "Proposer des rendez-vous",
         "daily_picks_count": "Découvertes du jour (nombre)"
       }
     },

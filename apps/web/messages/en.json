@@ -336,6 +336,9 @@
       "liveMatch": "Live Crush menu (unlimited)",
       "liveMatchTrials": "Live Crush: {n} free tries",
       "matchTokensMonthly": "{n} Crush tokens per month",
+      "chatSuggestions": "Ice-breaker ideas",
+      "calls": "Audio and video calls",
+      "dates": "Date planning",
       "chatImages": "Send photos in messages",
       "readReceipts": "Read receipts control (“seen”)",
       "dailyPicks": "{n, plural, one {# daily pick} other {# daily picks}}"
@@ -1632,6 +1635,13 @@
     "visitCount": "{n, plural, one {# visit} other {# visits}}"
   },
   "chat": {
+    "callsLocked": "Calls: Premium and VIP only",
+    "datesLocked": "Dates: Premium and VIP only",
+    "ideasLocked": "Conversation ideas: Premium and VIP only",
+    "planGate": {"ideas": {"title": "Ideas to break the ice", "text": "Topic ideas drawn from what you have in common are reserved for Premium and VIP members."}, "calls": {"title": "Audio and video calls", "text": "Starting a call is reserved for Premium and VIP members. You can still answer a call you receive."}, "dates": {"title": "Propose a date", "text": "Proposing a date is reserved for Premium and VIP members. You can still reply to a proposal you receive."}},
+    "imagePreview": "Photo ready to send",
+    "imageHint": "It is sent when you tap Send or press Enter.",
+    "removeImage": "Remove photo",
     "title": "Messages",
     "search": "Search conversations",
     "newMatches": "New duos",
@@ -2328,6 +2338,9 @@
         "match_tokens_monthly": "Crush tokens per month",
         "chat_images_enabled": "Photos in messages",
         "read_receipts_control": "Choose to show read receipts",
+        "chat_suggestions_enabled": "Ice-breaker ideas",
+        "calls_enabled": "Start audio and video calls",
+        "dates_enabled": "Propose dates",
         "daily_picks_count": "Daily picks (count)"
       }
     },
