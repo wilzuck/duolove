@@ -36,10 +36,18 @@
   --font-display: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-html { background: var(--bg); color-scheme: light; }
+/* Texte net et sobre (rendu type Apple / Amazon) : lissage des contours, crénage et ligatures, pas d'agrandissement automatique du texte sur mobile. */
+html { background: var(--bg); color-scheme: light; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 [data-theme='dark'] { color-scheme: dark; }
-body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
-h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-sans); line-height: 1.55;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility; font-kerning: normal; font-optical-sizing: auto; font-feature-settings: 'kern' 1, 'liga' 1;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.15; text-wrap: balance; }
+p, li, blockquote { text-wrap: pretty; }
+/* Chiffres de même largeur dans les montants, compteurs et tableaux : les colonnes restent alignées. */
+table, .tabular { font-variant-numeric: tabular-nums; }
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 button, a { -webkit-tap-highlight-color: transparent; }
 
