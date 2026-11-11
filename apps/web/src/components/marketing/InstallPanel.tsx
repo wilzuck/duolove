@@ -36,7 +36,7 @@ export function InstallPanel() {
   return (
     <div className="space-y-10">
       <section aria-labelledby="install-now" className="rounded-[2rem] border border-line bg-card p-6 text-center shadow-soft md:p-8">
-        <img src="/icon-192.png?v=2" alt="" width={96} height={96} className="mx-auto size-24 rounded-[1.4rem] shadow-pop" />
+        <img src="/icon-192.png?v=3" alt="" width={96} height={96} className="mx-auto size-24 rounded-[1.4rem] shadow-pop" />
         {count !== null && <p className="mx-auto mt-5 flex w-fit items-center gap-2 rounded-full bg-soft px-4 py-1.5 text-sm font-semibold text-brand-ink"><Users className="size-4" aria-hidden />{t('install.count', { n: count })}</p>}
         <h2 id="install-now" className="mt-5 text-2xl font-extrabold">{installed ? t('install.installedTitle') : t('install.ready')}</h2>
         {installed ? (
