@@ -872,6 +872,10 @@
           "p": "Si vous installez Crushduo sur votre écran d’accueil, un identifiant aléatoire créé sur votre appareil est envoyé au plus une fois par jour, avec le type d’appareil (iPhone, Android ou ordinateur), uniquement pour compter les installations. Il n’est lié ni à votre compte, ni à votre nom, ni à votre adresse e-mail."
         },
         {
+          "h": "Mesure d’audience",
+          "p": "Avec votre accord seulement, nous mesurons l’audience de nos pages publiques avec Google Tag Manager (Google Ireland Ltd, avec transfert possible hors Union européenne). Nous n’envoyons aucune donnée de profil, de message ni de photo, et la personnalisation publicitaire est refusée. Vous pouvez retirer votre accord à tout moment avec « Gérer les cookies », en bas de page."
+        },
+        {
           "h": "Vos droits",
           "p": "Accès, rectification, export (Paramètres → Confidentialité), suppression du compte, retrait du consentement marketing à tout moment. Pour toute question sur vos données, écrivez-nous depuis la page Contact."
         },
@@ -884,8 +888,8 @@
     "cookies": {
       "title": "Politique de cookies",
       "kicker": "Cookies et stockage",
-      "metaDescription": "Les cookies et stockages de Crushduo, listés un par un : ce qu'ils font, combien de temps ils durent, et comment les gérer. Aucune publicité, aucun traçage.",
-      "lead": "Parlons cookies, sans jargon et sans rien cacher. Crushduo n’utilise que le strict nécessaire pour vous connecter, retenir vos préférences et, de façon anonyme, compter les installations de l’application : pas de publicité, pas de traçage, pas de revente de données.",
+      "metaDescription": "Les cookies et stockages de Crushduo, listés un par un : ce qu'ils font, combien de temps ils durent, et comment les gérer. Aucune publicité ; mesure d'audience seulement avec votre accord.",
+      "lead": "Parlons cookies, sans jargon et sans rien cacher. Crushduo n’utilise que le strict nécessaire pour vous connecter, retenir vos préférences et, de façon anonyme, compter les installations de l’application. Avec votre accord seulement, nous mesurons aussi l’audience de nos pages publiques : pas de publicité, pas de profil, pas de revente de données.",
       "toc": "Sommaire",
       "updated": "Dernière mise à jour : novembre 2026",
       "listDo": "À retenir",
@@ -902,8 +906,8 @@
           "p": "Ni cookie publicitaire, ni suivi entre sites."
         },
         {
-          "h": "Aucun traçage",
-          "p": "Pas d’outil de mesure d’audience, pas de pixel de réseau social."
+          "h": "Mesure d’audience avec votre accord",
+          "p": "Sur les pages publiques seulement, et uniquement si vous cliquez sur « Accepter ». Aucun pixel de réseau social."
         },
         {
           "h": "Le strict nécessaire",
@@ -979,9 +983,24 @@
             "purpose": "Retenir que vous avez choisi « Plus tard » sur l’invitation à installer l’application.",
             "duration": "Jusqu’à ce que vous l’effaciez.",
             "need": "count"
+          },
+          {
+            "name": "duomatch.analytics",
+            "kind": "Stockage local du navigateur",
+            "purpose": "Retenir votre choix sur la mesure d’audience (accepté ou refusé).",
+            "duration": "Jusqu’à ce que vous l’effaciez ou que vous changiez de choix.",
+            "need": "pref"
+          },
+          {
+            "name": "_ga, _ga_*",
+            "kind": "Cookie (Google Tag Manager / Google Analytics)",
+            "purpose": "Mesurer l’audience des pages publiques : pages vues, provenance, pays. Aucune publicité ; la personnalisation publicitaire est refusée.",
+            "duration": "Jusqu’à 13 mois.",
+            "need": "consent"
           }
         ],
-        "count": "Comptage anonyme"
+        "count": "Comptage anonyme",
+        "consent": "Avec votre accord"
       },
       "sections": [
         {
@@ -993,8 +1012,8 @@
               "kind": "do",
               "items": [
                 "Seuls des cookies et stockages indispensables, ou liés à un choix que vous faites vous-même, sont utilisés.",
-                "Rien de ce qui est stocké ne sert à vous suivre d’un site à l’autre ni à vous cibler par de la publicité.",
-                "C’est pourquoi le message d’information affiché lors de votre première visite ne vous demande aucun choix : il vous informe, c’est tout."
+                "Rien de ce qui est stocké ne sert à vous cibler par de la publicité ni à vous suivre dans l’espace membre.",
+                "Les cookies indispensables ne demandent aucun accord. La mesure d’audience, elle, n’est activée qu’après votre choix, et vous pouvez le changer à tout moment avec « Gérer les cookies » en bas de page."
               ]
             }
           ]
@@ -1041,7 +1060,7 @@
               "kind": "dont",
               "items": [
                 "Cookies publicitaires ou de ciblage.",
-                "Outils de mesure d’audience ou d’analyse de comportement.",
+                "Outils de mesure d’audience sans votre accord, ou dans l’espace membre (découverte, messages, profil).",
                 "Pixels et boutons de réseaux sociaux qui vous suivent.",
                 "Revente ou partage de vos données de navigation."
               ]
@@ -1060,7 +1079,7 @@
           "id": "evolutions",
           "h": "Si cela devait changer",
           "paras": [
-            "Si nous ajoutions un jour un outil de mesure d’audience ou un autre traceur, nous vous demanderions votre accord avant de l’activer, et cette page serait mise à jour. Vous pourriez alors refuser sans perdre l’accès au service."
+            "Si nous ajoutions un autre outil de mesure ou un autre traceur, nous vous demanderions votre accord avant de l’activer, et cette page serait mise à jour. Vous pourriez refuser sans perdre l’accès au service."
           ]
         },
         {
@@ -3700,9 +3719,11 @@
   },
   "cookieNotice": {
     "title": "Cookies et vie privée",
-    "text": "Crushduo n’utilise que des cookies et stockages indispensables au service (connexion, langue, thème). Aucun cookie publicitaire, aucun suivi.",
+    "text": "Nous utilisons des cookies indispensables au service. Avec votre accord, nous mesurons aussi l'audience des pages publiques (Google Tag Manager), sans publicité ni profil. Vous pouvez refuser aussi simplement qu'accepter.",
     "more": "En savoir plus",
-    "ok": "J’ai compris"
+    "refuse": "Refuser",
+    "accept": "Accepter",
+    "manage": "Gérer les cookies"
   },
   "calls": {
     "audio": "Appel audio",

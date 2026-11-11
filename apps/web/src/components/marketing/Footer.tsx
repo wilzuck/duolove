@@ -2,6 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { SUPPORT_EMAIL } from '@/lib/site';
+import { ManageCookies } from './ManageCookies';
 import { SocialIcons } from './SocialIcons';
 
 const COLS = [
@@ -45,7 +46,7 @@ export function MarketingFooter() {
           ))}
         </div>
       </div>
-      <div className="border-t border-line py-5 text-center text-xs text-muted">© {new Date().getFullYear()} Crushduo — {t('footer.rights')}</div>
+      <div className="border-t border-line py-5 text-center text-xs text-muted">© {new Date().getFullYear()} Crushduo — {t('footer.rights')} · <ManageCookies /></div>
     </footer>
   );
 }

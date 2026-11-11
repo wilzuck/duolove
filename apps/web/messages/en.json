@@ -872,6 +872,10 @@
           "p": "If you install Crushduo on your home screen, a random identifier created on your device is sent at most once a day, with the device type (iPhone, Android or computer), only to count installations. It is not linked to your account, your name or your email address."
         },
         {
+          "h": "Audience measurement",
+          "p": "Only with your agreement, we measure the audience of our public pages with Google Tag Manager (Google Ireland Ltd, with possible transfer outside the European Union). We send no profile, message or photo data, and ad personalisation is refused. You can withdraw your agreement at any time with “Manage cookies” at the bottom of the page."
+        },
+        {
           "h": "Your rights",
           "p": "Access, correction, export (Settings → Privacy), account deletion, withdrawal of marketing consent at any time. For any question about your data, write to us from the Contact page."
         },
@@ -884,8 +888,8 @@
     "cookies": {
       "title": "Cookie policy",
       "kicker": "Cookies and storage",
-      "metaDescription": "Crushduo’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising, no tracking.",
-      "lead": "Let’s talk cookies, without jargon and without hiding anything. Crushduo only uses the bare minimum to sign you in, remember your preferences and, anonymously, count app installations: no advertising, no tracking, no selling of data.",
+      "metaDescription": "Crushduo’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising; audience measurement only with your agreement.",
+      "lead": "Let’s talk cookies, without jargon and without hiding anything. Crushduo only uses the bare minimum to sign you in, remember your preferences and, anonymously, count app installations. Only with your agreement do we also measure the audience of our public pages: no advertising, no profile, no selling of data.",
       "toc": "Contents",
       "updated": "Last updated: November 2026",
       "listDo": "To remember",
@@ -902,8 +906,8 @@
           "p": "No advertising cookies and no tracking across sites."
         },
         {
-          "h": "No tracking",
-          "p": "No audience-measurement tool, no social-network pixel."
+          "h": "Audience measurement with your agreement",
+          "p": "On public pages only, and only if you click “Accept”. No social-network pixel."
         },
         {
           "h": "Only what is needed",
@@ -979,9 +983,24 @@
             "purpose": "Remembers that you chose “Later” on the invitation to install the app.",
             "duration": "Until you clear it.",
             "need": "count"
+          },
+          {
+            "name": "duomatch.analytics",
+            "kind": "Browser local storage",
+            "purpose": "Remember your choice about audience measurement (accepted or refused).",
+            "duration": "Until you clear it or change your choice.",
+            "need": "pref"
+          },
+          {
+            "name": "_ga, _ga_*",
+            "kind": "Cookie (Google Tag Manager / Google Analytics)",
+            "purpose": "Measure the audience of public pages: page views, origin, country. No advertising; ad personalisation is refused.",
+            "duration": "Up to 13 months.",
+            "need": "consent"
           }
         ],
-        "count": "Anonymous count"
+        "count": "Anonymous count",
+        "consent": "With your agreement"
       },
       "sections": [
         {
@@ -993,8 +1012,8 @@
               "kind": "do",
               "items": [
                 "Only essential cookies and storage, or ones tied to a choice you make yourself, are used.",
-                "Nothing stored is used to follow you from site to site or to target you with advertising.",
-                "That is why the notice shown on your first visit asks you for no choice: it simply informs you."
+                "Nothing stored is used to target you with advertising or to follow you inside the member area.",
+                "Essential cookies need no agreement. Audience measurement is only turned on after your choice, and you can change it at any time with “Manage cookies” at the bottom of the page."
               ]
             }
           ]
@@ -1041,7 +1060,7 @@
               "kind": "dont",
               "items": [
                 "Advertising or targeting cookies.",
-                "Audience-measurement or behaviour-analysis tools.",
+                "Audience-measurement tools without your agreement, or inside the member area (discover, messages, profile).",
                 "Social-network pixels and buttons that follow you.",
                 "Selling or sharing of your browsing data."
               ]
@@ -1060,7 +1079,7 @@
           "id": "evolutions",
           "h": "If this were to change",
           "paras": [
-            "If we ever added an audience-measurement tool or another tracker, we would ask for your agreement before turning it on, and this page would be updated. You could then refuse without losing access to the service."
+            "If we ever added another measurement tool or tracker, we would ask for your agreement before turning it on, and this page would be updated. You could then refuse without losing access to the service."
           ]
         },
         {
@@ -3700,9 +3719,11 @@
   },
   "cookieNotice": {
     "title": "Cookies and privacy",
-    "text": "Crushduo only uses cookies and storage that are essential to the service (sign-in, language, theme). No advertising cookies, no tracking.",
+    "text": "We use cookies that the service needs to work. With your agreement, we also measure the audience of our public pages (Google Tag Manager), with no advertising and no profile. Refusing is as easy as accepting.",
     "more": "Learn more",
-    "ok": "Got it"
+    "refuse": "Refuse",
+    "accept": "Accept",
+    "manage": "Manage cookies"
   },
   "calls": {
     "audio": "Audio call",

@@ -1,3 +1,4 @@
+import { Analytics } from '@/components/Analytics';
 import { CookieNotice } from '@/components/CookieNotice';
 import { InstallCapture } from '@/components/InstallCapture';
 import type { Metadata, Viewport } from 'next';
@@ -47,7 +48,7 @@ export default async function RootLayout({ children, params }: { children: React
       <head><script dangerouslySetInnerHTML={{ __html: THEME_INIT }} /></head>
       <body className="min-h-dvh">
         <NextIntlClientProvider>
-          <Providers>{children}<CookieNotice /><InstallCapture /></Providers>
+          <Providers>{children}<CookieNotice /><Analytics /><InstallCapture /></Providers>
         </NextIntlClientProvider>
       </body>
     </html>
