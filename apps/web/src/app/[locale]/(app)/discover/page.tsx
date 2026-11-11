@@ -126,13 +126,17 @@ export default function DiscoverPage() {
 
   const resume = async () => { try { await del('/engagement/me/pause'); toast('success', t('rhythm.resumed')); await qc.invalidateQueries(); } catch (e) { toast('error', err(e)); } };
   const rewind = async () => {
+    if (busy.current || leaving) return; // une décision est encore en cours d'envoi : « reprendre » arriverait avant elle et échouerait
+    busy.current = true;
     try {
       const r = await post<{ profile: Card | null }>('/swipes/rewind');
-      if (r.profile) setDeck((d) => [r.profile!, ...d]);
-      void qc.invalidateQueries({ queryKey: ['usage'] });
+      if (r.profile) setDeck((d) => (d.some((c) => c.id === r.profile!.id) ? d : [r.profile!, ...d]));
+      else toast('info', t('discover.rewindGone')); // la personne n'est plus disponible (profil masqué, bloqué ou supprimé)
     } catch (e) {
-      if (e instanceof ApiError && e.code === 'PLAN_REQUIRED') setUpsell('PLAN_REQUIRED'); else toast('error', err(e));
-    }
+      if (e instanceof ApiError && e.code === 'PLAN_REQUIRED') setUpsell('PLAN_REQUIRED');
+      else if (e instanceof ApiError && e.code === 'NOTHING_TO_REWIND') toast('info', t('discover.rewindNone'));
+      else toast('error', err(e));
+    } finally { busy.current = false; void qc.invalidateQueries({ queryKey: ['usage'] }); }
   };
 
   useEffect(() => {
@@ -148,7 +152,7 @@ export default function DiscoverPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-4">
-      <SectionTabs />
+      <SectionTabs className="-mb-1" />
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-extrabold">{t('app.nav.discover')}</h1>
         <div className="flex items-center gap-2">
