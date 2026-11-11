@@ -3439,7 +3439,20 @@
       "days": "{n} jours",
       "invalid": "Période trop longue : {max} jours au plus.",
       "apply": "Appliquer"
-    }
+    },
+    "modTypes": {
+      "WARN": "Avertissement",
+      "SUSPEND": "Suspension",
+      "BAN": "Bannissement",
+      "UNSUSPEND": "Levée de sanction",
+      "PHOTO_REJECT": "Photo refusée",
+      "VERIFICATION_APPROVE": "Vérification acceptée",
+      "VERIFICATION_REJECT": "Vérification refusée",
+      "APPEAL_ACCEPT": "Contestation acceptée",
+      "APPEAL_REJECT": "Contestation refusée"
+    },
+    "reasonNeeded": "Saisissez un motif d'au moins 3 caractères pour activer les boutons.",
+    "suspendedUntil": "Suspendu jusqu'au {date}."
   },
   "pricingFaq": {
     "renew": {

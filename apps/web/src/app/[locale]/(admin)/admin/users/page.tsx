@@ -13,7 +13,7 @@ import { formatDate } from '@/lib/format';
 import { useUi } from '@/lib/store';
 
 interface Row { id: string; displayName: string; email: string | null; role: string; status: string; city?: string; country?: string; verified: boolean; plan: string; reports: number; createdAt: string; lastActiveAt: string }
-interface Detail { id: string; email: string | null; role: string; status: string; suspendedUntil: string | null; plan: string; planValidUntil: string | null; profile: { displayName: string; bio: string; city: string; photos: { id: string; url: string; status: string }[] } | null; moderation: { id: string; type: string; reason: string; createdAt: string }[]; reports: { id: string; reason: string; status: string }[] }
+interface Detail { id: string; email: string | null; role: string; status: string; suspendedUntil: string | null; plan: string; planValidUntil: string | null; profile: { displayName: string; bio: string; city: string; photos: { id: string; url: string; status: string }[] } | null; moderation: { id: string; type: string; reason: string; createdAt: string; expiresAt: string | null }[]; reports: { id: string; reason: string; status: string }[] }
 
 export default function AdminUsers() {
   const t = useTranslations();
@@ -69,18 +69,19 @@ export default function AdminUsers() {
         {!d ? <Skeleton className="h-40" /> : (
           <div className="space-y-4 text-sm">
             <p><Badge tone={tone(d.status)}>{t(`admin.userStatus.${d.status}`)}</Badge> <span className="text-muted">{d.email ?? ''} · {d.role} · {d.plan}{d.planValidUntil ? ` (${t('admin.grant.until', { date: formatDate(d.planValidUntil, locale, { day: 'numeric', month: 'short', year: 'numeric' }) })})` : ''}</span></p>
+            {d.status === 'SUSPENDED' && d.suspendedUntil && <p className="font-medium text-danger-ink">{t('admin.suspendedUntil', { date: formatDate(d.suspendedUntil, locale, { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) })}</p>}
             {d.profile && <p className="text-muted">{d.profile.city} — {d.profile.bio || t('admin.noBio')}</p>}
             {d.profile && d.profile.photos.length > 0 && <ul className="flex gap-2 overflow-x-auto">{d.profile.photos.map((p) => <li key={p.id}><img src={p.url} alt="" className="size-20 rounded-xl object-cover" /></li>)}</ul>}
             {d.reports.length > 0 && <div><h3 className="font-bold">{t('admin.tabs.reports')}</h3><ul className="list-disc pl-5 text-muted">{d.reports.map((r) => <li key={r.id}>{t(`report.reasons.${r.reason}` as never)} — {r.status}</li>)}</ul></div>}
-            {d.moderation.length > 0 && <div><h3 className="font-bold">{t('admin.history')}</h3><ul className="list-disc pl-5 text-muted">{d.moderation.map((m) => <li key={m.id}>{m.type} — {m.reason}</li>)}</ul></div>}
+            {d.moderation.length > 0 && <div><h3 className="font-bold">{t('admin.history')}</h3><ul className="list-disc pl-5 text-muted">{d.moderation.map((m) => <li key={m.id}><span className="font-medium text-fg">{t(`admin.modTypes.${m.type}` as never)}</span> · <time dateTime={m.createdAt}>{formatDate(m.createdAt, locale, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</time>{m.expiresAt ? ` → ${t('admin.grant.until', { date: formatDate(m.expiresAt, locale, { day: 'numeric', month: 'short', year: 'numeric' }) })}` : ''} — {m.reason}</li>)}</ul></div>}
             {d.role === 'USER' && (
               <div className="space-y-3 rounded-2xl bg-soft p-4">
-                <Field label={t('admin.reason')}>{(p) => <Input {...p} value={reason} onChange={(e) => setReason(e.target.value)} />}</Field>
+                <Field label={t('admin.reason')} hint={reason.trim().length < 3 ? t('admin.reasonNeeded') : undefined}>{(p) => <Input {...p} value={reason} onChange={(e) => setReason(e.target.value)} required minLength={3} />}</Field>
                 <Field label={t('admin.days')}>{(p) => <Input {...p} type="number" min={1} max={365} value={days} onChange={(e) => setDays(Number(e.target.value) || 7)} />}</Field>
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" disabled={reason.length < 3} onClick={() => act.mutate({ kind: 'suspend' })} loading={act.isPending}>{t('admin.suspend')}</Button>
-                  <Button size="sm" variant="danger" disabled={reason.length < 3} onClick={() => act.mutate({ kind: 'ban' })}>{t('admin.ban')}</Button>
-                  {(d.status === 'SUSPENDED' || d.status === 'BANNED') && <Button size="sm" variant="secondary" disabled={reason.length < 3} onClick={() => act.mutate({ kind: 'unsuspend' })}>{t('admin.unsuspend')}</Button>}
+                  <Button size="sm" variant="outline" disabled={reason.trim().length < 3} onClick={() => act.mutate({ kind: 'suspend' })} loading={act.isPending}>{t('admin.suspend')}</Button>
+                  <Button size="sm" variant="danger" disabled={reason.trim().length < 3} onClick={() => act.mutate({ kind: 'ban' })}>{t('admin.ban')}</Button>
+                  {(d.status === 'SUSPENDED' || d.status === 'BANNED') && <Button size="sm" variant="secondary" disabled={reason.trim().length < 3} onClick={() => act.mutate({ kind: 'unsuspend' })}>{t('admin.unsuspend')}</Button>}
                 </div>
               </div>
             )}
@@ -93,8 +94,8 @@ export default function AdminUsers() {
                 </div>
                 <Field label={t('admin.grant.reason')}>{(p) => <Input {...p} value={reason} onChange={(e) => setReason(e.target.value)} />}</Field>
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" disabled={reason.length < 3} onClick={() => grant.mutate()} loading={grant.isPending}>{t('admin.grant.give')}</Button>
-                  {d.plan !== 'FREE' && <Button size="sm" variant="outline" disabled={reason.length < 3} onClick={() => revoke.mutate()} loading={revoke.isPending}>{t('admin.grant.revoke')}</Button>}
+                  <Button size="sm" disabled={reason.trim().length < 3} onClick={() => grant.mutate()} loading={grant.isPending}>{t('admin.grant.give')}</Button>
+                  {d.plan !== 'FREE' && <Button size="sm" variant="outline" disabled={reason.trim().length < 3} onClick={() => revoke.mutate()} loading={revoke.isPending}>{t('admin.grant.revoke')}</Button>}
                 </div>
               </div>
             )}

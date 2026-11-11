@@ -6,7 +6,8 @@ import { useLive } from '@/hooks/useQueries';
 
 /**
  * Icône « Crush » de la navigation, avec l'état de la recherche en cours.
- * - Recherche active : point rose fixe + anneau rose qui se vide calmement pendant le délai avant de pouvoir relancer (pas de chiffre qui défile).
+ * - Pas de recherche : icône grise, sans anneau.
+ * - Recherche active : icône rose + point rose fixe + anneau rose qui se vide calmement pendant le délai avant de pouvoir relancer (pas de chiffre qui défile).
  * - Quelqu'un a accepté : anneau rose plein (plus soutenu) + pastille avec le nombre : le seul moment qui demande de regarder.
  */
 export function CrushNavIcon({ icon: Icon }: { icon: ComponentType<{ className?: string; 'aria-hidden'?: boolean }> }) {
@@ -20,7 +21,8 @@ export function CrushNavIcon({ icon: Icon }: { icon: ComponentType<{ className?:
     return () => clearInterval(id);
   }, [searching]);
 
-  if (!live || !live.search) return <Icon className="size-5" aria-hidden />;
+  // Pas de recherche en cours : icône grise et calme (couleur d'un onglet inactif), pour qu'on voie d'un coup d'œil qu'il ne se passe rien.
+  if (!live || !live.search) return <Icon className="size-5 text-muted" aria-hidden />;
   const waiting = live.accepted.filter((a) => a.status === 'ACCEPTED').length;
   const total = live.rules.cooldownMinutes * 60_000;
   const left = live.nextLaunchAt ? Math.max(0, new Date(live.nextLaunchAt).getTime() - now) : 0;
@@ -35,7 +37,7 @@ export function CrushNavIcon({ icon: Icon }: { icon: ComponentType<{ className?:
         <circle cx="16" cy="16" r={R} fill="none" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * (1 - progress)}
           className={cn('transition-[stroke-dashoffset] duration-1000', waiting > 0 ? 'stroke-brand-strong' : 'stroke-brand')} />
       </svg>
-      <Icon className="size-4" aria-hidden />
+      <Icon className="size-4 text-brand-strong" aria-hidden />
       {waiting === 0 && <span aria-hidden className="absolute top-0.5 right-0 size-2 rounded-full bg-brand ring-2 ring-bg" />}
       {waiting > 0 && <span aria-hidden className="absolute -top-1 -right-1.5 flex min-w-4 items-center justify-center rounded-full bg-brand-strong px-1 text-[10px] font-bold text-white">{waiting}</span>}
       <span className="sr-only">{waiting > 0 ? t('live.navAccepted', { n: waiting }) : t('live.navSearching')}</span>

@@ -170,7 +170,13 @@ async def test_signalement_avec_preuves_de_conversation(app, db):
     r = await a.agent.post("/api/reports", json={"targetId": b.id, "reason": "SCAM", "details": "demande d'argent", "conversationId": conv, "shareMessages": True})
     assert r.status_code == 201, r.text
     ad = await admin(app, db)
-    rows = (await ad.agent.get("/api/admin/reports?status=OPEN&limit=100")).json()["items"]
+    rows, cursor = [], ""
+    while True:  # la base de test garde les signalements des exécutions précédentes : on suit les pages jusqu'aux nôtres
+        pg = (await ad.agent.get(f"/api/admin/reports?status=OPEN&limit=100{cursor}")).json()
+        rows += pg["items"]
+        if not pg["nextCursor"]:
+            break
+        cursor = f"&cursor={pg['nextCursor']}"
     mine = [x for x in rows if x["reporter"]["id"] == a.id]
     assert sorted(x["evidenceCount"] for x in mine) == [0, 3]
     rid = next(x["id"] for x in mine if x["evidenceCount"] == 3)

@@ -67,7 +67,13 @@ async def test_signalements_et_role(app, db):
         s.add(r)
         await s.commit()
         rid = r.id
-    items = (await mod.agent.get("/api/admin/reports?status=OPEN&limit=100")).json()["items"]
+    items, cursor = [], ""
+    while True:  # la base de test garde les signalements des exécutions précédentes : on suit les pages
+        pg = (await mod.agent.get(f"/api/admin/reports?status=OPEN&limit=100{cursor}")).json()
+        items += pg["items"]
+        if not pg["nextCursor"]:
+            break
+        cursor = f"&cursor={pg['nextCursor']}"
     row = next(i for i in items if i["id"] == rid)
     assert row["target"]["id"] == target.id and row["reporter"]["id"] == reporter.id and row["target"]["totalReports"] >= 1
     assert (await mod.agent.post(f"/api/admin/reports/{rid}/resolve", json={"status": "RESOLVED", "note": "ok"})).json() == {"ok": True}
