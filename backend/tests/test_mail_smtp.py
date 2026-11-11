@@ -37,14 +37,14 @@ async def test_brevo_api_http(monkeypatch):
     monkeypatch.setattr(mail.httpx, "AsyncClient", lambda **kw: real(transport=httpx.MockTransport(handler), **kw))
     st = get_settings()
     monkeypatch.setattr(st, "brevo_api_key", "xkeysib-test")
-    monkeypatch.setattr(st, "mail_from", "CrushDuo <no-reply@duomatch.test>")
+    monkeypatch.setattr(st, "mail_from", "Crushduo <no-reply@duomatch.test>")
     await mail.send("a@b.test", "Sujet", "Corps")
     assert len(calls) == 1
     req = calls[0]
     assert req.url == "https://api.brevo.com/v3/smtp/email" and req.headers["api-key"] == "xkeysib-test"
     import json
     body = json.loads(req.content)
-    assert body["sender"] == {"email": "no-reply@duomatch.test", "name": "CrushDuo"}
+    assert body["sender"] == {"email": "no-reply@duomatch.test", "name": "Crushduo"}
     assert body["to"] == [{"email": "a@b.test"}] and body["subject"] == "Sujet" and body["textContent"] == "Corps"
 
 
@@ -60,11 +60,11 @@ async def test_echec_envoi_ne_leve_pas_et_ne_journalise_pas_la_cle(monkeypatch, 
 
 def test_mail_from_avec_guillemets_saisis_par_erreur(monkeypatch):
     st = get_settings()
-    for raw in ('CrushDuo <no-reply@duomatch.test>', '"CrushDuo <no-reply@duomatch.test>"', "'CrushDuo <no-reply@duomatch.test>'", "  no-reply@duomatch.test "):
+    for raw in ('Crushduo <no-reply@duomatch.test>', '"Crushduo <no-reply@duomatch.test>"', "'Crushduo <no-reply@duomatch.test>'", "  no-reply@duomatch.test "):
         monkeypatch.setattr(st, "mail_from", raw)
         name, addr = mail.sender()
         assert addr == "no-reply@duomatch.test", raw
-    monkeypatch.setattr(st, "mail_from", "CrushDuo")
+    monkeypatch.setattr(st, "mail_from", "Crushduo")
     with pytest.raises(RuntimeError, match="MAIL_FROM invalide"):
         mail.sender()
 

@@ -71,19 +71,19 @@ def render_email(title: str, blocks: list[str], preheader: str = "", footer: str
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{PAGE};">
 <tr><td align="center" style="padding:32px 16px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid {LINE};border-radius:20px;border-collapse:separate;overflow:hidden;">
-<tr><td style="padding:36px 40px 4px;"><a href="{esc(base)}"><img src="{esc(base)}/brand/crushduo-logo-email.png" alt="CrushDuo" width="190" height="37" style="display:block;width:190px;height:37px;border:0;outline:none;text-decoration:none;"></a></td></tr>
+<tr><td style="padding:36px 40px 4px;"><a href="{esc(base)}"><img src="{esc(base)}/brand/crushduo-logo-email.png" alt="Crushduo" width="190" height="37" style="display:block;width:190px;height:37px;border:0;outline:none;text-decoration:none;"></a></td></tr>
 <tr><td style="padding:26px 40px 36px;font-family:{FONT};">
 <p style="margin:0;font-size:30px;font-weight:800;line-height:1.2;letter-spacing:-.01em;color:{FG};">{esc(title)}</p>
 {"".join(blocks)}
 </td></tr>
 <tr><td align="center" style="background:{FOOT};border-radius:0 0 20px 20px;padding:28px 40px 30px;text-align:center;">
-<p style="margin:0;font-family:{FONT};font-size:22px;font-weight:800;color:{FG};">CrushDuo</p>
+<p style="margin:0;font-family:{FONT};font-size:22px;font-weight:800;color:{FG};">Crushduo</p>
 <p style="margin:8px 0 0;font-family:{FONT};font-size:16px;color:{FG};">Deux cœurs, une belle histoire.</p>
 {footer}
 <p style="margin:14px 0 0;font-family:{FONT};font-size:16px;color:{FG};">Une question ? <a href="{esc(base)}/contact" style="color:{BRAND_INK};font-weight:700;text-decoration:underline;">Contactez-nous</a></p>
 </td></tr>
 </table>
-<p style="margin:14px 0 0;font-family:{FONT};font-size:13px;color:{MUTED};text-align:center;">© 2026 CrushDuo · Réservé aux personnes majeures (18 ans et plus)</p>
+<p style="margin:14px 0 0;font-family:{FONT};font-size:13px;color:{MUTED};text-align:center;">© 2026 Crushduo · Réservé aux personnes majeures (18 ans et plus)</p>
 </td></tr>
 </table>
 </body>

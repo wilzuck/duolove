@@ -23,7 +23,7 @@ export function SiteLinks({ className = '', variant = 'public' }: { className?: 
             {LINKS.map(([href, key]) => <li key={href} className="sm:border-l sm:border-line sm:px-3 sm:first:border-0 sm:first:pl-0"><Link href={href} className="text-fg underline-offset-4 hover:text-brand-ink hover:underline">{t((SHORT[href] ?? key) as never)}</Link></li>)}
           </ul>
         </nav>
-        <p className="whitespace-nowrap lg:ml-auto">© {new Date().getFullYear()} CrushDuo · {t('footer.adultsShort')}</p>
+        <p className="whitespace-nowrap lg:ml-auto">© {new Date().getFullYear()} Crushduo · {t('footer.adultsShort')}</p>
       </footer>
     );
   }
@@ -34,7 +34,7 @@ export function SiteLinks({ className = '', variant = 'public' }: { className?: 
           {LINKS.map(([href, key]) => <li key={href}><Link href={href} className="font-medium text-muted underline-offset-4 hover:text-brand-ink hover:underline">{t(key)}</Link></li>)}
         </ul>
       </nav>
-      <p className="mt-3">© {new Date().getFullYear()} CrushDuo · {t('footer.adults')}</p>
+      <p className="mt-3">© {new Date().getFullYear()} Crushduo · {t('footer.adults')}</p>
     </footer>
   );
 }

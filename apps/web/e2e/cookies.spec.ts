@@ -40,7 +40,7 @@ test('politique de cookies : 9 rubriques lisibles, tableau accessible, FR/EN, mo
   await expect(page.getByText(/ne vous demande aucun choix : il vous informe/)).toBeVisible();
   await expect(page.getByText(/à faire relire et valider par un juriste/)).toBeVisible();
   await expect(page.locator('main').getByRole('heading', { level: 2 })).toHaveCount(11); // 9 rubriques + « À lire aussi » + titre masqué « En un coup d'œil »
-  await expect(page.getByRole('table', { name: 'Cookies et stockages utilisés par CrushDuo' })).toBeVisible();
+  await expect(page.getByRole('table', { name: 'Cookies et stockages utilisés par Crushduo' })).toBeVisible();
   await expect(page.getByRole('columnheader')).toHaveCount(5);
   await page.getByRole('navigation', { name: 'Sommaire' }).getByRole('link', { name: 'Ce que nous n’utilisons pas' }).click();
   await expect(page).toHaveURL(/#jamais$/);

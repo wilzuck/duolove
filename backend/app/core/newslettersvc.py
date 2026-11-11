@@ -46,9 +46,9 @@ async def subscribe(db: AsyncSession, email: str, *, user_id: str | None = None,
     row.status = "PENDING"
     await db.commit()
     url = f"{get_settings().app_url}/newsletter/confirm?token={row.token}"
-    html = render_email("Confirmez votre inscription à la newsletter", [p("Un dernier clic pour recevoir les nouveautés de CrushDuo."), button("Confirmer mon inscription", url),
+    html = render_email("Confirmez votre inscription à la newsletter", [p("Un dernier clic pour recevoir les nouveautés de Crushduo."), button("Confirmer mon inscription", url),
                                                                        note("Si vous n’êtes pas à l’origine de cette demande, ignorez ce message : vous ne recevrez rien.")], preheader="Confirmez votre inscription")
-    await mail.send(email, "Confirmez votre inscription — CrushDuo", f"Pour confirmer votre inscription à la newsletter CrushDuo : {url}\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez ce message.", html, kind="newsletter_confirm")
+    await mail.send(email, "Confirmez votre inscription — Crushduo", f"Pour confirmer votre inscription à la newsletter Crushduo : {url}\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez ce message.", html, kind="newsletter_confirm")
 
 
 async def confirm(db: AsyncSession, token: str) -> bool:

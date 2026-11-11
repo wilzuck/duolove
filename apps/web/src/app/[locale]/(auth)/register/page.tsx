@@ -58,7 +58,7 @@ function RegisterForm() {
     },
   });
   // Clic sur le bouton Google : on essaie d'abord de CONNECTER. Un compte existant entre directement, sans qu'on redemande ses informations ;
-  // seule une personne nouvelle sur CrushDuo (PROFILE_DETAILS_REQUIRED) passe à l'écran de complément.
+  // seule une personne nouvelle sur Crushduo (PROFILE_DETAILS_REQUIRED) passe à l'écran de complément.
   const googleStart = useMutation({
     mutationFn: (idToken: string) => post('/auth/google', { idToken }),
     onSuccess: async () => { await qc.invalidateQueries(); router.replace('/discover'); },

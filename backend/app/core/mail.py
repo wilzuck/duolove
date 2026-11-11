@@ -23,7 +23,7 @@ def sender() -> tuple[str, str]:
     raw = get_settings().mail_from.strip().strip("\"'").strip()
     name, addr = parseaddr(raw)
     if "@" not in addr:
-        raise RuntimeError("MAIL_FROM invalide : attendu « CrushDuo <no-reply@votre-domaine> »")
+        raise RuntimeError("MAIL_FROM invalide : attendu « Crushduo <no-reply@votre-domaine> »")
     return name, addr
 
 
@@ -130,12 +130,12 @@ async def _send(to: str, subject: str, text: str, html: str | None = None, heade
 async def send_verification(to: str, name: str, token: str, code: str, minutes: int = 15) -> None:
     link = f"{get_settings().app_url}/verify-email?token={token}"
     html = render_email("Confirmez votre adresse e-mail", [
-        p(f"Bonjour {esc_(name)}, bienvenue sur CrushDuo !"), p(f"Saisissez ce code dans l’application : il est valable {minutes} minutes."), code_box(code),
+        p(f"Bonjour {esc_(name)}, bienvenue sur Crushduo !"), p(f"Saisissez ce code dans l’application : il est valable {minutes} minutes."), code_box(code),
         p("Vous pouvez aussi confirmer en un clic :"), button("Confirmer mon adresse", link),
         note("Ne communiquez jamais ce code. Si vous n’êtes pas à l’origine de cette inscription, ignorez ce message : le compte sera supprimé automatiquement. Le lien est valable 24 h."),
     ], preheader=f"Votre code de confirmation : {code}")
-    await send(to, "Votre code de confirmation — CrushDuo",
-               f"Bonjour {name},\n\nBienvenue sur CrushDuo !\n\nVotre code de confirmation : {code}\n"
+    await send(to, "Votre code de confirmation — Crushduo",
+               f"Bonjour {name},\n\nBienvenue sur Crushduo !\n\nVotre code de confirmation : {code}\n"
                f"Saisissez-le dans l'application (valable {minutes} minutes).\n\n"
                f"Vous pouvez aussi confirmer en un clic : {link} (lien valable 24 h).\n\n"
                "Ne communiquez jamais ce code. Si vous n'êtes pas à l'origine de cette inscription, ignorez ce message : le compte sera supprimé automatiquement.", html, kind="verification")
@@ -147,7 +147,7 @@ async def send_password_reset(to: str, name: str, token: str) -> None:
         p(f"Bonjour {esc_(name)}, vous avez demandé à réinitialiser votre mot de passe."), button("Choisir un nouveau mot de passe", link),
         note("Lien valable 1 h. Si vous n’avez rien demandé, ignorez ce message : votre mot de passe reste inchangé."),
     ], preheader="Réinitialisation de votre mot de passe")
-    await send(to, "Réinitialisation de votre mot de passe — CrushDuo",
+    await send(to, "Réinitialisation de votre mot de passe — Crushduo",
                f"Bonjour {name},\n\nPour choisir un nouveau mot de passe : {link}\n\n"
                "Lien valable 1 h. Si vous n'avez rien demandé, ignorez ce message : votre mot de passe reste inchangé.", html, kind="password_reset")
 
@@ -157,8 +157,8 @@ async def send_magic_link(to: str, name: str, token: str, remember: bool = True)
     html = render_email("Votre lien de connexion", [
         p(f"Bonjour {esc_(name)}, voici votre lien pour vous connecter sans mot de passe."), button("Me connecter", link),
         note("Lien valable 15 minutes, utilisable une seule fois. Si vous n’avez rien demandé, ignorez ce message : personne ne peut se connecter sans lui."),
-    ], preheader="Connexion à CrushDuo sans mot de passe")
-    await send(to, "Votre lien de connexion — CrushDuo",
+    ], preheader="Connexion à Crushduo sans mot de passe")
+    await send(to, "Votre lien de connexion — Crushduo",
                f"Bonjour {name},\n\nPour vous connecter sans mot de passe : {link}\n\n"
                "Lien valable 15 minutes, utilisable une seule fois. Si vous n'avez rien demandé, ignorez ce message : personne ne peut se connecter sans lui.", html, kind="magic_link")
 
@@ -167,5 +167,5 @@ def notification_html(title: str, body: str, unsub_url: str | None = None) -> st
     """E-mail de notification (message, match, like…) : même carte, bouton vers l'application et, si la notification est facultative, un lien de désabonnement."""
     footer = (f'<p style="margin:8px 0 0;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;font-size:13px;color:#45434F;text-align:center;">'
               f'<a href="{esc_(unsub_url)}" style="color:#C2185B;font-weight:700;text-decoration:underline;">Ne plus recevoir ces e-mails</a></p>') if unsub_url else ""
-    return render_email(title, [p(esc_(body)), button("Ouvrir CrushDuo", get_settings().app_url),
+    return render_email(title, [p(esc_(body)), button("Ouvrir Crushduo", get_settings().app_url),
                                 note("Vous recevez ce message selon vos préférences de notification : vous pouvez les modifier dans Paramètres › Notifications.")], preheader=body, footer=footer)

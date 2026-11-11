@@ -47,7 +47,7 @@ export default function AdminContact() {
           ]}
           hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
           rowActions={(m) => [
-            { label: t('admin.contactBox.reply'), icon: <Mail className="size-4" aria-hidden />, href: `mailto:${m.email}?subject=${encodeURIComponent('Re: CrushDuo')}`, onSelect: () => { if (m.status === 'NEW') move.mutate({ id: m.id, s: 'READ' }); } },
+            { label: t('admin.contactBox.reply'), icon: <Mail className="size-4" aria-hidden />, href: `mailto:${m.email}?subject=${encodeURIComponent('Re: Crushduo')}`, onSelect: () => { if (m.status === 'NEW') move.mutate({ id: m.id, s: 'READ' }); } },
             ...(m.status === 'NEW' ? [{ label: t('admin.contactBox.markRead'), icon: <MailOpen className="size-4" aria-hidden />, onSelect: () => move.mutate({ id: m.id, s: 'READ' }) }] : []),
             ...(m.status !== 'ANSWERED' && m.status !== 'ARCHIVED' ? [{ label: t('admin.contactBox.answered'), icon: <CheckCheck className="size-4" aria-hidden />, onSelect: () => move.mutate({ id: m.id, s: 'ANSWERED' }) }] : []),
             m.status !== 'ARCHIVED' ? { label: t('admin.contactBox.archive'), icon: <Archive className="size-4" aria-hidden />, onSelect: () => move.mutate({ id: m.id, s: 'ARCHIVED' }) } : { label: t('admin.contactBox.restore'), icon: <ArchiveRestore className="size-4" aria-hidden />, onSelect: () => move.mutate({ id: m.id, s: 'NEW' }) },

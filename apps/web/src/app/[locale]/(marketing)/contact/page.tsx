@@ -17,7 +17,7 @@ export default async function Contact({ params }: { params: Promise<{ locale: st
   setRequestLocale(locale);
   const t = await getTranslations();
   const tips = t.raw('contact.tips') as string[];
-  const mail = (subject: string) => `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(`CrushDuo — ${subject}`)}`;
+  const mail = (subject: string) => `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(`Crushduo — ${subject}`)}`;
   return (
     <>
       <section className="hero-glow">

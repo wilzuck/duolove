@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     smtp_url: str | None = Field(None, alias="SMTP_URL")
     # E-mail par l'API HTTP de Brevo (prioritaire sur SMTP_URL) : fonctionne sur tous les forfaits Railway, sans port SMTP.
     brevo_api_key: str | None = Field(None, alias="BREVO_API_KEY")
-    mail_from: str = Field("CrushDuo <no-reply@crushduo.com>", alias="MAIL_FROM")
+    mail_from: str = Field("Crushduo <no-reply@crushduo.com>", alias="MAIL_FROM")
     # Retours d'Amazon SES (rebonds, plaintes) reçus via Amazon SNS : seul ce sujet SNS est accepté. Sans lui, le point d'entrée /webhooks/ses refuse tout.
     # Pool de connexions à la base : ajuster selon `max_connections` de PostgreSQL (somme de tous les processus < max_connections).
     db_pool_size: int = Field(10, alias="DB_POOL_SIZE", ge=1, le=200)
@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     livekit_url: str | None = Field(None, alias="LIVEKIT_URL")
     livekit_api_key: str | None = Field(None, alias="LIVEKIT_API_KEY")
     livekit_api_secret: str | None = Field(None, alias="LIVEKIT_API_SECRET")
-    site_name: str = Field("CrushDuo", alias="SITE_NAME")
+    site_name: str = Field("Crushduo", alias="SITE_NAME")
     kkiapay_public_key: str | None = Field(None, alias="KKIAPAY_PUBLIC_KEY")
     kkiapay_private_key: str | None = Field(None, alias="KKIAPAY_PRIVATE_KEY")
     kkiapay_webhook_secret: str | None = Field(None, alias="KKIAPAY_WEBHOOK_SECRET")

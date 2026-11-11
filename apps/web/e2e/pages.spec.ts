@@ -7,7 +7,7 @@ const overflow = (page: Page) => page.evaluate(() => document.documentElement.sc
 
 test('Comment ça marche : huit étapes, ce qui change, tous âges, tarifs, accessible', async ({ page }) => {
   await page.goto('/how-it-works');
-  await expect(page.getByRole('heading', { level: 1, name: 'Comment fonctionne CrushDuo' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Comment fonctionne Crushduo' })).toBeVisible();
   // La section contient aussi le sommaire latéral (même libellé, huit liens) : on compte les cartes d'étapes, la dernière liste ordonnée.
   await expect(page.getByRole('region', { name: 'Votre parcours en huit étapes' }).locator('ol').last().locator(':scope > li')).toHaveCount(8);
   await expect(page.getByRole('heading', { level: 3, name: 'Passez à la rencontre, en sécurité' })).toBeVisible();
@@ -19,7 +19,7 @@ test('Comment ça marche : huit étapes, ce qui change, tous âges, tarifs, acce
   await page.goto('/how-it-works');
   expect(await axeOf(page)).toEqual([]);
   await page.goto('/en/how-it-works');
-  await expect(page.getByRole('heading', { level: 1, name: 'How CrushDuo works' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'How Crushduo works' })).toBeVisible();
 });
 
 test('Centre d’aide : recherche instantanée, thèmes, aucun résultat, accessible', async ({ page }) => {
@@ -52,7 +52,7 @@ test('Contact : sujets pré-remplis, conseils, urgence sécurité, accessible', 
   await expect(page.getByRole('heading', { level: 1, name: 'Nous contacter' })).toBeVisible();
   const topics = page.getByRole('region', { name: 'De quoi s’agit-il ?' }).getByRole('link');
   await expect(topics).toHaveCount(6);
-  await expect(topics.nth(1)).toHaveAttribute('href', /^mailto:.+\?subject=CrushDuo%20%E2%80%94%20Paiement%20ou%20remboursement$/);
+  await expect(topics.nth(1)).toHaveAttribute('href', /^mailto:.+\?subject=Crushduo%20%E2%80%94%20Paiement%20ou%20remboursement$/);
   await expect(page.getByText('Ne nous envoyez jamais votre mot de passe')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Un comportement dangereux ou une arnaque ?' })).toBeVisible();
   await expect(page.getByText(/En danger immédiat, contactez d’abord les secours/)).toBeVisible();

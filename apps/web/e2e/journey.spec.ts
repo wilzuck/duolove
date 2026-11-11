@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { completeOnboarding, login, newMember, PASSWORD, persona, signUp, uid } from './helpers';
 
 // Parcours complet à deux membres : couvre les 12 scénarios de la spécification (voir docs/TESTING.md).
-test.describe.serial('parcours CrushDuo', () => {
+test.describe.serial('parcours Crushduo', () => {
   const city = `Ville${uid()}`;
   const aya = persona('Aya', 'Femme', city);
   const koffi = persona('Koffi', 'Homme', city);

@@ -1,5 +1,5 @@
 /**
- * Installation de CrushDuo comme application (PWA).
+ * Installation de Crushduo comme application (PWA).
  * Chrome, Edge et Android envoient « beforeinstallprompt » : on garde l'événement pour déclencher la fenêtre d'installation au clic.
  * Safari (iPhone, iPad) n'en envoie pas : l'installation se fait à la main (Partager › Sur l'écran d'accueil), la page /install l'explique.
  * L'écoute démarre au chargement du site (InstallCapture) car l'événement n'est envoyé qu'une fois, parfois avant l'affichage de la page.
@@ -47,7 +47,7 @@ export function startInstallCapture(): void {
 export const subscribeInstall = (cb: () => void) => { listeners.add(cb); return () => { listeners.delete(cb); }; };
 export const canPromptNow = () => deferred !== null;
 
-/** Vrai quand CrushDuo tourne déjà en application installée (plein écran) et non dans un onglet de navigateur. */
+/** Vrai quand Crushduo tourne déjà en application installée (plein écran) et non dans un onglet de navigateur. */
 export function isInstalledNow(): boolean {
   if (installedNow) return true;
   const nav = navigator as Navigator & { standalone?: boolean };

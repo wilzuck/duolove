@@ -269,5 +269,5 @@ async def provider_set(body: ProviderIn, a: AuthUser = SUP, db: AsyncSession = D
 async def provider_test(a: AuthUser = ADM):
     """Envoie un e-mail de test à l'administrateur qui le demande, par le fournisseur actif : sert à vérifier un changement avant de s'y fier."""
     prov = await mail_config.active()
-    ok = await mail.send(a.email, "Test d'envoi — CrushDuo", f"Cet e-mail confirme que l'envoi fonctionne (fournisseur : {prov}).", kind="admin_test")
+    ok = await mail.send(a.email, "Test d'envoi — Crushduo", f"Cet e-mail confirme que l'envoi fonctionne (fournisseur : {prov}).", kind="admin_test")
     return {"ok": ok, "provider": prov, "to": a.email}

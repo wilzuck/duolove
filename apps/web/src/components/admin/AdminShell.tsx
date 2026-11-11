@@ -103,7 +103,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="min-h-dvh bg-soft/40 lg:grid lg:grid-cols-[16.5rem_1fr]">
       <a href="#main" className="skip-link">{t('common.skipToContent')}</a>
       <aside className="hidden flex-col gap-3 bg-[#1b1a24] p-4 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[16.5rem]">
-        <Link href="/admin" className="px-2 pt-1" aria-label="CrushDuo"><Logo variant="dark" /></Link>
+        <Link href="/admin" className="px-2 pt-1" aria-label="Crushduo"><Logo variant="dark" /></Link>
         <p className="mx-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white"><ShieldAlert className="size-3.5" aria-hidden />{t('admin.title')}</p>
         {nav}{account}
       </aside>
