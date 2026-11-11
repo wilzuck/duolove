@@ -50,7 +50,7 @@ export function HelpCenter() {
 
       {filtered.map(({ id, icon: Icon, items }) => (
         <section key={id} id={`h-${id}`} aria-labelledby={`h-${id}-t`} className="mt-10 scroll-mt-24">
-          <h2 id={`h-${id}-t`} className="mb-4 flex items-center gap-3 text-2xl font-bold"><span className="flex size-10 items-center justify-center rounded-xl bg-soft text-brand-ink"><Icon className="size-5" aria-hidden /></span>{t(`help.sections.${id}`)}</h2>
+          <h2 id={`h-${id}-t`} className="mb-4 flex items-center gap-3 text-2xl font-bold"><span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-soft text-brand-ink"><Icon className="size-5" aria-hidden /></span>{t(`help.sections.${id}`)}</h2>
           <div className="space-y-3">
             {items.map((i) => (
               <AccordionItem key={i.q} question={i.q} open={!!q && items.length <= 3}>{i.a}</AccordionItem>

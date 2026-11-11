@@ -66,7 +66,7 @@ export default function AdminGuide() {
         <div className="grid gap-3 sm:grid-cols-3">
           {([['/admin/reports', Flag, 'a'], ['/admin/users', Users, 'b'], ['/admin/newsletter', Send, 'c']] as const).map(([href, Icon, k]) => (
             <Link key={k} href={href} className="group flex flex-col gap-3 rounded-3xl border border-line bg-card p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-brand-strong">
-              <span className="flex size-12 items-center justify-center rounded-2xl bg-soft text-brand-ink"><Icon className="size-6" aria-hidden /></span>
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-soft text-brand-ink"><Icon className="size-6" aria-hidden /></span>
               <span className="font-bold">{t(`admin.guide.start.${k}`)}</span>
               <span className="mt-auto flex items-center gap-1 text-sm font-semibold text-brand-ink">{t(`admin.guide.start.${k}Go`)}<ChevronRight className="size-4 transition group-hover:translate-x-0.5" aria-hidden /></span>
             </Link>

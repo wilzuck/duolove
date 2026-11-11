@@ -73,7 +73,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1 }: { 
             <Card key={p.code} className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
               {p.featured && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-linear-to-br from-brand-strong to-brand-strong-2 text-white">{t('plans.popular')}</Badge>}
               <div className="flex items-center gap-3">
-                <span className="flex size-11 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-5" aria-hidden /></span>
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-5" aria-hidden /></span>
                 <h3 className="text-xl font-bold">{p.name}</h3>
                 {current === p.code && <Badge tone="success">{t('plans.current')}</Badge>}
               </div>

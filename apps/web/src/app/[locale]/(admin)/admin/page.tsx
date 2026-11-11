@@ -55,7 +55,7 @@ export default function AdminOverview() {
           <div className="grid gap-3 sm:grid-cols-3">
             {([['/admin/reports', Flag, 'reports', todo?.reports], ['/admin/moderation', UserCheck, 'verifications', todo?.verifications], ['/admin/moderation', ShieldCheck, 'appeals', todo?.appeals]] as const).map(([href, Icon, k, count]) => (
               <Link key={k} href={href} className={cn('flex items-center gap-4 rounded-3xl border bg-card p-4 shadow-soft transition hover:-translate-y-0.5', count ? 'border-brand-strong' : 'border-line')}>
-                <span className="flex size-11 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-5" aria-hidden /></span>
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-5" aria-hidden /></span>
                 <span><span className="block font-display text-2xl font-extrabold">{count ?? '–'}</span><span className="text-sm text-muted">{t(`admin.todoItems.${k}`)}</span></span>
               </Link>
             ))}

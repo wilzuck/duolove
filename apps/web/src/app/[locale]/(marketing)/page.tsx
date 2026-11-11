@@ -66,7 +66,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map(([Icon, k]) => (
             <Card key={k} className="space-y-3 p-6">
-              <span className="flex size-12 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-6" aria-hidden /></span>
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-6" aria-hidden /></span>
               <h3 className="text-lg font-bold">{t(`home.benefits.${k}.title`)}</h3>
               <p className="text-muted">{t(`home.benefits.${k}.text`)}</p>
             </Card>
