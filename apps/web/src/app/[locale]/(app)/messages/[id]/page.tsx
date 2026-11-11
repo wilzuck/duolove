@@ -1,6 +1,6 @@
 'use client';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Ban, CalendarHeart, Check, CheckCheck, Flag, HeartCrack, ImagePlus, Lightbulb, Lock, MoreVertical, Reply, Send, ShieldAlert, Smile, SmilePlus, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Ban, CalendarHeart, Check, CheckCheck, Flag, HeartCrack, ImagePlus, Lightbulb, Lock, MoreVertical, Phone, Reply, Send, ShieldAlert, Smile, SmilePlus, Trash2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { use, useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar, Button, Checkbox, cn, Dialog, IconButton, Skeleton, Spinner, Textarea } from '@duomatch/ui';
@@ -40,7 +40,8 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const [emoji, setEmoji] = useState(false);
   const [menu, setMenu] = useState(false);
   const [report, setReport] = useState(false);
-  const [upsell, setUpsell] = useState(false);
+  // Fonction réservée à une formule : ce que la personne voulait faire (photos, idées, appels, rendez-vous) pour afficher le bon message.
+  const [upsell, setUpsell] = useState<'images' | 'ideas' | 'calls' | 'dates' | null>(null);
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const [ideas, setIdeas] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -56,6 +57,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const [enterSends, toggleEnter] = useLocalPref('duomatch.enterSends', true);
   const { data: me } = useMe();
   const canImages = !!me?.entitlement.limits.chatImages;
+  const lim = me?.entitlement.limits;
   const bottom = useRef<HTMLDivElement>(null);
   const file = useRef<HTMLInputElement>(null);
   const lastTyping = useRef(0);
@@ -87,12 +89,25 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const send = useMutation({ mutationFn: (v: { body: string; replyToId?: string }) => post<ChatMessage>(`/conversations/${id}/messages`, v), onSuccess: (m) => { append(m); void qc.invalidateQueries({ queryKey: ['conversations'] }); }, onError: (e) => toast('error', err(e)) });
   const setReactions = (messageId: string, reactions: ChatMessage['reactions']) => qc.setQueryData<{ pages: MsgPage[]; pageParams: unknown[] }>(keys.messages(id), (old) => old && { ...old, pages: old.pages.map((pg) => ({ ...pg, items: pg.items.map((x) => (x.id === messageId ? { ...x, reactions } : x)) })) });
   const react = useMutation({ mutationFn: ({ mid, emoji }: { mid: string; emoji: string | null }) => (emoji ? put<{ messageId: string; reactions: ChatMessage['reactions'] }>(`/messages/${mid}/reaction`, { emoji }) : del<{ messageId: string; reactions: ChatMessage['reactions'] }>(`/messages/${mid}/reaction`)), onSuccess: (r) => { setReactions(r.messageId, r.reactions); setPicker(null); }, onError: (e) => toast('error', err(e)) });
-  const sendImg = useMutation({ mutationFn: (f: File) => upload<ChatMessage>(`/conversations/${id}/images`, f, f.name), onSuccess: append, onError: (e) => (e instanceof ApiError && e.code === 'PLAN_REQUIRED' ? setUpsell(true) : toast('error', err(e))) });
+  // Photo choisie : elle est AFFICHÉE avant l'envoi et ne part qu'au clic sur Envoyer ou à Entrée (jamais dès la sélection).
+  const [pendingImg, setPendingImg] = useState<{ file: File; url: string } | null>(null);
+  const clearImg = () => setPendingImg((p) => { if (p) URL.revokeObjectURL(p.url); return null; });
+  useEffect(() => () => { if (pendingImg) URL.revokeObjectURL(pendingImg.url); }, [pendingImg]);
+  const sendImg = useMutation({ mutationFn: (f: File) => upload<ChatMessage>(`/conversations/${id}/images`, f, f.name), onSuccess: append, onError: (e) => (e instanceof ApiError && e.code === 'PLAN_REQUIRED' ? setUpsell('images') : toast('error', err(e))) });
   const remove = useMutation({ mutationFn: (mid: string) => del(`/messages/${mid}`), onSuccess: () => qc.invalidateQueries({ queryKey: keys.messages(id) }), onError: (e) => toast('error', err(e)) });
   const unmatch = useMutation({ mutationFn: () => del(`/matches/${conv!.matchId}`), onSuccess: () => { void qc.invalidateQueries({ queryKey: ['conversations'] }); toast('info', t('chat.unmatched')); router.replace('/messages'); } });
   const block = useMutation({ mutationFn: () => post(`/blocks/${conv!.user.id}`), onSuccess: () => { void qc.invalidateQueries(); toast('success', t('report.blocked', { name: conv!.user.displayName })); router.replace('/messages'); } });
 
-  const submit = () => { const b = text.trim(); if (!b || send.isPending) return; setText(''); setEmoji(false); setIdeas(false); send.mutate({ body: b, ...(replyTo ? { replyToId: replyTo.id } : {}) }); setReplyTo(null); };
+  const submit = () => {
+    const b = text.trim();
+    if ((!b && !pendingImg) || send.isPending || sendImg.isPending) return;
+    const img = pendingImg?.file;
+    setText(''); setEmoji(false); setIdeas(false); clearImg();
+    const msg = { body: b, ...(replyTo ? { replyToId: replyTo.id } : {}) };
+    setReplyTo(null);
+    // Photo d'abord, puis le texte éventuel (la photo part sans légende).
+    if (img) { sendImg.mutateAsync(img).then(() => { if (b) send.mutate(msg); }).catch(() => undefined); } else send.mutate(msg);
+  };
   // Insère à l'endroit du curseur (et non à la fin), puis remet le focus dans le champ.
   const insert = (s: string) => { const el = area.current; const at = el?.selectionStart ?? text.length; const end = el?.selectionEnd ?? at; setText((v) => v.slice(0, at) + s + v.slice(end)); requestAnimationFrame(() => { el?.focus(); el?.setSelectionRange(at + s.length, at + s.length); }); };
   const onType = (v: string) => {
@@ -108,8 +123,10 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         {conv ? (
           <Link href={`/profile/${conv.user.id}`} className="flex min-w-0 flex-1 items-center gap-3"><Avatar src={conv.user.thumbUrl} name={conv.user.displayName} size={42} /><span className="min-w-0"><span className="flex min-w-0 items-center gap-1 font-bold"><span className="truncate">{conv.user.displayName}</span>{conv.user.verified && <VerifiedBadge size="sm" />}</span><span className="block text-xs text-muted" aria-live="polite">{typing ? t('chat.typing') : (activityText ?? t('chat.viewProfile'))}</span></span></Link>
         ) : <Skeleton className="h-10 flex-1" />}
-        {cfg?.calls.enabled && !closed && conv && <CallButtons conversationId={id} name={conv.user.displayName} />}
-        {canDates && conv && <IconButton label={t('dates.open')} tone="plain" onClick={() => setDatesOpen(true)}><CalendarHeart className="size-5" /></IconButton>}
+        {cfg?.calls.enabled && !closed && conv && (lim?.calls
+          ? <CallButtons conversationId={id} name={conv.user.displayName} />
+          : <IconButton label={t('chat.callsLocked')} tone="plain" onClick={() => setUpsell('calls')}><span className="relative"><Phone className="size-5" /><Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden /></span></IconButton>)}
+        {canDates && conv && <IconButton label={lim?.dates ? t('dates.open') : t('chat.datesLocked')} tone="plain" onClick={() => (lim?.dates ? setDatesOpen(true) : setUpsell('dates'))}><span className="relative"><CalendarHeart className="size-5" />{!lim?.dates && <Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden />}</span></IconButton>}
         <div className="relative">
           <IconButton label={t('chat.options')} tone="plain" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="menu"><MoreVertical className="size-5" /></IconButton>
           {menu && conv && (
@@ -184,23 +201,30 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
               {EMOJIS.map((e) => <button key={e} type="button" onClick={() => insert(e)} className="rounded-lg p-1.5 text-xl hover:bg-soft" aria-label={e}>{e}</button>)}
             </div>
           )}
-          {ideas && canIdeas && <IcebreakerPanel conversationId={id} onPick={(txt) => { setText(txt); setIdeas(false); requestAnimationFrame(() => area.current?.focus()); }} />}
+          {ideas && canIdeas && lim?.chatSuggestions && <IcebreakerPanel conversationId={id} onPick={(txt) => { setText(txt); setIdeas(false); requestAnimationFrame(() => area.current?.focus()); }} />}
           {replyTo && (
             <div className="mb-2 flex items-center justify-between gap-2 rounded-2xl bg-soft px-3 py-2 text-sm">
               <p className="min-w-0"><span className="font-semibold">{t('chat.replyingTo', { who: replyTo.mine ? t('chat.you') : conv?.user.displayName ?? '' })}</span><span className="block truncate text-muted">{replyTo.body ?? t('chat.replyPhoto')}</span></p>
               <IconButton label={t('chat.cancelReply')} size="sm" onClick={() => setReplyTo(null)}><X className="size-4" /></IconButton>
             </div>
           )}
+          {pendingImg && (
+            <div className="mb-2 flex items-center gap-3 rounded-2xl bg-soft p-2">
+              <img src={pendingImg.url} alt={t('chat.imagePreview')} className="size-20 rounded-xl object-cover" />
+              <p className="min-w-0 flex-1 text-sm"><span className="block font-semibold">{t('chat.imagePreview')}</span><span className="block truncate text-muted">{pendingImg.file.name}</span><span className="block text-xs text-muted">{t('chat.imageHint')}</span></p>
+              <IconButton label={t('chat.removeImage')} size="sm" onClick={clearImg}><X className="size-4" /></IconButton>
+            </div>
+          )}
           <div className="flex items-end gap-2">
-            {canIdeas && <IconButton label={t('chat.iceOpen')} aria-expanded={ideas} onClick={() => setIdeas(!ideas)}><Lightbulb className="size-5" /></IconButton>}
-            <IconButton label={canImages ? t('chat.attach') : t('chat.attachLocked')} onClick={() => (canImages ? file.current?.click() : setUpsell(true))} disabled={sendImg.isPending}>
+            {canIdeas && <IconButton label={lim?.chatSuggestions ? t('chat.iceOpen') : t('chat.ideasLocked')} aria-expanded={ideas} onClick={() => (lim?.chatSuggestions ? setIdeas(!ideas) : setUpsell('ideas'))}><span className="relative"><Lightbulb className="size-5" />{!lim?.chatSuggestions && <Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden />}</span></IconButton>}
+            <IconButton label={canImages ? t('chat.attach') : t('chat.attachLocked')} onClick={() => (canImages ? file.current?.click() : setUpsell('images'))} disabled={sendImg.isPending}>
               <span className="relative">{sendImg.isPending ? <Spinner size="sm" label={t('common.loading')} /> : <ImagePlus className="size-5" />}{!canImages && <Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden />}</span>
             </IconButton>
-            <input ref={file} type="file" accept="image/jpeg,image/png,image/webp" aria-hidden className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) sendImg.mutate(f); e.target.value = ''; }} />
+            <input ref={file} type="file" accept="image/jpeg,image/png,image/webp" aria-hidden className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) setPendingImg((old) => { if (old) URL.revokeObjectURL(old.url); return { file: f, url: URL.createObjectURL(f) }; }); e.target.value = ''; requestAnimationFrame(() => area.current?.focus()); }} />
             <Textarea ref={area} aria-label={t('chat.compose')} placeholder={t('chat.compose')} rows={1} maxLength={2000} value={text} onChange={(e) => onType(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && ((enterSends && !e.shiftKey) || e.metaKey || e.ctrlKey)) { e.preventDefault(); submit(); } }} className="max-h-32 min-h-11 flex-1 resize-none rounded-3xl py-2.5" />
             <IconButton label={t('chat.emojis')} onClick={() => setEmoji(!emoji)} aria-expanded={emoji}><Smile className="size-5" /></IconButton>
-            <Button type="submit" size="icon" aria-label={t('chat.send')} disabled={!text.trim()} loading={send.isPending}><Send className="size-5" /></Button>
+            <Button type="submit" size="icon" aria-label={t('chat.send')} disabled={!text.trim() && !pendingImg} loading={send.isPending || sendImg.isPending}><Send className="size-5" /></Button>
           </div>
           <div className="mt-3 space-y-2">
             <Checkbox align="center" className="text-xs text-muted" label={t('chat.enterSends')} checked={enterSends} onChange={(e) => toggleEnter(e.target.checked)} />
@@ -208,9 +232,9 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
           </div>
         </form>
       )}
-      <Dialog open={upsell} onClose={() => setUpsell(false)} title={t('chat.imagePlanTitle')} closeLabel={t('common.close')}>
-        <p className="text-sm">{t('chat.imagePlanText')}</p>
-        <div className="mt-4 flex justify-end gap-2"><Button variant="ghost" onClick={() => setUpsell(false)}>{t('common.close')}</Button><Link href="/premium"><Button>{t('chat.seePlans')}</Button></Link></div>
+      <Dialog open={!!upsell} onClose={() => setUpsell(null)} title={t(upsell === 'images' || !upsell ? 'chat.imagePlanTitle' : (`chat.planGate.${upsell}.title` as never))} closeLabel={t('common.close')}>
+        <p className="text-sm">{t(upsell === 'images' || !upsell ? 'chat.imagePlanText' : (`chat.planGate.${upsell}.text` as never))}</p>
+        <div className="mt-4 flex justify-end gap-2"><Button variant="ghost" onClick={() => setUpsell(null)}>{t('common.close')}</Button><Link href="/premium"><Button>{t('chat.seePlans')}</Button></Link></div>
       </Dialog>
       {conv && <DatesPanel conversationId={id} name={conv.user.displayName} open={datesOpen} onClose={() => setDatesOpen(false)} />}
       {conv && <ReportDialog userId={conv.user.id} open={report} onClose={() => setReport(false)} />}

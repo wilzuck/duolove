@@ -26,6 +26,9 @@ function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) =>
   if (f.boosts_monthly > 0) out.push(t('plans.feat.boostsMonthly', { n: f.boosts_monthly }));
   if (f.incognito_mode) out.push(t('plans.feat.incognito'));
   if (f.chat_images_enabled) out.push(t('plans.feat.chatImages'));
+  if (f.chat_suggestions_enabled) out.push(t('plans.feat.chatSuggestions'));
+  if (f.calls_enabled) out.push(t('plans.feat.calls'));
+  if (f.dates_enabled) out.push(t('plans.feat.dates'));
   out.push(t('plans.feat.dailyPicks', { n: f.daily_picks_count }));
   if (f.read_receipts_control) out.push(t('plans.feat.readReceipts'));
   if (f.live_match_enabled) out.push(t('plans.feat.liveMatch'));
