@@ -4,7 +4,9 @@ import { Heart, MapPin, Sparkles, Star, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Badge } from '@duomatch/ui';
+import { useActivity } from '@/hooks/useQueries';
 import type { Card, SwipeResult } from '@/lib/types';
+import { useActivityLabel } from './Activity';
 import { ProfileDetail } from './ProfileDetail';
 import { countryName } from './ProfileCard';
 import { VerifiedBadge } from './VerifiedBadge';
@@ -26,6 +28,9 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
   const titleId = useId();
   const scroller = useRef<HTMLDivElement>(null);
   const [photo, setPhoto] = useState(0);
+  // Dernière activité (palier arrondi) : renvoyée par le serveur seulement pour Premium/VIP, et jamais si la personne l'a masquée.
+  const activity = useActivity(open && card ? [card.id] : []).data?.[card?.id ?? ''];
+  const activityText = useActivityLabel()(activity);
 
   useEffect(() => {
     const d = ref.current;
@@ -62,6 +67,7 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
       <div className="space-y-2 px-4 pt-4">
         <h2 id={titleId} className="flex items-center gap-2 font-display text-3xl font-extrabold">{card.displayName}, {card.age}{card.verified && <VerifiedBadge size="lg" />}</h2>
         <p className="flex items-center gap-1.5 text-muted"><MapPin className="size-4" aria-hidden />{card.city}, {countryName(card.country, locale)}{card.distanceKm != null && ` · ${t('card.distance', { km: card.distanceKm })}`}</p>
+        {activityText && <p className="flex items-center gap-1.5 text-sm text-muted"><span aria-hidden className={`size-2 rounded-full ${activity?.state === 'online' ? 'bg-emerald-500' : 'bg-muted/50'}`} />{activityText}</p>}
         <div className="flex flex-wrap gap-2"><Badge tone="brand">{t(`intent.${card.intent}` as never)}</Badge>{card.compatibility != null && <Badge tone="success"><Sparkles className="size-3.5" aria-hidden />{t('card.compat', { n: card.compatibility })}</Badge>}</div>
       </div>
     </div>
@@ -69,7 +75,7 @@ export function ProfileSheet({ card, open, onClose, onDecide, onBlocked, onLiked
   const act = 'flex items-center justify-center rounded-full shadow-soft ring-1 ring-line transition hover:scale-105';
   return (
     <dialog ref={ref} aria-labelledby={titleId} onClose={onClose} onClick={(e) => e.target === ref.current && onClose()}
-      className="m-0 h-dvh max-h-none w-full max-w-none overflow-hidden bg-transparent p-0 text-fg backdrop:bg-black/60">
+      className="m-0 h-dvh max-h-none w-full max-w-none overflow-hidden bg-transparent p-0 text-fg backdrop:bg-black/45 backdrop:backdrop-blur-sm">
       <motion.div className="mx-auto mt-[6dvh] flex h-[94dvh] max-w-lg flex-col overflow-hidden rounded-t-[2rem] bg-bg shadow-pop"
         initial={{ y: '100%' }} animate={{ y: open ? 0 : '100%' }} transition={{ type: 'spring', damping: 32, stiffness: 320 }}
         drag="y" dragControls={controls} dragListener={false} dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.7 }} dragSnapToOrigin

@@ -34,3 +34,14 @@ async def test_mode_discret_voit_tout_et_l_heure_exacte(app, db):
     if m.id in s and s[m.id]["state"] != "online":
         assert s[m.id]["lastSeenAt"]
     assert await seen(m, w.id) == {}  # masquée pour les autres
+
+
+async def test_premium_voit_l_activite_avant_un_match_sans_heure_exacte(app, db):
+    w, _, _ = await matched(app, db)
+    stranger = await member(app, db)
+    assert await seen(w, stranger.id) == {}  # gratuit : seulement les matchs
+    await make_premium(w.id, "PREMIUM")
+    s = await seen(w, stranger.id)
+    assert s[stranger.id]["state"] in ("online", "today", "week") and s[stranger.id]["lastSeenAt"] is None  # palier arrondi, jamais d'heure exacte
+    await stranger.agent.patch("/api/profiles/me/settings", json={"showActivity": False})
+    assert await seen(w, stranger.id) == {}  # la personne qui masque son activité reste masquée
