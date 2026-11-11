@@ -1,13 +1,10 @@
-import { useId, type InputHTMLAttributes, type Ref, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
+import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from 'react';
 import { cn } from './cn';
 
 const control = 'w-full rounded-xl border border-field-line bg-field px-4 text-fg placeholder:text-muted transition hover:border-field-line-hover focus:border-brand focus:outline-2 focus:outline-offset-0 focus:outline-brand/60 disabled:opacity-60 aria-invalid:border-danger';
 
 export function Input({ className, ...p }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(control, 'h-12', className)} {...p} />;
-}
-export function Textarea({ className, ...p }: TextareaHTMLAttributes<HTMLTextAreaElement> & { ref?: Ref<HTMLTextAreaElement> }) {
-  return <textarea className={cn(control, 'min-h-28 py-3', className)} {...p} />;
 }
 /** Flèche de liste déroulante (gris moyen : lisible en thème clair et sombre), dessinée en fond car `appearance-none` retire celle du navigateur. */
 const CHEVRON = 'bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238a8f98%27%20stroke-width=%272.5%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3E%3Cpath%20d=%27m6%209%206%206%206-6%27/%3E%3C/svg%3E)] bg-[length:1.1rem] bg-[position:right_0.9rem_center]';
