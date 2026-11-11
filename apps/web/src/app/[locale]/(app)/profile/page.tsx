@@ -54,7 +54,7 @@ export default function ProfilePage() {
 
       <Card className={me.entitlement.plan === 'FREE' ? 'flex flex-wrap items-center justify-between gap-4 border-brand/30 bg-linear-to-br from-soft to-card p-5' : 'flex flex-wrap items-center justify-between gap-4 p-5'}>
         <div className="flex items-center gap-3"><span className="flex size-11 items-center justify-center rounded-2xl bg-linear-to-br from-brand-strong to-brand-strong-2 text-white"><Crown className="size-5" aria-hidden /></span>
-          <div><h2 className="font-bold">{t('profile.planTitle', { plan: t(`plans.${me.entitlement.plan}.name`) })}</h2><p className="text-sm text-muted">{me.entitlement.plan === 'FREE' ? t('profile.planFreeText') : t('profile.planPaidText')}</p></div></div>
+          <div><h2 className="font-bold">{t.rich('profile.planTitle', { plan: t(`plans.${me.entitlement.plan}.name`), p: (c) => <span className={me.entitlement.plan === 'VIP' ? 'text-gold-ink' : me.entitlement.plan === 'PREMIUM' ? 'text-brand-ink' : 'text-muted'}>{c}</span> })}</h2><p className="text-sm text-muted">{me.entitlement.plan === 'FREE' ? t('profile.planFreeText') : t('profile.planPaidText')}</p></div></div>
         <Link href={me.entitlement.plan === 'FREE' ? '/premium' : '/settings?tab=subscription'}><Button variant={me.entitlement.plan === 'FREE' ? 'primary' : 'outline'}>{me.entitlement.plan === 'FREE' ? t('app.goPremium') : t('profile.planManage')}</Button></Link>
       </Card>
 

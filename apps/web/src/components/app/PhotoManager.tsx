@@ -47,7 +47,7 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
             <img src={p.thumbUrl} alt={t('photos.alt', { n: i + 1 })} className="size-full object-cover" />
             {i === 0 && <Badge className="absolute top-2 left-2 bg-brand-strong text-white">{t('photos.main')}</Badge>}
             <button type="button" className={cn(btn, 'absolute top-2 right-2 bg-danger-strong/90 hover:bg-danger-strong')} onClick={() => remove.mutate(p.id)} aria-label={t('photos.remove')}><Trash2 className="size-4" /></button>
-            <div className="absolute inset-x-2 bottom-2 flex items-center gap-1.5">
+            <div className="absolute inset-x-2 bottom-2 flex items-center justify-center gap-1.5">
               <button type="button" className={btn} disabled={i === 0 || order.isPending} onClick={() => move(i, -1)} aria-label={t('photos.moveLeft')}><ArrowLeft className="size-4" /></button>
               <button type="button" className={btn} disabled={i === photos.length - 1 || order.isPending} onClick={() => move(i, 1)} aria-label={t('photos.moveRight')}><ArrowRight className="size-4" /></button>
               {i > 0 && <button type="button" className={btn} onClick={() => makeMain(i)} aria-label={t('photos.makeMain')}><Star className="size-4" /></button>}
