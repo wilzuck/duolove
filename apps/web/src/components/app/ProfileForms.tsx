@@ -97,7 +97,7 @@ export function AboutFields({ value, onChange, withLocation }: { value: AboutVal
   const set = <K extends keyof AboutValue>(k: K, v: AboutValue[K]) => onChange({ ...value, [k]: v });
   return (
     <div className="space-y-6">
-      <Field label={t('profile.bio')} hint={t('profile.bioHint', { n: value.bio.length })}>{(p) => <Textarea {...p} maxLength={500} value={value.bio} onChange={(e) => set('bio', e.target.value)} placeholder={t('profile.bioPlaceholder')} />}</Field>
+      <Field label={t('profile.bio')} hideLabel hint={t('profile.bioHint', { n: value.bio.length })}>{(p) => <Textarea {...p} maxLength={500} value={value.bio} onChange={(e) => set('bio', e.target.value)} placeholder={t('profile.bioPlaceholder')} />}</Field>
       <Field label={t('profile.occupation')}>{(p) => <Input {...p} maxLength={80} value={value.occupation} onChange={(e) => set('occupation', e.target.value)} />}</Field>
       {withLocation && (
         <div className="grid gap-4 sm:grid-cols-2">

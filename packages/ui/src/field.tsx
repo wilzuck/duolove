@@ -13,12 +13,12 @@ export function Select({ className, children, ...p }: SelectHTMLAttributes<HTMLS
 }
 
 /** Étiquette + contrôle + aide/erreur, correctement reliés (aria-describedby, aria-invalid). */
-export function Field({ label, error, hint, children }: { label: string; error?: string; hint?: string; children: (props: { id: string; 'aria-invalid'?: boolean; 'aria-describedby'?: string }) => ReactNode }) {
+export function Field({ label, error, hint, hideLabel, children }: { label: string; /** Libellé lu par les lecteurs d'écran seulement (le titre de la section le dit déjà). */ hideLabel?: boolean; error?: string; hint?: string; children: (props: { id: string; 'aria-invalid'?: boolean; 'aria-describedby'?: string }) => ReactNode }) {
   const id = useId();
   const descId = error || hint ? `${id}-d` : undefined;
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-medium text-fg">{label}</label>
+      <label htmlFor={id} className={hideLabel ? 'sr-only' : 'block text-sm font-medium text-fg'}>{label}</label>
       {children({ id, 'aria-invalid': error ? true : undefined, 'aria-describedby': descId })}
       {(error || hint) && <p id={descId} className={cn('text-sm', error ? 'text-danger-ink' : 'text-muted')} role={error ? 'alert' : undefined}>{error ?? hint}</p>}
     </div>
