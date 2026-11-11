@@ -53,7 +53,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
       <a href="#main" className="skip-link">{t('common.skipToContent')}</a>
       {/* Barre latérale (desktop) */}
       <aside className="hidden flex-col gap-1.5 border-r border-line bg-card p-4 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[14.5rem]">
-        <Link href="/discover" className="mb-3 px-2"><Logo /></Link>
+        <Link href="/discover" className="mb-3 px-2" aria-label={t('nav.home')}><Logo /></Link>
         <nav aria-label={t('nav.main')} className="flex flex-col gap-1">
           {NAV.map(({ href, icon: Icon, key }) => (
             <Link key={href} href={href} aria-current={active(href) ? 'page' : undefined}

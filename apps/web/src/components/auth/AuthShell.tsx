@@ -11,7 +11,7 @@ export function AuthShell({ title, subtitle, children, footer, backdrop }: { tit
     <div className="hero-glow relative isolate flex min-h-dvh flex-col overflow-clip">
       {backdrop && <img src={backdrop} alt="" aria-hidden decoding="async" fetchPriority="high" className="fixed inset-0 -z-10 size-full object-cover object-[78%_center] lg:object-right [[data-theme=dark]_&]:brightness-75" />}
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4">
-        <Link href="/"><Logo /></Link>
+        <Link href="/" aria-label="Crushduo"><Logo /></Link>
         <div className={`flex items-center gap-1${backdrop ? ' rounded-full bg-card/80 px-1 backdrop-blur' : ''}`}><LocaleSwitcher /><ThemeToggle /></div>
       </header>
       <main className={`mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 pb-16 sm:pb-24${backdrop ? ' lg:mx-0 lg:ml-[max(2rem,7vw)]' : ''}`}>
