@@ -41,7 +41,7 @@ export function MarketingHeader() {
             {LINKS.map(([href, key]) => <li key={href}><Link href={href} onClick={() => setOpen(false)} aria-current={isActive(pathname, href) ? 'page' : undefined} className={`block rounded-xl px-3 py-3 hover:bg-soft ${isActive(pathname, href) ? 'bg-soft font-bold text-brand-ink' : 'font-medium'}`}>{t(key)}</Link></li>)}
             <li><Link href="/login" onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 font-medium hover:bg-soft sm:hidden">{t('nav.login')}</Link></li>
           </ul>
-          <div className="flex items-center gap-2 pt-2 sm:hidden"><LocaleSwitcher /><ThemeToggle /></div>
+          <div className="flex items-center gap-2 pt-2 md:hidden"><LocaleSwitcher /><ThemeToggle /></div>
         </nav>
       )}
     </header>

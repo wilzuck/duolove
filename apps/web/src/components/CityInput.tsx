@@ -8,6 +8,8 @@ import { api } from '@/lib/api';
  * Saisie d'une ville avec suggestions (villes populaires du pays + villes déjà présentes chez les membres).
  * Une aide, pas une contrainte : on peut toujours écrire une autre ville. Clavier : ↑ ↓ pour choisir, Entrée pour valider, Échap pour fermer.
  * Sans pays, aucune suggestion (le champ reste un champ texte).
+ * Le remplissage automatique du navigateur (adresses enregistrées) est coupé ici : il se superposait à nos propres suggestions. Chrome ignore `autocomplete="off"` sur
+ * les champs d'adresse, d'où une valeur non reconnue (`chrome-off`) ; les attributs `data-*` écartent aussi les gestionnaires de mots de passe.
  */
 export function CityInput({ value, onChange, country, id, className, ...aria }: {
   value: string; onChange: (v: string) => void; country: string | null | undefined; id?: string; className?: string;
@@ -38,7 +40,7 @@ export function CityInput({ value, onChange, country, id, className, ...aria }: 
   return (
     <div ref={box} className="relative">
       <Input {...aria} id={id} className={className} value={value} role="combobox" aria-expanded={show} aria-controls={listId} aria-autocomplete="list" aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
-        autoComplete={aria.autoComplete ?? 'off'}
+        autoComplete={aria.autoComplete ?? 'chrome-off'} data-lpignore="true" data-1p-ignore="true" data-form-type="other"
         onChange={(e) => { onChange(e.target.value); setOpen(true); setActive(-1); }}
         onFocus={() => setOpen(true)}
         onKeyDown={(e) => {
