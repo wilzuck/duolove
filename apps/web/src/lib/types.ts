@@ -68,6 +68,7 @@ export interface LiveState {
   accepted: LiveAccepted[];
 }
 export interface LiveIncoming extends Card { inviteId: string; expiresAt: string }
+export interface LiveInvitesView { items: LiveIncoming[]; waiting: LiveIncoming[] }
 
 export interface BlogCard { id: string; slug: string; locale: string; title: string; excerpt: string; coverUrl: string | null; coverThumbUrl: string | null; coverAlt: string | null; publishedAt: string | null; readMinutes: number }
 export interface BlogPostFull extends BlogCard { body: string }

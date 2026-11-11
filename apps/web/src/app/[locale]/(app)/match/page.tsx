@@ -188,6 +188,16 @@ export default function MatchPage() {
         </Card>
       )}
 
+      {(incoming?.waiting.length ?? 0) > 0 && (
+        <section aria-labelledby="wait" className="space-y-3">
+          <h2 id="wait" className="font-bold">{t('live.waitingTitle')}</h2>
+          <p className="text-sm text-muted">{t('live.waitingText')}</p>
+          {incoming!.waiting.map((c) => (
+            <PersonCard key={c.inviteId} c={c} locale={locale}><Badge tone="neutral">{t('live.waitingBadge')}</Badge></PersonCard>
+          ))}
+        </section>
+      )}
+
       {(incoming?.items.length ?? 0) > 0 && (
         <section aria-labelledby="inv" className="space-y-3">
           <h2 id="inv" className="font-bold">{t('live.incoming', { n: incoming!.items.length })}</h2>

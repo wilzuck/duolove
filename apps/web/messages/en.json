@@ -1599,6 +1599,9 @@
     "sheetGrab": "Handle: drag down to close"
   },
   "match": {
+    "crushTitle": "It’s a Crush!",
+    "crushText": "You and {name} met live. Keep the conversation going!",
+    "crushTextGeneric": "You met live. Keep the conversation going!",
     "title": "It’s a Duo!",
     "text": "You and {name} like each other.",
     "textGeneric": "You like each other.",
@@ -3237,6 +3240,9 @@
     "origin": "Country of origin"
   },
   "live": {
+    "waitingTitle": "You accepted",
+    "waitingText": "If the person picks you, the conversation opens and you are told right away.",
+    "waitingBadge": "Waiting for their choice",
     "title": "Live Crush",
     "subtitle": "Set your criteria: we invite people who are online. Those who accept show up, and you choose who to talk to.",
     "tokensAria": "{n} Crush tokens, open Charm+",

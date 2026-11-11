@@ -248,6 +248,9 @@ async def test_full_flow(app, db):
     assert (await c1.agent.post(f"/api/live/invites/{i1}/accept")).status_code == 409  # une seule réponse
     assert (await c2.agent.post(f"/api/live/invites/{i2}/accept")).status_code == 200
     assert (await c3.agent.post(f"/api/live/invites/{i3}/accept")).status_code == 200
+    # Une invitation acceptée ne disparaît pas : elle reste visible « en attente du choix » de la personne qui cherche.
+    seen = (await c1.agent.get("/api/live/invites")).json()
+    assert [x["inviteId"] for x in seen["waiting"]] == [i1] and seen["items"] == []
 
     st = (await s.agent.get("/api/live/state")).json()
     assert sorted(a["inviteId"] for a in st["accepted"]) == sorted([i1, i2, i3])
@@ -264,6 +267,10 @@ async def test_full_flow(app, db):
 
     ch1 = await s.agent.post(f"/api/live/invites/{i1}/choose")
     assert ch1.status_code == 200
+    assert (await c1.agent.get("/api/live/invites")).json()["waiting"] == []  # choisie : plus « en attente »
+    from app.core.realtime import emitted
+
+    assert any(ev == "match:new" and payload.get("kind") == "CRUSH" for _u, ev, payload in emitted)  # célébration « C'est un Crush ! »
     assert ch1.json()["charged"] == 1 and ch1.json()["tokens"] == 4
     assert (await s.agent.post(f"/api/live/invites/{i1}/choose")).status_code == 409
     assert await tokens(s) == 4  # débité une seule fois

@@ -1599,6 +1599,9 @@
     "sheetGrab": "Poignée : faire glisser vers le bas pour fermer"
   },
   "match": {
+    "crushTitle": "C’est un Crush !",
+    "crushText": "Vous et {name} avez fait connaissance en direct. Continuez la conversation !",
+    "crushTextGeneric": "Vous avez fait connaissance en direct. Continuez la conversation !",
     "title": "C’est un duo !",
     "text": "Vous et {name} vous plaisez mutuellement.",
     "textGeneric": "Vous vous plaisez mutuellement.",
@@ -3237,6 +3240,9 @@
     "origin": "Pays d’origine"
   },
   "live": {
+    "waitingTitle": "Vous avez accepté",
+    "waitingText": "Si la personne vous choisit, la conversation s’ouvre et vous êtes prévenu(e) tout de suite.",
+    "waitingBadge": "En attente de son choix",
     "title": "Crush en direct",
     "subtitle": "Validez vos critères : nous proposons une rencontre aux personnes connectées. Celles qui acceptent s’affichent, vous choisissez avec qui discuter.",
     "tokensAria": "{n} jetons Crush, ouvrir Charme+",

@@ -252,8 +252,15 @@ async def incoming(db: AsyncSession, user_id: str) -> dict:
                                                               and_(Block.blockerId == user_id, Block.blockedId == LiveInvite.seekerId))))
         .order_by(LiveInvite.createdAt.desc()).limit(20)
     )).scalars().all()
-    cards = await _cards(db, [i.seekerId for i in invites])
-    return {"items": [{**cards[i.seekerId], "inviteId": i.id, "expiresAt": iso(i.expiresAt)} for i in invites if i.seekerId in cards]}
+    # Invitations que j'ai ACCEPTÉES et qui attendent le choix de l'autre personne : elles ne disparaissent plus, l'état « en attente » reste visible.
+    waiting = (await db.execute(
+        select(LiveInvite).join(LiveSearch, LiveSearch.id == LiveInvite.searchId).join(User, User.id == LiveInvite.seekerId)
+        .where(LiveInvite.inviteeId == user_id, LiveInvite.status == "ACCEPTED", LiveInvite.expiresAt > utcnow(), User.status == "ACTIVE")
+        .order_by(LiveInvite.respondedAt.desc()).limit(20)
+    )).scalars().all()
+    cards = await _cards(db, [i.seekerId for i in [*invites, *waiting]])
+    return {"items": [{**cards[i.seekerId], "inviteId": i.id, "expiresAt": iso(i.expiresAt)} for i in invites if i.seekerId in cards],
+            "waiting": [{**cards[i.seekerId], "inviteId": i.id, "expiresAt": iso(i.expiresAt)} for i in waiting if i.seekerId in cards]}
 
 
 async def respond(db: AsyncSession, user_id: str, invite_id: str, accept: bool) -> dict:
@@ -341,8 +348,9 @@ async def choose(db: AsyncSession, user_id: str, invite_id: str) -> dict:
         data = {"matchId": match_id, "conversationId": conv_id}
         await notifications.create(db, user_id, "MATCH", {**data, "userId": invitee_id})
         await notifications.create(db, invitee_id, "MATCH", {**data, "userId": user_id})
-        await realtime.emit_to_user(user_id, "match:new", {**data, "userId": invitee_id})
-        await realtime.emit_to_user(invitee_id, "match:new", {**data, "userId": user_id})
+        # kind = CRUSH : l'écran de célébration dit « C'est un Crush ! » (rencontre en direct) et non « C'est un duo ! ».
+        await realtime.emit_to_user(user_id, "match:new", {**data, "userId": invitee_id, "kind": "CRUSH"})
+        await realtime.emit_to_user(invitee_id, "match:new", {**data, "userId": user_id, "kind": "CRUSH"})
     return {"conversationId": conv_id, "matchId": match_id, "charged": LIVE.TOKENS_PER_CHAT if created else 0,
             "tokens": (await credits.balances(db, user_id))["MATCH_TOKEN"]}
 

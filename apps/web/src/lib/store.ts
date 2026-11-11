@@ -11,7 +11,7 @@ interface UiState {
   setCallOutcome: (o: { id: string; status: string; direction: 'incoming' | 'outgoing'; name: string } | null) => void;
   toast: (kind: Toast['kind'], text: string) => void;
   dismiss: (id: number) => void;
-  match: { matchId: string; conversationId: string; user: Pick<Card, 'id' | 'displayName' | 'photos'> | null } | null;
+  match: { matchId: string; conversationId: string; user: Pick<Card, 'id' | 'displayName' | 'photos'> | null; kind?: 'CRUSH' } | null;
   showMatch: (m: UiState['match']) => void;
   typing: Record<string, number>;
   setTyping: (conversationId: string, on: boolean) => void;
