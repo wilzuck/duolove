@@ -43,7 +43,7 @@ export function DatePicker({ id, value, onChange, locale, labels, min, max, drop
   return (
     <div ref={root} className={cn('relative', className)}>
       <button id={id} type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="dialog" aria-expanded={open} aria-invalid={invalid || undefined} aria-describedby={aria['aria-describedby']}
-        className="flex h-12 w-full items-center justify-between gap-2 rounded-xl border border-line bg-card px-4 text-left transition focus:border-brand aria-invalid:border-danger">
+        className="flex h-12 w-full items-center justify-between gap-2 rounded-xl border border-field-line bg-field px-4 text-left transition hover:border-field-line-hover focus:border-brand aria-invalid:border-danger">
         <span className={selected ? '' : 'text-muted'}>
           {selected ? selected.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' }) : labels.placeholder}
         </span>

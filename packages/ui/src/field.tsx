@@ -1,7 +1,7 @@
 import { useId, type InputHTMLAttributes, type Ref, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 import { cn } from './cn';
 
-const control = 'w-full rounded-xl border border-field-line bg-field px-4 text-fg placeholder:text-muted transition focus:border-brand focus:outline-2 focus:outline-offset-0 focus:outline-brand/40 disabled:opacity-60 aria-invalid:border-danger';
+const control = 'w-full rounded-xl border border-field-line bg-field px-4 text-fg placeholder:text-muted transition hover:border-field-line-hover focus:border-brand focus:outline-2 focus:outline-offset-0 focus:outline-brand/60 disabled:opacity-60 aria-invalid:border-danger';
 
 export function Input({ className, ...p }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(control, 'h-12', className)} {...p} />;

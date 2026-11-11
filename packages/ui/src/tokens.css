@@ -14,7 +14,8 @@
   --line: #eee7eb;
   /* Champs de saisie : distincts de la carte qui les contient (clair : blanc + bordure franche ; sombre : plus foncé que la carte). */
   --field: #ffffff;
-  --field-line: #9c8f99;
+  --field-line-hover: #c9bec6;  /* survol d'un champ : un peu plus marqué qu'au repos */
+  --field-line: #eee7eb;  /* = --line : une seule bordure pour les champs, les cartes et les séparateurs (décision produit) */
   --navy: #22212b;
   --success: #22c55e;
   --success-ink: #166534;
@@ -34,7 +35,8 @@
   --muted: #a9a4b3;
   --line: #2c2836;
   --field: #110f16;
-  --field-line: #7a7490;
+  --field-line: #2c2836;
+  --field-line-hover: #4a4560;
   --soft: #2a1a24;
   --brand-ink: #ff8fae;
   --navy: #3a3647;
@@ -51,7 +53,8 @@
     --muted: #a9a4b3;
     --line: #2c2836;
     --field: #110f16;
-    --field-line: #7a7490;
+    --field-line: #2c2836;
+    --field-line-hover: #4a4560;
     --soft: #2a1a24;
     --brand-ink: #ff8fae;
     --navy: #3a3647;

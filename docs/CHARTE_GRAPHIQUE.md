@@ -131,7 +131,7 @@ Toutes les couleurs sont des **jetons** (variables CSS) définis dans `packages/
 | `--muted` | `#6B6A76` | `#A9A4B3` | Texte secondaire, aides, placeholders |
 | `--line` | `#EEE7EB` | `#2C2836` | Séparateurs et bordures de cartes |
 | `--field` | `#FFFFFF` | `#110F16` | Fond des champs de saisie |
-| `--field-line` | `#9C8F99` | `#7A7490` | Bordure des champs (≥ 3:1, WCAG 1.4.11) |
+| `--field-line` | `#EEE7EB` (= `--line`) | `#2C2836` (= `--line`) | Bordure des champs, identique à celle des cartes et des séparateurs (décision produit du 2026-11-11) |
 | `--navy` | `#22212B` | `#3A3647` | Bouton « dark », barre d'administration |
 
 ### 3.3 Couleurs de statut
@@ -163,7 +163,7 @@ Seuils : texte courant ≥ **4,5:1** · grand texte (≥ 24 px, ou ≥ 18,7 px e
 | Erreur `#B91C1C` sur blanc | 6,47 | ✅ |
 | Or `#8A6400` sur blanc | 5,38 | ✅ |
 | Blanc sur rose de marque `#E91E63` | **4,35** | ⚠️ grands éléments seulement |
-| Bordure de champ `#9C8F99` sur blanc | **3,09** | ✅ (écart E1 corrigé le 2026-11-11 ; était `#D9CFD5`, 1,52) |
+| Bordure de champ `#EEE7EB` sur blanc | **1,22** | ❌ sous 3:1 (écart E1 **assumé** : bordure unique et douce pour tous les contrôles) |
 
 **Thème sombre**
 
@@ -177,7 +177,7 @@ Seuils : texte courant ≥ **4,5:1** · grand texte (≥ 24 px, ou ≥ 18,7 px e
 | Succès `#4ADE80` sur carte | 9,82 | ✅ |
 | Erreur `#FCA5A5` sur carte | 9,02 | ✅ |
 | Or `#FCD34D` sur carte | 11,87 | ✅ |
-| Bordure de champ `#7A7490` sur `#110F16` | **4,28** | ✅ (écart E1 corrigé le 2026-11-11 ; était `#5A546A`, 2,64) |
+| Bordure de champ `#2C2836` sur `#110F16` | **1,3** | ❌ sous 3:1 (écart E1 assumé) |
 
 À toute nouvelle couleur : calculer le rapport avant de l'adopter, et l'ajouter à ce tableau.
 
@@ -531,7 +531,7 @@ Constatés à la rédaction de ce document (non corrigés, sauf mention). À tra
 
 | Réf. | Écart | Gravité | Piste |
 |---|---|---|---|
-| E1 | **Corrigé (2026-11-11)** — Bordure des champs sous 3:1 : `--field-line` passe de `#D9CFD5` à `#9C8F99` en clair (3,09:1 sur blanc) et de `#5A546A` à `#7A7490` en sombre (4,28:1 sur `#110F16`, 3,85:1 sur une carte). À revérifier à l'œil sur les écrans qui utilisent des champs et des puces | Corrigé | Fait dans `packages/ui/src/tokens.css` |
+| E1 | **Assumé (2026-11-11)** — Bordure des champs sous 3:1 : elle avait été portée à `#9C8F99` (3,09:1), puis alignée sur `--line` (`#EEE7EB`, 1,22:1) pour qu'un seul trait fin soit utilisé partout (champs, cartes, sélecteur de date). Le critère WCAG 1.4.11 n'est donc plus satisfait pour les champs de saisie | Moyenne (accessibilité) | Si besoin, remonter `--field-line` à `#9C8F99` : un seul réglage dans `packages/ui/src/tokens.css` |
 | E2 | **Rose de marque `#E91E63` sur blanc à 4,35:1** : conforme seulement pour les grands éléments ; risque d'un usage en texte par un nouveau contributeur | Faible | Règle déjà documentée (3.1) ; ajouter une vérification automatique |
 | E3 | **Corrigé (constaté 2026-11-11)** — Logo en thème sombre : les fichiers livrés (`/brand/crushduo-logo-dark.webp`, `crushduo-mark-dark.webp`) utilisent des teintes fixes sans mode de fusion : cœur gauche blanc, cœur droit rose plein ≈ `#E80850` (lisible sur `#14121A`). Le défaut décrit (mélange `multiply` qui rendait le second cœur bordeaux) ne concerne plus les fichiers actuels | Corrigé | Rien à faire ; contrôle visuel fait sur fond `#14121A` |
 | E4 | ~~Icônes d'application~~ — **résolu** : PNG 192/512, maskable, apple-touch-icon et favicon.ico générés depuis le nouveau logo et déclarés dans le manifeste | — | — |
@@ -555,7 +555,7 @@ Source : `packages/ui/src/tokens.css` (la copie ci-dessous peut dériver : le fi
   --brand-strong: #d81b60;    --brand-strong-2: #c2185b;   --brand-ink: #c2185b;
   --soft: #fff0f5;            --bg: #ffffff;               --card: #ffffff;
   --fg: #22212b;              --muted: #6b6a76;            --line: #eee7eb;
-  --field: #ffffff;           --field-line: #9c8f99;       --navy: #22212b;
+  --field: #ffffff;           --field-line: #eee7eb;       --navy: #22212b;
   --success: #22c55e;         --success-ink: #166534;
   --danger: #ef4444;          --danger-strong: #dc2626;    --danger-ink: #b91c1c;
   --gold: #f5b301;            --gold-ink: #8a6400;
@@ -564,7 +564,7 @@ Source : `packages/ui/src/tokens.css` (la copie ci-dessous peut dériver : le fi
 }
 [data-theme='dark'] {
   --bg: #14121a;  --card: #1d1a25;  --fg: #f4f1f6;  --muted: #a9a4b3;  --line: #2c2836;
-  --field: #110f16;  --field-line: #7a7490;  --soft: #2a1a24;  --brand-ink: #ff8fae;
+  --field: #110f16;  --field-line: #2c2836;  --soft: #2a1a24;  --brand-ink: #ff8fae;
   --navy: #3a3647;  --success-ink: #4ade80;  --danger-ink: #fca5a5;  --gold-ink: #fcd34d;
   --shadow-soft: 0 6px 24px -10px rgb(0 0 0 / .6);
 }
