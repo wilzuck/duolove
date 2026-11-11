@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "CrushDuo — Deux cœurs, une belle histoire",
-    "description": "CrushDuo, la plateforme de rencontres sérieuses pour les adultes : profils vérifiés, matching intelligent, messagerie privée et sécurisée.",
+    "title": "Crushduo — Deux cœurs, une belle histoire",
+    "description": "Crushduo, la plateforme de rencontres sérieuses pour les adultes : profils vérifiés, matching intelligent, messagerie privée et sécurisée.",
     "tagline": "Deux cœurs, une belle histoire."
   },
   "common": {
@@ -25,7 +25,7 @@
     "backHome": "Retour à l’accueil"
   },
   "nav": {
-    "home": "Accueil CrushDuo",
+    "home": "Accueil Crushduo",
     "main": "Navigation principale",
     "menu": "Ouvrir le menu",
     "how": "Comment ça marche",
@@ -40,10 +40,16 @@
   },
   "footer": {
     "product": "Produit",
-    "company": "CrushDuo",
+    "company": "Crushduo",
     "legal": "Légal",
     "adultsShort": "18 ans et plus",
-    "short": { "install": "Installer l’app", "terms": "Conditions", "privacy": "Confidentialité", "cookies": "Cookies", "community": "Règles" },
+    "short": {
+      "install": "Installer l’app",
+      "terms": "Conditions",
+      "privacy": "Confidentialité",
+      "cookies": "Cookies",
+      "community": "Règles"
+    },
     "adults": "Réservé aux personnes majeures (18 ans et plus).",
     "rights": "Tous droits réservés.",
     "links": "Liens du site"
@@ -60,7 +66,7 @@
         "data": "Données protégées"
       },
       "ctaCreate": "Créer mon compte gratuitement",
-      "ctaDiscover": "Découvrir CrushDuo",
+      "ctaDiscover": "Découvrir Crushduo",
       "heroAlt": "Un couple souriant, joue contre joue, devant un grand cœur rose, avec la carte « C’est un match ! ».",
       "strip": {
         "intent": {
@@ -98,7 +104,7 @@
     },
     "eyebrow": "Rencontres sérieuses, en toute confiance",
     "title": "Deux cœurs, une belle histoire.",
-    "subtitle": "CrushDuo vous aide à rencontrer des personnes compatibles : mêmes intentions, mêmes valeurs, même ville ou presque. Simple, élégant et sécurisé.",
+    "subtitle": "Crushduo vous aide à rencontrer des personnes compatibles : mêmes intentions, mêmes valeurs, même ville ou presque. Simple, élégant et sécurisé.",
     "ctaRegister": "Créer mon compte",
     "ctaLogin": "Se connecter",
     "heroMatch": "C’est un duo !",
@@ -155,14 +161,14 @@
   },
   "how": {
     "kicker": "Pas à pas",
-    "title": "Comment fonctionne CrushDuo",
+    "title": "Comment fonctionne Crushduo",
     "subtitle": "Des rencontres sincères, à votre rythme, à tout âge. Voici le chemin, de l’inscription à la première conversation… et jusqu’au premier rendez-vous.",
     "ctaHelp": "Une question ? Le Centre d’aide",
     "stepsTitle": "Votre parcours en huit étapes",
     "steps": {
       "signup": {
         "title": "Créez votre compte",
-        "text": "Avec votre e-mail (ou Google) et un mot de passe, ou simplement un lien magique. Vous confirmez votre adresse et votre majorité : CrushDuo est réservé aux adultes de 18 ans et plus."
+        "text": "Avec votre e-mail (ou Google) et un mot de passe, ou simplement un lien magique. Vous confirmez votre adresse et votre majorité : Crushduo est réservé aux adultes de 18 ans et plus."
       },
       "profile": {
         "title": "Racontez-vous",
@@ -213,14 +219,14 @@
       }
     ],
     "ageTitle": "L’amour n’a pas d’âge",
-    "ageText": "À 25, 45 ou 70 ans, on mérite une belle rencontre. CrushDuo accueille tous les adultes, avec une seule exigence : le respect. Lisez notre charte de bienveillance.",
+    "ageText": "À 25, 45 ou 70 ans, on mérite une belle rencontre. Crushduo accueille tous les adultes, avec une seule exigence : le respect. Lisez notre charte de bienveillance.",
     "ageCta": "Les règles de la communauté",
     "plansTitle": "Gratuit pour commencer, Premium pour aller plus loin",
     "plansFree": {
       "h": "Gratuit",
       "items": [
         "Profil, questions de personnalité et découverte",
-        "Découvertes du jour, likes quotidiens, matchs et messagerie",
+        "Découvertes du jour, likes quotidiens, duos et messagerie",
         "Blocage et signalement, toujours gratuits"
       ]
     },
@@ -244,7 +250,7 @@
       "a": "Uniquement les personnes de 18 ans et plus. La date de naissance est vérifiée à l’inscription."
     },
     "free": {
-      "q": "CrushDuo est-il gratuit ?",
+      "q": "Crushduo est-il gratuit ?",
       "a": "Oui : profil, découverte, duos et messagerie après un duo sont gratuits, avec un nombre de likes quotidien. Premium et VIP débloquent plus de fonctions."
     },
     "safety": {
@@ -267,7 +273,7 @@
   "plans": {
     "FREE": {
       "name": "Gratuit",
-      "tagline": "Pour découvrir CrushDuo"
+      "tagline": "Pour découvrir Crushduo"
     },
     "PREMIUM": {
       "name": "Premium",
@@ -349,9 +355,9 @@
     "order": "Commander"
   },
   "about": {
-    "title": "À propos de CrushDuo",
+    "title": "À propos de Crushduo",
     "lead": "Derrière chaque famille, il y a eu un jour deux inconnus qui se sont regardés autrement.",
-    "mission": "Nous construisons CrushDuo pour faciliter les rencontres sérieuses et les belles histoires entre adultes, en Afrique francophone et au-delà, dans un environnement où chacun se sent en sécurité.",
+    "mission": "Nous construisons Crushduo pour faciliter les rencontres sérieuses et les belles histoires entre adultes, en Afrique francophone et au-delà, dans un environnement où chacun se sent en sécurité.",
     "valuesTitle": "Nos engagements",
     "values": {
       "respect": {
@@ -381,7 +387,7 @@
       "c2": {
         "title": "Se rencontrer n’a jamais été aussi facile… ni aussi difficile",
         "p1": "Nous sommes plus connectés que jamais, et pourtant tant de personnes sincères se sentent seules. Trop de profils, trop de promesses, trop de conversations qui s’éteignent après deux messages. Beaucoup cherchent quelqu’un avec qui bâtir quelque chose de vrai, et se retrouvent noyés dans le bruit, parfois exposés aux faux profils et aux arnaques.",
-        "p2": "CrushDuo est né pour ceux qui veulent autre chose : moins de vitrine, plus de sens."
+        "p2": "Crushduo est né pour ceux qui veulent autre chose : moins de vitrine, plus de sens."
       },
       "c3": {
         "title": "Une plateforme pensée pour bâtir, pas pour consommer",
@@ -395,7 +401,7 @@
       },
       "c5": {
         "title": "Notre rêve : des familles qui commencent ici",
-        "p1": "Nous rêvons du jour où un couple nous racontera : « Nous nous sommes rencontrés sur CrushDuo. » Du jour où des enfants demanderont comment leurs parents se sont connus, et où la réponse commencera par un simple profil, un simple « J’aime ».",
+        "p1": "Nous rêvons du jour où un couple nous racontera : « Nous nous sommes rencontrés sur Crushduo. » Du jour où des enfants demanderont comment leurs parents se sont connus, et où la réponse commencera par un simple profil, un simple « J’aime ».",
         "p2": "Nous ne vendons pas des promesses. Nous construisons les conditions pour que les belles histoires aient lieu : un endroit respectueux, sûr, et à taille humaine, en Afrique francophone et au-delà."
       }
     },
@@ -431,13 +437,13 @@
       },
       "idea": {
         "h": "Une suggestion",
-        "p": "Une idée pour rendre CrushDuo plus agréable.",
+        "p": "Une idée pour rendre Crushduo plus agréable.",
         "subject": "Suggestion"
       },
       "other": {
         "h": "Autre question",
         "p": "Tout le reste, nous lisons tout.",
-        "subject": "Question sur CrushDuo"
+        "subject": "Question sur Crushduo"
       }
     },
     "emailLabel": "Ou écrivez-nous directement à",
@@ -455,7 +461,7 @@
     "helpTitle": "Peut-être une réponse vous attend déjà",
     "helpCta": "Centre d’aide",
     "communityCta": "Règles de la communauté",
-    "subject": "Question sur CrushDuo",
+    "subject": "Question sur Crushduo",
     "form": {
       "title": "Écrivez-nous directement",
       "name": "Votre nom",
@@ -504,10 +510,10 @@
       "start": [
         {
           "q": "Qui peut s’inscrire ?",
-          "a": "Uniquement les personnes de 18 ans et plus. La date de naissance est vérifiée à l’inscription, et CrushDuo accueille les adultes de tout âge."
+          "a": "Uniquement les personnes de 18 ans et plus. La date de naissance est vérifiée à l’inscription, et Crushduo accueille les adultes de tout âge."
         },
         {
-          "q": "CrushDuo est-il gratuit ?",
+          "q": "Crushduo est-il gratuit ?",
           "a": "Oui pour commencer : profil, découverte, découvertes du jour, duos et messagerie sont gratuits, avec un nombre de likes quotidien. Premium et VIP ajoutent des fonctions, sans jamais garantir un duo."
         },
         {
@@ -654,7 +660,7 @@
     }
   },
   "blog": {
-    "title": "Le blog CrushDuo",
+    "title": "Le blog Crushduo",
     "lead": "Conseils pour des rencontres réussies et sûres.",
     "read": "Lire l’article",
     "minutes": "{n} min de lecture",
@@ -663,7 +669,7 @@
     "empty": "Les premiers articles arrivent bientôt.",
     "back": "Retour au blog",
     "ctaTitle": "Prêt(e) à écrire votre histoire ?",
-    "ctaText": "Rejoignez CrushDuo et rencontrez des personnes qui cherchent la même chose que vous.",
+    "ctaText": "Rejoignez Crushduo et rencontrez des personnes qui cherchent la même chose que vous.",
     "ctaButton": "Créer mon compte"
   },
   "legal": {
@@ -673,8 +679,8 @@
     "terms": {
       "title": "Conditions générales d’utilisation",
       "kicker": "Conditions d’utilisation",
-      "metaDescription": "Les conditions d’utilisation de CrushDuo : accès, compte, contenus, offres payantes, modération et responsabilités, expliquées simplement.",
-      "lead": "Ce document explique, simplement et honnêtement, les règles du jeu entre vous et CrushDuo. Nous l’avons voulu lisible : en cas de doute, écrivez-nous.",
+      "metaDescription": "Les conditions d’utilisation de Crushduo : accès, compte, contenus, offres payantes, modération et responsabilités, expliquées simplement.",
+      "lead": "Ce document explique, simplement et honnêtement, les règles du jeu entre vous et Crushduo. Nous l’avons voulu lisible : en cas de doute, écrivez-nous.",
       "toc": "Sommaire",
       "updated": "Dernière mise à jour : novembre 2026",
       "listDo": "À retenir",
@@ -690,7 +696,7 @@
           "id": "objet",
           "h": "Objet et acceptation",
           "paras": [
-            "CrushDuo est un service en ligne de mise en relation entre adultes qui souhaitent faire des rencontres, à tout âge. En créant un compte, vous acceptez les présentes conditions ainsi que nos règles de la communauté.",
+            "Crushduo est un service en ligne de mise en relation entre adultes qui souhaitent faire des rencontres, à tout âge. En créant un compte, vous acceptez les présentes conditions ainsi que nos règles de la communauté.",
             "Si vous n’êtes pas d’accord avec ces conditions, merci de ne pas utiliser le service."
           ]
         },
@@ -738,7 +744,7 @@
           "id": "offres",
           "h": "Offres gratuites et payantes",
           "paras": [
-            "CrushDuo est gratuit pour commencer. Des formules payantes (Premium, VIP) et des achats à l’unité (boosts, Super Likes, jetons Crush) donnent accès à des fonctions supplémentaires. Les prix, durées et avantages sont indiqués sur la page Tarifs avant tout paiement."
+            "Crushduo est gratuit pour commencer. Des formules payantes (Premium, VIP) et des achats à l’unité (boosts, Super Likes, jetons Crush) donnent accès à des fonctions supplémentaires. Les prix, durées et avantages sont indiqués sur la page Tarifs avant tout paiement."
           ],
           "lists": [
             {
@@ -747,7 +753,7 @@
                 "Les formules existent pour 1, 3, 6 ou 12 mois. Chaque période est un paiement ponctuel : l’abonnement ne se renouvelle pas automatiquement et nous vous prévenons avant l’échéance.",
                 "Vous pouvez annuler à tout moment : vous gardez vos avantages jusqu’à la fin de la période payée.",
                 "Les crédits achetés (boosts, Super Likes, jetons) restent sur votre compte jusqu’à leur utilisation.",
-                "Aucune offre ne garantit un match ni une relation : elle donne plus de visibilité et d’outils.",
+                "Aucune offre ne garantit un duo ni une relation : elle donne plus de visibilité et d’outils.",
                 "Le blocage, le signalement et les fonctions de sécurité restent gratuits pour tous."
               ]
             }
@@ -773,7 +779,7 @@
           "id": "rencontres",
           "h": "Rencontres et responsabilité",
           "paras": [
-            "CrushDuo met des personnes en relation mais ne peut garantir ni l’identité, ni les intentions, ni le comportement des membres. Le badge « profil vérifié » indique qu’un modérateur a comparé un selfie aux photos du profil ; il ne constitue pas une garantie.",
+            "Crushduo met des personnes en relation mais ne peut garantir ni l’identité, ni les intentions, ni le comportement des membres. Le badge « profil vérifié » indique qu’un modérateur a comparé un selfie aux photos du profil ; il ne constitue pas une garantie.",
             "Pour une première rencontre, choisissez un lieu public, prévenez une personne de confiance et venez par vos propres moyens. Les rencontres se font sous votre seule responsabilité, dans la limite de ce que la loi permet."
           ]
         },
@@ -793,7 +799,7 @@
         },
         {
           "id": "fin",
-          "h": "Quitter CrushDuo",
+          "h": "Quitter Crushduo",
           "paras": [
             "Vous pouvez supprimer votre compte à tout moment : la suppression est définitive. Nous pouvons de notre côté suspendre ou clôturer un compte en cas de manquement grave ou répété, dans les conditions de la rubrique « Modération et sanctions »."
           ]
@@ -826,11 +832,15 @@
       "sections": [
         {
           "h": "Données collectées",
-          "p": "E-mail, date de naissance, genre, ville, photos, biographie, centres d’intérêt, interactions (likes, messages), données de paiement traitées par le prestataire."
+          "p": "Adresse e-mail, date de naissance, genre, ville, photos, biographie, centres d’intérêt, vos échanges (likes, messages, photos envoyées dans les conversations) et, si vous le souhaitez, des informations de mode de vie : taille, enfants, animaux, logement, pays d’origine, situation, niveau d’études, tabac, alcool et religion. Les données de paiement sont traitées par le prestataire de paiement. Le signe astrologique n’est jamais saisi : il est calculé à partir de votre date de naissance."
         },
         {
           "h": "Finalités",
-          "p": "Fournir le service, proposer des profils compatibles, assurer la sécurité et la modération, gérer les abonnements."
+          "p": "Fournir le service, proposer des profils compatibles, assurer la sécurité et la modération (signalements, blocages), envoyer les e-mails du service (code de connexion, notifications que vous avez activées), gérer les abonnements et les achats."
+        },
+        {
+          "h": "Informations facultatives et sensibles",
+          "p": "Le mode de vie est entièrement facultatif : « Non précisé » par défaut, modifiable ou effaçable à tout moment. La religion est une donnée sensible : elle n’est enregistrée que si vous la renseignez, reste masquée aux autres membres tant que vous ne cochez pas « Afficher ma religion sur mon profil », et ne sert jamais à classer ou à recommander des profils."
         },
         {
           "h": "Localisation",
@@ -838,11 +848,27 @@
         },
         {
           "h": "Photos",
-          "p": "Les métadonnées (EXIF, GPS) sont supprimées à l’envoi. Les selfies de vérification sont effacés après décision."
+          "p": "Les métadonnées (EXIF, GPS) sont supprimées à l’envoi. Les photos envoyées dans une conversation sont privées : seules les deux personnes concernées peuvent les voir. Les selfies de vérification sont effacés après décision."
+        },
+        {
+          "h": "Conversations, rendez-vous et appels",
+          "p": "L’équipe ne parcourt pas vos conversations : un signalement s’appuie sur la description du membre et sur le profil signalé. Quand un rendez-vous est proposé, vous seul(e) choisissez de le partager avec un proche, par un lien que vous pouvez révoquer. Les appels audio et vidéo, lorsqu’ils sont proposés, ne sont jamais enregistrés."
+        },
+        {
+          "h": "E-mails",
+          "p": "Nos e-mails sont envoyés par des prestataires spécialisés (Brevo et Amazon SES). Nous conservons un journal d’envoi (adresse, objet, état), jamais le contenu des messages. Une adresse qui ne peut plus recevoir de courrier (adresse inexistante ou plainte) est placée sur une liste de blocage pour ne plus lui écrire ; les e-mails indispensables à votre compte (confirmation, mot de passe, lien de connexion) restent possibles en cas de simple plainte. Vous pouvez vous désabonner des e-mails facultatifs en un clic."
+        },
+        {
+          "h": "Prestataires et transferts",
+          "p": "Pour fonctionner, Crushduo s’appuie sur des prestataires qui traitent des données pour notre compte : hébergement (Railway), stockage des fichiers, envoi d’e-mails (Brevo, Amazon SES), paiement (prestataire sécurisé, Mobile Money et carte) et, si vous l’utilisez, connexion avec Google. Certains sont situés hors de votre pays ou de l’Union européenne ; nous ne leur confions que ce qui est nécessaire, et nous ne vendons jamais vos données."
+        },
+        {
+          "h": "Installation de l’application",
+          "p": "Si vous installez Crushduo sur votre écran d’accueil, un identifiant aléatoire créé sur votre appareil est envoyé au plus une fois par jour, avec le type d’appareil (iPhone, Android ou ordinateur), uniquement pour compter les installations. Il n’est lié ni à votre compte, ni à votre nom, ni à votre adresse e-mail."
         },
         {
           "h": "Vos droits",
-          "p": "Accès, rectification, export (Paramètres → Confidentialité), suppression du compte, retrait du consentement marketing à tout moment."
+          "p": "Accès, rectification, export (Paramètres → Confidentialité), suppression du compte, retrait du consentement marketing à tout moment. Pour toute question sur vos données, écrivez-nous depuis la page Contact."
         },
         {
           "h": "Conservation",
@@ -853,8 +879,8 @@
     "cookies": {
       "title": "Politique de cookies",
       "kicker": "Cookies et stockage",
-      "metaDescription": "Les cookies et stockages de CrushDuo, listés un par un : ce qu'ils font, combien de temps ils durent, et comment les gérer. Aucune publicité, aucun traçage.",
-      "lead": "Parlons cookies, sans jargon et sans rien cacher. CrushDuo n’utilise que le strict nécessaire pour vous connecter et retenir vos préférences : pas de publicité, pas de traçage, pas de revente de données.",
+      "metaDescription": "Les cookies et stockages de Crushduo, listés un par un : ce qu'ils font, combien de temps ils durent, et comment les gérer. Aucune publicité, aucun traçage.",
+      "lead": "Parlons cookies, sans jargon et sans rien cacher. Crushduo n’utilise que le strict nécessaire pour vous connecter, retenir vos préférences et, de façon anonyme, compter les installations de l’application : pas de publicité, pas de traçage, pas de revente de données.",
       "toc": "Sommaire",
       "updated": "Dernière mise à jour : novembre 2026",
       "listDo": "À retenir",
@@ -884,7 +910,7 @@
         }
       ],
       "table": {
-        "caption": "Cookies et stockages utilisés par CrushDuo",
+        "caption": "Cookies et stockages utilisés par Crushduo",
         "name": "Nom",
         "kind": "Type",
         "purpose": "À quoi il sert",
@@ -896,7 +922,7 @@
           {
             "name": "duomatch_sid",
             "kind": "Cookie, sécurisé (httpOnly)",
-            "purpose": "Vous garder connecté(e) pendant que vous utilisez CrushDuo.",
+            "purpose": "Vous garder connecté(e) pendant que vous utilisez Crushduo.",
             "duration": "La session du navigateur, ou 30 jours si vous cochez « Restez connecté ».",
             "need": "yes"
           },
@@ -927,8 +953,30 @@
             "purpose": "Retenir que vous avez pris connaissance de cette information, pour ne plus vous l’afficher.",
             "duration": "Jusqu’à ce que vous l’effaciez.",
             "need": "pref"
+          },
+          {
+            "name": "duomatch-install-id",
+            "kind": "Stockage local du navigateur",
+            "purpose": "Identifiant aléatoire qui sert uniquement à compter les installations de l’application. Il n’a aucun lien avec votre compte.",
+            "duration": "Jusqu’à ce que vous l’effaciez.",
+            "need": "count"
+          },
+          {
+            "name": "duomatch-install-sent",
+            "kind": "Stockage local du navigateur",
+            "purpose": "Date du dernier comptage, pour ne pas envoyer l’identifiant plus d’une fois par jour.",
+            "duration": "Jusqu’à ce que vous l’effaciez.",
+            "need": "count"
+          },
+          {
+            "name": "duomatch-install-later",
+            "kind": "Stockage local du navigateur",
+            "purpose": "Retenir que vous avez choisi « Plus tard » sur l’invitation à installer l’application.",
+            "duration": "Jusqu’à ce que vous l’effaciez.",
+            "need": "count"
           }
-        ]
+        ],
+        "count": "Comptage anonyme"
       },
       "sections": [
         {
@@ -963,7 +1011,7 @@
           "id": "preferences",
           "h": "Vos préférences",
           "paras": [
-            "Votre langue, votre thème clair ou sombre et le choix « Entrée envoie » sont des réglages de confort. Si vous les effacez, CrushDuo repart simplement avec ses valeurs par défaut."
+            "Votre langue, votre thème clair ou sombre et le choix « Entrée envoie » sont des réglages de confort. Si vous les effacez, Crushduo repart simplement avec ses valeurs par défaut."
           ]
         },
         {
@@ -1000,7 +1048,7 @@
           "h": "Voir, bloquer ou effacer",
           "paras": [
             "Tous les navigateurs permettent de consulter, bloquer ou supprimer les cookies et le stockage local (dans les réglages de confidentialité). Attention : bloquer le cookie de session vous empêchera de vous connecter, et tout effacer vous déconnecte et réinitialise vos préférences.",
-            "Se déconnecter depuis CrushDuo supprime immédiatement le cookie de session de l’appareil."
+            "Se déconnecter depuis Crushduo supprime immédiatement le cookie de session de l’appareil."
           ]
         },
         {
@@ -1021,9 +1069,9 @@
     },
     "community": {
       "title": "Règles de la communauté",
-      "metaDescription": "La charte de bienveillance de CrushDuo : respect, sincérité, sécurité et vie privée, pour des rencontres heureuses à tout âge.",
+      "metaDescription": "La charte de bienveillance de Crushduo : respect, sincérité, sécurité et vie privée, pour des rencontres heureuses à tout âge.",
       "kicker": "Notre charte de bienveillance",
-      "lead": "On peut rencontrer l’amour à tout âge. CrushDuo réunit des adultes de 18 ans et plus qui cherchent une vraie relation, et chacun a le droit de le faire avec respect, sincérité et sérénité. Ces règles sont là pour que vous vous sentiez bien ici.",
+      "lead": "On peut rencontrer l’amour à tout âge. Crushduo réunit des adultes de 18 ans et plus qui cherchent une vraie relation, et chacun a le droit de le faire avec respect, sincérité et sérénité. Ces règles sont là pour que vous vous sentiez bien ici.",
       "ctaHelp": "Centre d’aide",
       "ctaReport": "Comment signaler",
       "glanceTitle": "L’essentiel en cinq idées",
@@ -1060,7 +1108,7 @@
         {
           "id": "promesse",
           "h": "L’amour n’a pas d’âge",
-          "intro": "À 25, 40, 55 ou 70 ans, on a toutes les raisons de rêver d’une belle histoire. Ici, l’âge n’est ni une moquerie ni un défaut : c’est un parcours. CrushDuo accueille tous les adultes, quelles que soient leur origine, leur situation, leur façon d’aimer ou leur apparence, à une seule condition : respecter les autres.",
+          "intro": "À 25, 40, 55 ou 70 ans, on a toutes les raisons de rêver d’une belle histoire. Ici, l’âge n’est ni une moquerie ni un défaut : c’est un parcours. Crushduo accueille tous les adultes, quelles que soient leur origine, leur situation, leur façon d’aimer ou leur apparence, à une seule condition : respecter les autres.",
           "lists": [
             {
               "kind": "do",
@@ -1150,7 +1198,7 @@
         {
           "id": "contenus",
           "h": "Contenus et photos",
-          "intro": "CrushDuo est un lieu de rencontres de tous âges : gardons des contenus qui mettent chacun à l’aise.",
+          "intro": "Crushduo est un lieu de rencontres de tous âges : gardons des contenus qui mettent chacun à l’aise.",
           "lists": [
             {
               "kind": "dont",
@@ -1303,7 +1351,7 @@
     "createAccount": "Créer mon compte",
     "google": "Continuer avec Google",
     "or": "ou",
-    "googleNeedsSignup": "Nouveau sur CrushDuo ? Créez d’abord votre compte pour compléter votre profil.",
+    "googleNeedsSignup": "Nouveau sur Crushduo ? Créez d’abord votre compte pour compléter votre profil.",
     "googleComplete": "Compte Google reconnu. Complétez ces informations pour finaliser votre inscription.",
     "forgotTitle": "Mot de passe oublié",
     "forgotSubtitle": "Saisissez votre e-mail : nous vous envoyons un lien de réinitialisation.",
@@ -1637,7 +1685,20 @@
     "callsLocked": "Appels : réservés à Premium et VIP",
     "datesLocked": "Rendez-vous : réservés à Premium et VIP",
     "ideasLocked": "Idées pour commencer : réservées à Premium et VIP",
-    "planGate": {"ideas": {"title": "Des idées pour briser la glace", "text": "Les idées de sujets, tirées de ce que vous avez en commun, sont réservées aux abonnés Premium et VIP."}, "calls": {"title": "Appels audio et vidéo", "text": "Lancer un appel est réservé aux abonnés Premium et VIP. Vous pouvez toujours répondre à un appel reçu."}, "dates": {"title": "Proposer un rendez-vous", "text": "Proposer un rendez-vous est réservé aux abonnés Premium et VIP. Vous pouvez toujours répondre à une proposition reçue."}},
+    "planGate": {
+      "ideas": {
+        "title": "Des idées pour briser la glace",
+        "text": "Les idées de sujets, tirées de ce que vous avez en commun, sont réservées aux abonnés Premium et VIP."
+      },
+      "calls": {
+        "title": "Appels audio et vidéo",
+        "text": "Lancer un appel est réservé aux abonnés Premium et VIP. Vous pouvez toujours répondre à un appel reçu."
+      },
+      "dates": {
+        "title": "Proposer un rendez-vous",
+        "text": "Proposer un rendez-vous est réservé aux abonnés Premium et VIP. Vous pouvez toujours répondre à une proposition reçue."
+      }
+    },
     "imagePreview": "Photo prête à envoyer",
     "imageHint": "Elle part quand vous cliquez sur Envoyer ou appuyez sur Entrée.",
     "removeImage": "Retirer la photo",
@@ -1922,7 +1983,7 @@
       "push": "Notifications push",
       "pushText": "Notifications sur votre appareil, après votre consentement.",
       "newsletter": "Newsletter",
-      "newsletterText": "Les nouveautés et conseils de CrushDuo par e-mail. Désinscription en un clic."
+      "newsletterText": "Les nouveautés et conseils de Crushduo par e-mail. Désinscription en un clic."
     },
     "privacy": {
       "visible": "Profil visible",
@@ -3024,7 +3085,7 @@
         "other": "Autre"
       },
       "blockedTitle": "Adresses bloquées",
-      "blockedText": "Quand Amazon SES signale une adresse inexistante (rebond définitif) ou un signalement comme spam, CrushDuo cesse de lui écrire pour protéger la réputation de l’expéditeur. Une plainte laisse passer les e-mails de sécurité (code, mot de passe) que la personne demande elle-même.",
+      "blockedText": "Quand Amazon SES signale une adresse inexistante (rebond définitif) ou un signalement comme spam, Crushduo cesse de lui écrire pour protéger la réputation de l’expéditeur. Une plainte laisse passer les e-mails de sécurité (code, mot de passe) que la personne demande elle-même.",
       "blockedEmpty": "Aucune adresse bloquée pour le moment.",
       "bounces": "rebonds définitifs",
       "complaints": "plaintes",
@@ -3219,16 +3280,51 @@
   },
   "life": {
     "marital": "Situation",
-    "maritalOpt": {"SINGLE": "Jamais marié(e)", "DIVORCED": "Divorcé(e)", "WIDOWED": "Veuf / veuve", "SEPARATED": "Séparé(e)"},
+    "maritalOpt": {
+      "SINGLE": "Jamais marié(e)",
+      "DIVORCED": "Divorcé(e)",
+      "WIDOWED": "Veuf / veuve",
+      "SEPARATED": "Séparé(e)"
+    },
     "education": "Niveau d’études",
-    "educationOpt": {"SECONDARY": "Études secondaires", "BACCALAUREATE": "Baccalauréat", "BACHELOR": "Licence", "MASTER": "Master", "DOCTORATE": "Doctorat", "OTHER": "Autre formation"},
+    "educationOpt": {
+      "SECONDARY": "Études secondaires",
+      "BACCALAUREATE": "Baccalauréat",
+      "BACHELOR": "Licence",
+      "MASTER": "Master",
+      "DOCTORATE": "Doctorat",
+      "OTHER": "Autre formation"
+    },
     "smoking": "Tabac",
     "alcohol": "Alcool",
-    "habit": {"NEVER": "jamais", "SOMETIMES": "occasionnellement", "OFTEN": "régulièrement"},
+    "habit": {
+      "NEVER": "jamais",
+      "SOMETIMES": "occasionnellement",
+      "OFTEN": "régulièrement"
+    },
     "religion": "Religion",
-    "religionOpt": {"CHRISTIAN": "Chrétienne", "MUSLIM": "Musulmane", "TRADITIONAL": "Traditionnelle", "OTHER": "Autre religion", "NONE": "Sans religion"},
+    "religionOpt": {
+      "CHRISTIAN": "Chrétienne",
+      "MUSLIM": "Musulmane",
+      "TRADITIONAL": "Traditionnelle",
+      "OTHER": "Autre religion",
+      "NONE": "Sans religion"
+    },
     "showReligion": "Afficher ma religion sur mon profil (masquée par défaut)",
-    "zodiacOpt": {"aries": "Bélier", "taurus": "Taureau", "gemini": "Gémeaux", "cancer": "Cancer", "leo": "Lion", "virgo": "Vierge", "libra": "Balance", "scorpio": "Scorpion", "sagittarius": "Sagittaire", "capricorn": "Capricorne", "aquarius": "Verseau", "pisces": "Poissons"},
+    "zodiacOpt": {
+      "aries": "Bélier",
+      "taurus": "Taureau",
+      "gemini": "Gémeaux",
+      "cancer": "Cancer",
+      "leo": "Lion",
+      "virgo": "Vierge",
+      "libra": "Balance",
+      "scorpio": "Scorpion",
+      "sagittarius": "Sagittaire",
+      "capricorn": "Capricorne",
+      "aquarius": "Verseau",
+      "pisces": "Poissons"
+    },
     "title": "Mode de vie",
     "hint": "Facultatif. Ces informations servent aux critères du menu Crush ; laissez vide si vous préférez ne pas répondre.",
     "unspecified": "Non précisé",
@@ -3470,10 +3566,10 @@
       "counter": "{n} / {max}",
       "hint": "En cas de duo, votre commentaire devient votre premier message.",
       "sending": "Envoi en cours…",
-        "superTitle": "Envoyer en Super Like",
-        "superHint": "Votre message est mis en avant : la personne le voit en priorité. Il vous reste {n} Super Like(s).",
-        "superNone": "Plus de Super Like disponible. Achetez un pack pour en envoyer avec un message.",
-        "send": "Envoyer le J’aime",
+      "superTitle": "Envoyer en Super Like",
+      "superHint": "Votre message est mis en avant : la personne le voit en priorité. Il vous reste {n} Super Like(s).",
+      "superNone": "Plus de Super Like disponible. Achetez un pack pour en envoyer avec un message.",
+      "send": "Envoyer le J’aime",
       "sent": "J’aime envoyé.",
       "likeWith": "J’aime avec un commentaire",
       "choosePhoto": "Choisissez la photo",
@@ -3542,7 +3638,7 @@
   },
   "cookieNotice": {
     "title": "Cookies et vie privée",
-    "text": "CrushDuo n’utilise que des cookies et stockages indispensables au service (connexion, langue, thème). Aucun cookie publicitaire, aucun suivi.",
+    "text": "Crushduo n’utilise que des cookies et stockages indispensables au service (connexion, langue, thème). Aucun cookie publicitaire, aucun suivi.",
     "more": "En savoir plus",
     "ok": "J’ai compris"
   },
@@ -3664,7 +3760,7 @@
   },
   "rhythm": {
     "title": "Votre rythme",
-    "intro": "Rencontrer quelqu’un n’est pas une course. Réglez CrushDuo à votre rythme : vous gardez toujours la main.",
+    "intro": "Rencontrer quelqu’un n’est pas une course. Réglez Crushduo à votre rythme : vous gardez toujours la main.",
     "pauseTitle": "Mode pause",
     "pauseText": "Vous êtes invisible dans les découvertes, vous ne recevez plus d’alertes et vous ne pouvez plus liker, le temps de souffler. Vos conversations et vos duos restent là.",
     "pauseFor": "Durée de la pause",
@@ -3791,7 +3887,11 @@
     "unlocked": "Les réponses de votre sélection sont visibles sur les cartes.",
     "same": "Vous avez choisi la même réponse que {name} : un bon sujet pour commencer."
   },
-  "gallery": { "open": "Voir la photo {n} en grand", "show": "Afficher la photo {n}", "thumbs": "Photos" },
+  "gallery": {
+    "open": "Voir la photo {n} en grand",
+    "show": "Afficher la photo {n}",
+    "thumbs": "Photos"
+  },
   "toc": {
     "onPage": "Sur cette page",
     "steps": "Votre parcours",
@@ -3876,7 +3976,7 @@
   },
   "featureOff": {
     "title": "Fonctionnalité indisponible",
-    "text": "Elle est momentanément désactivée par l’équipe CrushDuo. Revenez un peu plus tard : tout redeviendra comme avant.",
+    "text": "Elle est momentanément désactivée par l’équipe Crushduo. Revenez un peu plus tard : tout redeviendra comme avant.",
     "back": "Retour à la découverte",
     "names": {
       "speed_dating": "Speed dating",
@@ -3895,7 +3995,7 @@
   },
   "newsletter": {
     "title": "La newsletter",
-    "text": "Les nouveautés et conseils de CrushDuo, pas plus.",
+    "text": "Les nouveautés et conseils de Crushduo, pas plus.",
     "email": "Votre adresse e-mail",
     "placeholder": "vous@exemple.com",
     "subscribe": "S’abonner",
@@ -3903,7 +4003,7 @@
     "error": "Adresse invalide ou trop de tentatives. Réessayez dans un moment.",
     "confirm": {
       "okTitle": "Inscription confirmée",
-      "okText": "Merci ! Vous recevrez la newsletter CrushDuo. Chaque e-mail contient un lien pour vous désabonner."
+      "okText": "Merci ! Vous recevrez la newsletter Crushduo. Chaque e-mail contient un lien pour vous désabonner."
     },
     "unsubscribe": {
       "okTitle": "Vous êtes désabonné(e)",
@@ -3918,17 +4018,17 @@
     "privacy": "Un e-mail de temps en temps. Désinscription en un clic, à tout moment."
   },
   "install": {
-    "title": "Installer CrushDuo sur votre téléphone",
+    "title": "Installer Crushduo sur votre téléphone",
     "lead": "Un accès en un geste depuis votre écran d’accueil, en plein écran, sans passer par un magasin d’applications.",
-    "ready": "Installer CrushDuo",
-    "readyText": "Votre navigateur peut installer CrushDuo en quelques secondes.",
+    "ready": "Installer Crushduo",
+    "readyText": "Votre navigateur peut installer Crushduo en quelques secondes.",
     "cta": "Installer l’application",
     "refused": "Pas de souci : vous pourrez l’installer plus tard, à tout moment, depuis cette page.",
     "manualText": "Votre navigateur ne propose pas de bouton d’installation : suivez les étapes ci-dessous, elles prennent moins d’une minute.",
-    "installedTitle": "CrushDuo est déjà installée",
+    "installedTitle": "Crushduo est déjà installée",
     "installedText": "Vous utilisez l’application installée sur cet appareil.",
-    "open": "Ouvrir CrushDuo",
-    "benefitsTitle": "Pourquoi installer CrushDuo",
+    "open": "Ouvrir Crushduo",
+    "benefitsTitle": "Pourquoi installer Crushduo",
     "b1Title": "Un accès en un geste",
     "b1Text": "Une icône sur votre écran d’accueil, comme n’importe quelle application.",
     "b2Title": "En plein écran",
@@ -3940,33 +4040,33 @@
     "tabIos": "iPhone / iPad",
     "tabDesktop": "Ordinateur",
     "yours": "Votre appareil",
-    "androidS1": "Ouvrez CrushDuo dans le navigateur Chrome.",
+    "androidS1": "Ouvrez Crushduo dans le navigateur Chrome.",
     "androidS2": "Touchez le menu ⋮ en haut à droite.",
     "androidS3": "Touchez « Installer l’application » (ou « Ajouter à l’écran d’accueil »).",
-    "androidS4": "Confirmez : l’icône CrushDuo apparaît sur votre écran d’accueil.",
-    "iosS1": "Ouvrez CrushDuo dans Safari.",
+    "androidS4": "Confirmez : l’icône Crushduo apparaît sur votre écran d’accueil.",
+    "iosS1": "Ouvrez Crushduo dans Safari.",
     "iosS2": "Touchez le bouton Partager (le carré avec une flèche vers le haut).",
     "iosS3": "Faites défiler et touchez « Sur l’écran d’accueil ».",
-    "iosS4": "Touchez « Ajouter » : l’icône CrushDuo apparaît sur votre écran d’accueil.",
+    "iosS4": "Touchez « Ajouter » : l’icône Crushduo apparaît sur votre écran d’accueil.",
     "iosNote": "Sur iPhone et iPad, l’installation se fait depuis Safari. Si vous êtes dans une autre application (Instagram, Facebook…), ouvrez d’abord ce lien dans Safari.",
-    "desktopS1": "Ouvrez CrushDuo dans Chrome ou Edge.",
+    "desktopS1": "Ouvrez Crushduo dans Chrome ou Edge.",
     "desktopS2": "Cliquez sur l’icône d’installation, à droite de la barre d’adresse (un écran avec une flèche).",
-    "desktopS3": "Cliquez sur « Installer » : CrushDuo s’ouvre dans sa propre fenêtre.",
-    "desktopNote": "Firefox et Safari sur ordinateur ne proposent pas l’installation : vous pouvez simplement utiliser CrushDuo dans votre navigateur.",
+    "desktopS3": "Cliquez sur « Installer » : Crushduo s’ouvre dans sa propre fenêtre.",
+    "desktopNote": "Firefox et Safari sur ordinateur ne proposent pas l’installation : vous pouvez simplement utiliser Crushduo dans votre navigateur.",
     "faqTitle": "Questions fréquentes",
     "f1q": "Cela prend-il de la place sur mon téléphone ?",
     "f1a": "Très peu : c’est le site, pas une application lourde. Il n’y a rien à télécharger depuis un magasin.",
     "f2q": "L’application voit-elle plus de données sur moi ?",
     "f2a": "Non. C’est le même site avec la même politique de confidentialité : l’installation ne donne aucun accès supplémentaire à votre téléphone.",
     "f3q": "Comment la désinstaller ?",
-    "f3a": "Comme n’importe quelle application : appuyez longuement sur l’icône CrushDuo puis choisissez de la supprimer. Votre compte n’est pas supprimé.",
+    "f3a": "Comme n’importe quelle application : appuyez longuement sur l’icône Crushduo puis choisissez de la supprimer. Votre compte n’est pas supprimé.",
     "banner": {
-      "title": "Installez CrushDuo",
+      "title": "Installez Crushduo",
       "text": "Accès en un geste, en plein écran.",
       "cta": "Installer",
       "how": "Comment faire",
       "later": "Plus tard"
     },
-    "count": "{n, plural, one {# personne a déjà installé CrushDuo} other {# personnes ont déjà installé CrushDuo}}"
+    "count": "{n, plural, one {# personne a déjà installé Crushduo} other {# personnes ont déjà installé Crushduo}}"
   }
 }

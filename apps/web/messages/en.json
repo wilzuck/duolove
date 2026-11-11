@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "CrushDuo — Two hearts, one beautiful story",
-    "description": "CrushDuo, the dating platform for serious adults: verified profiles, smart matching, private and secure messaging.",
+    "title": "Crushduo — Two hearts, one beautiful story",
+    "description": "Crushduo, the dating platform for serious adults: verified profiles, smart matching, private and secure messaging.",
     "tagline": "Two hearts, one beautiful story."
   },
   "common": {
@@ -25,7 +25,7 @@
     "backHome": "Back to home"
   },
   "nav": {
-    "home": "CrushDuo home",
+    "home": "Crushduo home",
     "main": "Main navigation",
     "menu": "Open menu",
     "how": "How it works",
@@ -40,10 +40,16 @@
   },
   "footer": {
     "product": "Product",
-    "company": "CrushDuo",
+    "company": "Crushduo",
     "legal": "Legal",
     "adultsShort": "18+ only",
-    "short": { "install": "Install the app", "terms": "Terms", "privacy": "Privacy", "cookies": "Cookies", "community": "Rules" },
+    "short": {
+      "install": "Install the app",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "cookies": "Cookies",
+      "community": "Rules"
+    },
     "adults": "For adults only (18 and over).",
     "rights": "All rights reserved.",
     "links": "Site links"
@@ -60,7 +66,7 @@
         "data": "Protected data"
       },
       "ctaCreate": "Create my free account",
-      "ctaDiscover": "Discover CrushDuo",
+      "ctaDiscover": "Discover Crushduo",
       "heroAlt": "A smiling couple, cheek to cheek, in front of a large pink heart, with the “It’s a match!” card.",
       "strip": {
         "intent": {
@@ -98,7 +104,7 @@
     },
     "eyebrow": "Serious dating, with confidence",
     "title": "Two hearts, one beautiful story.",
-    "subtitle": "CrushDuo helps you meet compatible people: same intentions, same values, same city or close. Simple, elegant and secure.",
+    "subtitle": "Crushduo helps you meet compatible people: same intentions, same values, same city or close. Simple, elegant and secure.",
     "ctaRegister": "Create my account",
     "ctaLogin": "Log in",
     "heroMatch": "It’s a Duo!",
@@ -155,14 +161,14 @@
   },
   "how": {
     "kicker": "Step by step",
-    "title": "How CrushDuo works",
+    "title": "How Crushduo works",
     "subtitle": "Sincere connections, at your own pace, at any age. Here is the path, from signing up to your first conversation… and your first date.",
     "ctaHelp": "A question? The Help centre",
     "stepsTitle": "Your journey in eight steps",
     "steps": {
       "signup": {
         "title": "Create your account",
-        "text": "With your email (or Google) and a password, or simply a magic link. You confirm your address and that you are an adult: CrushDuo is for people aged 18 and over."
+        "text": "With your email (or Google) and a password, or simply a magic link. You confirm your address and that you are an adult: Crushduo is for people aged 18 and over."
       },
       "profile": {
         "title": "Tell your story",
@@ -213,14 +219,14 @@
       }
     ],
     "ageTitle": "Love has no age",
-    "ageText": "At 25, 45 or 70, you deserve a lovely encounter. CrushDuo welcomes all adults, with one requirement: respect. Read our code of kindness.",
+    "ageText": "At 25, 45 or 70, you deserve a lovely encounter. Crushduo welcomes all adults, with one requirement: respect. Read our code of kindness.",
     "ageCta": "Community guidelines",
     "plansTitle": "Free to start, Premium to go further",
     "plansFree": {
       "h": "Free",
       "items": [
         "Profile, personality questions and discovery",
-        "Daily picks, daily likes, matches and messaging",
+        "Daily picks, daily likes, duos and messaging",
         "Blocking and reporting, always free"
       ]
     },
@@ -244,7 +250,7 @@
       "a": "Only people aged 18 and over. Your date of birth is checked at sign-up."
     },
     "free": {
-      "q": "Is CrushDuo free?",
+      "q": "Is Crushduo free?",
       "a": "Yes: profile, discovery, duos and post-duo messaging are free, with a daily like limit. Premium and VIP unlock more features."
     },
     "safety": {
@@ -267,7 +273,7 @@
   "plans": {
     "FREE": {
       "name": "Free",
-      "tagline": "To discover CrushDuo"
+      "tagline": "To discover Crushduo"
     },
     "PREMIUM": {
       "name": "Premium",
@@ -349,9 +355,9 @@
     "order": "Order"
   },
   "about": {
-    "title": "About CrushDuo",
+    "title": "About Crushduo",
     "lead": "Behind every family, there was a day when two strangers looked at each other differently.",
-    "mission": "We’re building CrushDuo to make serious dating and beautiful stories easier between adults, in francophone Africa and beyond, in an environment where everyone feels safe.",
+    "mission": "We’re building Crushduo to make serious dating and beautiful stories easier between adults, in francophone Africa and beyond, in an environment where everyone feels safe.",
     "valuesTitle": "Our commitments",
     "values": {
       "respect": {
@@ -381,7 +387,7 @@
       "c2": {
         "title": "Meeting people has never been so easy… or so hard",
         "p1": "We’re more connected than ever, yet so many sincere people feel alone. Too many profiles, too many promises, too many conversations that fade after two messages. Many are looking for someone to build something real with, and end up lost in the noise, sometimes exposed to fake profiles and scams.",
-        "p2": "CrushDuo was born for those who want something else: less showcase, more meaning."
+        "p2": "Crushduo was born for those who want something else: less showcase, more meaning."
       },
       "c3": {
         "title": "A platform built to build, not to consume",
@@ -395,7 +401,7 @@
       },
       "c5": {
         "title": "Our dream: families that begin here",
-        "p1": "We dream of the day a couple tells us: “We met on CrushDuo.” Of the day children ask how their parents met, and the answer begins with a simple profile, a simple “Like”.",
+        "p1": "We dream of the day a couple tells us: “We met on Crushduo.” Of the day children ask how their parents met, and the answer begins with a simple profile, a simple “Like”.",
         "p2": "We don’t sell promises. We build the conditions for beautiful stories to happen: a respectful, safe, human-sized place, in francophone Africa and beyond."
       }
     },
@@ -431,13 +437,13 @@
       },
       "idea": {
         "h": "A suggestion",
-        "p": "An idea to make CrushDuo nicer.",
+        "p": "An idea to make Crushduo nicer.",
         "subject": "Suggestion"
       },
       "other": {
         "h": "Another question",
         "p": "Anything else, we read everything.",
-        "subject": "Question about CrushDuo"
+        "subject": "Question about Crushduo"
       }
     },
     "emailLabel": "Or write to us directly at",
@@ -455,7 +461,7 @@
     "helpTitle": "An answer may already be waiting",
     "helpCta": "Help centre",
     "communityCta": "Community guidelines",
-    "subject": "Question about CrushDuo",
+    "subject": "Question about Crushduo",
     "form": {
       "title": "Write to us directly",
       "name": "Your name",
@@ -504,10 +510,10 @@
       "start": [
         {
           "q": "Who can sign up?",
-          "a": "Only people aged 18 and over. Your date of birth is checked at sign-up, and CrushDuo welcomes adults of every age."
+          "a": "Only people aged 18 and over. Your date of birth is checked at sign-up, and Crushduo welcomes adults of every age."
         },
         {
-          "q": "Is CrushDuo free?",
+          "q": "Is Crushduo free?",
           "a": "Yes to get started: profile, discovery, daily picks, duos and messaging are free, with a daily number of likes. Premium and VIP add features, without ever guaranteeing a duo."
         },
         {
@@ -654,7 +660,7 @@
     }
   },
   "blog": {
-    "title": "The CrushDuo blog",
+    "title": "The Crushduo blog",
     "lead": "Tips for safe and successful dating.",
     "read": "Read the article",
     "minutes": "{n} min read",
@@ -663,7 +669,7 @@
     "empty": "The first articles are coming soon.",
     "back": "Back to the blog",
     "ctaTitle": "Ready to write your story?",
-    "ctaText": "Join CrushDuo and meet people looking for the same thing as you.",
+    "ctaText": "Join Crushduo and meet people looking for the same thing as you.",
     "ctaButton": "Create my account"
   },
   "legal": {
@@ -673,8 +679,8 @@
     "terms": {
       "title": "Terms of use",
       "kicker": "Terms of use",
-      "metaDescription": "CrushDuo’s terms of use: access, account, content, paid plans, moderation and responsibilities, explained simply.",
-      "lead": "This document explains, simply and honestly, the rules between you and CrushDuo. We wanted it to be readable: if in doubt, write to us.",
+      "metaDescription": "Crushduo’s terms of use: access, account, content, paid plans, moderation and responsibilities, explained simply.",
+      "lead": "This document explains, simply and honestly, the rules between you and Crushduo. We wanted it to be readable: if in doubt, write to us.",
       "toc": "Contents",
       "updated": "Last updated: November 2026",
       "listDo": "To remember",
@@ -690,7 +696,7 @@
           "id": "objet",
           "h": "Purpose and acceptance",
           "paras": [
-            "CrushDuo is an online service that connects adults who want to meet people, at any age. By creating an account, you accept these terms and our community guidelines.",
+            "Crushduo is an online service that connects adults who want to meet people, at any age. By creating an account, you accept these terms and our community guidelines.",
             "If you do not agree with these terms, please do not use the service."
           ]
         },
@@ -738,7 +744,7 @@
           "id": "offres",
           "h": "Free and paid offers",
           "paras": [
-            "CrushDuo is free to start. Paid plans (Premium, VIP) and one-off purchases (boosts, Super Likes, Crush tokens) unlock extra features. Prices, durations and benefits are shown on the Pricing page before any payment."
+            "Crushduo is free to start. Paid plans (Premium, VIP) and one-off purchases (boosts, Super Likes, Crush tokens) unlock extra features. Prices, durations and benefits are shown on the Pricing page before any payment."
           ],
           "lists": [
             {
@@ -747,7 +753,7 @@
                 "Plans exist for 1, 3, 6 or 12 months. Each period is a one-off payment: the subscription does not renew automatically and we warn you before it ends.",
                 "You can cancel at any time: you keep your benefits until the end of the paid period.",
                 "Purchased credits (boosts, Super Likes, tokens) stay on your account until used.",
-                "No offer guarantees a match or a relationship: it gives more visibility and tools.",
+                "No offer guarantees a duo or a relationship: it gives more visibility and tools.",
                 "Blocking, reporting and safety features stay free for everyone."
               ]
             }
@@ -773,7 +779,7 @@
           "id": "rencontres",
           "h": "Meetings and responsibility",
           "paras": [
-            "CrushDuo connects people but cannot guarantee the identity, intentions or behaviour of members. The “verified profile” badge means a moderator compared a selfie with the profile’s photos; it is not a guarantee.",
+            "Crushduo connects people but cannot guarantee the identity, intentions or behaviour of members. The “verified profile” badge means a moderator compared a selfie with the profile’s photos; it is not a guarantee.",
             "For a first meeting, choose a public place, tell someone you trust and arrive by your own means. Meetings take place under your own responsibility, to the extent the law allows."
           ]
         },
@@ -793,7 +799,7 @@
         },
         {
           "id": "fin",
-          "h": "Leaving CrushDuo",
+          "h": "Leaving Crushduo",
           "paras": [
             "You can delete your account at any time: deletion is permanent. We may suspend or close an account in case of serious or repeated breach, under the conditions of the “Moderation and sanctions” section."
           ]
@@ -825,36 +831,56 @@
       "title": "Privacy policy",
       "sections": [
         {
-          "h": "Data collected",
-          "p": "Email, date of birth, gender, city, photos, bio, interests, interactions (likes, messages), payment data processed by the provider."
+          "h": "Data we collect",
+          "p": "Email address, date of birth, gender, city, photos, bio, interests, your activity (likes, messages, photos sent in conversations) and, if you choose, lifestyle details: height, children, pets, living situation, country of origin, status, education, smoking, alcohol and religion. Payment data is handled by the payment provider. Your zodiac sign is never entered: it is calculated from your date of birth."
         },
         {
           "h": "Purposes",
-          "p": "Provide the service, suggest compatible profiles, ensure safety and moderation, manage subscriptions."
+          "p": "To provide the service, suggest compatible profiles, keep the community safe and moderated (reports, blocks), send service emails (login code, notifications you turned on), and manage subscriptions and purchases."
+        },
+        {
+          "h": "Optional and sensitive information",
+          "p": "Lifestyle details are entirely optional: “Not specified” by default, and you can change or clear them at any time. Religion is sensitive data: it is saved only if you enter it, stays hidden from other members until you tick “Show my religion on my profile”, and is never used to rank or recommend profiles."
         },
         {
           "h": "Location",
-          "p": "Your exact location is never stored or shown: if you share it, it is rounded (about 11 km) before saving."
+          "p": "Your exact position is never stored or shown: if you share it, it is rounded (about 11 km) before it is saved."
         },
         {
           "h": "Photos",
-          "p": "Metadata (EXIF, GPS) is removed on upload. Verification selfies are deleted after a decision."
+          "p": "Metadata (EXIF, GPS) is removed on upload. Photos sent in a conversation are private: only the two people involved can see them. Verification selfies are deleted after a decision."
+        },
+        {
+          "h": "Conversations, dates and calls",
+          "p": "The team does not browse your conversations: a report relies on the reporter’s description and the reported profile. When a date is proposed, only you choose whether to share it with someone you trust, through a link you can revoke. Audio and video calls, when offered, are never recorded."
+        },
+        {
+          "h": "Emails",
+          "p": "Our emails are sent by specialised providers (Brevo and Amazon SES). We keep a sending log (address, subject, status), never the content of messages. An address that can no longer receive mail (non-existent address or complaint) is put on a block list so we stop writing to it; emails essential to your account (confirmation, password, login link) remain possible after a simple complaint. You can unsubscribe from optional emails in one click."
+        },
+        {
+          "h": "Providers and transfers",
+          "p": "To run, Crushduo relies on providers that process data on our behalf: hosting (Railway), file storage, email delivery (Brevo, Amazon SES), payment (secure provider, Mobile Money and card) and, if you use it, Google sign-in. Some are located outside your country or the European Union; we only entrust them with what is necessary, and we never sell your data."
+        },
+        {
+          "h": "Installing the app",
+          "p": "If you install Crushduo on your home screen, a random identifier created on your device is sent at most once a day, with the device type (iPhone, Android or computer), only to count installations. It is not linked to your account, your name or your email address."
         },
         {
           "h": "Your rights",
-          "p": "Access, correction, export (Settings → Privacy), account deletion, withdrawal of marketing consent at any time."
+          "p": "Access, correction, export (Settings → Privacy), account deletion, withdrawal of marketing consent at any time. For any question about your data, write to us from the Contact page."
         },
         {
           "h": "Retention",
-          "p": "Data is deleted or anonymized when you delete your account, subject to legal obligations (billing, security)."
+          "p": "Data is deleted or anonymised when you delete your account, subject to legal obligations (invoicing, security)."
         }
       ]
     },
     "cookies": {
       "title": "Cookie policy",
       "kicker": "Cookies and storage",
-      "metaDescription": "CrushDuo’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising, no tracking.",
-      "lead": "Let’s talk cookies, without jargon and without hiding anything. CrushDuo only uses the bare minimum to sign you in and remember your preferences: no advertising, no tracking, no selling of data.",
+      "metaDescription": "Crushduo’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising, no tracking.",
+      "lead": "Let’s talk cookies, without jargon and without hiding anything. Crushduo only uses the bare minimum to sign you in, remember your preferences and, anonymously, count app installations: no advertising, no tracking, no selling of data.",
       "toc": "Contents",
       "updated": "Last updated: November 2026",
       "listDo": "To remember",
@@ -884,7 +910,7 @@
         }
       ],
       "table": {
-        "caption": "Cookies and storage used by CrushDuo",
+        "caption": "Cookies and storage used by Crushduo",
         "name": "Name",
         "kind": "Type",
         "purpose": "What it is for",
@@ -896,7 +922,7 @@
           {
             "name": "duomatch_sid",
             "kind": "Cookie, secure (httpOnly)",
-            "purpose": "Keeps you signed in while you use CrushDuo.",
+            "purpose": "Keeps you signed in while you use Crushduo.",
             "duration": "The browser session, or 30 days if you tick “Stay signed in”.",
             "need": "yes"
           },
@@ -927,8 +953,30 @@
             "purpose": "Remembers that you have read this notice so it is not shown again.",
             "duration": "Until you clear it.",
             "need": "pref"
+          },
+          {
+            "name": "duomatch-install-id",
+            "kind": "Browser local storage",
+            "purpose": "Random identifier used only to count app installations. It is not linked to your account.",
+            "duration": "Until you clear it.",
+            "need": "count"
+          },
+          {
+            "name": "duomatch-install-sent",
+            "kind": "Browser local storage",
+            "purpose": "Date of the last count, so the identifier is sent at most once a day.",
+            "duration": "Until you clear it.",
+            "need": "count"
+          },
+          {
+            "name": "duomatch-install-later",
+            "kind": "Browser local storage",
+            "purpose": "Remembers that you chose “Later” on the invitation to install the app.",
+            "duration": "Until you clear it.",
+            "need": "count"
           }
-        ]
+        ],
+        "count": "Anonymous count"
       },
       "sections": [
         {
@@ -963,7 +1011,7 @@
           "id": "preferences",
           "h": "Your preferences",
           "paras": [
-            "Your language, your light or dark theme and the “Enter sends” choice are comfort settings. If you clear them, CrushDuo simply starts again with its defaults."
+            "Your language, your light or dark theme and the “Enter sends” choice are comfort settings. If you clear them, Crushduo simply starts again with its defaults."
           ]
         },
         {
@@ -1000,7 +1048,7 @@
           "h": "See, block or erase",
           "paras": [
             "Every browser lets you view, block or delete cookies and local storage (in its privacy settings). Note: blocking the session cookie will prevent you from signing in, and erasing everything signs you out and resets your preferences.",
-            "Signing out from CrushDuo immediately removes the session cookie from the device."
+            "Signing out from Crushduo immediately removes the session cookie from the device."
           ]
         },
         {
@@ -1021,9 +1069,9 @@
     },
     "community": {
       "title": "Community guidelines",
-      "metaDescription": "CrushDuo’s code of kindness: respect, sincerity, safety and privacy, for happy relationships at any age.",
+      "metaDescription": "Crushduo’s code of kindness: respect, sincerity, safety and privacy, for happy relationships at any age.",
       "kicker": "Our code of kindness",
-      "lead": "You can find love at any age. CrushDuo brings together adults aged 18 and over who are looking for a real relationship, and everyone has the right to do so with respect, sincerity and peace of mind. These rules are here so you feel good here.",
+      "lead": "You can find love at any age. Crushduo brings together adults aged 18 and over who are looking for a real relationship, and everyone has the right to do so with respect, sincerity and peace of mind. These rules are here so you feel good here.",
       "ctaHelp": "Help centre",
       "ctaReport": "How to report",
       "glanceTitle": "The essentials in five ideas",
@@ -1060,7 +1108,7 @@
         {
           "id": "promesse",
           "h": "Love has no age",
-          "intro": "At 25, 40, 55 or 70, you have every reason to dream of a beautiful story. Here, age is neither a joke nor a flaw: it is a journey. CrushDuo welcomes all adults, whatever their origin, situation, way of loving or appearance, on one condition: respect others.",
+          "intro": "At 25, 40, 55 or 70, you have every reason to dream of a beautiful story. Here, age is neither a joke nor a flaw: it is a journey. Crushduo welcomes all adults, whatever their origin, situation, way of loving or appearance, on one condition: respect others.",
           "lists": [
             {
               "kind": "do",
@@ -1150,7 +1198,7 @@
         {
           "id": "contenus",
           "h": "Content and photos",
-          "intro": "CrushDuo is a dating place for all ages: let’s keep content that makes everyone comfortable.",
+          "intro": "Crushduo is a dating place for all ages: let’s keep content that makes everyone comfortable.",
           "lists": [
             {
               "kind": "dont",
@@ -1303,7 +1351,7 @@
     "createAccount": "Create my account",
     "google": "Continue with Google",
     "or": "or",
-    "googleNeedsSignup": "New to CrushDuo? Create your account first to complete your profile.",
+    "googleNeedsSignup": "New to Crushduo? Create your account first to complete your profile.",
     "googleComplete": "Google account recognized. Complete this information to finish signing up.",
     "forgotTitle": "Forgot password",
     "forgotSubtitle": "Enter your email: we’ll send you a reset link.",
@@ -1637,7 +1685,20 @@
     "callsLocked": "Calls: Premium and VIP only",
     "datesLocked": "Dates: Premium and VIP only",
     "ideasLocked": "Conversation ideas: Premium and VIP only",
-    "planGate": {"ideas": {"title": "Ideas to break the ice", "text": "Topic ideas drawn from what you have in common are reserved for Premium and VIP members."}, "calls": {"title": "Audio and video calls", "text": "Starting a call is reserved for Premium and VIP members. You can still answer a call you receive."}, "dates": {"title": "Propose a date", "text": "Proposing a date is reserved for Premium and VIP members. You can still reply to a proposal you receive."}},
+    "planGate": {
+      "ideas": {
+        "title": "Ideas to break the ice",
+        "text": "Topic ideas drawn from what you have in common are reserved for Premium and VIP members."
+      },
+      "calls": {
+        "title": "Audio and video calls",
+        "text": "Starting a call is reserved for Premium and VIP members. You can still answer a call you receive."
+      },
+      "dates": {
+        "title": "Propose a date",
+        "text": "Proposing a date is reserved for Premium and VIP members. You can still reply to a proposal you receive."
+      }
+    },
     "imagePreview": "Photo ready to send",
     "imageHint": "It is sent when you tap Send or press Enter.",
     "removeImage": "Remove photo",
@@ -1922,7 +1983,7 @@
       "push": "Push notifications",
       "pushText": "Notifications on your device, after your consent.",
       "newsletter": "Newsletter",
-      "newsletterText": "CrushDuo news and tips by email. One-click unsubscribe."
+      "newsletterText": "Crushduo news and tips by email. One-click unsubscribe."
     },
     "privacy": {
       "visible": "Visible profile",
@@ -3024,7 +3085,7 @@
         "other": "Other"
       },
       "blockedTitle": "Blocked addresses",
-      "blockedText": "When Amazon SES reports a non-existent address (hard bounce) or a spam complaint, CrushDuo stops emailing it to protect the sender reputation. A complaint still lets security emails (code, password) through when the person asks for them.",
+      "blockedText": "When Amazon SES reports a non-existent address (hard bounce) or a spam complaint, Crushduo stops emailing it to protect the sender reputation. A complaint still lets security emails (code, password) through when the person asks for them.",
       "blockedEmpty": "No blocked address yet.",
       "bounces": "hard bounces",
       "complaints": "complaints",
@@ -3219,16 +3280,51 @@
   },
   "life": {
     "marital": "Status",
-    "maritalOpt": {"SINGLE": "Never married", "DIVORCED": "Divorced", "WIDOWED": "Widowed", "SEPARATED": "Separated"},
+    "maritalOpt": {
+      "SINGLE": "Never married",
+      "DIVORCED": "Divorced",
+      "WIDOWED": "Widowed",
+      "SEPARATED": "Separated"
+    },
     "education": "Education",
-    "educationOpt": {"SECONDARY": "Secondary school", "BACCALAUREATE": "High school diploma", "BACHELOR": "Bachelor’s degree", "MASTER": "Master’s degree", "DOCTORATE": "Doctorate", "OTHER": "Other training"},
+    "educationOpt": {
+      "SECONDARY": "Secondary school",
+      "BACCALAUREATE": "High school diploma",
+      "BACHELOR": "Bachelor’s degree",
+      "MASTER": "Master’s degree",
+      "DOCTORATE": "Doctorate",
+      "OTHER": "Other training"
+    },
     "smoking": "Smoking",
     "alcohol": "Alcohol",
-    "habit": {"NEVER": "never", "SOMETIMES": "occasionally", "OFTEN": "regularly"},
+    "habit": {
+      "NEVER": "never",
+      "SOMETIMES": "occasionally",
+      "OFTEN": "regularly"
+    },
     "religion": "Religion",
-    "religionOpt": {"CHRISTIAN": "Christian", "MUSLIM": "Muslim", "TRADITIONAL": "Traditional", "OTHER": "Other religion", "NONE": "No religion"},
+    "religionOpt": {
+      "CHRISTIAN": "Christian",
+      "MUSLIM": "Muslim",
+      "TRADITIONAL": "Traditional",
+      "OTHER": "Other religion",
+      "NONE": "No religion"
+    },
     "showReligion": "Show my religion on my profile (hidden by default)",
-    "zodiacOpt": {"aries": "Aries", "taurus": "Taurus", "gemini": "Gemini", "cancer": "Cancer", "leo": "Leo", "virgo": "Virgo", "libra": "Libra", "scorpio": "Scorpio", "sagittarius": "Sagittarius", "capricorn": "Capricorn", "aquarius": "Aquarius", "pisces": "Pisces"},
+    "zodiacOpt": {
+      "aries": "Aries",
+      "taurus": "Taurus",
+      "gemini": "Gemini",
+      "cancer": "Cancer",
+      "leo": "Leo",
+      "virgo": "Virgo",
+      "libra": "Libra",
+      "scorpio": "Scorpio",
+      "sagittarius": "Sagittarius",
+      "capricorn": "Capricorn",
+      "aquarius": "Aquarius",
+      "pisces": "Pisces"
+    },
     "title": "Lifestyle",
     "hint": "Optional. Used by the Crush menu criteria; leave blank if you prefer not to answer.",
     "unspecified": "Not specified",
@@ -3470,10 +3566,10 @@
       "counter": "{n} / {max}",
       "hint": "If you form a duo, your comment becomes your first message.",
       "sending": "Sending…",
-        "superTitle": "Send as a Super Like",
-        "superHint": "Your message stands out: the person sees it first. You have {n} Super Like(s) left.",
-        "superNone": "No Super Like left. Buy a pack to send one with a message.",
-        "send": "Send the Like",
+      "superTitle": "Send as a Super Like",
+      "superHint": "Your message stands out: the person sees it first. You have {n} Super Like(s) left.",
+      "superNone": "No Super Like left. Buy a pack to send one with a message.",
+      "send": "Send the Like",
       "sent": "Like sent.",
       "likeWith": "Like with a comment",
       "choosePhoto": "Choose the photo",
@@ -3542,7 +3638,7 @@
   },
   "cookieNotice": {
     "title": "Cookies and privacy",
-    "text": "CrushDuo only uses cookies and storage that are essential to the service (sign-in, language, theme). No advertising cookies, no tracking.",
+    "text": "Crushduo only uses cookies and storage that are essential to the service (sign-in, language, theme). No advertising cookies, no tracking.",
     "more": "Learn more",
     "ok": "Got it"
   },
@@ -3664,7 +3760,7 @@
   },
   "rhythm": {
     "title": "Your pace",
-    "intro": "Meeting someone is not a race. Set CrushDuo to your own pace: you always stay in control.",
+    "intro": "Meeting someone is not a race. Set Crushduo to your own pace: you always stay in control.",
     "pauseTitle": "Pause mode",
     "pauseText": "You are invisible in discovery, you stop receiving alerts and you cannot like, while you catch your breath. Your conversations and duos stay right here.",
     "pauseFor": "Length of the pause",
@@ -3791,7 +3887,11 @@
     "unlocked": "Answers from your picks are shown on the cards.",
     "same": "You chose the same answer as {name}: a good way to start."
   },
-  "gallery": { "open": "View photo {n} larger", "show": "Show photo {n}", "thumbs": "Photos" },
+  "gallery": {
+    "open": "View photo {n} larger",
+    "show": "Show photo {n}",
+    "thumbs": "Photos"
+  },
   "toc": {
     "onPage": "On this page",
     "steps": "Your journey",
@@ -3876,7 +3976,7 @@
   },
   "featureOff": {
     "title": "Feature unavailable",
-    "text": "It is temporarily turned off by the CrushDuo team. Please come back a little later: everything will be back soon.",
+    "text": "It is temporarily turned off by the Crushduo team. Please come back a little later: everything will be back soon.",
     "back": "Back to Discover",
     "names": {
       "speed_dating": "Speed dating",
@@ -3895,7 +3995,7 @@
   },
   "newsletter": {
     "title": "The newsletter",
-    "text": "CrushDuo news and tips, nothing more.",
+    "text": "Crushduo news and tips, nothing more.",
     "email": "Your email address",
     "placeholder": "you@example.com",
     "subscribe": "Subscribe",
@@ -3903,7 +4003,7 @@
     "error": "Invalid address or too many attempts. Try again in a moment.",
     "confirm": {
       "okTitle": "Subscription confirmed",
-      "okText": "Thank you! You will receive the CrushDuo newsletter. Every email has a link to unsubscribe."
+      "okText": "Thank you! You will receive the Crushduo newsletter. Every email has a link to unsubscribe."
     },
     "unsubscribe": {
       "okTitle": "You are unsubscribed",
@@ -3918,17 +4018,17 @@
     "privacy": "An email now and then. One-click unsubscribe, any time."
   },
   "install": {
-    "title": "Install CrushDuo on your phone",
+    "title": "Install Crushduo on your phone",
     "lead": "One-tap access from your home screen, full screen, without going through an app store.",
-    "ready": "Install CrushDuo",
-    "readyText": "Your browser can install CrushDuo in a few seconds.",
+    "ready": "Install Crushduo",
+    "readyText": "Your browser can install Crushduo in a few seconds.",
     "cta": "Install the app",
     "refused": "No problem: you can install it later, any time, from this page.",
     "manualText": "Your browser does not offer an install button: follow the steps below, it takes less than a minute.",
-    "installedTitle": "CrushDuo is already installed",
+    "installedTitle": "Crushduo is already installed",
     "installedText": "You are using the app installed on this device.",
-    "open": "Open CrushDuo",
-    "benefitsTitle": "Why install CrushDuo",
+    "open": "Open Crushduo",
+    "benefitsTitle": "Why install Crushduo",
     "b1Title": "One-tap access",
     "b1Text": "An icon on your home screen, like any other app.",
     "b2Title": "Full screen",
@@ -3940,33 +4040,33 @@
     "tabIos": "iPhone / iPad",
     "tabDesktop": "Computer",
     "yours": "Your device",
-    "androidS1": "Open CrushDuo in the Chrome browser.",
+    "androidS1": "Open Crushduo in the Chrome browser.",
     "androidS2": "Tap the ⋮ menu at the top right.",
     "androidS3": "Tap “Install app” (or “Add to Home screen”).",
-    "androidS4": "Confirm: the CrushDuo icon appears on your home screen.",
-    "iosS1": "Open CrushDuo in Safari.",
+    "androidS4": "Confirm: the Crushduo icon appears on your home screen.",
+    "iosS1": "Open Crushduo in Safari.",
     "iosS2": "Tap the Share button (the square with an arrow pointing up).",
     "iosS3": "Scroll down and tap “Add to Home Screen”.",
-    "iosS4": "Tap “Add”: the CrushDuo icon appears on your home screen.",
+    "iosS4": "Tap “Add”: the Crushduo icon appears on your home screen.",
     "iosNote": "On iPhone and iPad, installing is done from Safari. If you are inside another app (Instagram, Facebook…), open this link in Safari first.",
-    "desktopS1": "Open CrushDuo in Chrome or Edge.",
+    "desktopS1": "Open Crushduo in Chrome or Edge.",
     "desktopS2": "Click the install icon on the right of the address bar (a screen with an arrow).",
-    "desktopS3": "Click “Install”: CrushDuo opens in its own window.",
-    "desktopNote": "Firefox and Safari on a computer do not offer installation: you can simply use CrushDuo in your browser.",
+    "desktopS3": "Click “Install”: Crushduo opens in its own window.",
+    "desktopNote": "Firefox and Safari on a computer do not offer installation: you can simply use Crushduo in your browser.",
     "faqTitle": "Frequently asked questions",
     "f1q": "Does it take up space on my phone?",
     "f1a": "Very little: it is the website, not a heavy app. There is nothing to download from a store.",
     "f2q": "Does the app see more of my data?",
     "f2a": "No. It is the same website with the same privacy policy: installing does not give any extra access to your phone.",
     "f3q": "How do I uninstall it?",
-    "f3a": "Like any app: long-press the CrushDuo icon and choose to remove it. Your account is not deleted.",
+    "f3a": "Like any app: long-press the Crushduo icon and choose to remove it. Your account is not deleted.",
     "banner": {
-      "title": "Install CrushDuo",
+      "title": "Install Crushduo",
       "text": "One-tap access, full screen.",
       "cta": "Install",
       "how": "How to",
       "later": "Later"
     },
-    "count": "{n, plural, one {# person has already installed CrushDuo} other {# people have already installed CrushDuo}}"
+    "count": "{n, plural, one {# person has already installed Crushduo} other {# people have already installed Crushduo}}"
   }
 }

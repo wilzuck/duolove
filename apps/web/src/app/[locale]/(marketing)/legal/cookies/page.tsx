@@ -8,7 +8,7 @@ const ICONS: Record<string, LucideIcon> = {
   essentiel: Gift, stockage: Cookie, connexion: Lock, preferences: SlidersHorizontal, tiers: UserCheck, jamais: Ban, gerer: Settings2, evolutions: PencilLine, contact: MessageCircleHeart,
 };
 const GLANCE_ICONS: LucideIcon[] = [Ban, EyeOff, ShieldCheck, Settings2];
-type Row = { name: string; kind: string; purpose: string; duration: string; need: 'yes' | 'pref' };
+type Row = { name: string; kind: string; purpose: string; duration: string; need: 'yes' | 'pref' | 'count' };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
