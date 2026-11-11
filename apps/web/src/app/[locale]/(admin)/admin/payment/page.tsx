@@ -9,7 +9,7 @@ import { useApiError } from '@/hooks/useApiError';
 import { ApiError, api, post, put } from '@/lib/api';
 import { useUi } from '@/lib/store';
 
-interface PaymentView { source: 'env' | 'db'; provider: 'mock' | 'kkiapay'; publicKey: string | null; sandbox: boolean; live: boolean; hasPrivateKey: boolean; hasWebhookSecret: boolean; privateKeyMasked: string | null; webhookUrl: string; encryptionKeyConfigured: boolean; envProvider: string; isProd: boolean }
+interface PaymentView { source: 'env' | 'db'; provider: 'mock' | 'kkiapay'; publicKey: string | null; sandbox: boolean; live: boolean; hasPrivateKey: boolean; hasWebhookSecret: boolean; privateKeyMasked: string | null; webhookUrl: string; encryptionKeyConfigured: boolean; envProvider: string; isProd: boolean; reauth: 'password' | 'code' }
 
 /** Paiement en ligne (KKiaPay). Réservé au super administrateur ; les clés sont en écriture seule, chiffrées en base, et l'enregistrement redemande le mot de passe. */
 export default function AdminPaymentConfig() {
@@ -22,6 +22,9 @@ export default function AdminPaymentConfig() {
   const [form, setForm] = useState<{ provider: 'mock' | 'kkiapay'; publicKey: string; privateKey: string; webhookSecret: string; sandbox: boolean } | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
+  const [mode, setMode] = useState<'password' | 'code' | null>(null);  // null : celui que le serveur conseille (code si le compte n'a pas de mot de passe)
+  const how = mode ?? v?.reauth ?? 'password';
   const f = form ?? { provider: v?.provider ?? 'mock', publicKey: v?.publicKey ?? '', privateKey: '', webhookSecret: '', sandbox: v?.sandbox ?? true };
   const set = <K extends keyof typeof f>(k: K, val: (typeof f)[K]) => setForm({ ...f, [k]: val });
   // Le serveur explique la cause précise d'un échec de test : on l'ajoute au message traduit.
@@ -30,9 +33,10 @@ export default function AdminPaymentConfig() {
   const kk = f.provider === 'kkiapay';
 
   const test = useMutation({ mutationFn: () => post('/admin/payment-config/test', body()), onSuccess: () => toast('success', t('admin.pay.testOk')), onError: (e) => toast('error', explain(e)) });
+  const sendCode = useMutation({ mutationFn: () => post('/admin/payment-config/code'), onSuccess: () => toast('success', t('admin.pay.codeSent')), onError: (e) => toast('error', err(e)) });
   const save = useMutation({
-    mutationFn: () => put<PaymentView>('/admin/payment-config', { ...body(), password }),
-    onSuccess: () => { toast('success', t('admin.pay.saved')); setForm(null); setConfirm(false); setPassword(''); void qc.invalidateQueries({ queryKey: ['admin'] }); },
+    mutationFn: () => put<PaymentView>('/admin/payment-config', { ...body(), ...(how === 'code' ? { code } : { password }) }),
+    onSuccess: () => { toast('success', t('admin.pay.saved')); setForm(null); setConfirm(false); setPassword(''); setCode(''); setMode(null); void qc.invalidateQueries({ queryKey: ['admin'] }); },
     onError: (e) => toast('error', explain(e)),
   });
 
@@ -86,8 +90,20 @@ export default function AdminPaymentConfig() {
       <Dialog open={confirm} onClose={() => setConfirm(false)} title={t('admin.pay.confirmTitle')} closeLabel={t('common.close')}>
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); save.mutate(); }}>
           <p className="text-sm">{t(kk && !f.sandbox ? 'admin.pay.confirmReal' : 'admin.pay.confirmText')}</p>
-          <Field label={t('admin.pay.password')}>{(p) => <PasswordInput {...p} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />}</Field>
-          <div className="flex justify-end gap-2"><Button type="button" variant="ghost" onClick={() => setConfirm(false)}>{t('common.cancel')}</Button><Button type="submit" loading={save.isPending} disabled={!password}>{t('admin.pay.confirm')}</Button></div>
+          {how === 'password' ? (
+            <>
+              <Field label={t('admin.pay.password')}>{(p) => <PasswordInput {...p} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />}</Field>
+              <button type="button" className="text-sm font-semibold text-brand-ink underline" onClick={() => setMode('code')}>{t('admin.pay.useCode')}</button>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-muted">{v?.reauth === 'code' ? t('admin.pay.codeHelpNoPassword') : t('admin.pay.codeHelp')}</p>
+              <Button type="button" variant="outline" size="sm" onClick={() => sendCode.mutate()} loading={sendCode.isPending}>{t('admin.pay.sendCode')}</Button>
+              <Field label={t('admin.pay.code')}>{(p) => <Input {...p} inputMode="numeric" autoComplete="one-time-code" maxLength={6} pattern="[0-9]{6}" placeholder="123456" value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} required />}</Field>
+              {v?.reauth === 'password' && <button type="button" className="text-sm font-semibold text-brand-ink underline" onClick={() => setMode('password')}>{t('admin.pay.usePassword')}</button>}
+            </>
+          )}
+          <div className="flex justify-end gap-2"><Button type="button" variant="ghost" onClick={() => setConfirm(false)}>{t('common.cancel')}</Button><Button type="submit" loading={save.isPending} disabled={how === 'code' ? code.length !== 6 : !password}>{t('admin.pay.confirm')}</Button></div>
         </form>
       </Dialog>
     </div>

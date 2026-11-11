@@ -235,3 +235,10 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 ## Configuration du paiement depuis l'admin (terminé, non commité)
 - Admin › Paiement en ligne (super administrateur) : fournisseur (KKiaPay ou simulé), clé publique, clé privée et secret du webhook (chiffrés en base avec `SETTINGS_ENCRYPTION_KEY`, jamais renvoyés ni journalisés), mode bac à sable / réel, adresse du webhook à copier chez KKiaPay. « Tester les clés » interroge KKiaPay sans déplacer d'argent ; l'enregistrement redemande le mot de passe. La base l'emporte sur les variables `PAYMENT_PROVIDER` / `KKIAPAY_*` (repli si rien n'est saisi).
 - Tests backend (faux KKiaPay) ; **jamais exécuté contre le vrai KKiaPay** : premier essai bac à sable à faire.
+
+## Confirmation par code e-mail pour les comptes sans mot de passe (terminé, non commité)
+- Modifier la configuration du paiement redemande une confirmation : mot de passe, ou **code à 6 chiffres envoyé par e-mail** (proposé d'office aux comptes créés avec Google). Code haché (HMAC), valable 10 minutes, 5 essais, usage unique, 3 envois par 10 minutes (`core/reauth.py`). Testé côté API ; l'envoi réel d'e-mail et l'écran n'ont pas été essayés. Les téléchargements de sauvegarde restent au mot de passe seul (non étendus).
+
+## Gabarit des e-mails : titre, police, logo (terminé, non commité)
+- Titre ramené de 30 à 22 px (graisse 700), corps 15 px, bouton 16 px, pied de carte plus discret, logo 160 px de large. Police DM Sans (celle du site) chargée par feuille Google Fonts dans l'en-tête : prise en compte par Apple Mail, iOS Mail, Outlook Mac ; Gmail et Outlook Windows retombent sur la police système (limite des clients, pas du gabarit). Les e-mails d'envoi (éditeur riche) utilisent les mêmes tailles et la même police.
+- Logo : l'image reste `crushduo-logo-email.png` (nouveau cœur) mais l'adresse porte `?v=3` car Gmail met les images en cache par adresse et affichait l'ancien logo ; incrémenter `LOGO_VERSION` à chaque changement de logo. Rendu non vérifié visuellement dans un vrai client mail.

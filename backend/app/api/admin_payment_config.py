@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.admin import SUP, audit
-from app.core import kkiapay, payment_config
+from app.core import kkiapay, payment_config, reauth
 from app.core.auth import AuthUser
 from app.core.config import get_settings
 from app.core.errors import AppError, bad_request, unauthorized
@@ -26,6 +26,7 @@ class PaymentConfigIn(BaseModel):
     webhookSecret: str | None = None  # écriture seule : jamais renvoyé
     sandbox: bool = True
     password: str | None = None
+    code: str | None = None  # code à 6 chiffres reçu par e-mail (comptes sans mot de passe, ex. connexion Google)
 
 
 def _webhook_url() -> str:
@@ -50,8 +51,19 @@ async def _probe(cfg: payment_config.Effective) -> None:
 
 
 @router.get("")
-async def read(_: AuthUser = SUP):
-    return await _view()
+async def read(a: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
+    user = await db.get(User, a.id)
+    return {**await _view(), "reauth": "password" if user and user.passwordHash else "code"}
+
+
+@router.post("/code", dependencies=[limit(3, 600)])
+async def send_code(a: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
+    """Envoie par e-mail le code de confirmation (alternative au mot de passe, surtout pour un compte créé avec Google)."""
+    user = await db.get(User, a.id)
+    if not user:
+        raise unauthorized("INVALID_CREDENTIALS")
+    await reauth.send_code(db, user, "payment-config", "modifier la configuration du paiement")
+    return {"sent": True}
 
 
 @router.post("/test", dependencies=[limit(10, 600)])
@@ -67,11 +79,20 @@ async def save(body: PaymentConfigIn, a: AuthUser = SUP, db: AsyncSession = Depe
     before = await payment_config.effective()
     cand = payment_config.build(body.model_dump(), before)
     user = await db.get(User, a.id)
-    if not user or not user.passwordHash:
-        raise AppError(403, "PASSWORD_REQUIRED", "Définissez un mot de passe sur votre compte pour modifier le paiement")
-    if not body.password or not await verify_password(user.passwordHash, body.password):
-        await audit(db, a.id, "payment.config.denied", "SystemSetting", payment_config.KEY, {"reason": "bad_password"})
-        raise unauthorized("INVALID_CREDENTIALS", "Mot de passe incorrect")
+    if not user:
+        raise unauthorized("INVALID_CREDENTIALS")
+    if body.code:
+        try:
+            await reauth.verify_code(db, a.id, "payment-config", body.code)
+        except AppError:
+            await audit(db, a.id, "payment.config.denied", "SystemSetting", payment_config.KEY, {"reason": "bad_code"})
+            raise
+    else:
+        if not user.passwordHash:
+            raise AppError(403, "CODE_REQUIRED", "Votre compte n'a pas de mot de passe : demandez un code de confirmation par e-mail")
+        if not body.password or not await verify_password(user.passwordHash, body.password):
+            await audit(db, a.id, "payment.config.denied", "SystemSetting", payment_config.KEY, {"reason": "bad_password"})
+            raise unauthorized("INVALID_CREDENTIALS", "Mot de passe incorrect")
     if cand.provider == "kkiapay":
         await _probe(cand)
     row = (await db.execute(select(SystemSetting).where(SystemSetting.key == payment_config.KEY))).scalar_one_or_none()

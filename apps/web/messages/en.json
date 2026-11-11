@@ -3491,7 +3491,14 @@
       "confirmText": "To protect payments, your password is asked again before saving.",
       "confirmReal": "You are switching to REAL payments: members will really be charged. Confirm with your password.",
       "password": "Password",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "useCode": "Get a code by e-mail instead",
+      "usePassword": "Use my password",
+      "codeHelpNoPassword": "Your account has no password (Google sign-in): a 6-digit code is sent to your e-mail address.",
+      "codeHelp": "A 6-digit code is sent to your account's e-mail address.",
+      "sendCode": "Send the code",
+      "code": "Code received by e-mail",
+      "codeSent": "Code sent: check your inbox (and spam). It is valid for 10 minutes."
     }
   },
   "pricingFaq": {

@@ -89,3 +89,41 @@ async def test_les_cles_sont_chiffrees_en_base_et_relues(app, db, monkeypatch):
     assert SK not in str(view) and WH not in str(view) and view["hasPrivateKey"] and view["hasWebhookSecret"]
     async with session_maker()() as s:
         assert (await s.execute(select(SystemSetting.value).where(SystemSetting.key == payment_config.KEY))).scalar_one()["provider"] == "kkiapay"
+
+
+async def test_compte_sans_mot_de_passe_confirme_par_code_e_mail(app, db, monkeypatch):
+    """Connexion Google : pas de mot de passe, le code reçu par e-mail le remplace (à usage unique, 5 essais)."""
+    from sqlalchemy import update
+
+    from app.core import mail
+    from app.models.models import User
+    from tests.support_c import set_role
+
+    async def post_json(url, key, b, t):
+        return 404, {}
+
+    sent = []
+
+    async def fake_send(to, subject, text, *a, **k):
+        sent.append(text)
+        return True
+
+    monkeypatch.setattr(kkiapay, "post_json", post_json)
+    monkeypatch.setattr(mail, "send", fake_send)
+    ad = await admin(app, db)
+    await set_role(ad.id, "SUPER_ADMIN")
+    async with session_maker()() as s:
+        await s.execute(update(User).where(User.id == ad.id).values(passwordHash=None))
+        await s.commit()
+    assert (await ad.agent.get("/api/admin/payment-config")).json()["reauth"] == "code"
+    no = await ad.agent.put("/api/admin/payment-config", json=body(password="x"))
+    assert no.status_code == 403 and no.json()["error"]["code"] == "CODE_REQUIRED"
+    assert (await ad.agent.post("/api/admin/payment-config/code")).status_code == 200
+    code = sent[-1].split(": ")[1][:6]
+    assert code.isdigit() and len(code) == 6
+    bad = await ad.agent.put("/api/admin/payment-config", json=body(code="000000" if code != "000000" else "111111"))
+    assert bad.status_code == 400 and bad.json()["error"]["code"] == "INVALID_CODE"
+    ok = await ad.agent.put("/api/admin/payment-config", json=body(code=code))
+    assert ok.status_code == 200 and ok.json()["provider"] == "kkiapay" and SK not in ok.text
+    again = await ad.agent.put("/api/admin/payment-config", json=body(code=code))
+    assert again.status_code == 400  # le code est à usage unique

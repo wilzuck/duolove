@@ -3491,7 +3491,14 @@
       "confirmText": "Pour protéger les paiements, ton mot de passe est redemandé avant d'enregistrer.",
       "confirmReal": "Tu passes en paiements RÉELS : les membres seront vraiment débités. Confirme avec ton mot de passe.",
       "password": "Mot de passe",
-      "confirm": "Confirmer"
+      "confirm": "Confirmer",
+      "useCode": "Recevoir un code par e-mail à la place",
+      "usePassword": "Utiliser mon mot de passe",
+      "codeHelpNoPassword": "Ton compte n'a pas de mot de passe (connexion Google) : un code à 6 chiffres est envoyé à ton adresse e-mail.",
+      "codeHelp": "Un code à 6 chiffres est envoyé à l'adresse e-mail de ton compte.",
+      "sendCode": "Envoyer le code",
+      "code": "Code reçu par e-mail",
+      "codeSent": "Code envoyé : regarde ta boîte mail (et les courriers indésirables). Il est valable 10 minutes."
     }
   },
   "pricingFaq": {
