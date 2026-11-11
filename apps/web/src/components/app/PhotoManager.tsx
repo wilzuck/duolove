@@ -37,7 +37,7 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
     order.mutate(ids);
   };
   const makeMain = (i: number) => { const ids = photos.map((p) => p.id); const [m] = ids.splice(i, 1); order.mutate([m!, ...ids]); };
-  const btn = 'flex size-9 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur hover:bg-black/75 disabled:opacity-30';
+  const btn = 'flex size-9 shrink-0 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur hover:bg-black/75 disabled:opacity-30';
 
   return (
     <div>
@@ -46,13 +46,11 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
           <li key={p.id} className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-soft">
             <img src={p.thumbUrl} alt={t('photos.alt', { n: i + 1 })} className="size-full object-cover" />
             {i === 0 && <Badge className="absolute top-2 left-2 bg-brand-strong text-white">{t('photos.main')}</Badge>}
-            <div className="absolute inset-x-2 bottom-2 flex items-center justify-between">
-              <div className="flex gap-1.5">
-                <button type="button" className={btn} disabled={i === 0 || order.isPending} onClick={() => move(i, -1)} aria-label={t('photos.moveLeft')}><ArrowLeft className="size-4" /></button>
-                <button type="button" className={btn} disabled={i === photos.length - 1 || order.isPending} onClick={() => move(i, 1)} aria-label={t('photos.moveRight')}><ArrowRight className="size-4" /></button>
-                {i > 0 && <button type="button" className={btn} onClick={() => makeMain(i)} aria-label={t('photos.makeMain')}><Star className="size-4" /></button>}
-              </div>
-              <button type="button" className={cn(btn, 'bg-danger-strong/90 hover:bg-danger-strong')} onClick={() => remove.mutate(p.id)} aria-label={t('photos.remove')}><Trash2 className="size-4" /></button>
+            <button type="button" className={cn(btn, 'absolute top-2 right-2 bg-danger-strong/90 hover:bg-danger-strong')} onClick={() => remove.mutate(p.id)} aria-label={t('photos.remove')}><Trash2 className="size-4" /></button>
+            <div className="absolute inset-x-2 bottom-2 flex items-center gap-1.5">
+              <button type="button" className={btn} disabled={i === 0 || order.isPending} onClick={() => move(i, -1)} aria-label={t('photos.moveLeft')}><ArrowLeft className="size-4" /></button>
+              <button type="button" className={btn} disabled={i === photos.length - 1 || order.isPending} onClick={() => move(i, 1)} aria-label={t('photos.moveRight')}><ArrowRight className="size-4" /></button>
+              {i > 0 && <button type="button" className={btn} onClick={() => makeMain(i)} aria-label={t('photos.makeMain')}><Star className="size-4" /></button>}
             </div>
           </li>
         ))}
