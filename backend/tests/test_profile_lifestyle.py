@@ -2,6 +2,7 @@
 import datetime
 
 from app.core.lifestyle import zodiac
+from tests.helpers import make_premium
 from tests.support_c import member
 
 
@@ -35,3 +36,29 @@ async def test_valeur_inconnue_refusee(app, db):
     for bad in ({"smoking": "TOUS_LES_JOURS"}, {"religion": "SECTE"}):
         r = await me.agent.patch("/api/profiles/me", json=bad)
         assert r.status_code == 400 and r.json()["error"]["code"] == "VALIDATION_ERROR"
+
+
+async def test_valeurs_catalogue_et_libres_visibles_et_likables(app, db):
+    me, other = await member(app, db), await member(app, db, gender="MAN")
+    r = await me.agent.patch("/api/profiles/me", json={"values": ["HONESTY", "  Ma   famille ", "honesty"]})
+    assert r.status_code == 200, r.text
+    assert r.json()["values"] == ["HONESTY", "Ma famille"]  # espaces normalisés, doublon (casse) retiré
+    card = (await other.agent.get(f"/api/profiles/{me.id}")).json()
+    assert card["values"] == ["HONESTY", "Ma famille"]
+    # Like et Super Like ciblés sur une valeur du profil ; une valeur qui n'y figure pas est refusée.
+    bad = await other.agent.post("/api/swipes", json={"targetId": me.id, "action": "LIKE", "targetKind": "VALUE", "targetRef": "RESPECT"})
+    assert bad.status_code == 400 and bad.json()["error"]["code"] == "INVALID_LIKE_TARGET"
+    ok = await other.agent.post("/api/swipes", json={"targetId": me.id, "action": "LIKE", "targetKind": "VALUE", "targetRef": "HONESTY", "comment": "Moi aussi"})
+    assert ok.status_code in (200, 201), ok.text
+    vip = await member(app, db, gender="MAN")
+    await make_premium(vip.id)
+    sup = await vip.agent.post("/api/swipes", json={"targetId": me.id, "action": "SUPER_LIKE", "targetKind": "VALUE", "targetRef": "Ma famille"})
+    assert sup.status_code in (200, 201), sup.text  # une valeur libre se like aussi
+
+
+async def test_valeurs_refusees(app, db):
+    me = await member(app, db)
+    for bad in (["A"], ["x" * 25], ["appelle le 0612"], ["me@mail.com"], ["a b", "c d", "e f", "g h"]):
+        r = await me.agent.patch("/api/profiles/me", json={"values": bad})
+        assert r.status_code == 400, bad
+    assert (await me.agent.patch("/api/profiles/me", json={"values": []})).json()["values"] == []

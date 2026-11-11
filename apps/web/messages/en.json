@@ -1576,7 +1576,9 @@
     "UPLOAD_TIMEOUT": "The upload took too long. Check your connection, then try again.",
     "PAYMENTS_UNAVAILABLE": "Online payments are not available yet. Please try again later.",
     "SOCIAL_URL_INVALID": "Link rejected: use the account's full https address on the network's own domain.",
-    "SOCIAL_URL_REQUIRED": "Enter at least one link to show this network."
+    "SOCIAL_URL_REQUIRED": "Enter at least one link to show this network.",
+    "INVALID_LIFE_VALUE": "Value rejected: 2 to 24 characters, no digits or links.",
+    "TOO_MANY_LIFE_VALUES": "3 values at most."
   },
   "app": {
     "nav": {
@@ -3558,7 +3560,8 @@
         "PROFILE": "Their profile",
         "PHOTO": "A photo",
         "PROMPT": "An answer",
-        "INTEREST": "An interest"
+        "INTEREST": "An interest",
+        "VALUE": "A value"
       },
       "comment": "Add a comment (optional)",
       "placeholders": {
@@ -3594,7 +3597,8 @@
       "likeWith": "Like with a comment",
       "choosePhoto": "Choose the photo",
       "chooseAnswer": "Choose the answer",
-      "chooseInterest": "Choose the interest"
+      "chooseInterest": "Choose the interest",
+      "pickValue": "Pick the value"
     },
     "daily": {
       "title": "Your picks of the day",
@@ -4088,5 +4092,34 @@
       "later": "Later"
     },
     "count": "{n, plural, one {# person has already installed Crushduo} other {# people have already installed Crushduo}}"
+  },
+  "values": {
+    "title": "What matters most to me",
+    "hint": "Pick up to 3 values, or add your own. They show on your profile.",
+    "count": "{n} of {max} chosen",
+    "custom": "Add your own values",
+    "customHint": "Up to {max} characters, no digits or links.",
+    "add": "Add",
+    "remove": "Remove “{name}”",
+    "like": "Like the value “{name}”",
+    "likeTitle": "Like",
+    "superLike": "Super Like the value “{name}”",
+    "superLikeTitle": "Super Like",
+    "HONESTY": "Honesty",
+    "RESPECT": "Respect",
+    "MINDFULNESS": "Mindfulness",
+    "FAMILY": "Family",
+    "LOYALTY": "Loyalty",
+    "KINDNESS": "Kindness",
+    "HUMOR": "Humor",
+    "AMBITION": "Ambition",
+    "FREEDOM": "Freedom",
+    "GENEROSITY": "Generosity",
+    "COMMUNICATION": "Communication",
+    "ADVENTURE": "Adventure",
+    "CREATIVITY": "Creativity",
+    "STABILITY": "Stability",
+    "GROWTH": "Personal growth",
+    "SPIRITUALITY": "Spirituality"
   }
 }

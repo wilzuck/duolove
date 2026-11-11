@@ -1576,7 +1576,9 @@
     "UPLOAD_TIMEOUT": "L'envoi a pris trop de temps. Vérifiez votre connexion, puis réessayez.",
     "PAYMENTS_UNAVAILABLE": "Les paiements en ligne ne sont pas encore disponibles. Réessayez plus tard.",
     "SOCIAL_URL_INVALID": "Adresse refusée : utilisez l'adresse https complète du compte, sur le domaine du réseau.",
-    "SOCIAL_URL_REQUIRED": "Renseignez au moins une adresse pour afficher ce réseau."
+    "SOCIAL_URL_REQUIRED": "Renseignez au moins une adresse pour afficher ce réseau.",
+    "INVALID_LIFE_VALUE": "Valeur refusée : 2 à 24 caractères, sans chiffre ni lien.",
+    "TOO_MANY_LIFE_VALUES": "3 valeurs au plus."
   },
   "app": {
     "nav": {
@@ -3558,7 +3560,8 @@
         "PROFILE": "Son profil",
         "PHOTO": "Une photo",
         "PROMPT": "Une réponse",
-        "INTEREST": "Un centre d’intérêt"
+        "INTEREST": "Un centre d’intérêt",
+        "VALUE": "Une valeur"
       },
       "comment": "Ajouter un commentaire (facultatif)",
       "placeholders": {
@@ -3594,7 +3597,8 @@
       "likeWith": "J’aime avec un commentaire",
       "choosePhoto": "Choisissez la photo",
       "chooseAnswer": "Choisissez la réponse",
-      "chooseInterest": "Choisissez l’intérêt"
+      "chooseInterest": "Choisissez l’intérêt",
+      "pickValue": "Choisissez la valeur"
     },
     "daily": {
       "title": "Tes découvertes du jour",
@@ -4088,5 +4092,34 @@
       "later": "Plus tard"
     },
     "count": "{n, plural, one {# personne a déjà installé Crushduo} other {# personnes ont déjà installé Crushduo}}"
+  },
+  "values": {
+    "title": "Ce qui compte le plus pour moi",
+    "hint": "Choisissez jusqu'à 3 valeurs, ou ajoutez les vôtres. Elles apparaissent sur votre profil.",
+    "count": "{n} sur {max} choisies",
+    "custom": "Ajoutez vos propres valeurs",
+    "customHint": "{max} caractères au plus, sans chiffre ni lien.",
+    "add": "Ajouter",
+    "remove": "Retirer « {name} »",
+    "like": "Liker la valeur « {name} »",
+    "likeTitle": "J'aime",
+    "superLike": "Super Like sur la valeur « {name} »",
+    "superLikeTitle": "Super Like",
+    "HONESTY": "Honnêteté",
+    "RESPECT": "Respect",
+    "MINDFULNESS": "Pleine conscience",
+    "FAMILY": "Famille",
+    "LOYALTY": "Loyauté",
+    "KINDNESS": "Bienveillance",
+    "HUMOR": "Humour",
+    "AMBITION": "Ambition",
+    "FREEDOM": "Liberté",
+    "GENEROSITY": "Générosité",
+    "COMMUNICATION": "Communication",
+    "ADVENTURE": "Aventure",
+    "CREATIVITY": "Créativité",
+    "STABILITY": "Stabilité",
+    "GROWTH": "Épanouissement",
+    "SPIRITUALITY": "Spiritualité"
   }
 }

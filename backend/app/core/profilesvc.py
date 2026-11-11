@@ -9,7 +9,7 @@ from app.core.completeness import completeness_level, compute_completeness
 from app.core.constants import INTEREST_SLUGS, age_from_birth_date
 from app.core.errors import bad_request, forbidden, not_found
 from app.core.ids import new_id, utcnow
-from app.core.lifestyle import zodiac
+from app.core.lifestyle import clean_life_values, zodiac
 from app.core.profile_card import MAX_PHOTOS, photo_url, thumb_key
 from app.models.models import (
     Interest, Preference, Profile, ProfilePhoto, VerificationRequest, t_UserInterest,
@@ -48,7 +48,7 @@ async def get_mine(db: AsyncSession, user_id: str) -> dict:
     return {
         "id": p.userId, "hasChildren": p.hasChildren, "likesPets": p.likesPets, "living": _v(p.living), "heightCm": p.heightCm,
         "originCountry": p.originCountry, "maritalStatus": p.maritalStatus, "education": p.education, "smoking": p.smoking, "alcohol": p.alcohol,
-        "religion": p.religion, "showReligion": p.showReligion, "zodiac": zodiac(p.birthDate), "liveOptIn": p.liveOptIn, "displayName": p.displayName, "birthDate": p.birthDate,
+        "religion": p.religion, "showReligion": p.showReligion, "values": list(p.lifeValues or []), "zodiac": zodiac(p.birthDate), "liveOptIn": p.liveOptIn, "displayName": p.displayName, "birthDate": p.birthDate,
         "age": age_from_birth_date(p.birthDate), "gender": _v(p.gender), "pronouns": p.pronouns, "country": p.country, "city": p.city,
         "bio": p.bio, "occupation": p.occupation, "languages": p.languages or [], "intent": _v(p.intent), "visibility": _v(p.visibility),
         "incognito": p.incognito, "verified": p.verified, "verificationPending": bool(pending), "readReceipts": p.readReceipts or not await _can_control_receipts(db, user_id), "readReceiptsLocked": not await _can_control_receipts(db, user_id), "typingIndicator": p.typingIndicator, "showActivity": p.showActivity,
@@ -82,6 +82,10 @@ async def recompute(db: AsyncSession, user_id: str) -> None:
 async def update_profile(db: AsyncSession, user_id: str, data: dict) -> dict:
     p = await _profile(db, user_id)
     interests = data.pop("interests", None)
+    if "values" in data:
+        vals = data.pop("values")
+        if vals is not None:
+            p.lifeValues = clean_life_values(vals)
     for k, v in data.items():
         if v is None and k not in NULLABLE:
             continue

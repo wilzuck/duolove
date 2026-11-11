@@ -10,6 +10,7 @@ import { useEngagementConfig } from '@/hooks/useQueries';
 import { post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import { formatHeight } from '@/lib/format';
+import { isCatalogValue, valueIcon } from '@/lib/lifeValues';
 import type { Card, SwipeResult } from '@/lib/types';
 import { countryName } from './ProfileCard';
 import { AffinityPanel } from './AffinityPanel';
@@ -58,6 +59,28 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
           {card.occupation && <div className="flex items-center gap-2"><Briefcase className="size-4 text-brand" aria-hidden /><dt className="sr-only">{t('profile.occupation')}</dt><dd>{card.occupation}</dd></div>}
           {card.languages.length > 0 && <div className="flex items-center gap-2"><Languages className="size-4 text-brand" aria-hidden /><dt className="sr-only">{t('profile.languages')}</dt><dd>{card.languages.map((l) => t(`lang.${l}` as never)).join(', ')}</dd></div>}
         </dl>
+        {!!card.values?.length && (
+          <section aria-labelledby={`values-${card.id}`}><h3 id={`values-${card.id}`} className="mb-2 font-bold">{t('values.title')}</h3>
+            <ul className="grid grid-cols-3 gap-2">
+              {card.values.map((v) => {
+                const Icon = valueIcon(v);
+                const name = isCatalogValue(v) ? t(`values.${v}` as never) : v;
+                return (
+                  <li key={v} className="flex flex-col items-center gap-2 rounded-2xl border border-line bg-card p-3 text-center">
+                    <span className="grid size-12 place-items-center rounded-full bg-linear-to-br from-brand-2/30 to-brand-strong/20 text-brand-ink"><Icon className="size-6" aria-hidden /></span>
+                    <span className="text-sm font-semibold leading-tight">{name}</span>
+                    {canComment && (
+                      <span className="flex gap-1.5">
+                        <button type="button" onClick={() => setComposer({ kind: 'VALUE', ref: v })} aria-label={t('values.like', { name })} title={t('values.likeTitle')} className="grid size-8 place-items-center rounded-full border border-line text-brand-strong transition hover:bg-soft focus-visible:outline-2 focus-visible:outline-brand"><Heart className="size-4" aria-hidden /></button>
+                        <button type="button" onClick={() => setComposer({ kind: 'VALUE', ref: v, superLike: true })} aria-label={t('values.superLike', { name })} title={t('values.superLikeTitle')} className="grid size-8 place-items-center rounded-full border border-line text-sky-600 transition hover:bg-soft focus-visible:outline-2 focus-visible:outline-brand"><Star className="size-4" aria-hidden /></button>
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
         {(card.heightCm != null || card.hasChildren != null || card.likesPets != null || card.living || card.originCountry || card.maritalStatus || card.education || card.smoking || card.alcohol || card.religion || card.zodiac) && (
           <section aria-labelledby={`life-${card.id}`}><h3 id={`life-${card.id}`} className="mb-2 font-bold">{t('profileView.lifestyle')}</h3>
             <ul className="flex flex-wrap gap-2">

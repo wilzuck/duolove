@@ -20,3 +20,31 @@ def zodiac(birth: datetime.date | datetime.datetime | None) -> str | None:
         if (birth.month, birth.day) >= (month, day):
             sign = name
     return sign
+
+
+# Valeurs « Ce qui compte le plus pour moi » : jusqu'à 3, choisies dans le catalogue ou écrites par la personne.
+LIFE_VALUES = ("HONESTY", "RESPECT", "MINDFULNESS", "FAMILY", "LOYALTY", "KINDNESS", "HUMOR", "AMBITION", "FREEDOM", "GENEROSITY",
+               "COMMUNICATION", "ADVENTURE", "CREATIVITY", "STABILITY", "GROWTH", "SPIRITUALITY")
+MAX_LIFE_VALUES = 3
+CUSTOM_MIN, CUSTOM_MAX = 2, 24
+
+
+def clean_life_values(raw: list[str]) -> list[str]:
+    """Liste nettoyée : codes du catalogue tels quels, valeurs libres normalisées (espaces, 2 à 24 caractères, sans lien ni coordonnées), sans doublon, 3 au plus."""
+    from app.core.errors import bad_request
+
+    out: list[str] = []
+    for item in raw:
+        v = " ".join(str(item).split())
+        if v in LIFE_VALUES:
+            key = v
+        else:
+            low = v.lower()
+            if not CUSTOM_MIN <= len(v) <= CUSTOM_MAX or any(c in low for c in ("@", "http", "www.", ".com")) or any(ch.isdigit() for ch in v):
+                raise bad_request("INVALID_LIFE_VALUE", f"Valeur libre : {CUSTOM_MIN} à {CUSTOM_MAX} caractères, sans chiffre ni lien")
+            key = v
+        if key.lower() not in {o.lower() for o in out}:
+            out.append(key)
+    if len(out) > MAX_LIFE_VALUES:
+        raise bad_request("TOO_MANY_LIFE_VALUES", f"{MAX_LIFE_VALUES} valeurs au plus")
+    return out

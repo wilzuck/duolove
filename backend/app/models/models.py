@@ -1174,6 +1174,7 @@ class Profile(Base):
     alcohol: Mapped[Optional[str]] = mapped_column(Text)
     religion: Mapped[Optional[str]] = mapped_column(Text)
     showReligion: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'))
+    lifeValues: Mapped[list] = mapped_column(JSONB, nullable=False, server_default=text("'[]'::jsonb"))  # « Ce qui compte le plus pour moi » (3 au plus)
 
     User_: Mapped['User'] = relationship('User', back_populates='Profile')
     ProfilePhoto: Mapped[list['ProfilePhoto']] = relationship('ProfilePhoto', back_populates='Profile_')

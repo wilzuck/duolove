@@ -7,7 +7,7 @@ import { Badge, Button, Card, Skeleton } from '@duomatch/ui';
 import { PhotoManager } from '@/components/app/PhotoManager';
 import { ProfileTips } from '@/components/app/ProfileTips';
 import { PromptsEditor } from '@/components/app/PromptsEditor';
-import { AboutFields, InterestPicker, LifestyleFields, PreferenceFields, SaveBar, aboutFrom, lifeFrom, prefDefault, type AboutValue, type LifeValue } from '@/components/app/ProfileForms';
+import { AboutFields, InterestPicker, LifestyleFields, PreferenceFields, SaveBar, ValuesFields, aboutFrom, lifeFrom, prefDefault, type AboutValue, type LifeValue } from '@/components/app/ProfileForms';
 import { useApiError } from '@/hooks/useApiError';
 import { keys, useMe, useMyProfile } from '@/hooks/useQueries';
 import { Link } from '@/i18n/navigation';
@@ -67,6 +67,7 @@ export default function ProfilePage() {
       <ProfileTips />
       <Card id="photos" className="scroll-mt-20 space-y-4 p-5"><h2 className="font-bold">{t('profile.photos')}</h2><PhotoManager photos={p.photos} /></Card>
       <Card id="about" className="scroll-mt-20 space-y-4 p-5"><h2 className="font-bold">{t('profile.about')}</h2><AboutFields value={a} onChange={setAbout} withLocation /></Card>
+      <Card id="values" className="scroll-mt-20 space-y-4 p-5"><div><h2 className="font-bold">{t('values.title')}</h2><p className="text-sm text-muted">{t('values.hint')}</p></div><ValuesFields value={lf.values} onChange={(v) => setLife({ ...lf, values: v })} /></Card>
       <Card className="space-y-4 p-5"><div><h2 className="font-bold">{t('life.title')}</h2><p className="text-sm text-muted">{t('life.hint')}</p></div><LifestyleFields value={lf} onChange={setLife} /></Card>
       <Card id="interests" className="scroll-mt-20 space-y-4 p-5"><h2 className="font-bold">{t('profile.interests')}</h2><InterestPicker value={a.interests} onChange={(v) => setAbout({ ...a, interests: v })} /></Card>
       <PromptsEditor />

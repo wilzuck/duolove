@@ -3,7 +3,7 @@ import type { CreditType, Gender, Intent, Limits, LiveCriteria, Living, PlanCode
 export type { Limits };
 
 export interface Photo { id: string; url: string; thumbUrl: string; isPrimary?: boolean; position?: number }
-export type LikeKind = 'PROFILE' | 'PHOTO' | 'PROMPT' | 'INTEREST';
+export type LikeKind = 'PROFILE' | 'PHOTO' | 'PROMPT' | 'INTEREST' | 'VALUE';
 export interface Affinity { score: number; reasons: { code: string; n?: number }[]; commonInterests: string[]; intentsCompatible: boolean; axes?: { intent: number; preferences: number; interests: number; location: number } }
 export interface PromptAnswer { id: string; promptId: string; position: number; question: { fr: string; en: string }; answer: string }
 export interface PromptDef { id: string; slug: string; textFr: string; textEn: string; active: boolean; sortOrder: number }
@@ -16,7 +16,7 @@ export interface Card {
   superLike?: boolean; likedAt?: string; affinity?: Affinity | null; prompts?: PromptAnswer[];
   comment?: string | null; likeTarget?: { kind: LikeKind; ref: string | null } | null; decision?: 'LIKE' | 'PASS' | 'SUPER_LIKE' | null;
   hasChildren?: boolean | null; likesPets?: boolean | null; living?: Living | null; heightCm?: number | null; originCountry?: string | null;
-  maritalStatus?: string | null; education?: string | null; smoking?: string | null; alcohol?: string | null; religion?: string | null; zodiac?: string | null;
+  maritalStatus?: string | null; education?: string | null; smoking?: string | null; alcohol?: string | null; religion?: string | null; zodiac?: string | null; values?: string[];
 }
 export interface Me {
   id: string; email: string; emailVerified: boolean; role: 'USER' | 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN';
@@ -32,7 +32,7 @@ export interface MyProfile {
   verificationPending: boolean; readReceipts: boolean; readReceiptsLocked: boolean; typingIndicator: boolean; showActivity: boolean; boostedUntil: string | null; completeness: number;
   completenessLevel: 'INCOMPLETE' | 'IN_PROGRESS' | 'COMPLETE'; onboarded: boolean;
   hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null;
-  maritalStatus: string | null; education: string | null; smoking: string | null; alcohol: string | null; religion: string | null; showReligion: boolean; zodiac: string | null; liveOptIn: boolean; interests: string[]; photos: Photo[];
+  maritalStatus: string | null; education: string | null; smoking: string | null; alcohol: string | null; religion: string | null; showReligion: boolean; values: string[]; zodiac: string | null; liveOptIn: boolean; interests: string[]; photos: Photo[];
   preference: { seeking: Seeking; ageMin: number; ageMax: number; country: string | null; city: string | null; intents: Intent[]; languages: string[]; interests: string[]; verifiedOnly: boolean; activeRecently: boolean; maxDistanceKm: number | null } | null;
 }
 export interface ConversationItem {

@@ -32,6 +32,7 @@ class ProfileUpdateIn(Body):
     alcohol: Literal["NEVER", "SOMETIMES", "OFTEN"] | None = None
     religion: Literal["CHRISTIAN", "MUSLIM", "TRADITIONAL", "OTHER", "NONE"] | None = None
     showReligion: bool | None = None
+    values: Annotated[list[Annotated[str, Field(max_length=40)]], Field(max_length=3)] | None = None
 
 
 class PreferenceIn(Body):
@@ -75,7 +76,7 @@ class SwipeIn(Body):
     targetId: Annotated[str, Field(min_length=1)]
     action: Literal["LIKE", "PASS", "SUPER_LIKE"]
     comment: Annotated[str, BeforeValidator(lambda v: v.strip() if isinstance(v, str) else v)] | None = None
-    targetKind: Literal["PHOTO", "PROMPT", "INTEREST", "PROFILE"] | None = None
+    targetKind: Literal["PHOTO", "PROMPT", "INTEREST", "VALUE", "PROFILE"] | None = None
     targetRef: Annotated[str, Field(max_length=120)] | None = None
 
 

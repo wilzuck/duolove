@@ -79,7 +79,7 @@ def to_card(c: CardProfile, *, viewer_interests: list[str] | None = None, distan
         "heightCm": p.heightCm, "originCountry": p.originCountry,
         "maritalStatus": p.maritalStatus, "education": p.education, "smoking": p.smoking, "alcohol": p.alcohol,
         "religion": p.religion if p.showReligion else None,  # donnée sensible : jamais montrée si la personne ne l'a pas rendue visible
-        "zodiac": zodiac(p.birthDate),
+        "zodiac": zodiac(p.birthDate), "values": list(p.lifeValues or []),
         "interests": c.interests, "commonInterests": [i for i in c.interests if i in mine],
         "distanceKm": distance_km, "compatibility": score, "affinity": affinity, "prompts": c.prompts,
         "photos": [{"id": x.id, "url": photo_url(x.key), "thumbUrl": photo_url(thumb_key(x.key))} for x in c.photos],

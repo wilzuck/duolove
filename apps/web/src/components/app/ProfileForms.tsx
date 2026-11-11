@@ -1,10 +1,11 @@
 'use client';
-import { Compass, Crown, HeartHandshake, Smile, Users } from 'lucide-react';
+import { Compass, Crown, HeartHandshake, Smile, Sparkles, Users, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { COUNTRIES, countryFlag, EDUCATION, HABIT, INTENTS, INTEREST_SLUGS, LIVING, MARITAL, RELIGION, SEEKING, type Intent, type Living } from '@duomatch/types';
 import { Button, ChoiceCards, Checkbox, cn, Field, Input, RangeSlider, Select, Textarea } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
+import { CUSTOM_VALUE_MAX, isCatalogValue, LIFE_VALUES, MAX_LIFE_VALUES, valueIcon } from '@/lib/lifeValues';
 import type { Limits, MyProfile } from '@/lib/types';
 import { CityInput } from '../CityInput';
 
@@ -53,10 +54,10 @@ function HeightInput({ cm, onChange, ...p }: { cm: number | null; onChange: (cm:
 
 export interface LifeValue {
   hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null;
-  maritalStatus: string | null; education: string | null; smoking: string | null; alcohol: string | null; religion: string | null; showReligion: boolean;
+  maritalStatus: string | null; education: string | null; smoking: string | null; alcohol: string | null; religion: string | null; showReligion: boolean; values: string[];
 }
 export const lifeFrom = (p: MyProfile): LifeValue => ({ hasChildren: p.hasChildren, likesPets: p.likesPets, living: p.living, heightCm: p.heightCm, originCountry: p.originCountry,
-  maritalStatus: p.maritalStatus, education: p.education, smoking: p.smoking, alcohol: p.alcohol, religion: p.religion, showReligion: p.showReligion });
+  maritalStatus: p.maritalStatus, education: p.education, smoking: p.smoking, alcohol: p.alcohol, religion: p.religion, showReligion: p.showReligion, values: p.values ?? [] });
 const triValue = (v: boolean | null) => (v === null ? '' : v ? 'yes' : 'no');
 const fromTri = (v: string): boolean | null => (v === '' ? null : v === 'yes');
 
@@ -178,3 +179,34 @@ export function useDirty<T>(initial: T | undefined) {
 export const SaveBar = ({ dirty, loading, label, onSave }: { dirty: boolean; loading: boolean; label: string; onSave: () => void }) => (
   <div className="sticky bottom-20 z-20 flex justify-end lg:bottom-4">{dirty && <Button size="lg" loading={loading} onClick={onSave} className="shadow-pop">{label}</Button>}</div>
 );
+
+/** « Ce qui compte le plus pour moi » : 3 valeurs au plus, du catalogue ou écrites par la personne. */
+export function ValuesFields({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+  const t = useTranslations();
+  const [custom, setCustom] = useState('');
+  const full = value.length >= MAX_LIFE_VALUES;
+  const toggle = (v: string) => onChange(value.includes(v) ? value.filter((x) => x !== v) : full ? value : [...value, v]);
+  const text = custom.trim().replace(/\s+/g, ' ');
+  const valid = text.length >= 2 && !/[0-9@]|http|www\./i.test(text) && !value.some((x) => x.toLowerCase() === text.toLowerCase());
+  const add = () => { if (valid && !full) { onChange([...value, text]); setCustom(''); } };
+  const label = (v: string) => (isCatalogValue(v) ? t(`values.${v}` as never) : v);
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-muted" aria-live="polite">{t('values.count', { n: value.length, max: MAX_LIFE_VALUES })}</p>
+      <ul className="flex flex-wrap gap-2">
+        {LIFE_VALUES.map((v) => {
+          const on = value.includes(v);
+          const Icon = valueIcon(v);
+          return <li key={v}><button type="button" aria-pressed={on} disabled={!on && full} onClick={() => toggle(v)} className={cn('inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition disabled:opacity-50', on ? 'border-brand-strong bg-brand-strong text-white' : 'border-line bg-card hover:bg-soft')}><Icon className="size-4" aria-hidden />{t(`values.${v}` as never)}</button></li>;
+        })}
+        {value.filter((v) => !isCatalogValue(v)).map((v) => (
+          <li key={v}><button type="button" aria-pressed onClick={() => toggle(v)} aria-label={t('values.remove', { name: v })} className="inline-flex items-center gap-1.5 rounded-full border border-brand-strong bg-brand-strong px-3.5 py-1.5 text-sm text-white"><Sparkles className="size-4" aria-hidden />{label(v)}<X className="size-3.5" aria-hidden /></button></li>
+        ))}
+      </ul>
+      <div className="flex items-end gap-2">
+        <div className="min-w-0 flex-1"><Field label={t('values.custom')} hint={t('values.customHint', { max: CUSTOM_VALUE_MAX })}>{(p) => <Input {...p} maxLength={CUSTOM_VALUE_MAX} autoComplete="off" disabled={full} value={custom} onChange={(e) => setCustom(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); add(); } }} />}</Field></div>
+        <Button type="button" variant="outline" disabled={!valid || full} onClick={add}>{t('values.add')}</Button>
+      </div>
+    </div>
+  );
+}

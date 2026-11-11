@@ -243,6 +243,8 @@ export const profileUpdateSchema = z.object({
   alcohol: z.enum(HABIT).nullable().optional(),
   religion: z.enum(RELIGION).nullable().optional(),
   showReligion: z.boolean().optional(),
+  // « Ce qui compte le plus pour moi » : 3 au plus, codes du catalogue ou texte libre.
+  values: z.array(z.string().trim().min(2).max(24)).max(3).optional(),
 });
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
 

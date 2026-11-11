@@ -10,11 +10,12 @@ import { useEngagementConfig } from '@/hooks/useQueries';
 import { Link } from '@/i18n/navigation';
 import { api, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
+import { isCatalogValue } from '@/lib/lifeValues';
 import type { Card, LikeKind, SwipeResult } from '@/lib/types';
 
 const PLACEHOLDERS = 20;
 
-export interface LikeTarget { kind: LikeKind; ref: string | null }
+export interface LikeTarget { kind: LikeKind; ref: string | null; superLike?: boolean }
 
 /** J'aime ciblé (profil, photo, réponse ou centre d'intérêt) avec commentaire facultatif. Rien n'est envoyé sans clic explicite. */
 export function LikeComposer({ card, open, initial, onClose, onDone }: { card: Card; open: boolean; initial?: LikeTarget; onClose: () => void; onDone?: (r: SwipeResult) => void }) {
@@ -25,7 +26,7 @@ export function LikeComposer({ card, open, initial, onClose, onDone }: { card: C
   const { data: cfg } = useEngagementConfig();
   const [target, setTarget] = useState<LikeTarget>(initial ?? { kind: 'PROFILE', ref: null });
   const [comment, setComment] = useState('');
-  const [superLike, setSuperLike] = useState(false);
+  const [superLike, setSuperLike] = useState(!!initial?.superLike);
   // Super Likes restants : quota hebdomadaire de la formule + crédits achetés (pack).
   const usage = useQuery({ queryKey: ['usage'], queryFn: () => api<{ used: { superLikesWeek: number }; limits: { superLikesWeekly: number }; credits?: { SUPER_LIKE?: number } }>('/swipes/usage') });
   const remaining = usage.data ? Math.max(0, usage.data.limits.superLikesWeekly - usage.data.used.superLikesWeek) + (usage.data.credits?.SUPER_LIKE ?? 0) : null;
@@ -33,7 +34,7 @@ export function LikeComposer({ card, open, initial, onClose, onDone }: { card: C
   const [pick] = useState(() => 1 + Math.floor(Math.random() * PLACEHOLDERS));
   const placeholder = t(`engagement.composer.placeholders.p${pick}` as never);
   const max = cfg?.commentMax ?? 200;
-  const kinds = (['PROFILE', ...(card.photos.length ? ['PHOTO'] : []), ...(card.prompts?.length ? ['PROMPT'] : []), ...(card.interests.length ? ['INTEREST'] : [])]) as LikeKind[];
+  const kinds = (['PROFILE', ...(card.photos.length ? ['PHOTO'] : []), ...(card.prompts?.length ? ['PROMPT'] : []), ...(card.interests.length ? ['INTEREST'] : []), ...(card.values?.length ? ['VALUE'] : [])]) as LikeKind[];
   const send = useMutation({
     mutationFn: () => post<SwipeResult>('/swipes', { targetId: card.id, action: superLike ? 'SUPER_LIKE' : 'LIKE', targetKind: target.kind, ...(target.ref ? { targetRef: target.ref } : {}), ...(comment.trim() ? { comment: comment.trim() } : {}) }),
     onSuccess: (r) => { toast('success', t('engagement.composer.sent')); setComment(''); onDone?.(r); onClose(); },
@@ -58,6 +59,12 @@ export function LikeComposer({ card, open, initial, onClose, onDone }: { card: C
           <div className="space-y-2"><p className="text-sm font-semibold">{t('engagement.composer.chooseAnswer')}</p>
             <ul className="space-y-2">{(card.prompts ?? []).map((a) => <li key={a.id}><button type="button" aria-pressed={target.ref === a.id} onClick={() => setTarget({ kind: 'PROMPT', ref: a.id })}
               className={cn('w-full rounded-2xl border p-3 text-left text-sm', target.ref === a.id ? 'border-brand-strong bg-soft' : 'border-line hover:bg-soft')}><span className="block font-semibold text-brand-ink">{locale === 'en' ? a.question.en : a.question.fr}</span>{a.answer}</button></li>)}</ul></div>
+        )}
+        {target.kind === 'VALUE' && (
+          <fieldset className="space-y-2"><legend className="text-sm font-semibold">{t('engagement.composer.pickValue')}</legend>
+            <ul className="flex flex-wrap gap-2">{(card.values ?? []).map((v) => <li key={v}><button type="button" aria-pressed={target.ref === v} onClick={() => setTarget({ kind: 'VALUE', ref: v })}
+              className={cn('rounded-full border px-3 py-1.5 text-sm', target.ref === v ? 'border-brand-strong bg-brand-strong text-white' : 'border-line hover:bg-soft')}>{isCatalogValue(v) ? t(`values.${v}` as never) : v}</button></li>)}</ul>
+          </fieldset>
         )}
         {target.kind === 'INTEREST' && (
           <div className="space-y-2"><p className="text-sm font-semibold">{t('engagement.composer.chooseInterest')}</p>

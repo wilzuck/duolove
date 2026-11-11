@@ -59,7 +59,7 @@ async def _assert_quota(db: AsyncSession, user_id: str, action: str) -> None:
         raise forbidden("DAILY_LIMIT", "Limite quotidienne de likes atteinte")
 
 
-TARGET_KINDS = ("PHOTO", "PROMPT", "INTEREST", "PROFILE")
+TARGET_KINDS = ("PHOTO", "PROMPT", "INTEREST", "VALUE", "PROFILE")
 
 
 async def _validate_like_target(db: AsyncSession, target_id: str, action: str, comment: str | None, kind: str | None, ref: str | None) -> tuple[str | None, str | None, str | None]:
@@ -83,6 +83,9 @@ async def _validate_like_target(db: AsyncSession, target_id: str, action: str, c
             ProfilePhoto.id == ref, Profile.userId == target_id, ProfilePhoto.moderationStatus != "REJECTED"))).first()
     elif kind == "PROMPT":
         ok = (await db.execute(select(ProfilePromptAnswer.id).where(ProfilePromptAnswer.id == ref, ProfilePromptAnswer.userId == target_id))).first()
+    elif kind == "VALUE":
+        vals = (await db.execute(select(Profile.lifeValues).where(Profile.userId == target_id))).scalar_one_or_none() or []
+        ok = ref in vals
     else:
         ok = (await db.execute(select(Interest.slug).join(t_UserInterest, t_UserInterest.c.interestId == Interest.id).where(
             t_UserInterest.c.userId == target_id, Interest.slug == ref))).first()
