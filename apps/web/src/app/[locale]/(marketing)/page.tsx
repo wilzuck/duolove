@@ -17,7 +17,8 @@ const HOW = [[UserPlus, 's1'], [Search, 's2'], [MessageCircle, 's3']] as const;
 const FAQ = ['age', 'free', 'safety', 'payment', 'delete', 'verify'] as const;
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
-  setRequestLocale((await params).locale);
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations();
   return (
     <>
@@ -41,7 +42,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </div>
           </div>
           <div className="relative mx-auto w-full max-w-xl lg:-mr-10 lg:max-w-none">
-            <img src="/images/hero-match.webp" alt={t('home.v2.heroAlt')} width={1404} height={1120} fetchPriority="high" decoding="async" className="h-auto w-full select-none drop-shadow-[0_24px_40px_rgb(233_30_99/.12)]" />
+            <img src={`/images/hero-match-${locale === 'en' ? 'en' : 'fr'}.webp`} alt={t('home.v2.heroAlt')} width={1404} height={1120} fetchPriority="high" decoding="async" className="h-auto w-full select-none drop-shadow-[0_24px_40px_rgb(233_30_99/.12)]" />
           </div>
         </div>
       </section>
