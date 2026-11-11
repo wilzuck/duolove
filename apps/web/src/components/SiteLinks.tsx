@@ -31,7 +31,7 @@ export function SiteLinks({ className = '', variant = 'public' }: { className?: 
     <footer className={`px-4 py-6 text-center text-xs text-muted ${className}`}>
       <nav aria-label={t('footer.links')}>
         <ul className="flex flex-wrap justify-center gap-x-4 gap-y-2">
-          {LINKS.map(([href, key]) => <li key={href}><Link href={href} className="font-medium text-fg underline-offset-4 hover:text-brand-ink hover:underline">{t(key)}</Link></li>)}
+          {LINKS.map(([href, key]) => <li key={href}><Link href={href} className="font-medium text-muted underline-offset-4 hover:text-brand-ink hover:underline">{t(key)}</Link></li>)}
         </ul>
       </nav>
       <p className="mt-3">© {new Date().getFullYear()} CrushDuo · {t('footer.adults')}</p>
