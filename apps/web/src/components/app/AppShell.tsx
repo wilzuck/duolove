@@ -100,7 +100,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
           </div>
         </header>
         {!inChat && <InstallBanner />}
-        <main id="main" className={cn('flex min-w-0 flex-1 flex-col', !inChat && 'pb-24 lg:pb-8')}><div className="min-w-0 flex-1">{children}</div>{!inChat && <SiteLinks variant="app" className={path === '/profile' ? '' : 'max-lg:hidden'} />}</main>
+        <main id="main" className={cn('flex min-w-0 flex-1 flex-col', !inChat && 'pb-24 lg:pb-0')}><div className={cn('min-w-0 flex-1', !inChat && 'lg:pb-8')}>{children}</div>{!inChat && <SiteLinks variant="app" className={path === '/profile' ? '' : 'max-lg:hidden'} />}</main>
       </div>
 
       {/* Barre d'onglets (mobile) */}
