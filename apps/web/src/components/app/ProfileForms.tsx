@@ -2,7 +2,7 @@
 import { Compass, Crown, HeartHandshake, Smile, Users } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { COUNTRIES, countryFlag, INTENTS, INTEREST_SLUGS, LIVING, SEEKING, type Intent, type Living } from '@duomatch/types';
+import { COUNTRIES, countryFlag, EDUCATION, HABIT, INTENTS, INTEREST_SLUGS, LIVING, MARITAL, RELIGION, SEEKING, type Intent, type Living } from '@duomatch/types';
 import { Button, ChoiceCards, Checkbox, cn, Field, Input, RangeSlider, Select, Textarea } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Limits, MyProfile } from '@/lib/types';
@@ -51,8 +51,12 @@ function HeightInput({ cm, onChange, ...p }: { cm: number | null; onChange: (cm:
   );
 }
 
-export interface LifeValue { hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null }
-export const lifeFrom = (p: MyProfile): LifeValue => ({ hasChildren: p.hasChildren, likesPets: p.likesPets, living: p.living, heightCm: p.heightCm, originCountry: p.originCountry });
+export interface LifeValue {
+  hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null;
+  maritalStatus: string | null; education: string | null; smoking: string | null; alcohol: string | null; religion: string | null; showReligion: boolean;
+}
+export const lifeFrom = (p: MyProfile): LifeValue => ({ hasChildren: p.hasChildren, likesPets: p.likesPets, living: p.living, heightCm: p.heightCm, originCountry: p.originCountry,
+  maritalStatus: p.maritalStatus, education: p.education, smoking: p.smoking, alcohol: p.alcohol, religion: p.religion, showReligion: p.showReligion });
 const triValue = (v: boolean | null) => (v === null ? '' : v ? 'yes' : 'no');
 const fromTri = (v: string): boolean | null => (v === '' ? null : v === 'yes');
 
@@ -64,6 +68,9 @@ export function LifestyleFields({ value, onChange }: { value: LifeValue; onChang
   const tri = (label: string, k: 'hasChildren' | 'likesPets') => (
     <Field label={label}>{(p) => <Select {...p} value={triValue(value[k])} onChange={(e) => set(k, fromTri(e.target.value))}><option value="">{t('life.unspecified')}</option><option value="yes">{t('life.yes')}</option><option value="no">{t('life.no')}</option></Select>}</Field>
   );
+  const pick = (label: string, k: 'maritalStatus' | 'education' | 'smoking' | 'alcohol' | 'religion', opts: readonly string[], ns: string) => (
+    <Field label={label}>{(p) => <Select {...p} value={value[k] ?? ''} onChange={(e) => set(k, e.target.value || null)}><option value="">{t('life.unspecified')}</option>{opts.map((o) => <option key={o} value={o}>{t(`${ns}.${o}` as never)}</option>)}</Select>}</Field>
+  );
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       {tri(t('life.hasChildren'), 'hasChildren')}
@@ -71,6 +78,14 @@ export function LifestyleFields({ value, onChange }: { value: LifeValue; onChang
       <Field label={t('life.living')}>{(p) => <Select {...p} value={value.living ?? ''} onChange={(e) => set('living', (e.target.value || null) as Living | null)}><option value="">{t('life.unspecified')}</option>{LIVING.map((l) => <option key={l} value={l}>{t(`life.livingOpt.${l}`)}</option>)}</Select>}</Field>
       <Field label={t('life.height')} hint={t('life.heightHint')}>{(p) => <HeightInput {...p} cm={value.heightCm} onChange={(cm) => set('heightCm', cm)} />}</Field>
       <Field label={t('life.origin')}>{(p) => <Select {...p} value={value.originCountry ?? ''} onChange={(e) => set('originCountry', e.target.value || null)}><option value="">{t('life.unspecified')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+      {pick(t('life.marital'), 'maritalStatus', MARITAL, 'life.maritalOpt')}
+      {pick(t('life.education'), 'education', EDUCATION, 'life.educationOpt')}
+      {pick(t('life.smoking'), 'smoking', HABIT, 'life.habit')}
+      {pick(t('life.alcohol'), 'alcohol', HABIT, 'life.habit')}
+      {pick(t('life.religion'), 'religion', RELIGION, 'life.religionOpt')}
+      {value.religion && (
+        <div className="flex items-end sm:col-span-1"><Checkbox label={t('life.showReligion')} checked={value.showReligion} onChange={(e) => set('showReligion', e.target.checked)} /></div>
+      )}
     </div>
   );
 }

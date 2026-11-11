@@ -3,6 +3,8 @@ from typing import Annotated, Literal
 from pydantic import BeforeValidator, Field, model_validator
 
 from app.core.constants import MIN_AGE
+from typing import Literal
+
 from app.schemas.common import Body, CountryT, GenderT, IntentT, InterestT, Iso2, LivingT, SeekingT, Trimmed
 
 Lang = Annotated[str, Field(min_length=2, max_length=5)]
@@ -24,6 +26,12 @@ class ProfileUpdateIn(Body):
     living: LivingT | None = None
     heightCm: Annotated[int, Field(ge=120, le=230)] | None = None
     originCountry: Iso2 | None = None
+    maritalStatus: Literal["SINGLE", "DIVORCED", "WIDOWED", "SEPARATED"] | None = None
+    education: Literal["SECONDARY", "BACCALAUREATE", "BACHELOR", "MASTER", "DOCTORATE", "OTHER"] | None = None
+    smoking: Literal["NEVER", "SOMETIMES", "OFTEN"] | None = None
+    alcohol: Literal["NEVER", "SOMETIMES", "OFTEN"] | None = None
+    religion: Literal["CHRISTIAN", "MUSLIM", "TRADITIONAL", "OTHER", "NONE"] | None = None
+    showReligion: bool | None = None
 
 
 class PreferenceIn(Body):

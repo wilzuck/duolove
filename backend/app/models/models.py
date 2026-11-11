@@ -1168,6 +1168,12 @@ class Profile(Base):
     likesPets: Mapped[Optional[bool]] = mapped_column(Boolean)
     living: Mapped[Optional[LivingSituation]] = mapped_column(Enum(LivingSituation, values_callable=lambda cls: [member.value for member in cls], name='LivingSituation'))
     originCountry: Mapped[Optional[str]] = mapped_column(Text)
+    maritalStatus: Mapped[Optional[str]] = mapped_column(Text)
+    education: Mapped[Optional[str]] = mapped_column(Text)
+    smoking: Mapped[Optional[str]] = mapped_column(Text)
+    alcohol: Mapped[Optional[str]] = mapped_column(Text)
+    religion: Mapped[Optional[str]] = mapped_column(Text)
+    showReligion: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'))
 
     User_: Mapped['User'] = relationship('User', back_populates='Profile')
     ProfilePhoto: Mapped[list['ProfilePhoto']] = relationship('ProfilePhoto', back_populates='Profile_')

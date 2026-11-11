@@ -16,6 +16,7 @@ export interface Card {
   superLike?: boolean; likedAt?: string; affinity?: Affinity | null; prompts?: PromptAnswer[];
   comment?: string | null; likeTarget?: { kind: LikeKind; ref: string | null } | null; decision?: 'LIKE' | 'PASS' | 'SUPER_LIKE' | null;
   hasChildren?: boolean | null; likesPets?: boolean | null; living?: Living | null; heightCm?: number | null; originCountry?: string | null;
+  maritalStatus?: string | null; education?: string | null; smoking?: string | null; alcohol?: string | null; religion?: string | null; zodiac?: string | null;
 }
 export interface Me {
   id: string; email: string; emailVerified: boolean; role: 'USER' | 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN';
@@ -30,7 +31,8 @@ export interface MyProfile {
   occupation: string | null; languages: string[]; intent: Intent; visibility: 'VISIBLE' | 'HIDDEN'; incognito: boolean; verified: boolean;
   verificationPending: boolean; readReceipts: boolean; readReceiptsLocked: boolean; typingIndicator: boolean; showActivity: boolean; boostedUntil: string | null; completeness: number;
   completenessLevel: 'INCOMPLETE' | 'IN_PROGRESS' | 'COMPLETE'; onboarded: boolean;
-  hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null; liveOptIn: boolean; interests: string[]; photos: Photo[];
+  hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null;
+  maritalStatus: string | null; education: string | null; smoking: string | null; alcohol: string | null; religion: string | null; showReligion: boolean; zodiac: string | null; liveOptIn: boolean; interests: string[]; photos: Photo[];
   preference: { seeking: Seeking; ageMin: number; ageMax: number; country: string | null; city: string | null; intents: Intent[]; languages: string[]; interests: string[]; verifiedOnly: boolean; activeRecently: boolean; maxDistanceKm: number | null } | null;
 }
 export interface ConversationItem {

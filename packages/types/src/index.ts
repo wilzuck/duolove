@@ -173,6 +173,11 @@ export type LoginInput = z.infer<typeof loginSchema>;
 /** Situation de vie (facultatif sur le profil). */
 export const LIVING = ['ALONE', 'FAMILY', 'ROOMMATES'] as const;
 export type Living = (typeof LIVING)[number];
+/** Mode de vie (facultatif) : situation, études, tabac, alcool, religion. Le signe astrologique est calculé côté serveur. */
+export const MARITAL = ['SINGLE', 'DIVORCED', 'WIDOWED', 'SEPARATED'] as const;
+export const EDUCATION = ['SECONDARY', 'BACCALAUREATE', 'BACHELOR', 'MASTER', 'DOCTORATE', 'OTHER'] as const;
+export const HABIT = ['NEVER', 'SOMETIMES', 'OFTEN'] as const;
+export const RELIGION = ['CHRISTIAN', 'MUSLIM', 'TRADITIONAL', 'OTHER', 'NONE'] as const;
 export const TRI = ['ANY', 'YES', 'NO'] as const;
 
 /** Menu « Match » : jetons, essais, délais. Modifiables ici ; la logique ne code rien en dur ailleurs. */
@@ -232,6 +237,12 @@ export const profileUpdateSchema = z.object({
   living: z.enum(LIVING).nullable().optional(),
   heightCm: z.number().int().min(120).max(230).nullable().optional(),
   originCountry: z.string().regex(/^[A-Z]{2}$/).nullable().optional(),
+  maritalStatus: z.enum(MARITAL).nullable().optional(),
+  education: z.enum(EDUCATION).nullable().optional(),
+  smoking: z.enum(HABIT).nullable().optional(),
+  alcohol: z.enum(HABIT).nullable().optional(),
+  religion: z.enum(RELIGION).nullable().optional(),
+  showReligion: z.boolean().optional(),
 });
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
 

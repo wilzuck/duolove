@@ -9,12 +9,13 @@ from app.core.completeness import completeness_level, compute_completeness
 from app.core.constants import INTEREST_SLUGS, age_from_birth_date
 from app.core.errors import bad_request, forbidden, not_found
 from app.core.ids import new_id, utcnow
+from app.core.lifestyle import zodiac
 from app.core.profile_card import MAX_PHOTOS, photo_url, thumb_key
 from app.models.models import (
     Interest, Preference, Profile, ProfilePhoto, VerificationRequest, t_UserInterest,
 )
 
-NULLABLE = {"hasChildren", "likesPets", "living", "heightCm", "originCountry"}
+NULLABLE = {"hasChildren", "likesPets", "living", "heightCm", "originCountry", "maritalStatus", "education", "smoking", "alcohol", "religion"}
 
 
 def _v(x):
@@ -46,7 +47,8 @@ async def get_mine(db: AsyncSession, user_id: str) -> dict:
     pending = (await db.execute(select(VerificationRequest.id).where(VerificationRequest.userId == user_id, VerificationRequest.status == "PENDING"))).first()
     return {
         "id": p.userId, "hasChildren": p.hasChildren, "likesPets": p.likesPets, "living": _v(p.living), "heightCm": p.heightCm,
-        "originCountry": p.originCountry, "liveOptIn": p.liveOptIn, "displayName": p.displayName, "birthDate": p.birthDate,
+        "originCountry": p.originCountry, "maritalStatus": p.maritalStatus, "education": p.education, "smoking": p.smoking, "alcohol": p.alcohol,
+        "religion": p.religion, "showReligion": p.showReligion, "zodiac": zodiac(p.birthDate), "liveOptIn": p.liveOptIn, "displayName": p.displayName, "birthDate": p.birthDate,
         "age": age_from_birth_date(p.birthDate), "gender": _v(p.gender), "pronouns": p.pronouns, "country": p.country, "city": p.city,
         "bio": p.bio, "occupation": p.occupation, "languages": p.languages or [], "intent": _v(p.intent), "visibility": _v(p.visibility),
         "incognito": p.incognito, "verified": p.verified, "verificationPending": bool(pending), "readReceipts": p.readReceipts or not await _can_control_receipts(db, user_id), "readReceiptsLocked": not await _can_control_receipts(db, user_id), "typingIndicator": p.typingIndicator, "showActivity": p.showActivity,

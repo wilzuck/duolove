@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core import flags, promptsvc
 from app.core.config import get_settings
 from app.core.constants import age_from_birth_date
+from app.core.lifestyle import zodiac
 from app.models.models import Interest, Profile, ProfilePhoto, User, t_UserInterest
 
 MAX_PHOTOS = 6
@@ -76,6 +77,9 @@ def to_card(c: CardProfile, *, viewer_interests: list[str] | None = None, distan
         "bio": p.bio, "occupation": p.occupation, "intent": p.intent.value, "verified": p.verified, "languages": p.languages or [],
         "hasChildren": p.hasChildren, "likesPets": p.likesPets, "living": p.living.value if p.living else None,
         "heightCm": p.heightCm, "originCountry": p.originCountry,
+        "maritalStatus": p.maritalStatus, "education": p.education, "smoking": p.smoking, "alcohol": p.alcohol,
+        "religion": p.religion if p.showReligion else None,  # donnée sensible : jamais montrée si la personne ne l'a pas rendue visible
+        "zodiac": zodiac(p.birthDate),
         "interests": c.interests, "commonInterests": [i for i in c.interests if i in mine],
         "distanceKm": distance_km, "compatibility": score, "affinity": affinity, "prompts": c.prompts,
         "photos": [{"id": x.id, "url": photo_url(x.key), "thumbUrl": photo_url(thumb_key(x.key))} for x in c.photos],

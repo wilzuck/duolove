@@ -3222,6 +3222,17 @@
     "groupSuperLikesText": "To stand out to someone you really like."
   },
   "life": {
+    "marital": "Status",
+    "maritalOpt": {"SINGLE": "Never married", "DIVORCED": "Divorced", "WIDOWED": "Widowed", "SEPARATED": "Separated"},
+    "education": "Education",
+    "educationOpt": {"SECONDARY": "Secondary school", "BACCALAUREATE": "High school diploma", "BACHELOR": "Bachelor’s degree", "MASTER": "Master’s degree", "DOCTORATE": "Doctorate", "OTHER": "Other training"},
+    "smoking": "Smoking",
+    "alcohol": "Alcohol",
+    "habit": {"NEVER": "never", "SOMETIMES": "occasionally", "OFTEN": "regularly"},
+    "religion": "Religion",
+    "religionOpt": {"CHRISTIAN": "Christian", "MUSLIM": "Muslim", "TRADITIONAL": "Traditional", "OTHER": "Other religion", "NONE": "No religion"},
+    "showReligion": "Show my religion on my profile (hidden by default)",
+    "zodiacOpt": {"aries": "Aries", "taurus": "Taurus", "gemini": "Gemini", "cancer": "Cancer", "leo": "Leo", "virgo": "Virgo", "libra": "Libra", "scorpio": "Scorpio", "sagittarius": "Sagittarius", "capricorn": "Capricorn", "aquarius": "Aquarius", "pisces": "Pisces"},
     "title": "Lifestyle",
     "hint": "Optional. Used by the Crush menu criteria; leave blank if you prefer not to answer.",
     "unspecified": "Not specified",

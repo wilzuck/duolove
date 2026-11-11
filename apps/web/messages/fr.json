@@ -3222,6 +3222,17 @@
     "groupSuperLikesText": "Pour vous démarquer auprès d’une personne qui vous plaît vraiment."
   },
   "life": {
+    "marital": "Situation",
+    "maritalOpt": {"SINGLE": "Jamais marié(e)", "DIVORCED": "Divorcé(e)", "WIDOWED": "Veuf / veuve", "SEPARATED": "Séparé(e)"},
+    "education": "Niveau d’études",
+    "educationOpt": {"SECONDARY": "Études secondaires", "BACCALAUREATE": "Baccalauréat", "BACHELOR": "Licence", "MASTER": "Master", "DOCTORATE": "Doctorat", "OTHER": "Autre formation"},
+    "smoking": "Tabac",
+    "alcohol": "Alcool",
+    "habit": {"NEVER": "jamais", "SOMETIMES": "occasionnellement", "OFTEN": "régulièrement"},
+    "religion": "Religion",
+    "religionOpt": {"CHRISTIAN": "Chrétienne", "MUSLIM": "Musulmane", "TRADITIONAL": "Traditionnelle", "OTHER": "Autre religion", "NONE": "Sans religion"},
+    "showReligion": "Afficher ma religion sur mon profil (masquée par défaut)",
+    "zodiacOpt": {"aries": "Bélier", "taurus": "Taureau", "gemini": "Gémeaux", "cancer": "Cancer", "leo": "Lion", "virgo": "Vierge", "libra": "Balance", "scorpio": "Scorpion", "sagittarius": "Sagittaire", "capricorn": "Capricorne", "aquarius": "Verseau", "pisces": "Poissons"},
     "title": "Mode de vie",
     "hint": "Facultatif. Ces informations servent aux critères du menu Crush ; laissez vide si vous préférez ne pas répondre.",
     "unspecified": "Non précisé",

@@ -1,6 +1,6 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
-import { Ban, Briefcase, Flag, Heart, Home, Languages, MapPin, PawPrint, Baby, Ruler } from 'lucide-react';
+import { Ban, Briefcase, Flag, Heart, HeartHandshake, Home, Languages, MapPin, PawPrint, Baby, Ruler, GraduationCap, Cigarette, Wine, BookOpen, Star } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, useSyncExternalStore } from 'react';
 import { Badge, Button, buttonVariants, cn } from '@duomatch/ui';
@@ -58,13 +58,19 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
           {card.occupation && <div className="flex items-center gap-2"><Briefcase className="size-4 text-brand" aria-hidden /><dt className="sr-only">{t('profile.occupation')}</dt><dd>{card.occupation}</dd></div>}
           {card.languages.length > 0 && <div className="flex items-center gap-2"><Languages className="size-4 text-brand" aria-hidden /><dt className="sr-only">{t('profile.languages')}</dt><dd>{card.languages.map((l) => t(`lang.${l}` as never)).join(', ')}</dd></div>}
         </dl>
-        {(card.heightCm != null || card.hasChildren != null || card.likesPets != null || card.living || card.originCountry) && (
+        {(card.heightCm != null || card.hasChildren != null || card.likesPets != null || card.living || card.originCountry || card.maritalStatus || card.education || card.smoking || card.alcohol || card.religion || card.zodiac) && (
           <section aria-labelledby={`life-${card.id}`}><h3 id={`life-${card.id}`} className="mb-2 font-bold">{t('profileView.lifestyle')}</h3>
             <ul className="flex flex-wrap gap-2">
               {card.heightCm != null && <li><Badge tone="neutral"><Ruler className="size-3.5" aria-hidden />{t('life.height')} : {formatHeight(card.heightCm, locale)}</Badge></li>}
               {card.hasChildren != null && <li><Badge tone="neutral"><Baby className="size-3.5" aria-hidden />{t(card.hasChildren ? 'profileView.hasChildren' : 'profileView.noChildren')}</Badge></li>}
               {card.likesPets != null && <li><Badge tone="neutral"><PawPrint className="size-3.5" aria-hidden />{t(card.likesPets ? 'profileView.likesPets' : 'profileView.noPets')}</Badge></li>}
               {card.living && <li><Badge tone="neutral"><Home className="size-3.5" aria-hidden />{t(`life.livingOpt.${card.living}` as never)}</Badge></li>}
+              {card.maritalStatus && <li><Badge tone="neutral"><HeartHandshake className="size-3.5" aria-hidden />{t(`life.maritalOpt.${card.maritalStatus}` as never)}</Badge></li>}
+              {card.education && <li><Badge tone="neutral"><GraduationCap className="size-3.5" aria-hidden />{t(`life.educationOpt.${card.education}` as never)}</Badge></li>}
+              {card.smoking && <li><Badge tone="neutral"><Cigarette className="size-3.5" aria-hidden />{t('life.smoking')} : {t(`life.habit.${card.smoking}` as never)}</Badge></li>}
+              {card.alcohol && <li><Badge tone="neutral"><Wine className="size-3.5" aria-hidden />{t('life.alcohol')} : {t(`life.habit.${card.alcohol}` as never)}</Badge></li>}
+              {card.religion && <li><Badge tone="neutral"><BookOpen className="size-3.5" aria-hidden />{t(`life.religionOpt.${card.religion}` as never)}</Badge></li>}
+              {card.zodiac && <li><Badge tone="neutral"><Star className="size-3.5" aria-hidden />{t(`life.zodiacOpt.${card.zodiac}` as never)}</Badge></li>}
               {card.originCountry && <li><Badge tone="neutral"><MapPin className="size-3.5" aria-hidden />{t('profileView.from', { country: countryName(card.originCountry, locale) })}</Badge></li>}
             </ul>
           </section>
