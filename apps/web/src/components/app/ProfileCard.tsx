@@ -1,4 +1,5 @@
 'use client';
+import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -25,7 +26,14 @@ export function ProfileCard({ card, compact = false, className }: { card: Card; 
       <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-black/20" />
       {card.photos.length > 1 && (
         <>
-          <div className="absolute inset-x-3 top-3 flex gap-1.5" aria-hidden>{card.photos.map((p, n) => <span key={p.id} className={cn('h-1 flex-1 rounded-full', n === i ? 'bg-white' : 'bg-white/40')} />)}</div>
+          <div className="absolute inset-x-3 top-3 flex gap-1.5 drop-shadow-[0_1px_2px_rgba(0,0,0,.5)]" aria-hidden>
+            {card.photos.map((p, n) => (
+              <span key={p.id} className="relative h-[5px] flex-1 overflow-hidden rounded-full bg-white/40">
+                {n < i && <span className="absolute inset-0 bg-white" />}
+                {n === i && <motion.span key={i} className="absolute inset-0 origin-left bg-white" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.35, ease: 'easeOut' }} />}
+              </span>
+            ))}
+          </div>
           <button type="button" className="absolute inset-y-16 left-0 w-1/3" aria-label={t('card.prevPhoto')} onClick={(e) => { e.stopPropagation(); go(-1); }}><ChevronLeft className="ml-1 size-6 opacity-0 focus-visible:opacity-100" /></button>
           <button type="button" className="absolute inset-y-16 right-0 w-1/3" aria-label={t('card.nextPhoto')} onClick={(e) => { e.stopPropagation(); go(1); }}><ChevronRight className="ml-auto mr-1 size-6 opacity-0 focus-visible:opacity-100" /></button>
         </>
