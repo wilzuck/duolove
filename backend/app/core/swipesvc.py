@@ -41,6 +41,12 @@ async def usage(db: AsyncSession, user_id: str) -> dict:
     return {"likes": likes, "superLikesWeek": sl}
 
 
+async def can_rewind(db: AsyncSession, user_id: str) -> bool:
+    """Vrai si la dernière décision est un « passer » de moins de 24 h (c'est la seule qu'on peut annuler) : le bouton « Reprendre » n'est actif que dans ce cas."""
+    last = (await db.execute(select(Swipe.action, Swipe.createdAt).where(Swipe.giverId == user_id).order_by(Swipe.createdAt.desc()).limit(1))).first()
+    return bool(last and _v(last.action) == "PASS" and utcnow() - last.createdAt <= datetime.timedelta(hours=24))
+
+
 async def _assert_quota(db: AsyncSession, user_id: str, action: str) -> None:
     if action == "PASS":
         return

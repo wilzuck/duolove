@@ -85,7 +85,7 @@ export default function DiscoverPage() {
     queryKey: ['feed'], queryFn: () => api<Paged<Card> & { total: number; paused?: boolean }>('/discovery?limit=12'),
     refetchOnWindowFocus: false, staleTime: 0, gcTime: 0,
   });
-  const usage = useQuery({ queryKey: ['usage'], queryFn: () => api<{ used: { likes: number; superLikesWeek: number }; limits: { dailyLikes: number; unlimitedLikes: boolean; superLikesWeekly: number } }>('/swipes/usage') });
+  const usage = useQuery({ queryKey: ['usage'], queryFn: () => api<{ used: { likes: number; superLikesWeek: number }; limits: { dailyLikes: number; unlimitedLikes: boolean; superLikesWeekly: number }; canRewind: boolean }>('/swipes/usage') });
 
   // Fusionne les nouvelles cartes (dédoublonnées) dans la pile : état dérivé, mis à jour une seule fois par réponse.
   const [merged, setMerged] = useState<typeof feed.data>();
@@ -122,6 +122,7 @@ export default function DiscoverPage() {
     try {
       const r = await post<{ profile: Card | null }>('/swipes/rewind');
       if (r.profile) setDeck((d) => [r.profile!, ...d]);
+      void qc.invalidateQueries({ queryKey: ['usage'] });
     } catch (e) {
       if (e instanceof ApiError && e.code === 'PLAN_REQUIRED') setUpsell('PLAN_REQUIRED'); else toast('error', err(e));
     }
@@ -171,7 +172,7 @@ export default function DiscoverPage() {
 
       {top && (
         <div className="flex items-center justify-center gap-4" role="group" aria-label={t('discover.actions')}>
-          <button type="button" onClick={rewind} aria-label={t('discover.rewind')} className="flex size-11 items-center justify-center rounded-full bg-card text-gold-ink shadow-soft ring-1 ring-line hover:bg-soft"><RotateCcw className="size-5" /></button>
+          <button type="button" onClick={rewind} disabled={!usage.data?.canRewind} aria-label={t('discover.rewind')} className="flex size-11 items-center justify-center rounded-full bg-card text-gold-ink shadow-soft ring-1 ring-line hover:bg-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"><RotateCcw className="size-5" /></button>
           <button type="button" onClick={() => decide('left')} aria-label={t('discover.pass')} className="flex size-16 items-center justify-center rounded-full bg-card text-navy shadow-soft ring-1 ring-line transition hover:scale-105 hover:bg-soft"><X className="size-7" /></button>
           <button type="button" onClick={() => decide('up')} aria-label={t('discover.superLike')} className="flex size-12 items-center justify-center rounded-full bg-card text-sky-600 shadow-soft ring-1 ring-line transition hover:scale-105 hover:bg-soft"><Star className="size-5 fill-current" /></button>
           <button type="button" onClick={() => decide('right')} aria-label={t('discover.likeBtn')} className="flex size-16 items-center justify-center rounded-full bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-pop transition hover:scale-105"><Heart className="size-7 fill-current" /></button>

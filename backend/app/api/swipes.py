@@ -37,4 +37,4 @@ async def usage(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends
     e = await entitlements.get(db, u.id)
     lim = e["limits"]
     return {"used": used, "limits": {"dailyLikes": lim["dailyLikes"], "unlimitedLikes": lim["unlimitedLikes"], "superLikesWeekly": lim["superLikesWeekly"]},
-            "credits": await credits.balances(db, u.id), "plan": e["plan"]}
+            "credits": await credits.balances(db, u.id), "plan": e["plan"], "canRewind": await swipesvc.can_rewind(db, u.id)}

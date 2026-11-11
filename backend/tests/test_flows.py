@@ -285,6 +285,20 @@ async def test_free_plan_limits(app, db):
     await a.aclose()
 
 
+async def test_reprendre_actif_seulement_apres_un_passer(app, db):
+    c = f"Rewind-{uid()}"
+    me = await seed_member(db, gender="WOMAN", seeking="MEN", city=c)
+    a = await login(app, me["email"])
+    t1 = await seed_member(db, gender="MAN", seeking="WOMEN", city=c)
+    t2 = await seed_member(db, gender="MAN", seeking="WOMEN", city=c)
+    assert (await a.get("/api/swipes/usage")).json()["canRewind"] is False  # rien à reprendre
+    await a.post("/api/swipes", json={"targetId": t1["id"], "action": "PASS"})
+    assert (await a.get("/api/swipes/usage")).json()["canRewind"] is True
+    await a.post("/api/swipes", json={"targetId": t2["id"], "action": "LIKE"})
+    assert (await a.get("/api/swipes/usage")).json()["canRewind"] is False  # la dernière décision est un like : on ne l'annule pas
+    await a.aclose()
+
+
 async def test_likes_identity_hidden_for_free(app, db):
     c5 = f"Likers-{uid()}"
     me = await seed_member(db, gender="WOMAN", seeking="MEN", city=c5)
