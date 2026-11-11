@@ -36,7 +36,7 @@ export function InstallPanel() {
   return (
     <div className="space-y-10">
       <section aria-labelledby="install-now" className="rounded-[2rem] border border-line bg-card p-6 text-center shadow-soft md:p-8">
-        <img src="/icon-192.png" alt="" width={96} height={96} className="mx-auto size-24 rounded-[1.4rem] shadow-pop" />
+        <img src="/icon-192.png?v=2" alt="" width={96} height={96} className="mx-auto size-24 rounded-[1.4rem] shadow-pop" />
         {count !== null && <p className="mx-auto mt-5 flex w-fit items-center gap-2 rounded-full bg-soft px-4 py-1.5 text-sm font-semibold text-brand-ink"><Users className="size-4" aria-hidden />{t('install.count', { n: count })}</p>}
         <h2 id="install-now" className="mt-5 text-2xl font-extrabold">{installed ? t('install.installedTitle') : t('install.ready')}</h2>
         {installed ? (
@@ -74,11 +74,19 @@ export function InstallPanel() {
 
       <section aria-labelledby="install-how">
         <h2 id="install-how" className="text-2xl font-bold">{t('install.howTitle')}</h2>
-        <div role="tablist" aria-label={t('install.howTitle')} className="mt-4 inline-flex flex-wrap gap-1 rounded-full border border-field-line bg-field p-1">
+        {/* Onglets : trois colonnes égales sur téléphone (jamais empilés), icône au-dessus du nom ; en ligne dès `sm`. */}
+        <div role="tablist" aria-label={t('install.howTitle')} className="mt-4 grid w-full grid-cols-3 gap-1 rounded-2xl border border-field-line bg-field p-1 sm:inline-grid sm:w-auto">
           {tabs.map((x) => (
             <button key={x.key} type="button" role="tab" id={`tab-${x.key}`} aria-selected={active === x.key} aria-controls={`panel-${x.key}`} onClick={() => setPicked(x.key)}
-              className={cn('inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition', active === x.key ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>
-              {x.icon}{x.label}{x.key === platform && <Badge tone={active === x.key ? 'neutral' : 'brand'}>{t('install.yours')}</Badge>}
+              className={cn('relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-2 py-2.5 text-sm font-semibold transition sm:flex-row sm:gap-2 sm:px-4', active === x.key ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>
+              {x.icon}<span className="truncate">{x.label}</span>
+              {x.key === platform && (
+                <>
+                  <span aria-hidden className={cn('absolute top-1.5 right-1.5 size-2 rounded-full sm:hidden', active === x.key ? 'bg-white' : 'bg-brand')} />
+                  <span className="sr-only sm:hidden">{t('install.yours')}</span>
+                  <Badge tone={active === x.key ? 'neutral' : 'brand'} className="hidden sm:inline-flex">{t('install.yours')}</Badge>
+                </>
+              )}
             </button>
           ))}
         </div>

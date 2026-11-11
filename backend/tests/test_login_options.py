@@ -93,3 +93,13 @@ async def test_magic_link_rejects_expired_foreign_and_banned(app, db):
     n = len(mail.outbox)
     await new_agent(app).post("/api/auth/magic-link", json={"email": b["email"]})
     assert len(mail.outbox) == n
+
+
+async def test_etat_de_session_pour_les_pages_publiques(app, db):
+    from tests.support_c import member
+
+    anon = new_agent(app)
+    r = await anon.get("/api/auth/session")
+    assert r.status_code == 200 and r.json() == {"authenticated": False} and r.headers["cache-control"] == "no-store"
+    m = await member(app, db)
+    assert (await m.agent.get("/api/auth/session")).json() == {"authenticated": True}

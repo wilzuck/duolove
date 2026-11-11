@@ -25,6 +25,7 @@
     "backHome": "Back to home"
   },
   "nav": {
+    "openApp": "Open Crushduo",
     "home": "Crushduo home",
     "main": "Main navigation",
     "menu": "Open menu",

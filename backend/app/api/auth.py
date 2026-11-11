@@ -3,7 +3,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import authsvc
-from app.core.auth import SESSION_COOKIE, AuthUser, current_user, current_user_allow_suspended, current_user_allow_unverified
+from app.core.auth import SESSION_COOKIE, AuthUser, resolve_session, current_user, current_user_allow_suspended, current_user_allow_unverified
 from app.core.config import get_settings
 from app.core.errors import AppError, not_found
 from app.core.flags import require_flag
@@ -65,6 +65,14 @@ async def google(body: GoogleIn, req: Request, res: Response, db: AsyncSession =
 async def apple():
     # Apple Sign In nécessite un compte développeur Apple (clés à fournir) : volontairement non activé.
     raise AppError(501, "OAUTH_NOT_CONFIGURED", "Connexion Apple non configurée")
+
+
+@router.get("/session")
+async def session_state(request: Request, response: Response, db: AsyncSession = Depends(get_db)):
+    """Le visiteur est-il connecté ? Toujours 200 (jamais de 401 dans la console) : les pages publiques adaptent leurs boutons (« Ouvrir Crushduo » au lieu de « Se connecter »)."""
+    response.headers["Cache-Control"] = "no-store"
+    found = await resolve_session(db, request.cookies.get(SESSION_COOKIE))
+    return {"authenticated": bool(found and found[1].status.value == "ACTIVE")}
 
 
 @router.post("/logout", status_code=200)

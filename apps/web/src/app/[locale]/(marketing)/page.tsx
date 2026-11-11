@@ -1,4 +1,5 @@
 import { AccordionItem } from '@/components/marketing/AccordionItem';
+import { AuthSwitch } from '@/components/marketing/AuthSwitch';
 import { FloatingHearts } from '@/components/marketing/FloatingHearts';
 import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, HeartHandshake, Lock, Mail, MessageCircle, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -35,7 +36,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               ))}
             </ul>
             <div className="flex flex-col items-stretch gap-3 pt-1 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
-              <Link href="/register" className="sm:w-auto"><Button size="lg" className="h-auto min-h-14 w-full max-w-full py-2 px-6 text-center text-base whitespace-normal sm:w-auto">{t('home.v2.ctaCreate')}<ArrowRight className="size-5" aria-hidden /></Button></Link>
+              <AuthSwitch guest={<Link href="/register" className="sm:w-auto"><Button size="lg" className="h-auto min-h-14 w-full max-w-full py-2 px-6 text-center text-base whitespace-normal sm:w-auto">{t('home.v2.ctaCreate')}<ArrowRight className="size-5" aria-hidden /></Button></Link>} member={<Link href="/discover" className="sm:w-auto"><Button size="lg" className="h-auto min-h-14 w-full max-w-full py-2 px-6 text-center text-base whitespace-normal sm:w-auto">{t('nav.openApp')}<ArrowRight className="size-5" aria-hidden /></Button></Link>} />
               <Link href="/how-it-works" className="sm:w-auto"><Button size="lg" variant="outline" className="h-14 w-full border-brand-strong bg-transparent px-6 text-base text-brand-ink hover:bg-soft sm:w-auto">{t('home.v2.ctaDiscover')}</Button></Link>
             </div>
           </div>
@@ -115,7 +116,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section className="px-4 pt-6 pb-20 sm:px-6">
         <div className="mx-auto max-w-4xl rounded-[2rem] bg-linear-to-br from-brand-strong to-brand-strong-2 px-6 py-12 text-center text-white shadow-pop">
           <h2 className="font-display text-3xl font-extrabold md:text-4xl">{t('home.v2.final.title')}</h2>
-          <Link href="/register" className="mt-7 inline-block"><Button size="lg" className="h-14 bg-white px-8 text-base text-[#c2185b] hover:bg-white/90" variant="ghost">{t('home.v2.final.cta')}<ArrowRight className="size-5" aria-hidden /></Button></Link>
+          <AuthSwitch guest={<Link href="/register" className="mt-7 inline-block"><Button size="lg" className="h-14 bg-white px-8 text-base text-[#c2185b] hover:bg-white/90" variant="ghost">{t('home.v2.final.cta')}<ArrowRight className="size-5" aria-hidden /></Button></Link>} member={<Link href="/discover" className="mt-7 inline-block"><Button size="lg" className="h-14 bg-white px-8 text-base text-[#c2185b] hover:bg-white/90" variant="ghost">{t('nav.openApp')}<ArrowRight className="size-5" aria-hidden /></Button></Link>} />
           <p className="mt-7 flex items-center justify-center gap-4 text-white/90"><span aria-hidden className="h-px w-12 bg-white/50 sm:w-24" />{t('meta.tagline')}<span aria-hidden className="h-px w-12 bg-white/50 sm:w-24" /></p>
         </div>
       </section>
