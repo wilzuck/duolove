@@ -3444,6 +3444,9 @@
       "counter": "{n} / {max}",
       "hint": "If you match, your comment becomes your first message.",
       "sending": "Sending…",
+        "superTitle": "Send as a Super Like",
+        "superHint": "Your message stands out: the person sees it first. You have {n} Super Like(s) left.",
+        "superNone": "No Super Like left. Buy a pack to send one with a message.",
         "send": "Send the Like",
       "sent": "Like sent.",
       "likeWith": "Like with a comment",
@@ -3762,6 +3765,7 @@
     "unlocked": "Answers from your picks are shown on the cards.",
     "same": "You chose the same answer as {name}: a good way to start."
   },
+  "gallery": { "open": "View photo {n} larger", "show": "Show photo {n}", "thumbs": "Photos" },
   "toc": {
     "onPage": "On this page",
     "steps": "Your journey",

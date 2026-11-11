@@ -3444,6 +3444,9 @@
       "counter": "{n} / {max}",
       "hint": "En cas de match, votre commentaire devient votre premier message.",
       "sending": "Envoi en cours…",
+        "superTitle": "Envoyer en Super Like",
+        "superHint": "Votre message est mis en avant : la personne le voit en priorité. Il vous reste {n} Super Like(s).",
+        "superNone": "Plus de Super Like disponible. Achetez un pack pour en envoyer avec un message.",
         "send": "Envoyer le J’aime",
       "sent": "J’aime envoyé.",
       "likeWith": "J’aime avec un commentaire",
@@ -3762,6 +3765,7 @@
     "unlocked": "Les réponses de votre sélection sont visibles sur les cartes.",
     "same": "Vous avez choisi la même réponse que {name} : un bon sujet pour commencer."
   },
+  "gallery": { "open": "Voir la photo {n} en grand", "show": "Afficher la photo {n}", "thumbs": "Photos" },
   "toc": {
     "onPage": "Sur cette page",
     "steps": "Votre parcours",
