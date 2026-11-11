@@ -45,6 +45,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/social', key: 'social', icon: Share2, min: 'ADMIN' },
     { href: '/admin/backups', key: 'backups', icon: DatabaseBackup, min: 'ADMIN' },
     { href: '/admin/storage', key: 'storage', icon: CloudUpload, min: 'SUPER_ADMIN' },
+    { href: '/admin/payment', key: 'payment', icon: CreditCard, min: 'SUPER_ADMIN' },
   ] },
 ];
 

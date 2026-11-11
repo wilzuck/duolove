@@ -231,3 +231,7 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 ## Sauvegarde sans saisie ni clic (terminé, non commité)
 - `S3_BACKUP_BUCKET` (posé sur Railway, services api et backup : `crushduo-backup`) sert de bucket de sauvegarde par défaut ; une valeur saisie dans l'admin l'emporte.
 - Première sauvegarde automatique : une fois le stockage objet actif et si aucune sauvegarde n'a jamais été tentée, l'API en lance une (≈ 90 s après démarrage). Ensuite, cron de nuit. Un échec est enregistré, notifié par e-mail, et non retenté en boucle. Tests avec faux S3 ; non essayé sur un vrai R2.
+
+## Configuration du paiement depuis l'admin (terminé, non commité)
+- Admin › Paiement en ligne (super administrateur) : fournisseur (KKiaPay ou simulé), clé publique, clé privée et secret du webhook (chiffrés en base avec `SETTINGS_ENCRYPTION_KEY`, jamais renvoyés ni journalisés), mode bac à sable / réel, adresse du webhook à copier chez KKiaPay. « Tester les clés » interroge KKiaPay sans déplacer d'argent ; l'enregistrement redemande le mot de passe. La base l'emporte sur les variables `PAYMENT_PROVIDER` / `KKIAPAY_*` (repli si rien n'est saisi).
+- Tests backend (faux KKiaPay) ; **jamais exécuté contre le vrai KKiaPay** : premier essai bac à sable à faire.

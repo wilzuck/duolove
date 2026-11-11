@@ -141,16 +141,20 @@ async def test_production_sans_kkiapay_refuse_la_simulation(monkeypatch):
 
     import pytest
 
-    from app.core import payments
+    from app.core import payment_config, payments
     from app.core.errors import AppError
 
+    async def eff():
+        return payment_config.Effective(provider="mock")
+
+    monkeypatch.setattr(payment_config, "effective", eff)
     prod = SimpleNamespace(is_prod=True, payment_provider="mock", payment_webhook_secret="x" * 32)
     monkeypatch.setattr(payments, "get_settings", lambda: prod)
     with pytest.raises(AppError) as e:
-        payments.checkout_provider()
+        await payments.checkout_provider()
     assert e.value.status == 503 if hasattr(e.value, "status") else True
     with pytest.raises(AppError):
         await payments.handle_webhook(None, "mock", b"{}", "sig")
     dev = SimpleNamespace(is_prod=False, payment_provider="mock")
     monkeypatch.setattr(payments, "get_settings", lambda: dev)
-    assert payments.checkout_provider().name == "mock"
+    assert (await payments.checkout_provider()).name == "mock"

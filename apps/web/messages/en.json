@@ -2203,7 +2203,8 @@
       "guide": "Guide",
       "social": "Social networks",
       "backups": "Backups",
-      "broadcasts": "Sends"
+      "broadcasts": "Sends",
+      "payment": "Online payment"
     },
     "storage": {
       "title": "File storage",
@@ -3452,7 +3453,46 @@
       "APPEAL_REJECT": "Appeal rejected"
     },
     "reasonNeeded": "Enter a reason of at least 3 characters to enable the buttons.",
-    "suspendedUntil": "Suspended until {date}."
+    "suspendedUntil": "Suspended until {date}.",
+    "pay": {
+      "title": "Online payment",
+      "subtitle": "The payment provider (KKiaPay) and its keys. Super administrator only; keys are encrypted and never shown again.",
+      "mock": "Simulated (no real money)",
+      "sourceDb": "Configured from this console",
+      "sourceEnv": "Configured by server variables",
+      "sandbox": "sandbox",
+      "real": "real payments",
+      "liveBadge": "Live",
+      "testBadge": "Test",
+      "offBadge": "Simulated",
+      "mockProd": "In production, simulated mode offers no payment: subscriptions and the shop are unavailable until KKiaPay is configured.",
+      "noKey": "The SETTINGS_ENCRYPTION_KEY variable is not set on the server: keys cannot be saved from this console.",
+      "formTitle": "Provider connection",
+      "formHelp": "Keys are in the KKiaPay dashboard, Developers › API keys. Start in sandbox, then go live once your tests pass.",
+      "provider": "Provider",
+      "publicKey": "Public key",
+      "publicKeyHint": "Used by the payment button in the browser.",
+      "privateKey": "Private key",
+      "privateKeyHint": "It never leaves the server: it is used to verify each payment with KKiaPay.",
+      "keep": "Leave empty to keep the saved key ({masked}).",
+      "webhookSecret": "Webhook secret (secret hash)",
+      "webhookSecretHint": "The same value as in the webhook created at KKiaPay.",
+      "keepSecret": "Leave empty to keep the saved secret.",
+      "sandboxSwitch": "Sandbox mode",
+      "sandboxOn": "No real money is charged: use the test keys.",
+      "sandboxOff": "Payments are real: use the production keys.",
+      "webhookTitle": "Webhook address to enter at KKiaPay",
+      "webhookHelp": "Developers › Webhook › Add a webhook: tick “Successful transactions” and “Failed transactions”, and enter the same secret hash as above.",
+      "test": "Test the keys",
+      "save": "Save",
+      "testOk": "The keys are accepted by KKiaPay (no money moved).",
+      "saved": "Payment configuration saved.",
+      "confirmTitle": "Confirm with your password",
+      "confirmText": "To protect payments, your password is asked again before saving.",
+      "confirmReal": "You are switching to REAL payments: members will really be charged. Confirm with your password.",
+      "password": "Password",
+      "confirm": "Confirm"
+    }
   },
   "pricingFaq": {
     "renew": {

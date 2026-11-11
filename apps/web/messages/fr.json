@@ -2203,7 +2203,8 @@
       "guide": "Guide",
       "social": "Réseaux sociaux",
       "backups": "Sauvegardes",
-      "broadcasts": "Envois"
+      "broadcasts": "Envois",
+      "payment": "Paiement en ligne"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -3452,7 +3453,46 @@
       "APPEAL_REJECT": "Contestation refusée"
     },
     "reasonNeeded": "Saisissez un motif d'au moins 3 caractères pour activer les boutons.",
-    "suspendedUntil": "Suspendu jusqu'au {date}."
+    "suspendedUntil": "Suspendu jusqu'au {date}.",
+    "pay": {
+      "title": "Paiement en ligne",
+      "subtitle": "Le fournisseur de paiement (KKiaPay) et ses clés. Réservé au super administrateur ; les clés sont chiffrées et ne sont jamais réaffichées.",
+      "mock": "Simulé (sans argent réel)",
+      "sourceDb": "Configuré depuis cette console",
+      "sourceEnv": "Configuré par les variables du serveur",
+      "sandbox": "bac à sable",
+      "real": "paiements réels",
+      "liveBadge": "Réel",
+      "testBadge": "Test",
+      "offBadge": "Simulé",
+      "mockProd": "En production, le mode simulé ne propose aucun paiement : les abonnements et boutiques sont indisponibles tant que KKiaPay n'est pas configuré.",
+      "noKey": "La variable SETTINGS_ENCRYPTION_KEY n'est pas définie sur le serveur : les clés ne peuvent pas être enregistrées depuis cette console.",
+      "formTitle": "Connexion au fournisseur",
+      "formHelp": "Les clés se trouvent dans le tableau de bord KKiaPay, rubrique Developers › API keys. Commence par le bac à sable, puis passe en réel quand les essais sont concluants.",
+      "provider": "Fournisseur",
+      "publicKey": "Clé publique",
+      "publicKeyHint": "Elle est utilisée par le bouton de paiement dans le navigateur.",
+      "privateKey": "Clé privée",
+      "privateKeyHint": "Elle ne quitte jamais le serveur : il s'en sert pour vérifier chaque paiement auprès de KKiaPay.",
+      "keep": "Laisse vide pour garder la clé enregistrée ({masked}).",
+      "webhookSecret": "Secret du webhook (« secret hash »)",
+      "webhookSecretHint": "La même valeur que dans le webhook créé chez KKiaPay.",
+      "keepSecret": "Laisse vide pour garder le secret enregistré.",
+      "sandboxSwitch": "Mode bac à sable",
+      "sandboxOn": "Aucun vrai argent n'est débité : utilise les clés de test.",
+      "sandboxOff": "Les paiements sont réels : utilise les clés de production.",
+      "webhookTitle": "Adresse du webhook à saisir chez KKiaPay",
+      "webhookHelp": "Developers › Webhook › Add a webhook : coche « Successful transactions » et « Failed transactions », et saisis le même secret hash que ci-dessus.",
+      "test": "Tester les clés",
+      "save": "Enregistrer",
+      "testOk": "Les clés sont acceptées par KKiaPay (aucun argent n'a bougé).",
+      "saved": "Configuration du paiement enregistrée.",
+      "confirmTitle": "Confirmer avec ton mot de passe",
+      "confirmText": "Pour protéger les paiements, ton mot de passe est redemandé avant d'enregistrer.",
+      "confirmReal": "Tu passes en paiements RÉELS : les membres seront vraiment débités. Confirme avec ton mot de passe.",
+      "password": "Mot de passe",
+      "confirm": "Confirmer"
+    }
   },
   "pricingFaq": {
     "renew": {

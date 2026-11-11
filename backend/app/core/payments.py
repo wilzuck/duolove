@@ -13,7 +13,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import credits, entitlements, kkiapay, notifications, plan_config, promo
+from app.core import credits, entitlements, kkiapay, notifications, payment_config, plan_config, promo
 from app.core.config import get_settings
 from app.core.errors import AppError, bad_request, not_found, unauthorized
 from app.core.ids import new_id, utcnow
@@ -53,15 +53,17 @@ class MockProvider:
         return {"providerRef": ref, "checkoutUrl": f"{get_settings().app_url}/checkout/mock?ref={ref}"}
 
 
-def provider():
-    return kkiapay.KkiapayProvider() if get_settings().payment_provider == "kkiapay" else MockProvider()
+def provider(cfg: payment_config.Effective):
+    return kkiapay.KkiapayProvider(cfg) if cfg.provider == "kkiapay" else MockProvider()
 
 
-def checkout_provider():
-    """Fournisseur pour ENCAISSER : en production, la simulation n'est jamais proposée (aucun paiement factice, aucun accès offert sans payer)."""
-    if get_settings().is_prod and get_settings().payment_provider != "kkiapay":
+async def checkout_provider():
+    """Fournisseur pour ENCAISSER : en production, la simulation n'est jamais proposée (aucun paiement factice, aucun accès offert sans payer).
+    La configuration active (administration, sinon variables d'environnement) décide du fournisseur."""
+    cfg = await payment_config.effective()
+    if get_settings().is_prod and cfg.provider != "kkiapay":
         raise AppError(503, "PAYMENTS_UNAVAILABLE")
-    return provider()
+    return provider(cfg)
 
 
 async def catalog(db: AsyncSession) -> dict:
@@ -88,7 +90,7 @@ async def current(db: AsyncSession, user_id: str) -> dict:
 async def checkout(db: AsyncSession, user_id: str, code: str, months: int = 1, promo_code: str | None = None) -> dict:
     plan, price = await plan_config.quote(db, code, months)
     plan_row = (await db.execute(select(SubscriptionPlan).where(SubscriptionPlan.code == code))).scalar_one()
-    prov = checkout_provider()
+    prov = await checkout_provider()
     # Abonnement + paiement (+ remise) dans une transaction : le verrou du code promo garantit qu'il ne dépasse jamais son plafond.
     q = await promo.evaluate(db, user_id, promo_code, price["totalXof"], True) if promo_code else None
     amount = q.finalXof if q else price["totalXof"]
@@ -113,7 +115,7 @@ async def checkout_product(db: AsyncSession, user_id: str, code: str, promo_code
     product = (await db.execute(select(Product).where(Product.code == code, Product.active.is_(True)))).scalar_one_or_none()
     if not product:
         raise not_found("PRODUCT_NOT_FOUND")
-    prov = checkout_provider()
+    prov = await checkout_provider()
     q = await promo.evaluate(db, user_id, promo_code, product.priceXof, True) if promo_code else None
     payment = Payment(userId=user_id, kind="PRODUCT", productId=product.id, quantity=product.quantity,
                       amountXof=q.finalXof if q else product.priceXof, promoCodeId=q.promoId if q else None,
@@ -223,7 +225,8 @@ async def apply_failure(db: AsyncSession, payment_id: str, reason: str | None = 
 
 async def confirm_kkiapay(db: AsyncSession, user_id: str, reference: str, transaction_id: str) -> dict:
     """Confirmation après le widget : le navigateur ne fournit que `reference` + `transactionId` ; le statut et le montant viennent de KKiaPay."""
-    if provider().name != "kkiapay":
+    cfg = await payment_config.effective()
+    if provider(cfg).name != "kkiapay":
         raise AppError(404, "NOT_FOUND")
     # Par référence d'abord (paiement en attente) ; en repli par transaction = rejeu d'une confirmation déjà traitée.
     q = select(Payment).where(Payment.provider == "kkiapay", Payment.userId == user_id)
@@ -236,8 +239,9 @@ async def confirm_kkiapay(db: AsyncSession, user_id: str, reference: str, transa
 
 async def handle_kkiapay_webhook(db: AsyncSession, raw: bytes, secret_header: str | None) -> dict:
     """Webhook KKiaPay : secret authentifié, puis RE-VÉRIFICATION de la transaction auprès de KKiaPay (le corps n'est jamais cru)."""
-    secret = get_settings().kkiapay_webhook_secret
-    if provider().name != "kkiapay" or not secret:
+    cfg = await payment_config.effective()
+    secret = cfg.webhook_secret
+    if provider(cfg).name != "kkiapay" or not secret:
         raise not_found("UNKNOWN_PROVIDER")
     # KKiaPay renvoie tel quel le « hash secret » du tableau de bord dans x-kkiapay-secret.
     if not safe_equal(secret_header or "", secret):
@@ -252,7 +256,7 @@ async def handle_kkiapay_webhook(db: AsyncSession, raw: bytes, secret_header: st
     event = body.get("event") or "event"
     if not await _record_event(db, "kkiapay", f"{tx_id}:{event}", event):
         return {"duplicate": True}
-    tx = await kkiapay.verify_transaction(tx_id)
+    tx = await kkiapay.verify_transaction(cfg, tx_id)
     refs = [f"tx_{tx_id}"] + ([tx.reference] if tx and tx.reference else [])
     payment = (await db.execute(select(Payment).where(Payment.provider == "kkiapay", Payment.providerRef.in_(refs)))).scalars().first()
     if not payment:
@@ -266,7 +270,7 @@ async def settle_kkiapay(db: AsyncSession, payment_id: str, transaction_id: str)
     if ev(payment.status) != "PENDING":
         return {"status": ev(payment.status)}
     try:
-        tx = await kkiapay.verify_transaction(transaction_id)
+        tx = await kkiapay.verify_transaction(await payment_config.effective(), transaction_id)
     except Exception:
         raise AppError(502, "PROVIDER_UNAVAILABLE", "Fournisseur de paiement injoignable") from None
     if not tx:
@@ -306,7 +310,7 @@ async def simulate_provider(db: AsyncSession, user_id: str, provider_ref: str, o
 
 
 async def provider_refund(provider_ref: str, amount_xof: int) -> dict:
-    prov = provider()
+    prov = provider(await payment_config.effective())
     if not hasattr(prov, "refund"):
         raise RuntimeError("Le fournisseur ne gère pas le remboursement automatique")
     return await prov.refund(provider_ref, amount_xof)

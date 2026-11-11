@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import httpx
 
 from app.core.config import get_settings
+from app.core.payment_config import Effective
 from app.core.security import random_token
 
 BASE = {"sandbox": "https://api-sandbox.kkiapay.me", "live": "https://api.kkiapay.me"}
@@ -32,14 +33,13 @@ async def post_json(url: str, api_key: str, body: dict, timeout: float) -> tuple
     return r.status_code, data
 
 
-def _base() -> str:
-    return BASE["sandbox"] if get_settings().kkiapay_sandbox else BASE["live"]
+def _base(cfg: Effective) -> str:
+    return BASE["sandbox"] if cfg.sandbox else BASE["live"]
 
 
-async def verify_transaction(transaction_id: str) -> KkiapayTransaction | None:
+async def verify_transaction(cfg: Effective, transaction_id: str) -> KkiapayTransaction | None:
     """Statut réel d'une transaction. None si inconnue ; lève une exception si KKiaPay est injoignable ou répond de façon inexploitable."""
-    s = get_settings()
-    status, j = await post_json(f"{_base()}/api/v1/transactions/status", s.kkiapay_private_key or "", {"transactionId": transaction_id}, 10)
+    status, j = await post_json(f"{_base(cfg)}/api/v1/transactions/status", cfg.private_key or "", {"transactionId": transaction_id}, 10)
     if status in (404, 400):
         return None
     if not 200 <= status < 300:
@@ -56,10 +56,9 @@ async def verify_transaction(transaction_id: str) -> KkiapayTransaction | None:
                               str(j["source"]).lower() if j.get("source") else None)
 
 
-async def revert_transaction(transaction_id: str) -> None:
+async def revert_transaction(cfg: Effective, transaction_id: str) -> None:
     """Annule (rembourse) une transaction chez KKiaPay. Lève une exception si KKiaPay refuse ou est injoignable."""
-    s = get_settings()
-    status, _ = await post_json(f"{_base()}/api/v1/transactions/revert", s.kkiapay_private_key or "", {"transactionId": transaction_id}, 15)
+    status, _ = await post_json(f"{_base(cfg)}/api/v1/transactions/revert", cfg.private_key or "", {"transactionId": transaction_id}, 15)
     if not 200 <= status < 300:
         raise RuntimeError(f"KKiaPay a refusé le remboursement ({status})")
 
@@ -67,15 +66,17 @@ async def revert_transaction(transaction_id: str) -> None:
 class KkiapayProvider:
     name = "kkiapay"
 
+    def __init__(self, cfg: Effective):
+        self.cfg = cfg
+
     async def refund(self, provider_ref: str, amount_xof: int) -> dict:
         # providerRef devient `tx_<id>` une fois la transaction confirmée.
         tx = provider_ref[3:] if provider_ref.startswith("tx_") else None
         if not tx:
             raise RuntimeError("Transaction KKiaPay inconnue : remboursement manuel requis")
-        await revert_transaction(tx)
+        await revert_transaction(self.cfg, tx)
         return {}
 
     async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None) -> dict:
-        s = get_settings()
         ref = f"kk_{random_token(12)}"
-        return {"providerRef": ref, "widget": {"publicKey": s.kkiapay_public_key, "sandbox": s.kkiapay_sandbox, "amount": amount_xof, "reference": ref, "name": s.site_name}}
+        return {"providerRef": ref, "widget": {"publicKey": self.cfg.public_key, "sandbox": self.cfg.sandbox, "amount": amount_xof, "reference": ref, "name": get_settings().site_name}}
