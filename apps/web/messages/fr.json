@@ -1691,7 +1691,11 @@
     "visitorsEmptyTitle": "Aucune visite récente",
     "visitorsEmptyText": "Les personnes qui consultent votre profil apparaîtront ici pendant 30 jours.",
     "visitedAgo": "Dernière visite : {when}",
-    "visitCount": "{n, plural, one {# visite} other {# visites}}"
+    "visitCount": "{n, plural, one {# visite} other {# visites}}",
+    "likeReceived": "Like reçu",
+    "superReceived": "Super Like reçu",
+    "boostTitle": "Booster mon profil",
+    "boostText": "Mettez votre profil en tête de liste pendant la durée du boost et gagnez en visibilité."
   },
   "chat": {
     "callsLocked": "Appels : réservés à Premium et VIP",

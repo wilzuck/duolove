@@ -1691,7 +1691,11 @@
     "visitorsEmptyTitle": "No recent visits",
     "visitorsEmptyText": "People who view your profile will show up here for 30 days.",
     "visitedAgo": "Last visit: {when}",
-    "visitCount": "{n, plural, one {# visit} other {# visits}}"
+    "visitCount": "{n, plural, one {# visit} other {# visits}}",
+    "likeReceived": "Like received",
+    "superReceived": "Super Like received",
+    "boostTitle": "Boost my profile",
+    "boostText": "Put your profile at the top of the list for the length of the boost and get more visibility."
   },
   "chat": {
     "callsLocked": "Calls: Premium and VIP only",
