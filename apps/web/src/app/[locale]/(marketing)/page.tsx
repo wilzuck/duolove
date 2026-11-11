@@ -5,8 +5,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button, Card } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import { NewsletterForm } from '@/components/marketing/NewsletterForm';
-import { PricingTable } from '@/components/marketing/PricingTable';
-import { fetchCatalog } from '@/lib/catalog';
 
 const BENEFITS = [
   [Sparkles, 'matching'], [BadgeCheck, 'verified'], [MessageCircleHeart, 'chat'], [ShieldCheck, 'safety'], [Smartphone, 'mobile'], [CalendarHeart, 'daily'], [Radio, 'live'], [Timer, 'speed'], [CreditCard, 'momo'],
@@ -19,7 +17,6 @@ const FAQ = ['age', 'free', 'safety', 'payment', 'delete', 'verify'] as const;
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   setRequestLocale((await params).locale);
-  const catalog = await fetchCatalog();
   const t = await getTranslations();
   return (
     <>
@@ -93,14 +90,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </li>
           ))}
         </ol>
-        </div>
-      </section>
-
-      <section id="abonnements" className="mx-auto max-w-7xl scroll-mt-24 px-4 sm:px-6 py-20" aria-labelledby="plans">
-        <h2 id="plans" className="mx-auto max-w-2xl text-center text-3xl font-extrabold md:text-4xl">{t('home.plansTitle')}</h2>
-        <p className="mx-auto mt-3 max-w-xl text-center text-muted">{t('home.plansSubtitle')}</p>
-        <div className="mt-12">
-          <PricingTable initial={catalog} />
         </div>
       </section>
 
