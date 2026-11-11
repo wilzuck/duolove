@@ -79,3 +79,18 @@ def test_age_on_birthday():
     d = datetime.datetime(2000, 6, 15)
     assert age_from_birth_date(d, datetime.datetime(2026, 6, 14)) == 25
     assert age_from_birth_date(d, datetime.datetime(2026, 6, 15)) == 26
+
+
+def test_distance_depuis_la_ville_sans_position_partagee():
+    from app.core.city_coords import city_coords
+    from app.core.cities import POPULAR_CITIES
+
+    P = lambda country, city, lat=None, lng=None: SimpleNamespace(approxLat=lat, approxLng=lng, country=country, city=city)  # noqa: E731
+    d = approx_distance_km(P("TG", "Lomé"), P("BJ", "Cotonou"))
+    assert d is not None and 120 <= d <= 160 and d % 5 == 0  # Lomé–Cotonou ≈ 135 km
+    assert approx_distance_km(P("TG", "lome"), P("TG", "LOMÉ")) == 0  # casse et accents sans effet ; même ville : 0 (« moins de 5 km »)
+    assert approx_distance_km(P("TG", "Village inconnu"), P("TG", "Lomé")) is None
+    # La position partagée reste prioritaire sur la ville.
+    assert approx_distance_km(P("TG", "Lomé", 6.1, 1.2), P("TG", "Kara", 6.2, 1.2)) == 10
+    # Toutes les villes proposées à l'inscription ont des coordonnées.
+    assert [(c, v) for c, vs in POPULAR_CITIES.items() for v in vs if city_coords(c, v) is None] == []

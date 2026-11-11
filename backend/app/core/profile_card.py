@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import flags, promptsvc
+from app.core.city_coords import city_coords
 from app.core.config import get_settings
 from app.core.constants import age_from_birth_date
 from app.core.lifestyle import zodiac
@@ -31,14 +32,22 @@ class CardProfile:
     prompts: list[dict] = field(default_factory=list)
 
 
+def approx_position(p) -> tuple[float, float] | None:
+    """Position approximative d'un profil : celle que le membre a partagée (arrondie à 0,1°), sinon celle de sa ville si elle est connue."""
+    if p.approxLat is not None and p.approxLng is not None:
+        return p.approxLat, p.approxLng
+    return city_coords(getattr(p, "country", None), getattr(p, "city", None))
+
+
 def approx_distance_km(a, b) -> int | None:
-    """Distance arrondie à 5 km : on n'expose jamais de position précise. a, b : objets avec approxLat/approxLng."""
-    if a.approxLat is None or a.approxLng is None or b.approxLat is None or b.approxLng is None:
+    """Distance arrondie à 5 km : on n'expose jamais de position précise. a, b : profils (position partagée ou, à défaut, ville connue)."""
+    pa, pb = approx_position(a), approx_position(b)
+    if pa is None or pb is None:
         return None
     R = 6371
     rad = math.radians
-    d_lat, d_lng = rad(b.approxLat - a.approxLat), rad(b.approxLng - a.approxLng)
-    h = math.sin(d_lat / 2) ** 2 + math.cos(rad(a.approxLat)) * math.cos(rad(b.approxLat)) * math.sin(d_lng / 2) ** 2
+    d_lat, d_lng = rad(pb[0] - pa[0]), rad(pb[1] - pa[1])
+    h = math.sin(d_lat / 2) ** 2 + math.cos(rad(pa[0])) * math.cos(rad(pb[0])) * math.sin(d_lng / 2) ** 2
     return int(math.floor((2 * R * math.asin(math.sqrt(h))) / 5 + 0.5)) * 5
 
 
