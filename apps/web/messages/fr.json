@@ -1804,7 +1804,8 @@
     "likesPets": "Aime les animaux",
     "noPets": "N’aime pas les animaux",
     "from": "Originaire de {country}",
-    "lifestyle": "Mode de vie"
+    "lifestyle": "Mode de vie",
+    "seeProfile": "Voir le profil"
   },
   "prefs": {
     "title": "Mes critères de rencontre",

@@ -1,12 +1,13 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
-import { Ban, Briefcase, Flag, Heart, HeartHandshake, Home, Languages, MapPin, PawPrint, Baby, Ruler, GraduationCap, Cigarette, Wine, BookOpen, Star } from 'lucide-react';
+import { Ban, Briefcase, Eye, Flag, Heart, HeartHandshake, Home, Languages, MapPin, PawPrint, Baby, Ruler, GraduationCap, Cigarette, Wine, BookOpen, Star } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, useSyncExternalStore } from 'react';
 import { Badge, Button, buttonVariants, cn } from '@duomatch/ui';
 import { ActionButton } from './ActionButton';
 import { useApiError } from '@/hooks/useApiError';
 import { useEngagementConfig } from '@/hooks/useQueries';
+import { Link } from '@/i18n/navigation';
 import { post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import { formatHeight } from '@/lib/format';
@@ -109,6 +110,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
         )}
         {canComment && <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({}), 'w-full')}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</ActionButton>}
         <div className="flex gap-3 border-t border-line pt-5">
+          {layout === 'stack' && <Link href={`/profile/${card.id}`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><Eye className="size-4" aria-hidden />{t('profileView.seeProfile')}</Link>}
           <Button variant="outline" size="sm" onClick={() => setReport(true)}><Flag className="size-4" aria-hidden />{t('report.cta')}</Button>
           <Button variant="outline" size="sm" onClick={() => block.mutate()} loading={block.isPending}><Ban className="size-4" aria-hidden />{t('report.block')}</Button>
         </div>

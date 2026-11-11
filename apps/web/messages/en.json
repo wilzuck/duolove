@@ -1804,7 +1804,8 @@
     "likesPets": "Likes animals",
     "noPets": "Doesn’t like animals",
     "from": "Originally from {country}",
-    "lifestyle": "Lifestyle"
+    "lifestyle": "Lifestyle",
+    "seeProfile": "View profile"
   },
   "prefs": {
     "title": "My dating preferences",
