@@ -23,13 +23,13 @@ def _empty() -> dict:
     return {n: {"enabled": False, "urls": {lc: "" for lc in LOCALES}} for n in NETWORKS}
 
 
-def clean_url(network: str, raw: str) -> str:
+def clean_url(network: str, raw: str, locale: str | None = None) -> str:
     """Adresse https d'un domaine du réseau (www. et sous-domaines acceptés), ou chaîne vide."""
     url = (raw or "").strip()
     if not url:
         return ""
     if len(url) > MAX_URL:
-        raise bad_request("SOCIAL_URL_INVALID", "Adresse trop longue")
+        raise bad_request("SOCIAL_URL_INVALID", "Adresse trop longue", {"network": network, "locale": locale, "domain": HOSTS[network][0]})
     if not re.match(r"^[a-z][a-z0-9+.-]*:", url, re.I):
         url = "https://" + url.lstrip("/")  # « facebook.com/crushduo » ou « www.facebook.com/crushduo » : https ajouté
     elif url.lower().startswith("http://"):
@@ -37,7 +37,7 @@ def clean_url(network: str, raw: str) -> str:
     p = urlparse(url)
     host = (p.hostname or "").lower()
     if p.scheme != "https" or not any(host == h or host.endswith("." + h) for h in HOSTS[network]):
-        raise bad_request("SOCIAL_URL_INVALID", f"Adresse https {HOSTS[network][0]} attendue")
+        raise bad_request("SOCIAL_URL_INVALID", f"Adresse https {HOSTS[network][0]} attendue", {"network": network, "locale": locale, "domain": HOSTS[network][0]})
     return url
 
 
@@ -56,10 +56,10 @@ async def save(db: AsyncSession, data: dict) -> dict:
     value = {}
     for n in NETWORKS:
         d = data.get(n) or {}
-        urls = {lc: clean_url(n, (d.get("urls") or {}).get(lc, "")) for lc in LOCALES}
+        urls = {lc: clean_url(n, (d.get("urls") or {}).get(lc, ""), lc) for lc in LOCALES}
         enabled = bool(d.get("enabled"))
         if enabled and not any(urls.values()):
-            raise bad_request("SOCIAL_URL_REQUIRED", "Renseignez au moins une adresse pour afficher ce réseau")
+            raise bad_request("SOCIAL_URL_REQUIRED", "Renseignez au moins une adresse pour afficher ce réseau", {"network": n})
         value[n] = {"enabled": enabled, "urls": urls}
     row = (await db.execute(select(SystemSetting).where(SystemSetting.key == KEY))).scalar_one_or_none()
     if row:

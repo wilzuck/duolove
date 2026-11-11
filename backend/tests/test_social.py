@@ -40,6 +40,7 @@ async def test_adresses_refusees(app, http, db):
     for bad in ("javascript:alert(1)", "https://evil.com/facebook.com", "evil.com/facebook.com", "https://facebook.com.evil.com/x"):
         r = await a.agent.put("/api/admin/social", json={"facebook": {"enabled": False, "urls": {"fr": bad}}, "instagram": ok, **rest})
         assert r.status_code == 400 and r.json()["error"]["code"] == "SOCIAL_URL_INVALID", bad
+        assert r.json()["error"]["details"] == {"network": "facebook", "locale": "fr", "domain": "facebook.com"}  # le champ fautif est désigné
     r = await a.agent.put("/api/admin/social", json={"facebook": {"enabled": True, "urls": {}}, "instagram": ok, **rest})
     assert r.status_code == 400 and r.json()["error"]["code"] == "SOCIAL_URL_REQUIRED"
     nets = {"whatsapp": "https://whatsapp.com/channel/abc", "youtube": "https://www.youtube.com/@crushduo", "x": "https://x.com/crushduo"}

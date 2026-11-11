@@ -3237,7 +3237,8 @@
       "help": "Adresse https complète du compte ; le domaine du réseau est vérifié. Les changements apparaissent sur le site en moins d'une minute.",
       "whatsapp": "WhatsApp",
       "youtube": "YouTube",
-      "x": "X (Twitter)"
+      "x": "X (Twitter)",
+      "badUrl": "Adresse refusée : elle doit être sur {domain} (vérifiez l'orthographe). Les autres réseaux ne sont pas concernés."
     }
   },
   "pricingFaq": {

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Alert, Badge, Button, Card, Field, Input, Skeleton } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
-import { api, put } from '@/lib/api';
+import { ApiError, api, put } from '@/lib/api';
 import { useUi } from '@/lib/store';
 
 type Key = 'facebook' | 'instagram' | 'tiktok' | 'whatsapp' | 'youtube' | 'x';
@@ -27,7 +27,10 @@ export default function AdminSocial() {
     onSuccess: () => { toast('success', t('admin.social.saved')); setDraft(null); void qc.invalidateQueries({ queryKey: ['admin', 'social'] }); void qc.invalidateQueries({ queryKey: ['social'] }); },
     onError: (e) => toast('error', err(e)),
   });
-  const failed = save.isError ? err(save.error) : null;
+  // Le serveur désigne le champ fautif (réseau + langue) : l'erreur s'affiche sous ce champ, les autres réseaux ne bloquent rien.
+  const bad = save.error instanceof ApiError ? (save.error.details as { network?: Key; locale?: 'fr' | 'en'; domain?: string } | undefined) : undefined;
+  const fieldError = (k: Key, lc: 'fr' | 'en') => (bad?.network === k && bad.locale === lc ? t('admin.social.badUrl', { domain: bad.domain ?? '' }) : undefined);
+  const failed = save.isError && !(bad?.network && bad.locale) ? err(save.error) : null;
 
   return (
     <div className="space-y-6">
@@ -49,8 +52,8 @@ export default function AdminSocial() {
                   </label>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label={t('admin.social.urlFr')}>{(p) => <Input {...p} type="url" inputMode="url" autoComplete="off" placeholder={PLACEHOLDER[k]} value={c.urls.fr} onChange={(e) => patch(k, { urls: { ...c.urls, fr: e.target.value } })} />}</Field>
-                  <Field label={t('admin.social.urlEn')} hint={t('admin.social.urlEnHint')}>{(p) => <Input {...p} type="url" inputMode="url" autoComplete="off" placeholder={PLACEHOLDER[k]} value={c.urls.en} onChange={(e) => patch(k, { urls: { ...c.urls, en: e.target.value } })} />}</Field>
+                  <Field label={t('admin.social.urlFr')} error={fieldError(k, 'fr')}>{(p) => <Input {...p} type="url" inputMode="url" autoComplete="off" placeholder={PLACEHOLDER[k]} value={c.urls.fr} onChange={(e) => patch(k, { urls: { ...c.urls, fr: e.target.value } })} />}</Field>
+                  <Field label={t('admin.social.urlEn')} hint={t('admin.social.urlEnHint')} error={fieldError(k, 'en')}>{(p) => <Input {...p} type="url" inputMode="url" autoComplete="off" placeholder={PLACEHOLDER[k]} value={c.urls.en} onChange={(e) => patch(k, { urls: { ...c.urls, en: e.target.value } })} />}</Field>
                 </div>
               </Card>
             );

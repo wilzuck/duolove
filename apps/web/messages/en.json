@@ -3237,7 +3237,8 @@
       "help": "Full https address of the account; the network's domain is checked. Changes show on the site within a minute.",
       "whatsapp": "WhatsApp",
       "youtube": "YouTube",
-      "x": "X (Twitter)"
+      "x": "X (Twitter)",
+      "badUrl": "Link rejected: it must be on {domain} (check the spelling). Other networks are not affected."
     }
   },
   "pricingFaq": {
