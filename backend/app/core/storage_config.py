@@ -37,6 +37,11 @@ class Effective:
     access_key_id: str | None = None
     secret: str | None = None
     source: str = "env"  # « env » ou « db »
+    backup_bucket: str | None = None  # bucket dédié aux sauvegardes de la base ; vide : le bucket des photos
+
+    @property
+    def backups_bucket(self) -> str | None:
+        return self.backup_bucket or self.bucket
 
 
 _cache: dict = {"at": 0.0, "cfg": None}
@@ -67,13 +72,13 @@ def decrypt(token: str) -> str | None:
 def from_env() -> Effective:
     s = get_settings()
     return Effective(driver=s.storage_driver.lower(), endpoint=s.s3_endpoint, bucket=s.s3_bucket, region=s.s3_region, prefix=s.s3_prefix,
-                     access_key_id=s.s3_access_key_id, secret=s.s3_secret_access_key, source="env")
+                     access_key_id=s.s3_access_key_id, secret=s.s3_secret_access_key, source="env", backup_bucket=s.s3_backup_bucket)
 
 
 def _from_row(v: dict) -> Effective:
     sec = decrypt(v["secretEnc"]) if v.get("secretEnc") else None
     return Effective(driver=v.get("driver", "local"), endpoint=v.get("endpoint"), bucket=v.get("bucket"), region=v.get("region") or "auto",
-                     prefix=v.get("prefix") or "", access_key_id=v.get("accessKeyId"), secret=sec, source="db")
+                     prefix=v.get("prefix") or "", access_key_id=v.get("accessKeyId"), secret=sec, source="db", backup_bucket=v.get("backupBucket") or None)
 
 
 async def load_row(db: AsyncSession) -> dict | None:
@@ -102,7 +107,7 @@ def mask(access_key_id: str | None) -> str | None:
 
 
 def public_view(cfg: Effective) -> dict:
-    return {"source": cfg.source, "driver": cfg.driver, "endpoint": cfg.endpoint, "bucket": cfg.bucket, "region": cfg.region, "prefix": cfg.prefix,
+    return {"source": cfg.source, "driver": cfg.driver, "endpoint": cfg.endpoint, "bucket": cfg.bucket, "region": cfg.region, "prefix": cfg.prefix, "backupBucket": cfg.backup_bucket,
             "accessKeyIdMasked": mask(cfg.access_key_id), "hasSecret": bool(cfg.secret)}
 
 
@@ -134,16 +139,19 @@ def validate(body: dict, existing: Effective | None) -> dict:
     bucket = str(body.get("bucket") or "").strip()
     region = str(body.get("region") or "auto").strip().lower()
     prefix = str(body.get("prefix") or "").strip().strip("/")
+    backup_bucket = str(body.get("backupBucket") or "").strip()
     access = str(body.get("accessKeyId") or "").strip() or (existing.access_key_id if existing else None) or ""
     if not BUCKET_RE.match(bucket):
         raise bad_request("INVALID_BUCKET", "Nom de bucket invalide (minuscules, chiffres, points et tirets)")
+    if backup_bucket and not BUCKET_RE.match(backup_bucket):
+        raise bad_request("INVALID_BUCKET", "Nom du bucket de sauvegarde invalide (minuscules, chiffres, points et tirets)")
     if not REGION_RE.match(region):
         raise bad_request("INVALID_REGION", "Région invalide (« auto » pour Cloudflare R2)")
     if not PREFIX_RE.match(prefix):
         raise bad_request("INVALID_PREFIX", "Préfixe invalide")
     if not ACCESS_RE.match(access):
         raise bad_request("INVALID_ACCESS_KEY", "Identifiant de clé d'accès invalide")
-    return {"driver": "s3", "endpoint": endpoint, "bucket": bucket, "region": region, "prefix": prefix, "accessKeyId": access}
+    return {"driver": "s3", "endpoint": endpoint, "bucket": bucket, "region": region, "prefix": prefix, "accessKeyId": access, "backupBucket": backup_bucket or None}
 
 
 def check_secret(secret: str) -> str:

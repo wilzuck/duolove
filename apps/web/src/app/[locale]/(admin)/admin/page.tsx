@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, Card, Skeleton, cn } from '@duomatch/ui';
 import { KpiCard, Metric, TrendChart, type Flow, type SeriesPoint } from '@/components/admin/DashboardParts';
+import { PeriodPicker, periodQuery, type Period } from '@/components/admin/PeriodPicker';
 import { Link } from '@/i18n/navigation';
 import { api } from '@/lib/api';
 import { formatXof, timeAgo } from '@/lib/format';
@@ -13,15 +14,15 @@ interface Overview {
   planDistribution: { plan: string; count: number }[]; recentSignups: { id: string; displayName: string; city: string; country: string; createdAt: string }[]; topCountries: { country: string; count: number }[];
   users: number; active7: number; profilesCompleted: number; activeConversations: number; activeSubscriptions: number; conversionRate: number; retentionD7: number; refundedXof: number;
   generatedAt: string;
-  period: { days: 7 | 30 | 90; signups: Flow; likes: Flow; matches: Flow; messages: Flow; revenue: Flow; series: { signups: SeriesPoint[]; likes: SeriesPoint[]; matches: SeriesPoint[]; messages: SeriesPoint[]; revenue: SeriesPoint[] } };
+  period: { days: number; signups: Flow; likes: Flow; matches: Flow; messages: Flow; revenue: Flow; series: { signups: SeriesPoint[]; likes: SeriesPoint[]; matches: SeriesPoint[]; messages: SeriesPoint[]; revenue: SeriesPoint[] } };
 }
 const PERIODS = [7, 30, 90] as const;
 
 export default function AdminOverview() {
   const t = useTranslations();
   const locale = useLocale();
-  const [days, setDays] = useState<(typeof PERIODS)[number]>(30);
-  const q = useQuery({ queryKey: ['admin', 'overview', days], queryFn: () => api<Overview>(`/admin/overview?days=${days}`), placeholderData: keepPreviousData, refetchInterval: 60_000 });
+  const [period, setPeriod] = useState<Period>({ days: 30 });
+  const q = useQuery({ queryKey: ['admin', 'overview', period], queryFn: () => api<Overview>(`/admin/overview?${periodQuery(period)}`), placeholderData: keepPreviousData, refetchInterval: 60_000 });
   const badges = useQuery({ queryKey: ['admin', 'badges'], queryFn: () => api<{ reports: number; verifications: number; appeals: number }>('/admin/badges'), refetchInterval: 60_000 });
   const data = q.data;
   const n = (v: number) => new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'fr-FR').format(v);
@@ -37,12 +38,7 @@ export default function AdminOverview() {
         <h2 className="font-display text-xl font-extrabold">{t('admin.dash.title')}</h2>
         <div className="flex flex-wrap items-center gap-3">
           {data && <span className="text-xs text-muted">{t('admin.dash.updated', { time: new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(data.generatedAt)) })}</span>}
-          <div role="group" aria-label={t('admin.dash.period')} className="inline-flex rounded-full border border-field-line bg-field p-1">
-            {PERIODS.map((p) => (
-              <button key={p} type="button" aria-pressed={days === p} onClick={() => setDays(p)}
-                className={cn('rounded-full px-3.5 py-1.5 text-sm font-semibold transition', days === p ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>{t(`admin.dash.p${p}`)}</button>
-            ))}
-          </div>
+          <PeriodPicker presets={PERIODS} label={(p) => t(`admin.dash.p${p}`)} value={period} onChange={setPeriod} />
           <Button variant="outline" size="sm" onClick={() => { void q.refetch(); void badges.refetch(); }} loading={q.isFetching} aria-label={t('admin.dash.refresh')}>{!q.isFetching && <RefreshCw className="size-4" aria-hidden />}<span className="max-sm:sr-only">{t('admin.dash.refresh')}</span></Button>
         </div>
       </div>

@@ -226,3 +226,28 @@ async def test_migration_exige_le_mode_s3(app, db):
     s = await _super(app, db)
     r = await s.agent.post("/api/admin/storage/migrate")
     assert r.status_code == 400 and r.json()["error"]["code"] == "STORAGE_NOT_S3"
+
+
+def test_bucket_des_sauvegardes_distinct_ou_repli():
+    """Les sauvegardes vont dans le bucket dédié s'il est défini, sinon dans celui des photos ; un nom invalide est refusé."""
+    assert s3cfg().backups_bucket == "b"
+    assert storage_config.Effective(driver="s3", bucket="b", backup_bucket="b-backup").backups_bucket == "b-backup"
+    assert storage_config.validate({**BODY, "backupBucket": "duomatch-backup"}, None)["backupBucket"] == "duomatch-backup"
+    assert storage_config.validate(BODY, None)["backupBucket"] is None
+    with pytest.raises(AppError):
+        storage_config.validate({**BODY, "backupBucket": "Mauvais Nom"}, None)
+
+
+async def test_probe_teste_le_bucket_demande(monkeypatch):
+    seen: list[str] = []
+
+    class Rec(FakeS3):
+        def put_object(self, Bucket, Key, Body, ContentType=None):
+            seen.append(Bucket)
+            super().put_object(Bucket, Key, Body, ContentType)
+
+    f = Rec()
+    monkeypatch.setattr(storage, "_s3_client", lambda cfg: f)
+    await storage.probe(s3cfg())
+    await storage.probe(s3cfg(), "b-backup")
+    assert seen == ["b", "b-backup"]

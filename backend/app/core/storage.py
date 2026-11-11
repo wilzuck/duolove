@@ -108,19 +108,20 @@ async def delete(key: str) -> None:
     await asyncio.to_thread(lambda: f.unlink(missing_ok=True))
 
 
-async def probe(cfg: storage_config.Effective) -> None:
+async def probe(cfg: storage_config.Effective, bucket: str | None = None) -> None:
     """Écrit, relit puis supprime un fichier d'essai avec CETTE configuration. Lève AppError avec un message clair (jamais le secret)."""
     from botocore.exceptions import BotoCoreError, ClientError
 
     key = f"healthcheck/probe-{secrets.token_hex(6)}.webp"
     payload = secrets.token_bytes(32)
+    target = bucket or cfg.bucket
 
     def _run() -> None:
         c = _s3_client(cfg)
         k = _s3_key(cfg, key)
-        c.put_object(Bucket=cfg.bucket, Key=k, Body=payload, ContentType="image/webp")
-        got = c.get_object(Bucket=cfg.bucket, Key=k)["Body"].read()
-        c.delete_object(Bucket=cfg.bucket, Key=k)
+        c.put_object(Bucket=target, Key=k, Body=payload, ContentType="image/webp")
+        got = c.get_object(Bucket=target, Key=k)["Body"].read()
+        c.delete_object(Bucket=target, Key=k)
         if got != payload:
             raise RuntimeError("relecture différente")
 

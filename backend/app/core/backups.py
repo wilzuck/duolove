@@ -194,7 +194,7 @@ async def run_and_record(trigger: str, database_url: str, dump_fn=None) -> dict:
         prev = {}
     try:
         client, cfg = await client_and_cfg()
-        r = await asyncio.to_thread(run, client, cfg.bucket, cfg.prefix, database_url, None, dump_fn or dump)
+        r = await asyncio.to_thread(run, client, cfg.backups_bucket, cfg.prefix, database_url, None, dump_fn or dump)
         last = {"ok": True, "at": now.isoformat(), "trigger": trigger, "key": r["key"], "bytes": r["bytes"]}
     except Exception as e:  # noqa: BLE001 — tout échec est enregistré et notifié
         msg = (e.stderr.strip() if isinstance(e, subprocess.CalledProcessError) and e.stderr else str(e)) or type(e).__name__

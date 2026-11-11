@@ -24,17 +24,17 @@ def main(argv: list[str]) -> int:
         print("Stockage objet (R2) non configuré : la sauvegarde n'est jamais écrite sur le disque du serveur. Configurez-le dans l'admin (Stockage) ou par les variables S3_*.", file=sys.stderr)
         return 1
     if argv[:1] == ["--list"]:
-        for b in list_backups(client, cfg.bucket, cfg.prefix):
+        for b in list_backups(client, cfg.backups_bucket, cfg.prefix):
             print(f"{b['key']}  {b['bytes']} octets")
         return 0
     if argv[:1] == ["--download"]:
-        items = list_backups(client, cfg.bucket, cfg.prefix)
+        items = list_backups(client, cfg.backups_bucket, cfg.prefix)
         if not items:
             print("Aucune sauvegarde.", file=sys.stderr)
             return 1
         key = items[0]["key"] if len(argv) < 2 or argv[1] == "LATEST" else argv[1]
         dest = Path(argv[2] if len(argv) > 2 else ".") / Path(key).name
-        client.download_file(cfg.bucket, key, str(dest))
+        client.download_file(cfg.backups_bucket, key, str(dest))
         print(f"{key} → {dest} ({dest.stat().st_size} octets)")
         return 0
     if not shutil.which("pg_dump"):

@@ -216,3 +216,11 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 - **Sauvegarde nocturne de la base vers R2** (`backend/scripts/backup_db.py`, `docker/Dockerfile.backup`, `docker/railway.backup.json`, `docs/BACKUP.md`) : code et tests faits, restauration réelle vérifiée en local. **Non en service** : le service « backup » n'est pas encore créé sur Railway ; image non construite ici (Docker absent).
 - **Envois de l'administration** (Administration › Envois, `backend/app/core/broadcastsvc.py`) : public ciblé (tous, sauf, choisis, par profil, adresses libres), canaux e-mail et annonce dans l'application, éditeur riche, variables, signature, planification, aperçu et test ; consentement respecté (promotion = membres consentants, adresses libres = service seulement). Testé (backend complet). **Non fait** : pièce jointe, dictée vocale. **Non vérifié** à l'écran.
 - **Page « Sauvegardes »** (Administration) : état, alerte à 26 h, sauvegarde à la demande, téléchargement (mot de passe, audit, lien 5 min), e-mail en cas d'échec. Le service Railway de sauvegarde nocturne reste à créer ; image API avec `pg_dump` 18 non construite ici.
+
+## Période personnalisée partout (terminé, non commité)
+- Aperçu, Statistiques et E-mails de l'admin : en plus de 7 / 30 / 90 jours, bouton « Personnalisée » avec calendrier de plage (composant `PeriodPicker`, `RangeCalendar` dans `@duomatch/ui`). 366 jours au plus, pas dans le futur.
+- API : `GET /admin/overview`, `/admin/stats` et `/admin/emails/stats` acceptent `from` et `to` (aide `resolve_period`). Test ajouté ; vérifié par typecheck et pytest, pas encore essayé dans le navigateur.
+- Non concerné : le filtre « actifs sur 7 / 30 / 90 jours » des envois (c'est un critère d'audience, pas une période d'affichage).
+
+## Bucket dédié aux sauvegardes (terminé, non commité)
+- Admin › Stockage : champ « Bucket des sauvegardes (facultatif) » (ou variable `S3_BACKUP_BUCKET`). Vide : les dumps restent dans le bucket des photos. Le test et l'enregistrement vérifient aussi l'écriture dans ce bucket. Les sauvegardes (nocturne, à la demande, liste, téléchargement) l'utilisent ; même clé d'accès que le bucket des photos. Tests ajoutés. Non essayé contre un vrai R2.

@@ -3,8 +3,9 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { CreditCard, Heart, HeartHandshake, Radio, RefreshCw, Smartphone, UserPlus, Wallet } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Button, Card, Input, Skeleton, cn } from '@duomatch/ui';
+import { Button, Card, Skeleton, cn } from '@duomatch/ui';
 import { KpiCard, Metric, TrendChart, type Flow, type SeriesPoint } from '@/components/admin/DashboardParts';
+import { PeriodPicker, periodQuery, type Period } from '@/components/admin/PeriodPicker';
 import { PageHeader } from '@/components/admin/PageParts';
 import { LineChart } from '@/components/admin/StatsCharts';
 import { api } from '@/lib/api';
@@ -22,22 +23,11 @@ interface Sat {
   calls: { started: number; answerRate: number }; speed: { pairs: number; mutualRate: number }; dates: { proposed: number; acceptRate: number | null; feedbackCount: number; feedbackAverage: number | null };
 }
 const PERIODS = [7, 30, 90, 180, 365] as const;
-const DAY_MS = 86_400_000;
-const isoDay = (ms: number) => new Date(ms).toISOString().slice(0, 10);  // jours calendaires UTC, comme le serveur
-const MAX_DAYS = 366;
-
 export default function AdminStats() {
   const t = useTranslations();
   const locale = useLocale();
-  const [days, setDays] = useState<(typeof PERIODS)[number]>(30);
-  // Période personnalisée : deux dates (bornes incluses). Valable si début ≤ fin, fin ≤ aujourd'hui et 366 jours au plus.
-  const [today] = useState(() => isoDay(Date.now()));
-  const [custom, setCustom] = useState(false);
-  const [range, setRange] = useState(() => ({ from: isoDay(Date.parse(today) - 29 * DAY_MS), to: today }));
-  const span = Math.round((Date.parse(range.to) - Date.parse(range.from)) / DAY_MS) + 1;
-  const rangeOk = !!range.from && !!range.to && span >= 1 && span <= MAX_DAYS && range.to <= today;
-  const url = custom ? `/admin/stats?from=${range.from}&to=${range.to}` : `/admin/stats?days=${days}`;
-  const q = useQuery({ queryKey: ['admin', 'stats', custom ? range : days], enabled: !custom || rangeOk, queryFn: () => api<Stats>(url), placeholderData: keepPreviousData, refetchInterval: 120_000 });
+  const [period, setPeriod] = useState<Period>({ days: 30 });
+  const q = useQuery({ queryKey: ['admin', 'stats', period], queryFn: () => api<Stats>(`/admin/stats?${periodQuery(period)}`), placeholderData: keepPreviousData, refetchInterval: 120_000 });
   const health = useQuery({ queryKey: ['admin', 'stats', 'health'], queryFn: () => api<Health>('/admin/stats/health'), refetchInterval: 300_000 });
   const sat = useQuery({ queryKey: ['admin', 'engagement', 'metrics'], queryFn: () => api<Sat>('/admin/engagement/metrics'), refetchInterval: 300_000 });
   const h = health.data;
@@ -49,22 +39,12 @@ export default function AdminStats() {
   const pct = (v: number | null) => (v == null ? t('admin.eng.m.none') : `${nf.format(v)} %`);
   const plansTotal = Math.max(1, d?.planDistribution.reduce((a, p) => a + p.count, 0) ?? 1);
   const day = (iso: string) => new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso));
-  const period = custom ? t('admin.stats.range', { from: day(range.from), to: day(range.to) }) : t('admin.stats.lastDays', { n: days });
+  const periodLabel = 'from' in period ? t('admin.stats.range', { from: day(period.from), to: day(period.to) }) : t('admin.stats.lastDays', { n: period.days });
   return (
     <div className="space-y-6">
       <PageHeader title={t('admin.nav.stats')} description={t('admin.pageDesc.stats')}>
         <div className="flex flex-wrap items-center gap-3">
-          <div role="group" aria-label={t('admin.dash.period')} className="inline-flex flex-wrap rounded-full border border-field-line bg-field p-1">
-            {PERIODS.map((p) => <button key={p} type="button" aria-pressed={!custom && days === p} onClick={() => { setCustom(false); setDays(p); }} className={cn('rounded-full px-3.5 py-1.5 text-sm font-semibold transition', !custom && days === p ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>{t(`admin.stats.p${p}`)}</button>)}
-            <button type="button" aria-pressed={custom} onClick={() => setCustom(true)} className={cn('rounded-full px-3.5 py-1.5 text-sm font-semibold transition', custom ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>{t('admin.stats.custom')}</button>
-          </div>
-          {custom && (
-            <div className="flex flex-wrap items-end gap-3" role="group" aria-label={t('admin.stats.custom')}>
-              <label className="space-y-1 text-xs font-medium text-muted">{t('admin.stats.from')}<Input type="date" className="h-10 w-auto text-sm text-fg" value={range.from} max={range.to || today} onChange={(e) => setRange({ ...range, from: e.target.value })} /></label>
-              <label className="space-y-1 text-xs font-medium text-muted">{t('admin.stats.to')}<Input type="date" className="h-10 w-auto text-sm text-fg" value={range.to} min={range.from} max={today} onChange={(e) => setRange({ ...range, to: e.target.value })} /></label>
-              {!rangeOk && <p className="basis-full text-sm text-danger-ink" role="alert">{t('admin.stats.rangeInvalid', { max: MAX_DAYS })}</p>}
-            </div>
-          )}
+          <PeriodPicker presets={PERIODS} label={(p) => t(`admin.stats.p${p}`)} value={period} onChange={setPeriod} />
           <Button variant="outline" size="sm" onClick={() => void q.refetch()} loading={q.isFetching} aria-label={t('admin.dash.refresh')}>{!q.isFetching && <RefreshCw className="size-4" aria-hidden />}<span className="max-sm:sr-only">{t('admin.dash.refresh')}</span></Button>
         </div>
       </PageHeader>
@@ -82,15 +62,15 @@ export default function AdminStats() {
 
           <div className="grid gap-4 lg:grid-cols-2">
             <LineChart title={t('admin.stats.c.members')} subtitle={t('admin.stats.c.membersSub', { n: n(d.totals.members) })} locale={locale} format={n} lines={[{ key: 'members', label: t('admin.stats.c.members'), points: d.series.members, color: 'text-brand-strong' }]} />
-            <TrendChart title={t('admin.stats.c.signups')} points={d.series.signups} format={n} locale={locale} total={t('admin.stats.c.total', { n: n(d.flows.signups.current), period })} delta={d.flows.signups} />
-            <LineChart title={t('admin.stats.c.likes')} subtitle={t('admin.stats.c.likesSub', { period })} locale={locale} format={n} delta={d.flows.likes}
+            <TrendChart title={t('admin.stats.c.signups')} points={d.series.signups} format={n} locale={locale} total={t('admin.stats.c.total', { n: n(d.flows.signups.current), period: periodLabel })} delta={d.flows.signups} />
+            <LineChart title={t('admin.stats.c.likes')} subtitle={t('admin.stats.c.likesSub', { period: periodLabel })} locale={locale} format={n} delta={d.flows.likes}
               lines={[{ key: 'likes', label: t('admin.stats.l.likes'), points: d.series.likes, color: 'text-brand-strong' }, { key: 'passes', label: t('admin.stats.l.passes'), points: d.series.passes, color: 'text-sky-500' }]} />
-            <TrendChart title={t('admin.stats.c.matches')} points={d.series.matches} format={n} locale={locale} total={t('admin.stats.c.total', { n: n(d.flows.matches.current), period })} delta={d.flows.matches} />
+            <TrendChart title={t('admin.stats.c.matches')} points={d.series.matches} format={n} locale={locale} total={t('admin.stats.c.total', { n: n(d.flows.matches.current), period: periodLabel })} delta={d.flows.matches} />
             <LineChart title={t('admin.stats.c.crush')} subtitle={t('admin.stats.c.crushSub', { rate: pct(d.crushAcceptRate) })} locale={locale} format={n}
               lines={[{ key: 'crushSearches', label: t('admin.stats.l.searches'), points: d.series.crushSearches, color: 'text-violet-500' }, { key: 'crushInvites', label: t('admin.stats.l.invites'), points: d.series.crushInvites, color: 'text-brand-strong' }, { key: 'crushAccepted', label: t('admin.stats.l.accepted'), points: d.series.crushAccepted, color: 'text-emerald-500' }]} />
-            <TrendChart title={t('admin.stats.c.subs')} points={d.series.subscriptions} format={n} locale={locale} total={t('admin.stats.c.total', { n: n(d.flows.subscriptions.current), period })} delta={d.flows.subscriptions} />
-            <TrendChart title={t('admin.stats.c.revenue')} points={d.series.revenue} format={xof} locale={locale} total={t('admin.stats.c.total', { n: xof(d.flows.revenue.current), period })} delta={d.flows.revenue} />
-            <TrendChart title={t('admin.stats.c.messages')} points={d.series.messages} format={n} locale={locale} total={t('admin.stats.c.total', { n: n(d.flows.messages.current), period })} delta={d.flows.messages} />
+            <TrendChart title={t('admin.stats.c.subs')} points={d.series.subscriptions} format={n} locale={locale} total={t('admin.stats.c.total', { n: n(d.flows.subscriptions.current), period: periodLabel })} delta={d.flows.subscriptions} />
+            <TrendChart title={t('admin.stats.c.revenue')} points={d.series.revenue} format={xof} locale={locale} total={t('admin.stats.c.total', { n: xof(d.flows.revenue.current), period: periodLabel })} delta={d.flows.revenue} />
+            <TrendChart title={t('admin.stats.c.messages')} points={d.series.messages} format={n} locale={locale} total={t('admin.stats.c.total', { n: n(d.flows.messages.current), period: periodLabel })} delta={d.flows.messages} />
           </div>
 
 

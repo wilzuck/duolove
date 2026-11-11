@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Badge, Button, Card, DataTableView, Skeleton, cn } from '@duomatch/ui';
 import { KpiCard, type SeriesPoint } from '@/components/admin/DashboardParts';
+import { PeriodPicker, periodQuery, type Period } from '@/components/admin/PeriodPicker';
 import { PageHeader, StatusTabs } from '@/components/admin/PageParts';
 import { LineChart } from '@/components/admin/StatsCharts';
 import { useAdminList } from '@/hooks/useAdmin';
@@ -86,7 +87,7 @@ export default function AdminEmails() {
   const t = useTranslations();
   const locale = useLocale();
   const labels = useTableLabels();
-  const [days, setDays] = useState<(typeof PERIODS)[number]>(30);
+  const [period, setPeriod] = useState<Period>({ days: 30 });
   const err = useApiError();
   const toast = useUi((u) => u.toast);
   const qc = useQueryClient();
@@ -94,7 +95,7 @@ export default function AdminEmails() {
   const [status, setStatus] = useState<'ALL' | 'SENT' | 'FAILED' | 'SKIPPED'>('ALL');
   const blocked = useQuery({ queryKey: ['admin', 'emails', 'suppressions'], queryFn: () => api<BlockedList>('/admin/emails/suppressions') });
   const unblock = useMutation({ mutationFn: (id: string) => del(`/admin/emails/suppressions/${id}`), onSuccess: () => { toast('success', t('admin.em.unblocked')); void qc.invalidateQueries({ queryKey: ['admin', 'emails'] }); }, onError: (e) => toast('error', err(e)) });
-  const stats = useQuery({ queryKey: ['admin', 'emails', 'stats', days], queryFn: () => api<Stats>(`/admin/emails/stats?days=${days}`), placeholderData: keepPreviousData, refetchInterval: 60_000 });
+  const stats = useQuery({ queryKey: ['admin', 'emails', 'stats', period], queryFn: () => api<Stats>(`/admin/emails/stats?${periodQuery(period)}`), placeholderData: keepPreviousData, refetchInterval: 60_000 });
   const list = useAdminList<Row>(['emails', status], `/admin/emails${status === 'ALL' ? '' : `?status=${status}`}`);
   const s = stats.data;
   const nf = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'fr-FR');
@@ -103,9 +104,7 @@ export default function AdminEmails() {
   return (
     <div className="space-y-6">
       <PageHeader title={t('admin.nav.emails')} description={t('admin.pageDesc.emails')}>
-        <div role="group" aria-label={t('admin.dash.period')} className="inline-flex rounded-full border border-field-line bg-field p-1">
-          {PERIODS.map((p) => <button key={p} type="button" aria-pressed={days === p} onClick={() => setDays(p)} className={cn('rounded-full px-3.5 py-1.5 text-sm font-semibold transition', days === p ? 'bg-brand-strong text-white' : 'text-muted hover:bg-soft hover:text-fg')}>{t(`admin.dash.p${p}`)}</button>)}
-        </div>
+        <PeriodPicker presets={PERIODS} label={(p) => t(`admin.dash.p${p}`)} value={period} onChange={setPeriod} />
       </PageHeader>
       <ProviderCard />
       {s?.provider === 'dev' && <Banner tone="warning" title={t('admin.em.noProviderTitle')}>{t('admin.em.noProvider')}</Banner>}

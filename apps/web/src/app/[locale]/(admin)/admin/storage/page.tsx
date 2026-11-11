@@ -9,7 +9,7 @@ import { useApiError } from '@/hooks/useApiError';
 import { ApiError, api, post, put } from '@/lib/api';
 import { useUi } from '@/lib/store';
 
-interface StorageView { source: 'env' | 'db'; driver: 'local' | 's3'; endpoint: string | null; bucket: string | null; region: string; prefix: string; accessKeyIdMasked: string | null; hasSecret: boolean; localFiles: number; encryptionKeyConfigured: boolean; envDriver: string }
+interface StorageView { source: 'env' | 'db'; driver: 'local' | 's3'; endpoint: string | null; bucket: string | null; region: string; prefix: string; backupBucket: string | null; accessKeyIdMasked: string | null; hasSecret: boolean; localFiles: number; encryptionKeyConfigured: boolean; envDriver: string }
 interface Migrated { copied: number; errors: number; remaining: number; localTotal: number; inBucket: number }
 
 /** Stockage des fichiers (Cloudflare R2 ou autre stockage compatible S3). Réservé au super administrateur ; la clé secrète est en écriture seule. */
@@ -19,15 +19,15 @@ export default function AdminStorage() {
   const err = useApiError();
   const toast = useUi((s) => s.toast);
   const view = useQuery({ queryKey: ['admin', 'storage'], queryFn: () => api<StorageView>('/admin/storage') });
-  const [form, setForm] = useState<{ endpoint: string; bucket: string; region: string; prefix: string; accessKeyId: string; secretAccessKey: string } | null>(null);
+  const [form, setForm] = useState<{ endpoint: string; bucket: string; region: string; prefix: string; backupBucket: string; accessKeyId: string; secretAccessKey: string } | null>(null);
   const [confirmLocal, setConfirmLocal] = useState(false);
   const [progress, setProgress] = useState<Migrated | null>(null);
   const v = view.data;
-  const f = form ?? { endpoint: v?.endpoint ?? '', bucket: v?.bucket ?? '', region: v?.region ?? 'auto', prefix: v?.prefix ?? '', accessKeyId: '', secretAccessKey: '' };
+  const f = form ?? { endpoint: v?.endpoint ?? '', bucket: v?.bucket ?? '', region: v?.region ?? 'auto', prefix: v?.prefix ?? '', backupBucket: v?.backupBucket ?? '', accessKeyId: '', secretAccessKey: '' };
   const set = (k: keyof typeof f, val: string) => setForm({ ...f, [k]: val });
   // Le serveur explique la cause précise d'un échec de test (bucket absent, clé refusée…) : on l'ajoute au message traduit.
   const explain = (e: unknown) => (e instanceof ApiError && e.code === 'STORAGE_TEST_FAILED' ? `${err(e)} ${e.message}` : err(e));
-  const body = () => ({ driver: 's3', endpoint: f.endpoint, bucket: f.bucket, region: f.region || 'auto', prefix: f.prefix, accessKeyId: f.accessKeyId || undefined, secretAccessKey: f.secretAccessKey || undefined });
+  const body = () => ({ driver: 's3', endpoint: f.endpoint, bucket: f.bucket, region: f.region || 'auto', prefix: f.prefix, backupBucket: f.backupBucket || undefined, accessKeyId: f.accessKeyId || undefined, secretAccessKey: f.secretAccessKey || undefined });
 
   const test = useMutation({ mutationFn: () => post('/admin/storage/test', body()), onSuccess: () => toast('success', t('admin.storage.testOk')), onError: (e) => toast('error', explain(e)) });
   const save = useMutation({
@@ -80,7 +80,7 @@ export default function AdminStorage() {
               <Field label={t('admin.storage.bucket')}>{(p) => <Input {...p} autoComplete="off" value={f.bucket} onChange={(e) => set('bucket', e.target.value)} required />}</Field>
               <Field label={t('admin.storage.region')} hint={t('admin.storage.regionHint')}>{(p) => <Input {...p} autoComplete="off" value={f.region} onChange={(e) => set('region', e.target.value)} />}</Field>
               <Field label={t('admin.storage.prefix')} hint={t('admin.storage.prefixHint')}>{(p) => <Input {...p} autoComplete="off" value={f.prefix} onChange={(e) => set('prefix', e.target.value)} />}</Field>
-              <span className="hidden sm:block" />
+              <Field label={t('admin.storage.backupBucket')} hint={t('admin.storage.backupBucketHint')}>{(p) => <Input {...p} autoComplete="off" placeholder={f.bucket} value={f.backupBucket} onChange={(e) => set('backupBucket', e.target.value)} />}</Field>
               <Field label={t('admin.storage.accessKey')} hint={v.accessKeyIdMasked ? t('admin.storage.keepHint', { masked: v.accessKeyIdMasked }) : undefined}>{(p) => <Input {...p} autoComplete="off" value={f.accessKeyId} onChange={(e) => set('accessKeyId', e.target.value)} required={!v.accessKeyIdMasked} />}</Field>
               <Field label={t('admin.storage.secret')} hint={v.hasSecret ? t('admin.storage.secretKeep') : t('admin.storage.secretHint')}>{(p) => <PasswordInput {...p} autoComplete="new-password" value={f.secretAccessKey} onChange={(e) => set('secretAccessKey', e.target.value)} required={!v.hasSecret} />}</Field>
               <div className="flex flex-wrap gap-2 sm:col-span-2">

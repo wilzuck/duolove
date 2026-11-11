@@ -42,7 +42,7 @@ async def overview(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
         client, cfg = await backups.client_and_cfg()
     except RuntimeError:
         return {"configured": False, "toolAvailable": bool(shutil.which("pg_dump")), "status": status, "items": []}
-    items = await asyncio.to_thread(backups.list_backups, client, cfg.bucket, cfg.prefix)
+    items = await asyncio.to_thread(backups.list_backups, client, cfg.backups_bucket, cfg.prefix)
     return {"configured": True, "toolAvailable": bool(shutil.which("pg_dump")), "status": status, "items": items}
 
 
@@ -78,9 +78,9 @@ async def download(body: DownloadIn, a: AuthUser = ADM, db: AsyncSession = Depen
         client, cfg = await backups.client_and_cfg()
     except RuntimeError:
         raise AppError(409, "STORAGE_NOT_CONFIGURED", "Le stockage objet (R2) n'est pas configuré") from None
-    known = {b["key"] for b in await asyncio.to_thread(backups.list_backups, client, cfg.bucket, cfg.prefix)}
+    known = {b["key"] for b in await asyncio.to_thread(backups.list_backups, client, cfg.backups_bucket, cfg.prefix)}
     if body.key not in known:  # seules les sauvegardes listées sont téléchargeables : jamais une clé arbitraire du bucket
         raise bad_request("BACKUP_NOT_FOUND", "Sauvegarde introuvable")
-    url = await asyncio.to_thread(backups.presign, client, cfg.bucket, body.key)
+    url = await asyncio.to_thread(backups.presign, client, cfg.backups_bucket, body.key)
     await audit(db, a.id, "backup.download", "Backup", body.key, {"expiresIn": backups.LINK_SECONDS})
     return {"url": url, "expiresIn": backups.LINK_SECONDS}

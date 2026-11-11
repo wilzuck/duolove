@@ -1,7 +1,7 @@
 'use client';
 import { Calendar as CalendarIcon, X } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { DayPicker } from 'react-day-picker';
+import { DayPicker, type DateRange } from 'react-day-picker';
 import { enUS, fr } from 'react-day-picker/locale';
 import 'react-day-picker/style.css';
 import { cn } from './cn';
@@ -66,5 +66,15 @@ export function DatePicker({ id, value, onChange, locale, labels, min, max, drop
           onSelect={(d) => { onChange(d ? toIsoDate(d) : ''); setOpen(false); }} />
       </Popover>
     </div>
+  );
+}
+
+export type { DateRange };
+
+/** Calendrier de sélection d'une plage de dates (début puis fin), jusqu'à `maxDays` jours ; aucun jour après `max`. */
+export function RangeCalendar({ value, onChange, locale, max, maxDays }: { value: DateRange | undefined; onChange: (r: DateRange | undefined) => void; locale: string; max: Date; maxDays?: number }) {
+  return (
+    <DayPicker mode="range" locale={LOCALES[locale as keyof typeof LOCALES] ?? enUS} selected={value} onSelect={onChange} max={maxDays} disabled={{ after: max }}
+      defaultMonth={value?.from ?? max} endMonth={max} startMonth={new Date(max.getFullYear() - 3, 0)} />
   );
 }

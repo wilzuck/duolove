@@ -11,7 +11,7 @@ from pydantic import BaseModel, StringConstraints, field_validator
 from sqlalchemy import delete, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.admin import ADM, DAY, SUP, after_cursor, audit, iso, page, paged
+from app.api.admin import ADM, DAY, SUP, after_cursor, audit, iso, page, paged, resolve_period
 from app.core import mail, mail_config, newslettersvc
 from app.core.auth import AuthUser, current_user
 from app.core.errors import bad_request, not_found
@@ -186,21 +186,21 @@ async def email_log(status: str | None = None, kind: str | None = None, q: str |
 
 
 @router.get("/admin/emails/stats")
-async def email_stats(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
-    days = days if days in (7, 30, 90) else 30
+async def email_stats(days: int = Query(30), date_from: str | None = Query(None, alias="from"), date_to: str | None = Query(None, alias="to"), _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     now = utcnow()
-    start = now.replace(hour=0, minute=0, second=0, microsecond=0) - (days - 1) * DAY
-    by_status = dict((await db.execute(select(EmailLog.status, func.count()).where(EmailLog.createdAt >= start).group_by(EmailLog.status))).all())
+    days, start = resolve_period(days, date_from, date_to, (7, 30, 90), now)
+    end = start + days * DAY
+    by_status = dict((await db.execute(select(EmailLog.status, func.count()).where(EmailLog.createdAt >= start, EmailLog.createdAt < end).group_by(EmailLog.status))).all())
     by_kind = [{"kind": k, "sent": s, "failed": f} for k, s, f in (await db.execute(
-        select(EmailLog.kind, func.count().filter(EmailLog.status == "SENT"), func.count().filter(EmailLog.status == "FAILED")).where(EmailLog.createdAt >= start).group_by(EmailLog.kind).order_by(func.count().desc())
+        select(EmailLog.kind, func.count().filter(EmailLog.status == "SENT"), func.count().filter(EmailLog.status == "FAILED")).where(EmailLog.createdAt >= start, EmailLog.createdAt < end).group_by(EmailLog.kind).order_by(func.count().desc())
     )).all()]
     rows = (await db.execute(text(
         "SELECT g::date AS day, COALESCE(c.s, 0)::bigint AS s, COALESCE(c.f, 0)::bigint AS f FROM generate_series(CAST(:start AS timestamp), CAST(:start AS timestamp) + (:d - 1) * interval '1 day', interval '1 day') g "
-        "LEFT JOIN (SELECT date_trunc('day', \"createdAt\") AS d, COUNT(*) FILTER (WHERE status = 'SENT') AS s, COUNT(*) FILTER (WHERE status = 'FAILED') AS f FROM \"EmailLog\" WHERE \"createdAt\" >= CAST(:start AS timestamp) GROUP BY 1) c ON c.d = g ORDER BY 1"),
-        {"d": days, "start": start})).all()
+        "LEFT JOIN (SELECT date_trunc('day', \"createdAt\") AS d, COUNT(*) FILTER (WHERE status = 'SENT') AS s, COUNT(*) FILTER (WHERE status = 'FAILED') AS f FROM \"EmailLog\" WHERE \"createdAt\" >= CAST(:start AS timestamp) AND \"createdAt\" < CAST(:end AS timestamp) GROUP BY 1) c ON c.d = g ORDER BY 1"),
+        {"d": days, "start": start, "end": end})).all()
     last_fail = (await db.execute(select(EmailLog).where(EmailLog.status == "FAILED").order_by(EmailLog.createdAt.desc()).limit(1))).scalar_one_or_none()
     sent, failed = by_status.get("SENT", 0), by_status.get("FAILED", 0)
-    return {"days": days, "provider": await mail.provider_name(), "sent": sent, "failed": failed, "successRate": round(sent / (sent + failed) * 1000) / 10 if sent + failed else None,
+    return {"days": days, "from": start.date().isoformat(), "to": (end - DAY).date().isoformat(), "provider": await mail.provider_name(), "sent": sent, "failed": failed, "successRate": round(sent / (sent + failed) * 1000) / 10 if sent + failed else None,
             "byKind": by_kind, "series": {"sent": [{"day": r.day.isoformat(), "value": int(r.s)} for r in rows], "failed": [{"day": r.day.isoformat(), "value": int(r.f)} for r in rows]},
             "lastFailure": _log(last_fail) if last_fail else None, "generatedAt": now}
 

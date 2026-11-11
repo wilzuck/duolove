@@ -70,7 +70,7 @@ async def test_sauvegardes_admin(app, db, monkeypatch):
     fake = FakeS3()
 
     async def fake_client():
-        return fake, SimpleNamespace(bucket="b", prefix="crushduo")
+        return fake, SimpleNamespace(bucket="b", backups_bucket="b", prefix="crushduo")
 
     monkeypatch.setattr(backups, "client_and_cfg", fake_client)
     monkeypatch.setattr(backups, "dump", good_dump)

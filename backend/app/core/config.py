@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     s3_secret_access_key: str | None = Field(None, alias="S3_SECRET_ACCESS_KEY")
     s3_region: str = Field("auto", alias="S3_REGION")
     s3_prefix: str = Field("", alias="S3_PREFIX")
+    s3_backup_bucket: str | None = Field(None, alias="S3_BACKUP_BUCKET")  # bucket dédié aux sauvegardes de la base (facultatif)
     # Chiffre les secrets saisis dans la console d'administration (ex. clé secrète R2). Sans elle, la console refuse d'enregistrer un secret.
     settings_encryption_key: str | None = Field(None, alias="SETTINGS_ENCRYPTION_KEY")
     payment_provider: str = Field("mock", alias="PAYMENT_PROVIDER")

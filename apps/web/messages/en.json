@@ -2244,7 +2244,9 @@
       "progress": "{copied} of {total} photo(s) in the bucket · {remaining} left · {errors} error(s)",
       "migrateDone": "All photos are in the bucket.",
       "migratePartial": "Copy incomplete: run it again to resume.",
-      "localFiles": "{count, plural, =0 {No file on disk} one {# file on disk} other {# files on disk}}"
+      "localFiles": "{count, plural, =0 {No file on disk} one {# file on disk} other {# files on disk}}",
+      "backupBucket": "Backup bucket (optional)",
+      "backupBucketHint": "Nightly database backups. Leave empty to use the bucket above; a separate bucket with the same access key is safer."
     },
     "roles": {
       "MODERATOR": "Moderator",
@@ -3429,6 +3431,14 @@
       "schedule": "Schedule",
       "started": "Send started",
       "scheduled": "Send scheduled"
+    },
+    "period": {
+      "label": "Period",
+      "custom": "Custom",
+      "pick": "Pick a start and an end date.",
+      "days": "{n} days",
+      "invalid": "Range too long: {max} days at most.",
+      "apply": "Apply"
     }
   },
   "pricingFaq": {

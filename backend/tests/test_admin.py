@@ -178,3 +178,20 @@ async def test_un_admin_ne_s_offre_pas_une_formule(app, db):
     assert r.status_code == 403 and r.json()["error"]["code"] == "CANNOT_GRANT_SELF"
     await set_role(ad.id, "SUPER_ADMIN")
     assert (await ad.agent.post(f"/api/admin/users/{ad.id}/grant-plan", json={"plan": "VIP", "days": 30, "reason": "test"})).status_code == 200  # un super admin le peut
+
+
+async def test_apercu_periode_personnalisee(app, db):
+    """L'aperçu accepte des dates : une valeur par jour de la plage, total = somme de la courbe, plage invalide refusée."""
+    import datetime
+
+    ad = await admin(app, db)
+    today = datetime.datetime.now(datetime.timezone.utc).date()
+    first = today - datetime.timedelta(days=4)
+    o = (await ad.agent.get(f"/api/admin/overview?from={first}&to={today}")).json()["period"]
+    assert o["days"] == 5 and o["from"] == str(first) and o["to"] == str(today) and len(o["series"]["signups"]) == 5
+    assert o["signups"]["current"] == sum(p["value"] for p in o["series"]["signups"])
+    past = (await ad.agent.get(f"/api/admin/overview?from={today - datetime.timedelta(days=40)}&to={today - datetime.timedelta(days=30)}")).json()["period"]
+    assert past["days"] == 11 and past["signups"]["current"] == sum(x["value"] for x in past["series"]["signups"])  # la fin de plage borne le total
+    assert (await ad.agent.get(f"/api/admin/overview?from={today}&to={first}")).status_code == 400
+    assert (await ad.agent.get(f"/api/admin/emails/stats?from={first}&to={today}")).json()["days"] == 5
+    assert (await ad.agent.get("/api/admin/emails/stats?from=2020-01-01&to=2026-01-01")).status_code == 400

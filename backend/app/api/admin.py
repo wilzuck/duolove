@@ -34,6 +34,21 @@ ev = payments.ev
 DAY = datetime.timedelta(days=1)
 
 
+def resolve_period(days: int, date_from: str | None, date_to: str | None, allowed: tuple[int, ...], now: datetime.datetime) -> tuple[int, datetime.datetime]:
+    """Période d'un tableau de bord : `days` parmi `allowed` (défaut 30, aujourd'hui inclus) ou dates `from`/`to` (AAAA-MM-JJ, bornes incluses, 366 jours au plus, pas dans le futur).
+    Renvoie (nombre de jours, minuit UTC du premier jour) ; la fin est `début + jours`."""
+    if date_from or date_to:
+        try:
+            first, last = datetime.date.fromisoformat(date_from or ""), datetime.date.fromisoformat(date_to or "")
+        except ValueError:
+            raise bad_request("INVALID_PERIOD", "Dates attendues au format AAAA-MM-JJ") from None
+        if first > last or last > now.date() or (last - first).days + 1 > 366:
+            raise bad_request("INVALID_PERIOD", "Période invalide : début avant fin, fin au plus aujourd'hui, 366 jours au plus")
+        return (last - first).days + 1, datetime.datetime.combine(first, datetime.time.min)
+    days = days if days in allowed else 30
+    return days, now.replace(hour=0, minute=0, second=0, microsecond=0) - (days - 1) * DAY
+
+
 def page(limit: str | None) -> int:
     try:
         n = int(limit or "25")
@@ -112,10 +127,10 @@ async def _series(db: AsyncSession, key: str, days: int, start: datetime.datetim
 
 
 @router.get("/overview")
-async def overview(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
-    """Vue d'ensemble. `days` (7, 30 ou 90) fixe la période ; `period` compare la période courante à la précédente, avec une série par jour."""
-    days = days if days in (7, 30, 90) else 30
+async def overview(days: int = Query(30), date_from: str | None = Query(None, alias="from"), date_to: str | None = Query(None, alias="to"), _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Vue d'ensemble. `days` (7, 30 ou 90) ou les dates `from` et `to` fixent la période ; `period` compare la période courante à la précédente, avec une série par jour."""
     now = utcnow()
+    days, start = resolve_period(days, date_from, date_to, (7, 30, 90), now)
     d = lambda n: now - n * DAY  # noqa: E731
 
     async def count(model, *where):
@@ -135,18 +150,18 @@ async def overview(days: int = Query(30), _: AuthUser = ADM, db: AsyncSession = 
     by_country = (await db.execute(select(Profile.country, func.count().label("n")).group_by(Profile.country).order_by(func.count().desc()).limit(6))).all()
     refunded = (await db.execute(select(func.coalesce(func.sum(Refund.amountXof), 0)).where(Refund.status == "COMPLETED"))).scalar_one()
 
-    start = now.replace(hour=0, minute=0, second=0, microsecond=0) - (days - 1) * DAY  # début du premier jour de la période (aujourd'hui inclus)
+    end = start + days * DAY  # exclue : la période se termine à la fin de son dernier jour
 
     async def flow(model, col, *where, summed=None):
         """Valeur sur la période courante et sur la précédente (même durée, juste avant)."""
         agg = func.coalesce(func.sum(summed), 0) if summed is not None else func.count()
         # Mêmes jours calendaires (UTC) que le graphique par jour : le total d'un indicateur est toujours égal à la somme de sa courbe.
-        cur = (await db.execute(select(agg).select_from(model).where(col >= start, *where))).scalar_one()
+        cur = (await db.execute(select(agg).select_from(model).where(col >= start, col < end, *where))).scalar_one()
         prev = (await db.execute(select(agg).select_from(model).where(col >= start - days * DAY, col < start, *where))).scalar_one()
         return {"current": int(cur), "previous": int(prev)}
 
     period = {
-        "days": days,
+        "days": days, "from": start.date().isoformat(), "to": (end - DAY).date().isoformat(),
         "signups": await flow(User, User.createdAt),
         "likes": await flow(Swipe, Swipe.createdAt, Swipe.action.in_(["LIKE", "SUPER_LIKE"])),
         "matches": await flow(Match, Match.createdAt),
@@ -175,18 +190,7 @@ async def stats(days: int = Query(30), date_from: str | None = Query(None, alias
     """Évolution dans le temps : une série par jour (jours calendaires UTC) et le total comparé à la période précédente, pour chaque indicateur.
     Période : `days` (7, 30, 90, 180, 365) ou dates `from` et `to` (AAAA-MM-JJ, bornes incluses, 366 jours au plus, pas dans le futur) ; la comparaison porte sur la période de même durée juste avant."""
     now = utcnow()
-    if date_from or date_to:
-        try:
-            first, last = datetime.date.fromisoformat(date_from or ""), datetime.date.fromisoformat(date_to or "")
-        except ValueError:
-            raise bad_request("INVALID_PERIOD", "Dates attendues au format AAAA-MM-JJ") from None
-        if first > last or last > now.date() or (last - first).days + 1 > 366:
-            raise bad_request("INVALID_PERIOD", "Période invalide : début avant fin, fin au plus aujourd'hui, 366 jours au plus")
-        days = (last - first).days + 1
-        start = datetime.datetime.combine(first, datetime.time.min)
-    else:
-        days = days if days in (7, 30, 90, 180, 365) else 30
-        start = now.replace(hour=0, minute=0, second=0, microsecond=0) - (days - 1) * DAY
+    days, start = resolve_period(days, date_from, date_to, (7, 30, 90, 180, 365), now)
     series = {k: await _series(db, k, days, start) for k in _STATS_SERIES}
     flows = {}
     for k, pts in series.items():
@@ -722,6 +726,7 @@ class StorageSet(BaseModel):
     bucket: str | None = None
     region: str | None = None
     prefix: str | None = None
+    backupBucket: str | None = None
     accessKeyId: str | None = None
     secretAccessKey: str | None = None  # écriture seule : jamais renvoyée
 
@@ -740,7 +745,7 @@ def _candidate(body: StorageSet, existing: storage_config.Effective) -> storage_
     if not secret:
         raise bad_request("SECRET_REQUIRED", "La clé secrète est obligatoire")
     return storage_config.Effective(driver="s3", endpoint=v["endpoint"], bucket=v["bucket"], region=v["region"], prefix=v["prefix"],
-                                    access_key_id=v["accessKeyId"], secret=secret, source="db")
+                                    access_key_id=v["accessKeyId"], secret=secret, source="db", backup_bucket=v.get("backupBucket"))
 
 
 @router.get("/storage")
@@ -754,6 +759,8 @@ async def storage_test(body: StorageSet, a: AuthUser = SUP, db: AsyncSession = D
     cand = _candidate(body, await storage_config.effective())
     if cand.driver == "s3":
         await storage.probe(cand)
+        if cand.backup_bucket:
+            await storage.probe(cand, cand.backup_bucket)  # le bucket des sauvegardes est testé à part : la clé doit y avoir les mêmes droits
     return {"ok": True}
 
 
@@ -764,10 +771,12 @@ async def storage_set(body: StorageSet, a: AuthUser = SUP, db: AsyncSession = De
     cand = _candidate(body, before)
     if cand.driver == "s3":
         await storage.probe(cand)
+        if cand.backup_bucket:
+            await storage.probe(cand, cand.backup_bucket)
     row = (await db.execute(select(SystemSetting).where(SystemSetting.key == storage_config.KEY))).scalar_one_or_none()
     value: dict = {"driver": cand.driver}
     if cand.driver == "s3":
-        value.update(endpoint=cand.endpoint, bucket=cand.bucket, region=cand.region, prefix=cand.prefix, accessKeyId=cand.access_key_id,
+        value.update(endpoint=cand.endpoint, bucket=cand.bucket, region=cand.region, prefix=cand.prefix, backupBucket=cand.backup_bucket, accessKeyId=cand.access_key_id,
                      secretEnc=storage_config.encrypt(cand.secret or ""))
     if row:
         row.value = value
@@ -776,8 +785,8 @@ async def storage_set(body: StorageSet, a: AuthUser = SUP, db: AsyncSession = De
     await db.commit()
     storage_config.invalidate()
     await audit(db, a.id, "storage.update", "SystemSetting", storage_config.KEY,
-                {"before": {"driver": before.driver, "bucket": before.bucket, "endpoint": before.endpoint, "prefix": before.prefix},
-                 "after": {"driver": cand.driver, "bucket": cand.bucket, "endpoint": cand.endpoint, "prefix": cand.prefix},
+                {"before": {"driver": before.driver, "bucket": before.bucket, "backupBucket": before.backup_bucket, "endpoint": before.endpoint, "prefix": before.prefix},
+                 "after": {"driver": cand.driver, "bucket": cand.bucket, "backupBucket": cand.backup_bucket, "endpoint": cand.endpoint, "prefix": cand.prefix},
                  "secretChanged": bool(body.secretAccessKey)})  # jamais la clé elle-même
     return await _storage_view(db)
 
