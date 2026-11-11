@@ -85,7 +85,7 @@ test.describe.serial('Engagement : phase 1', () => {
     const composer = page.getByRole('dialog');
     await composer.getByLabel('Ajouter un commentaire (facultatif)').fill(REPLY);
     await composer.getByRole('button', { name: 'Envoyer le J’aime' }).click();
-    await expect(page.getByRole('dialog', { name: 'C’est un match !' })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: 'C’est un duo !' })).toBeVisible();
     await page.getByRole('button', { name: /Envoyer un message|Discuter|Écrire/ }).first().click();
     await expect(page).toHaveURL(/\/messages\//);
     const log = page.getByRole('log');

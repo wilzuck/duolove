@@ -6,6 +6,7 @@ import { completeOnboarding, newMember, persona, signUp, uid } from './helpers';
 // Appels audio/vidéo en mode simulé (aucun fournisseur vidéo configuré) : sonnerie, réponse, raccrocher, refus, manqué.
 const DB = process.env.E2E_DATABASE_URL ?? 'postgresql://admin@localhost:5432/duomatch_test'; // CI : base de GitHub (utilisateur postgres avec mot de passe)
 const sql = (q: string) => execFileSync('psql', [DB, '-Atc', q], { encoding: 'utf8' }).trim();
+const premium = (email: string) => sql(`update "Entitlement" set plan = 'PREMIUM', "validUntil" = now() + interval '30 days' where "userId" = (select id from "User" where email = '${email}')`); // idées, rendez-vous et appels : réservés à Premium et VIP
 const ORIGIN = { Origin: 'http://localhost:3000' };
 const axeOf = async (page: Page) => (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations.map((v) => `${v.id} (${v.nodes.length}) ${v.help}`);
 
@@ -18,10 +19,14 @@ test.describe.serial('Appels audio et vidéo', () => {
   let conv = '';
 
   test.beforeAll(async ({ browser }) => { a = await newMember(browser); y = await newMember(browser); });
-  test.afterAll(async () => { await a.ctx.close(); await y.ctx.close(); });
+  test.afterAll(async () => { sql(`update "SubscriptionPlan" set features = features || '{"calls_enabled": false}'::jsonb where code = 'PREMIUM'`); await a.ctx.close(); await y.ctx.close(); });
 
   test('préparation : deux membres, match réciproque, conversation ouverte des deux côtés', async ({ request }) => {
     for (const [m, p] of [[a, awa], [y, yao]] as const) { await signUp(m.page, request, p); await completeOnboarding(m.page, p); }
+    premium(awa.email); premium(yao.email);
+    // Les appels sont coupés par défaut pour toutes les formules : on les active pour Premium (le cache des formules dure 15 s côté API).
+    sql(`update "SubscriptionPlan" set features = features || '{"calls_enabled": true}'::jsonb where code = 'PREMIUM'`);
+    await a.page.waitForTimeout(16_000);
     const yaoId = ((await (await y.page.request.get('/api/users/me')).json()) as { id: string }).id;
     const awaId = ((await (await a.page.request.get('/api/users/me')).json()) as { id: string }).id;
     await a.page.request.post('/api/swipes', { data: { targetId: yaoId, action: 'LIKE' }, headers: ORIGIN });

@@ -7,7 +7,7 @@ const axeOf = async (page: Page) => (await new AxeBuilder({ page }).withTags(['w
 test('connexion : carte centrée sobre, lien « mot de passe oublié » centré, pied de page, accessible', async ({ page }) => {
   await page.goto('/login');
   await expect(page.getByRole('heading', { level: 1, name: 'Bon retour !' })).toBeVisible();
-  await expect(page.getByText('Connectez-vous pour retrouver vos matchs.')).toBeVisible();
+  await expect(page.getByText('Connectez-vous pour retrouver vos duos.')).toBeVisible();
   await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0); // pas de panneau d'accueil : la page reste sobre
   await expect(page.getByLabel('Mot de passe', { exact: true })).toHaveAttribute('type', 'password');
   await expect(page.getByRole('button', { name: 'Afficher la saisie' })).toHaveCount(0);

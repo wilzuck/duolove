@@ -83,7 +83,7 @@ test.describe.serial('Speed dating', () => {
     sql(`update "SpeedEvent" set "startsAt" = (now() at time zone 'utc') - interval '3 hours' where id='${eventId}'`);
     const a = m[0]!.page;
     await a.goto(`/speed/${eventId}`);
-    await expect(a.getByText('Vous avez un match !')).toBeVisible();
+    await expect(a.getByText('Vous avez un duo !')).toBeVisible();
     await expect(a.getByRole('link', { name: 'Ouvrir la conversation' })).toBeVisible();
     expect(await axeOf(a)).toEqual([]);
     const none = m[2]!.page;

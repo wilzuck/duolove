@@ -33,7 +33,7 @@ test.describe.serial('parcours Crushduo', () => {
     await k.goto('/discover');
     await expect(k.getByRole('article', { name: /Aya, \d+/ })).toBeVisible();
     await k.getByRole('button', { name: 'Liker', exact: true }).click();
-    const overlay = k.getByRole('dialog', { name: /C’est un match/ });
+    const overlay = k.getByRole('dialog', { name: /C’est un duo/ });
     await expect(overlay).toBeVisible();
     await overlay.getByRole('button', { name: 'Discuter maintenant' }).click();
     await expect(k).toHaveURL(/messages\/.+/);
