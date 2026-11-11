@@ -1603,7 +1603,23 @@
     "INVALID_LIFE_VALUE": "Valeur refusée : 2 à 24 caractères, sans chiffre ni lien.",
     "TOO_MANY_LIFE_VALUES": "3 valeurs au plus.",
     "INVALID_PERIOD": "Période invalide : début avant fin, fin au plus aujourd'hui, 366 jours au plus.",
-    "INVALID_CONVERSATION": "Cette conversation n'est pas celle des deux comptes concernés."
+    "INVALID_CONVERSATION": "Cette conversation n'est pas celle des deux comptes concernés.",
+    "STORAGE_NOT_CONFIGURED": "Le stockage objet (R2) n'est pas configuré.",
+    "BACKUP_RUNNING": "Une sauvegarde est déjà en cours.",
+    "BACKUP_TOOL_MISSING": "L'outil de sauvegarde n'est pas installé sur ce serveur.",
+    "BACKUP_NOT_FOUND": "Sauvegarde introuvable.",
+    "PASSWORD_REQUIRED": "Définissez d'abord un mot de passe sur votre compte pour télécharger une sauvegarde.",
+    "INVALID_AUDIENCE": "Public inconnu.",
+    "INVALID_EMAIL": "Adresse invalide : {email}",
+    "TOO_MANY_EMAILS": "2 000 adresses au plus.",
+    "NO_EMAILS": "Saisissez au moins une adresse.",
+    "FREE_NEEDS_SERVICE": "Les adresses libres ne peuvent recevoir que des informations du service.",
+    "TOO_MANY_RECIPIENTS": "Trop de destinataires : affinez le public.",
+    "NO_RECIPIENTS": "Aucun destinataire pour ce public.",
+    "AUDIENCE_CHANGED": "Le nombre de destinataires a changé : relisez-le avant d'envoyer.",
+    "INVALID_SCHEDULE": "Choisissez une date future, dans les 90 jours.",
+    "BROADCAST_NOT_FOUND": "Envoi introuvable.",
+    "BROADCAST_NOT_CANCELABLE": "Seul un envoi planifié peut être annulé."
   },
   "app": {
     "nav": {
@@ -2185,7 +2201,9 @@
       "newsletter": "Newsletter",
       "emails": "E-mails envoyés",
       "guide": "Guide",
-      "social": "Réseaux sociaux"
+      "social": "Réseaux sociaux",
+      "backups": "Sauvegardes",
+      "broadcasts": "Envois"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -3288,6 +3306,129 @@
       "evidenceImage": "[photo envoyée]",
       "evidenceCol": "Preuves",
       "evidenceAt": "Copié le {date}"
+    },
+    "backups": {
+      "title": "Sauvegardes de la base",
+      "subtitle": "Copie complète de la base de données sur R2, chaque nuit. Vous pouvez en lancer une à tout moment et télécharger une sauvegarde.",
+      "notConfigured": "Le stockage objet (R2) n'est pas configuré : aucune sauvegarde n'est possible. Activez-le dans",
+      "stale": "Aucune sauvegarde réussie depuis plus de {hours} heures. Lancez-en une et vérifiez le service de sauvegarde.",
+      "none": "Aucune sauvegarde réussie à ce jour. Lancez-en une maintenant.",
+      "failed": "Dernière tentative échouée ({when}) : {error}",
+      "lastOk": "Dernière sauvegarde réussie : {when}",
+      "neverOk": "Aucune sauvegarde réussie",
+      "schedule": "Automatique chaque nuit à 02:00 UTC · 7 quotidiennes, 4 hebdomadaires, 6 mensuelles conservées.",
+      "running": "En cours",
+      "late": "En retard",
+      "upToDate": "À jour",
+      "runNow": "Sauvegarder maintenant",
+      "noTool": "Le lancement à la demande n'est pas disponible sur ce serveur (outil pg_dump absent). La sauvegarde nocturne n'est pas concernée.",
+      "started": "Sauvegarde lancée : elle apparaît dans la liste dans un instant.",
+      "list": "Sauvegardes disponibles",
+      "empty": "Aucune sauvegarde pour l'instant.",
+      "download": "Télécharger",
+      "note": "Chaque téléchargement est enregistré dans le journal d'audit. Pour restaurer : voir docs/BACKUP.md (jamais directement sur la production).",
+      "dlTitle": "Télécharger la sauvegarde",
+      "dlWarn": "Ce fichier contient toutes les données personnelles (comptes, messages, paiements). Gardez-le sur un support chiffré et supprimez-le dès que possible. Le lien de téléchargement expire au bout de 5 minutes.",
+      "dlPassword": "Votre mot de passe",
+      "dlConfirm": "Télécharger"
+    },
+    "bc": {
+      "desc": "Envoyez un e-mail ou une annonce dans l'application à tous les membres ou à un public ciblé, tout de suite ou à une date choisie.",
+      "headline": "Envoyer un message aux membres",
+      "headlineHelp": "Chaque membre reçoit un message individuel : les adresses restent confidentielles.",
+      "new": "Nouvel envoi",
+      "newHelp": "Choisissez le public, rédigez le message, relisez l'aperçu et envoyez-vous un test avant d'envoyer.",
+      "empty": "Aucun envoi pour l'instant.",
+      "cancel": "Annuler l'envoi",
+      "canceled": "Envoi annulé",
+      "message": "Message",
+      "progress": "{sent} / {total} envoyés · {failed} échec(s)",
+      "cols": {
+        "subject": "Objet",
+        "status": "Statut",
+        "channel": "Canal",
+        "audience": "Public",
+        "recipients": "Destinataires",
+        "date": "Date"
+      },
+      "status": {
+        "SCHEDULED": "Planifié",
+        "SENDING": "En cours",
+        "SENT": "Envoyé",
+        "CANCELED": "Annulé",
+        "FAILED": "Échec"
+      },
+      "channel": {
+        "EMAIL": "E-mail",
+        "APP": "Dans l'application",
+        "BOTH": "Les deux"
+      },
+      "mode": {
+        "ALL": "Tous les membres",
+        "EXCEPT": "Tous sauf…",
+        "SPECIFIC": "Personnes choisies",
+        "PROFILE": "Par profil",
+        "FREE": "Adresses libres"
+      },
+      "kind": {
+        "MARKETING": "Actualités et promotions",
+        "SERVICE": "Information du service"
+      },
+      "kindHelp": {
+        "MARKETING": "Réservé aux membres qui ont accepté de recevoir vos actualités. C'est le choix par défaut.",
+        "SERVICE": "Envoyé à tous les membres actifs : à réserver aux informations utiles au service (maintenance, changement de conditions, sécurité)."
+      },
+      "freeKind": "Les adresses libres n'ont aucun consentement enregistré : seules les informations du service peuvent leur être envoyées.",
+      "audience": "Destinataires",
+      "exceptLabel": "Adresses à exclure",
+      "freeLabel": "Adresses de destinataires",
+      "emailsHint": "Une adresse par ligne, ou séparées par des virgules.",
+      "searchMember": "Rechercher un membre (nom ou adresse)",
+      "remove": "Retirer {name}",
+      "any": "Tous",
+      "yes": "Oui",
+      "no": "Non",
+      "lastDays": "{n} derniers jours",
+      "f": {
+        "gender": "Genre",
+        "country": "Pays",
+        "plan": "Formule",
+        "verified": "Profil vérifié",
+        "intent": "Intention",
+        "active": "Actif récemment"
+      },
+      "chooseAudience": "Choisissez au moins un destinataire.",
+      "counting": "Calcul du nombre de destinataires…",
+      "countFailed": "Impossible de calculer le public : vérifiez les adresses saisies.",
+      "recipients": "{n, plural, =0 {Aucun destinataire} one {# destinataire} other {# destinataires}}",
+      "channelLabel": "Canal",
+      "kindLabel": "Type d'envoi",
+      "subject": "Objet",
+      "insert": "Insérer :",
+      "signature": "Signature",
+      "signatureHint": "Ajoutée à la fin du message.",
+      "signaturePlaceholder": "Ex. L'équipe Crushduo",
+      "when": "Quand l'envoyer",
+      "whenOpt": {
+        "now": "Maintenant",
+        "later": "Programmer"
+      },
+      "at": "Date et heure",
+      "atHint": "Dans votre fuseau horaire ; entre 2 minutes et 90 jours.",
+      "send": "Envoyer",
+      "sendN": "Envoyer à {n, plural, one {# destinataire} other {# destinataires}}",
+      "preview": "Aperçu de l'e-mail",
+      "test": "M'envoyer un test",
+      "testSent": "Test envoyé à {to}",
+      "testFailed": "Le test n'a pas pu être envoyé à {to}",
+      "confirmTitle": "Confirmer l'envoi",
+      "confirmText": "Ce message va être envoyé à {n, plural, one {# destinataire} other {# destinataires}} ({channel}), {when}. Un envoi ne peut plus être arrêté une fois commencé.",
+      "immediately": "tout de suite",
+      "consentNote": "Seuls les membres ayant accepté les actualités sont comptés. Un lien « Ne plus recevoir ces e-mails » figure dans chaque message.",
+      "sendNow": "Envoyer maintenant",
+      "schedule": "Planifier",
+      "started": "Envoi lancé",
+      "scheduled": "Envoi planifié"
     }
   },
   "pricingFaq": {

@@ -38,6 +38,7 @@ async def unsubscribe_emails(db: AsyncSession, token: str) -> bool:
     if not uid or not hmac.compare_digest(token, unsub_token(uid)):
         return False
     res = await db.execute(update(NotificationPreference).where(NotificationPreference.userId == uid).values(emailLikes=False, emailMatches=False, emailMessages=False))
+    await db.execute(update(User).where(User.id == uid).values(marketingConsent=False))  # coupe aussi les e-mails promotionnels de l'administration
     await db.commit()
     return res.rowcount > 0 or (await db.get(User, uid)) is not None
 

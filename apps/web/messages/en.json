@@ -1603,7 +1603,23 @@
     "INVALID_LIFE_VALUE": "Value rejected: 2 to 24 characters, no digits or links.",
     "TOO_MANY_LIFE_VALUES": "3 values at most.",
     "INVALID_PERIOD": "Invalid period: start before end, end no later than today, 366 days at most.",
-    "INVALID_CONVERSATION": "This conversation does not belong to the two accounts concerned."
+    "INVALID_CONVERSATION": "This conversation does not belong to the two accounts concerned.",
+    "STORAGE_NOT_CONFIGURED": "Object storage (R2) is not configured.",
+    "BACKUP_RUNNING": "A backup is already running.",
+    "BACKUP_TOOL_MISSING": "The backup tool is not installed on this server.",
+    "BACKUP_NOT_FOUND": "Backup not found.",
+    "PASSWORD_REQUIRED": "Set a password on your account first to download a backup.",
+    "INVALID_AUDIENCE": "Unknown audience.",
+    "INVALID_EMAIL": "Invalid address: {email}",
+    "TOO_MANY_EMAILS": "2,000 addresses at most.",
+    "NO_EMAILS": "Enter at least one address.",
+    "FREE_NEEDS_SERVICE": "Free addresses can only receive service information.",
+    "TOO_MANY_RECIPIENTS": "Too many recipients: narrow the audience.",
+    "NO_RECIPIENTS": "No recipients for this audience.",
+    "AUDIENCE_CHANGED": "The number of recipients changed: check it before sending.",
+    "INVALID_SCHEDULE": "Choose a future date, within 90 days.",
+    "BROADCAST_NOT_FOUND": "Send not found.",
+    "BROADCAST_NOT_CANCELABLE": "Only a scheduled send can be canceled."
   },
   "app": {
     "nav": {
@@ -2185,7 +2201,9 @@
       "newsletter": "Newsletter",
       "emails": "Sent emails",
       "guide": "Guide",
-      "social": "Social networks"
+      "social": "Social networks",
+      "backups": "Backups",
+      "broadcasts": "Sends"
     },
     "storage": {
       "title": "File storage",
@@ -3288,6 +3306,129 @@
       "evidenceImage": "[photo sent]",
       "evidenceCol": "Evidence",
       "evidenceAt": "Copied on {date}"
+    },
+    "backups": {
+      "title": "Database backups",
+      "subtitle": "A full copy of the database on R2, every night. You can start one at any time and download a backup.",
+      "notConfigured": "Object storage (R2) is not configured: no backup is possible. Enable it in",
+      "stale": "No successful backup for more than {hours} hours. Start one and check the backup service.",
+      "none": "No successful backup yet. Start one now.",
+      "failed": "Last attempt failed ({when}): {error}",
+      "lastOk": "Last successful backup: {when}",
+      "neverOk": "No successful backup",
+      "schedule": "Automatic every night at 02:00 UTC · 7 daily, 4 weekly, 6 monthly kept.",
+      "running": "Running",
+      "late": "Late",
+      "upToDate": "Up to date",
+      "runNow": "Back up now",
+      "noTool": "On-demand backups are not available on this server (pg_dump missing). The nightly backup is not affected.",
+      "started": "Backup started: it will appear in the list shortly.",
+      "list": "Available backups",
+      "empty": "No backups yet.",
+      "download": "Download",
+      "note": "Every download is recorded in the audit log. To restore: see docs/BACKUP.md (never directly onto production).",
+      "dlTitle": "Download the backup",
+      "dlWarn": "This file contains all personal data (accounts, messages, payments). Keep it on an encrypted drive and delete it as soon as possible. The download link expires after 5 minutes.",
+      "dlPassword": "Your password",
+      "dlConfirm": "Download"
+    },
+    "bc": {
+      "desc": "Send an email or an in-app announcement to all members or a targeted audience, right away or at a chosen date.",
+      "headline": "Send a message to members",
+      "headlineHelp": "Each member gets an individual message: addresses stay confidential.",
+      "new": "New send",
+      "newHelp": "Choose the audience, write the message, check the preview and send yourself a test before sending.",
+      "empty": "No sends yet.",
+      "cancel": "Cancel send",
+      "canceled": "Send canceled",
+      "message": "Message",
+      "progress": "{sent} / {total} sent · {failed} failed",
+      "cols": {
+        "subject": "Subject",
+        "status": "Status",
+        "channel": "Channel",
+        "audience": "Audience",
+        "recipients": "Recipients",
+        "date": "Date"
+      },
+      "status": {
+        "SCHEDULED": "Scheduled",
+        "SENDING": "Sending",
+        "SENT": "Sent",
+        "CANCELED": "Canceled",
+        "FAILED": "Failed"
+      },
+      "channel": {
+        "EMAIL": "Email",
+        "APP": "In the app",
+        "BOTH": "Both"
+      },
+      "mode": {
+        "ALL": "All members",
+        "EXCEPT": "All except…",
+        "SPECIFIC": "Chosen people",
+        "PROFILE": "By profile",
+        "FREE": "Free addresses"
+      },
+      "kind": {
+        "MARKETING": "News and promotions",
+        "SERVICE": "Service information"
+      },
+      "kindHelp": {
+        "MARKETING": "Only members who agreed to receive your news. This is the default.",
+        "SERVICE": "Sent to all active members: keep it for information the service needs (maintenance, terms changes, security)."
+      },
+      "freeKind": "Free addresses have no recorded consent: only service information can be sent to them.",
+      "audience": "Recipients",
+      "exceptLabel": "Addresses to exclude",
+      "freeLabel": "Recipient addresses",
+      "emailsHint": "One address per line, or separated by commas.",
+      "searchMember": "Search a member (name or email)",
+      "remove": "Remove {name}",
+      "any": "Any",
+      "yes": "Yes",
+      "no": "No",
+      "lastDays": "Last {n} days",
+      "f": {
+        "gender": "Gender",
+        "country": "Country",
+        "plan": "Plan",
+        "verified": "Verified profile",
+        "intent": "Intent",
+        "active": "Recently active"
+      },
+      "chooseAudience": "Choose at least one recipient.",
+      "counting": "Counting recipients…",
+      "countFailed": "Could not compute the audience: check the addresses entered.",
+      "recipients": "{n, plural, =0 {No recipients} one {# recipient} other {# recipients}}",
+      "channelLabel": "Channel",
+      "kindLabel": "Type of send",
+      "subject": "Subject",
+      "insert": "Insert:",
+      "signature": "Signature",
+      "signatureHint": "Added at the end of the message.",
+      "signaturePlaceholder": "E.g. The Crushduo team",
+      "when": "When to send",
+      "whenOpt": {
+        "now": "Now",
+        "later": "Schedule"
+      },
+      "at": "Date and time",
+      "atHint": "In your time zone; between 2 minutes and 90 days from now.",
+      "send": "Send",
+      "sendN": "Send to {n, plural, one {# recipient} other {# recipients}}",
+      "preview": "Email preview",
+      "test": "Send me a test",
+      "testSent": "Test sent to {to}",
+      "testFailed": "The test could not be sent to {to}",
+      "confirmTitle": "Confirm the send",
+      "confirmText": "This message will be sent to {n, plural, one {# recipient} other {# recipients}} ({channel}), {when}. A send cannot be stopped once it has started.",
+      "immediately": "right away",
+      "consentNote": "Only members who agreed to receive news are counted. Every message carries a “Stop receiving these emails” link.",
+      "sendNow": "Send now",
+      "schedule": "Schedule",
+      "started": "Send started",
+      "scheduled": "Send scheduled"
     }
   },
   "pricingFaq": {

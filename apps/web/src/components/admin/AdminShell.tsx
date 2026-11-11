@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, BookOpen, MailCheck, Megaphone, ChartLine, BadgeCheck, CloudUpload, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, BookOpen, MailCheck, Megaphone, ChartLine, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -26,6 +26,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/users', key: 'users', icon: Users, min: 'MODERATOR' },
     { href: '/admin/reports', key: 'reports', icon: Flag, min: 'MODERATOR', badge: 'reports' },
     { href: '/admin/contact', key: 'contact', icon: Inbox, min: 'ADMIN' },
+    { href: '/admin/broadcasts', key: 'broadcasts', icon: Send, min: 'ADMIN' },
     { href: '/admin/newsletter', key: 'newsletter', icon: Megaphone, min: 'ADMIN' },
     { href: '/admin/emails', key: 'emails', icon: MailCheck, min: 'ADMIN' },
   ] },
@@ -42,6 +43,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/blog', key: 'blog', icon: Newspaper, min: 'ADMIN' },
     { href: '/admin/flags', key: 'flags', icon: ToggleRight, min: 'ADMIN' },
     { href: '/admin/social', key: 'social', icon: Share2, min: 'ADMIN' },
+    { href: '/admin/backups', key: 'backups', icon: DatabaseBackup, min: 'ADMIN' },
     { href: '/admin/storage', key: 'storage', icon: CloudUpload, min: 'SUPER_ADMIN' },
   ] },
 ];

@@ -114,6 +114,7 @@ class NotificationType(str, enum.Enum):
     DATE_REMINDER = 'DATE_REMINDER'
     CALL_MISSED = 'CALL_MISSED'
     SPEED_REMINDER = 'SPEED_REMINDER'
+    ANNOUNCEMENT = 'ANNOUNCEMENT'
 
 
 class PaymentKind(str, enum.Enum):
@@ -756,6 +757,36 @@ class NewsletterCampaign(Base):
     createdById: Mapped[Optional[str]] = mapped_column(Text)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     sentAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+
+
+class Broadcast(Base):
+    """Envoi de l'administration (e-mail et/ou annonce dans l'application) à un public ciblé, immédiat ou planifié.
+    Statut : SCHEDULED, SENDING, SENT, CANCELED, FAILED. `kind` : SERVICE (information du service) ou MARKETING (réservé aux membres ayant accepté)."""
+    __tablename__ = 'Broadcast'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='Broadcast_pkey'),
+        Index('Broadcast_status_scheduledAt_idx', 'status', 'scheduledAt'),
+        Index('Broadcast_createdAt_idx', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    subject: Mapped[str] = mapped_column(Text, nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    signature: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("''"))
+    audienceMode: Mapped[str] = mapped_column(Text, nullable=False)
+    audience: Mapped[dict] = mapped_column(JSONB, nullable=False, server_default=text("'{}'::jsonb"))
+    channel: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'EMAIL'"))
+    kind: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'MARKETING'"))
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'SCHEDULED'"))
+    scheduledAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    startedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    sentAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    recipients: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    sent: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    failed: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    error: Mapped[Optional[str]] = mapped_column(Text)
+    createdById: Mapped[Optional[str]] = mapped_column(Text)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
 class DailyQuestionAnswer(Base):
