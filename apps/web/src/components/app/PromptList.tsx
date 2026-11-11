@@ -9,7 +9,7 @@ export function PromptList({ items, onLike }: { items: PromptAnswer[]; onLike?: 
   const locale = useLocale();
   if (!items.length) return null;
   return (
-    <section aria-labelledby="prm"><h3 id="prm" className="mb-2 font-bold">{t('engagement.prompts.viewTitle')}</h3>
+    <section aria-labelledby="prm"><h3 id="prm" className="mb-3 text-xl font-bold">{t('engagement.prompts.viewTitle')}</h3>
       <ul className="space-y-3">
         {items.map((a) => (
           <li key={a.id} className="rounded-2xl border border-line bg-card p-4">

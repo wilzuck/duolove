@@ -1,5 +1,5 @@
 'use client';
-import { Sparkles } from 'lucide-react';
+import { Info, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Badge } from '@duomatch/ui';
 import type { Affinity } from '@/lib/types';
@@ -24,7 +24,7 @@ export function AffinityPanel({ affinity }: { affinity: Affinity }) {
           <ul className="flex flex-wrap gap-1.5">{affinity.commonInterests.map((s) => <li key={s}><Badge tone="brand" className="border border-brand-strong/70">{t(`interest.${s}` as never)}</Badge></li>)}</ul>
         </div>
       )}
-      <p className="text-xs text-muted">{t('engagement.affinity.disclaimer')}</p>
+      <p className="flex items-start gap-2 text-xs text-muted"><Info className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden /><span>{t('engagement.affinity.disclaimer')}</span></p>
     </section>
   );
 }
