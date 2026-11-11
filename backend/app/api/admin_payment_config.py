@@ -1,5 +1,7 @@
 """Configuration du paiement en ligne (KKiaPay) depuis l'administration, comme le stockage R2. Réservé au super administrateur.
 Les clés sont chiffrées en base, jamais renvoyées, jamais journalisées ; l'enregistrement redemande le mot de passe (c'est de l'argent)."""
+from dataclasses import replace
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select
@@ -38,16 +40,27 @@ async def _view() -> dict:
             "envProvider": payment_config.from_env().provider, "isProd": get_settings().is_prod}
 
 
-async def _probe(cfg: payment_config.Effective) -> None:
-    """Teste les clés SANS déplacer d'argent : interroge le statut d'une transaction inexistante. 401/403 = clé refusée ; 404/400 = clé acceptée."""
+async def _status(cfg: payment_config.Effective) -> int:
+    """Code HTTP de KKiaPay pour le statut d'une transaction inexistante, avec le mode (bac à sable ou réel) de `cfg`."""
     try:
-        status, _ = await kkiapay.post_json(f"{kkiapay._base(cfg)}/api/v1/transactions/status", cfg.private_key or "", {"transactionId": "crushduo_test_inexistante"}, 10)
+        code, _ = await kkiapay.post_json(f"{kkiapay._base(cfg)}/api/v1/transactions/status", cfg.private_key or "", {"transactionId": "crushduo_test_inexistante"}, 10)
     except Exception:  # noqa: BLE001
         raise bad_request("PAYMENT_TEST_FAILED", "KKiaPay est injoignable : réessayez dans un instant") from None
+    return code
+
+
+async def _probe(cfg: payment_config.Effective) -> None:
+    """Teste les clés SANS déplacer d'argent : interroge le statut d'une transaction inexistante (401/403 = clé refusée ; le reste = clé acceptée).
+    Si la clé est refusée, on essaie l'AUTRE mode : l'erreur la plus fréquente est de saisir des clés de production avec le bac à sable actif (ou l'inverse)."""
+    status = await _status(cfg)
     if status in (401, 403):
-        raise bad_request("PAYMENT_TEST_FAILED", "Clé privée refusée par KKiaPay (vérifiez qu'elle correspond bien au mode bac à sable ou réel choisi)")
+        other = replace(cfg, sandbox=not cfg.sandbox)
+        if await _status(other) not in (401, 403):
+            raise bad_request("PAYMENT_TEST_FAILED", "Ces clés sont des clés de PRODUCTION : désactivez le mode bac à sable." if cfg.sandbox
+                              else "Ces clés sont des clés de BAC À SABLE : activez le mode bac à sable.")
+        raise bad_request("PAYMENT_TEST_FAILED", f"Clé privée refusée par KKiaPay dans les deux modes (réponse {status}). Vérifiez que c'est bien la « Private API Key » et qu'elle n'a pas été régénérée depuis.")
     if status >= 500:
-        raise bad_request("PAYMENT_TEST_FAILED", "KKiaPay a répondu par une erreur : réessayez dans un instant")
+        raise bad_request("PAYMENT_TEST_FAILED", f"KKiaPay a répondu par une erreur ({status}) : réessayez dans un instant")
 
 
 @router.get("")

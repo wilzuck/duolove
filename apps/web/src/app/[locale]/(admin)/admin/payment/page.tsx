@@ -27,8 +27,8 @@ export default function AdminPaymentConfig() {
   const how = mode ?? v?.reauth ?? 'password';
   const f = form ?? { provider: v?.provider ?? 'mock', publicKey: v?.publicKey ?? '', privateKey: '', webhookSecret: '', sandbox: v?.sandbox ?? true };
   const set = <K extends keyof typeof f>(k: K, val: (typeof f)[K]) => setForm({ ...f, [k]: val });
-  // Le serveur explique la cause précise d'un échec de test : on l'ajoute au message traduit.
-  const explain = (e: unknown) => (e instanceof ApiError && e.code === 'PAYMENT_TEST_FAILED' ? `${err(e)} ${e.message}` : err(e));
+  // Le serveur explique la cause précise d'un échec de test : on l'affiche tel quel (le message générique « Une erreur est survenue » n'apprend rien).
+  const explain = (e: unknown) => (e instanceof ApiError && e.code === 'PAYMENT_TEST_FAILED' ? e.message : err(e));
   const body = () => ({ provider: f.provider, publicKey: f.publicKey || undefined, privateKey: f.privateKey || undefined, webhookSecret: f.webhookSecret || undefined, sandbox: f.sandbox });
   const kk = f.provider === 'kkiapay';
 

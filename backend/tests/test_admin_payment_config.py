@@ -127,3 +127,25 @@ async def test_compte_sans_mot_de_passe_confirme_par_code_e_mail(app, db, monkey
     assert ok.status_code == 200 and ok.json()["provider"] == "kkiapay" and SK not in ok.text
     again = await ad.agent.put("/api/admin/payment-config", json=body(code=code))
     assert again.status_code == 400  # le code est à usage unique
+
+
+async def test_le_test_detecte_le_mauvais_mode(app, db, monkeypatch):
+    """Des clés de production saisies avec le bac à sable actif : le message le dit au lieu d'un simple « refusée »."""
+    from tests.support_c import set_role
+
+    async def post_json(url, key, b, t):
+        return (404, {}) if "api-sandbox" not in url else (401, {})  # acceptée en réel seulement
+
+    monkeypatch.setattr(kkiapay, "post_json", post_json)
+    ad = await admin(app, db)
+    await set_role(ad.id, "SUPER_ADMIN")
+    r = await ad.agent.post("/api/admin/payment-config/test", json=body(sandbox=True))
+    assert r.status_code == 400 and "PRODUCTION" in r.text
+    assert (await ad.agent.post("/api/admin/payment-config/test", json=body(sandbox=False))).status_code == 200
+
+    async def refuse(url, key, b, t):
+        return 401, {}
+
+    monkeypatch.setattr(kkiapay, "post_json", refuse)
+    both = await ad.agent.post("/api/admin/payment-config/test", json=body())
+    assert both.status_code == 400 and "deux modes" in both.text
