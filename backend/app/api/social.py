@@ -20,6 +20,9 @@ class SocialIn(BaseModel):
     facebook: NetworkIn = NetworkIn()
     instagram: NetworkIn = NetworkIn()
     tiktok: NetworkIn = NetworkIn()
+    whatsapp: NetworkIn = NetworkIn()
+    youtube: NetworkIn = NetworkIn()
+    x: NetworkIn = NetworkIn()
 
 
 @router.get("/social")

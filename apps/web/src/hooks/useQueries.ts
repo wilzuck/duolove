@@ -1,4 +1,5 @@
 'use client';
+import type { SocialKey } from '@/lib/site';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import type { Activity, EngagementConfig, LiveInvitesView, LiveState, ConversationItem, Me, MyProfile, NotificationItem, Paged, Catalog, SubscriptionState } from '@/lib/types';
@@ -14,7 +15,7 @@ export const useMe = () => useQuery({ queryKey: keys.me, queryFn: () => api<Me>(
 /** Le visiteur est-il connecté ? (pages publiques : « Ouvrir Crushduo » au lieu de « Se connecter » / « Créer mon compte »). Répond toujours 200. */
 export const useSession = () => useQuery({ queryKey: ['session'], queryFn: () => api<{ authenticated: boolean }>('/auth/session'), staleTime: 30_000, refetchOnWindowFocus: true });
 /** Réseaux sociaux affichés dans le pied de page (réglés dans l'administration) : adresse par langue, seulement ceux qui sont activés. */
-export const useSocialLinks = () => useQuery({ queryKey: ['social'], queryFn: () => api<Partial<Record<'facebook' | 'instagram' | 'tiktok', { fr: string; en: string }>>>('/social'), staleTime: 5 * 60_000 });
+export const useSocialLinks = () => useQuery({ queryKey: ['social'], queryFn: () => api<Partial<Record<SocialKey, { fr: string; en: string }>>>('/social'), staleTime: 60_000 });
 export const useMyProfile = () => useQuery({ queryKey: keys.profile, queryFn: () => api<MyProfile>('/profiles/me') });
 /** Statut d'activité des personnes données (matchs uniquement) : actualisé chaque minute, et seulement si la liste n'est pas vide. */
 export const useActivity = (ids: string[]) => {

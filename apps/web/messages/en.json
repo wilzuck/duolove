@@ -1617,7 +1617,8 @@
     "compat": "{n}% compatible",
     "distance": "{km} km away",
     "prevPhoto": "Previous photo",
-    "nextPhoto": "Next photo"
+    "nextPhoto": "Next photo",
+    "distanceNear": "less than 5 km away"
   },
   "discover": {
     "like": "LIKE",
@@ -1822,7 +1823,7 @@
     "distance": "Maximum distance (km)",
     "distanceAny": "Anywhere",
     "distanceValue": "{km} km",
-    "distanceHint": "Requires sharing your approximate location (Settings → Privacy).",
+    "distanceHint": "Based on your city; sharing your approximate location (Settings → Privacy) makes it more accurate.",
     "languages": "Languages",
     "interests": "Interests",
     "verifiedOnly": "Verified profiles only",
@@ -3233,7 +3234,10 @@
       "urlEnHint": "Leave empty to use the French link.",
       "save": "Save",
       "saved": "Social networks saved",
-      "help": "Full https address of the account; the network's domain is checked. Changes show on the site within a minute."
+      "help": "Full https address of the account; the network's domain is checked. Changes show on the site within a minute.",
+      "whatsapp": "WhatsApp",
+      "youtube": "YouTube",
+      "x": "X (Twitter)"
     }
   },
   "pricingFaq": {
@@ -3363,7 +3367,8 @@
     },
     "height": "Height",
     "heightHint": "Between 1.20 m and 2.30 m (for example 1.70).",
-    "origin": "Country of origin"
+    "origin": "Country of origin",
+    "zodiac": "Zodiac sign"
   },
   "live": {
     "waitingTitle": "You accepted",
@@ -3599,7 +3604,8 @@
       "choosePhoto": "Choose the photo",
       "chooseAnswer": "Choose the answer",
       "chooseInterest": "Choose the interest",
-      "pickValue": "Pick the value"
+      "pickValue": "Pick the value",
+      "superButton": "Super Like"
     },
     "daily": {
       "title": "Your picks of the day",

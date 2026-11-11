@@ -1,7 +1,7 @@
 export const SITE_NAME = 'Crushduo';
 /** Adresse de support affichée sur la page Contact et dans les pieds de page. */
 export const SUPPORT_EMAIL = 'support@crushduo.com';
-export type SocialKey = 'facebook' | 'instagram' | 'tiktok';
+export type SocialKey = 'facebook' | 'instagram' | 'tiktok' | 'whatsapp' | 'youtube' | 'x';
 /** Adresse publique du site : sitemap, aperçu de partage (Open Graph), adresses canoniques. En production, sans variable `NEXT_PUBLIC_SITE_URL`, c'est crushduo.com (jamais localhost :
  *  la valeur est figée à la compilation, et une adresse locale dans le sitemap ou dans l'image d'aperçu rend les deux inutilisables). */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.NODE_ENV === 'production' ? 'https://crushduo.com' : 'http://localhost:3000')).trim();

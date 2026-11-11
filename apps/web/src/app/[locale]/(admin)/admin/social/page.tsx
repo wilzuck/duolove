@@ -2,15 +2,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, Field, Input, Skeleton } from '@duomatch/ui';
+import { Alert, Badge, Button, Card, Field, Input, Skeleton } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { api, put } from '@/lib/api';
 import { useUi } from '@/lib/store';
 
-type Key = 'facebook' | 'instagram' | 'tiktok';
+type Key = 'facebook' | 'instagram' | 'tiktok' | 'whatsapp' | 'youtube' | 'x';
 type Cfg = Record<Key, { enabled: boolean; urls: { fr: string; en: string } }>;
-const KEYS: Key[] = ['facebook', 'instagram', 'tiktok'];
-const PLACEHOLDER: Record<Key, string> = { facebook: 'https://www.facebook.com/crushduo', instagram: 'https://www.instagram.com/crushduo', tiktok: 'https://www.tiktok.com/@crushduo' };
+const KEYS: Key[] = ['facebook', 'instagram', 'tiktok', 'whatsapp', 'youtube', 'x'];
+const PLACEHOLDER: Record<Key, string> = { facebook: 'https://www.facebook.com/crushduo', instagram: 'https://www.instagram.com/crushduo', tiktok: 'https://www.tiktok.com/@crushduo', whatsapp: 'https://whatsapp.com/channel/…', youtube: 'https://www.youtube.com/@crushduo', x: 'https://x.com/crushduo' };
 
 /** Réseaux sociaux du pied de page : affichage et adresse (français / anglais) de chaque réseau. Une langue sans adresse reprend celle de l'autre. */
 export default function AdminSocial() {
@@ -27,6 +27,7 @@ export default function AdminSocial() {
     onSuccess: () => { toast('success', t('admin.social.saved')); setDraft(null); void qc.invalidateQueries({ queryKey: ['admin', 'social'] }); void qc.invalidateQueries({ queryKey: ['social'] }); },
     onError: (e) => toast('error', err(e)),
   });
+  const failed = save.isError ? err(save.error) : null;
 
   return (
     <div className="space-y-6">
@@ -54,6 +55,7 @@ export default function AdminSocial() {
               </Card>
             );
           })}
+          {failed && <Alert variant="text">{failed}</Alert>}
           <div className="flex items-center gap-3">
             <Button type="submit" loading={save.isPending} disabled={!draft}>{t('admin.social.save')}</Button>
             <p className="text-sm text-muted">{t('admin.social.help')}</p>

@@ -1,6 +1,7 @@
 """Réseaux sociaux du pied de page : configurés depuis l'administration (table SystemSetting), une adresse par langue et par réseau."""
 from __future__ import annotations
 
+import re
 from urllib.parse import urlparse
 
 from sqlalchemy import select
@@ -10,10 +11,11 @@ from app.core.errors import bad_request
 from app.models.models import SystemSetting
 
 KEY = "social_links"
-NETWORKS = ("facebook", "instagram", "tiktok")
+NETWORKS = ("facebook", "instagram", "tiktok", "whatsapp", "youtube", "x")
 LOCALES = ("fr", "en")
 # Domaines acceptés par réseau : une adresse venant d'ailleurs (ou un schéma javascript:) n'est jamais enregistrée.
-HOSTS = {"facebook": ("facebook.com", "fb.com", "fb.me"), "instagram": ("instagram.com",), "tiktok": ("tiktok.com",)}
+HOSTS = {"facebook": ("facebook.com", "fb.com", "fb.me"), "instagram": ("instagram.com",), "tiktok": ("tiktok.com",),
+         "whatsapp": ("whatsapp.com", "wa.me"), "youtube": ("youtube.com", "youtu.be"), "x": ("x.com", "twitter.com")}
 MAX_URL = 300
 
 
@@ -28,6 +30,10 @@ def clean_url(network: str, raw: str) -> str:
         return ""
     if len(url) > MAX_URL:
         raise bad_request("SOCIAL_URL_INVALID", "Adresse trop longue")
+    if not re.match(r"^[a-z][a-z0-9+.-]*:", url, re.I):
+        url = "https://" + url.lstrip("/")  # « facebook.com/crushduo » ou « www.facebook.com/crushduo » : https ajouté
+    elif url.lower().startswith("http://"):
+        url = "https://" + url[7:]
     p = urlparse(url)
     host = (p.hostname or "").lower()
     if p.scheme != "https" or not any(host == h or host.endswith("." + h) for h in HOSTS[network]):

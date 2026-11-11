@@ -1617,7 +1617,8 @@
     "compat": "{n} % compatible",
     "distance": "à {km} km",
     "prevPhoto": "Photo précédente",
-    "nextPhoto": "Photo suivante"
+    "nextPhoto": "Photo suivante",
+    "distanceNear": "à moins de 5 km"
   },
   "discover": {
     "like": "LIKE",
@@ -1822,7 +1823,7 @@
     "distance": "Distance maximale (km)",
     "distanceAny": "Partout",
     "distanceValue": "{km} km",
-    "distanceHint": "Nécessite que vous partagiez votre position approximative (Paramètres → Confidentialité).",
+    "distanceHint": "Calculée d'après votre ville ; partager votre position approximative (Paramètres → Confidentialité) l'affine.",
     "languages": "Langues",
     "interests": "Centres d’intérêt",
     "verifiedOnly": "Profils vérifiés uniquement",
@@ -3233,7 +3234,10 @@
       "urlEnHint": "Laisser vide pour reprendre l'adresse française.",
       "save": "Enregistrer",
       "saved": "Réseaux sociaux enregistrés",
-      "help": "Adresse https complète du compte ; le domaine du réseau est vérifié. Les changements apparaissent sur le site en moins d'une minute."
+      "help": "Adresse https complète du compte ; le domaine du réseau est vérifié. Les changements apparaissent sur le site en moins d'une minute.",
+      "whatsapp": "WhatsApp",
+      "youtube": "YouTube",
+      "x": "X (Twitter)"
     }
   },
   "pricingFaq": {
@@ -3363,7 +3367,8 @@
     },
     "height": "Taille",
     "heightHint": "Entre 1,20 m et 2,30 m (par exemple 1,70).",
-    "origin": "Pays d’origine"
+    "origin": "Pays d’origine",
+    "zodiac": "Signe astrologique"
   },
   "live": {
     "waitingTitle": "Vous avez accepté",
@@ -3599,7 +3604,8 @@
       "choosePhoto": "Choisissez la photo",
       "chooseAnswer": "Choisissez la réponse",
       "chooseInterest": "Choisissez l’intérêt",
-      "pickValue": "Choisissez la valeur"
+      "pickValue": "Choisissez la valeur",
+      "superButton": "Super Like"
     },
     "daily": {
       "title": "Tes découvertes du jour",
