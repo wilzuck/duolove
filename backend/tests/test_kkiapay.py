@@ -17,7 +17,7 @@ SECRET = "hash-secret-for-tests"
 @pytest.fixture(scope="module", autouse=True)
 def kk_env():
     with pytest.MonkeyPatch.context() as mp:
-        for k, v in {"PAYMENT_PROVIDER": "kkiapay", "KKIAPAY_PUBLIC_KEY": "pk_test_fake", "KKIAPAY_PRIVATE_KEY": "private_fake",
+        for k, v in {"PAYMENT_PROVIDER": "kkiapay", "KKIAPAY_PUBLIC_KEY": "pk_test_fake", "KKIAPAY_PRIVATE_KEY": "private_fake", "KKIAPAY_SECRET_KEY": "secret_fake",
                      "KKIAPAY_WEBHOOK_SECRET": SECRET, "KKIAPAY_SANDBOX": "true", "SITE_NAME": "Crushduo"}.items():
             mp.setenv(k, v)
         get_settings.cache_clear()
@@ -29,8 +29,9 @@ def kk_env():
 def fake(monkeypatch):
     state = {"revert_status": 200, "reverts": [], "txs": {}}
 
-    async def post_json(url, api_key, body, timeout):
-        assert api_key == "private_fake"  # clé privée, comme WaMarcket
+    async def post_json(url, headers, body, timeout):
+        # Comme le SDK officiel KKiaPay : clé publique dans x-api-key, clé privée dans x-private-key, secret dans x-secret-key.
+        assert headers["x-api-key"] == "pk_test_fake" and headers["x-private-key"] == "private_fake" and headers["x-secret-key"] == "secret_fake"
         if url == "https://api-sandbox.kkiapay.me/api/v1/transactions/revert":
             state["reverts"].append(body["transactionId"])
             return state["revert_status"], {}

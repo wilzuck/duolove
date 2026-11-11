@@ -22,10 +22,18 @@ class KkiapayTransaction:
     method: str | None
 
 
-async def post_json(url: str, api_key: str, body: dict, timeout: float) -> tuple[int, dict | None]:
+def auth_headers(cfg: Effective) -> dict[str, str]:
+    """En-têtes d'authentification serveur, comme le SDK officiel de KKiaPay : `x-api-key` = clé PUBLIQUE, `x-private-key` = clé privée, `x-secret-key` = secret."""
+    h = {"x-api-key": cfg.public_key or "", "x-private-key": cfg.private_key or ""}
+    if cfg.secret_key:
+        h["x-secret-key"] = cfg.secret_key
+    return h
+
+
+async def post_json(url: str, headers: dict, body: dict, timeout: float) -> tuple[int, dict | None]:
     """Appel HTTP unique vers KKiaPay (point d'extension des tests : aucun appel réseau réel en test)."""
     async with httpx.AsyncClient(timeout=timeout) as c:
-        r = await c.post(url, json=body, headers={"x-api-key": api_key})
+        r = await c.post(url, json=body, headers=headers)
     try:
         data = r.json()
     except ValueError:
@@ -39,7 +47,7 @@ def _base(cfg: Effective) -> str:
 
 async def verify_transaction(cfg: Effective, transaction_id: str) -> KkiapayTransaction | None:
     """Statut réel d'une transaction. None si inconnue ; lève une exception si KKiaPay est injoignable ou répond de façon inexploitable."""
-    status, j = await post_json(f"{_base(cfg)}/api/v1/transactions/status", cfg.private_key or "", {"transactionId": transaction_id}, 10)
+    status, j = await post_json(f"{_base(cfg)}/api/v1/transactions/status", auth_headers(cfg), {"transactionId": transaction_id}, 10)
     if status in (404, 400):
         return None
     if not 200 <= status < 300:
@@ -58,7 +66,7 @@ async def verify_transaction(cfg: Effective, transaction_id: str) -> KkiapayTran
 
 async def revert_transaction(cfg: Effective, transaction_id: str) -> None:
     """Annule (rembourse) une transaction chez KKiaPay. Lève une exception si KKiaPay refuse ou est injoignable."""
-    status, _ = await post_json(f"{_base(cfg)}/api/v1/transactions/revert", cfg.private_key or "", {"transactionId": transaction_id}, 15)
+    status, _ = await post_json(f"{_base(cfg)}/api/v1/transactions/revert", auth_headers(cfg), {"transactionId": transaction_id}, 15)
     if not 200 <= status < 300:
         raise RuntimeError(f"KKiaPay a refusé le remboursement ({status})")
 

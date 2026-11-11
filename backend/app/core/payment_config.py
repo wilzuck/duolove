@@ -28,6 +28,7 @@ class Effective:
     provider: str = "mock"  # « mock » ou « kkiapay »
     public_key: str | None = None
     private_key: str | None = None
+    secret_key: str | None = None  # « Secret » de KKiaPay : le SDK officiel l'envoie avec chaque appel serveur
     webhook_secret: str | None = None
     sandbox: bool = True
     source: str = "env"  # « env » ou « db »
@@ -43,13 +44,13 @@ def invalidate() -> None:
 def from_env() -> Effective:
     s = get_settings()
     return Effective(provider=(s.payment_provider or "mock").lower(), public_key=s.kkiapay_public_key, private_key=s.kkiapay_private_key,
-                     webhook_secret=s.kkiapay_webhook_secret, sandbox=s.kkiapay_sandbox, source="env")
+                     secret_key=s.kkiapay_secret_key, webhook_secret=s.kkiapay_webhook_secret, sandbox=s.kkiapay_sandbox, source="env")
 
 
 def _from_row(v: dict) -> Effective:
     dec = lambda t: storage_config.decrypt(t) if t else None  # noqa: E731
     return Effective(provider=v.get("provider", "mock"), public_key=v.get("publicKey"), private_key=dec(v.get("privateKeyEnc")),
-                     webhook_secret=dec(v.get("webhookSecretEnc")), sandbox=bool(v.get("sandbox", True)), source="db")
+                     secret_key=dec(v.get("secretKeyEnc")), webhook_secret=dec(v.get("webhookSecretEnc")), sandbox=bool(v.get("sandbox", True)), source="db")
 
 
 async def load_row(db: AsyncSession) -> dict | None:
@@ -77,7 +78,7 @@ def mask(key: str | None) -> str | None:
 
 
 def public_view(cfg: Effective, webhook_url: str) -> dict:
-    return {"source": cfg.source, "provider": cfg.provider, "publicKey": cfg.public_key, "sandbox": cfg.sandbox, "hasPrivateKey": bool(cfg.private_key),
+    return {"source": cfg.source, "provider": cfg.provider, "publicKey": cfg.public_key, "sandbox": cfg.sandbox, "hasPrivateKey": bool(cfg.private_key), "hasSecretKey": bool(cfg.secret_key),
             "hasWebhookSecret": bool(cfg.webhook_secret), "privateKeyMasked": mask(cfg.private_key), "webhookUrl": webhook_url, "live": cfg.provider == "kkiapay" and not cfg.sandbox}
 
 
@@ -90,15 +91,16 @@ def build(body: dict, existing: Effective) -> Effective:
         return Effective(provider="mock", source="db")
     public = str(body.get("publicKey") or "").strip() or existing.public_key or ""
     private = str(body.get("privateKey") or "").strip() or existing.private_key or ""
+    secret_key = str(body.get("secretKey") or "").strip() or existing.secret_key or ""
     secret = str(body.get("webhookSecret") or "").strip() or existing.webhook_secret or ""
-    for label, v in (("publique", public), ("privée", private), ("du webhook", secret)):
+    for label, v in (("publique", public), ("privée", private), ("secrète", secret_key), ("du webhook", secret)):
         if not KEY_RE.match(v):
             raise bad_request("INVALID_KEY", f"Clé {label} manquante ou invalide")
-    return Effective(provider="kkiapay", public_key=public, private_key=private, webhook_secret=secret, sandbox=bool(body.get("sandbox", True)), source="db")
+    return Effective(provider="kkiapay", public_key=public, private_key=private, secret_key=secret_key, webhook_secret=secret, sandbox=bool(body.get("sandbox", True)), source="db")
 
 
 def to_row(cfg: Effective) -> dict:
     if cfg.provider != "kkiapay":
         return {"provider": "mock"}
     return {"provider": "kkiapay", "publicKey": cfg.public_key, "sandbox": cfg.sandbox,
-            "privateKeyEnc": storage_config.encrypt(cfg.private_key or ""), "webhookSecretEnc": storage_config.encrypt(cfg.webhook_secret or "")}
+            "privateKeyEnc": storage_config.encrypt(cfg.private_key or ""), "secretKeyEnc": storage_config.encrypt(cfg.secret_key or ""), "webhookSecretEnc": storage_config.encrypt(cfg.webhook_secret or "")}

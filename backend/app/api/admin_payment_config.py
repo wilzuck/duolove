@@ -25,6 +25,7 @@ class PaymentConfigIn(BaseModel):
     provider: str
     publicKey: str | None = None
     privateKey: str | None = None  # écriture seule : jamais renvoyée
+    secretKey: str | None = None  # écriture seule : jamais renvoyée
     webhookSecret: str | None = None  # écriture seule : jamais renvoyé
     sandbox: bool = True
     password: str | None = None
@@ -43,7 +44,7 @@ async def _view() -> dict:
 async def _status(cfg: payment_config.Effective) -> int:
     """Code HTTP de KKiaPay pour le statut d'une transaction inexistante, avec le mode (bac à sable ou réel) de `cfg`."""
     try:
-        code, _ = await kkiapay.post_json(f"{kkiapay._base(cfg)}/api/v1/transactions/status", cfg.private_key or "", {"transactionId": "crushduo_test_inexistante"}, 10)
+        code, _ = await kkiapay.post_json(f"{kkiapay._base(cfg)}/api/v1/transactions/status", kkiapay.auth_headers(cfg), {"transactionId": "crushduo_test_inexistante"}, 10)
     except Exception:  # noqa: BLE001
         raise bad_request("PAYMENT_TEST_FAILED", "KKiaPay est injoignable : réessayez dans un instant") from None
     return code
@@ -58,7 +59,7 @@ async def _probe(cfg: payment_config.Effective) -> None:
         if await _status(other) not in (401, 403):
             raise bad_request("PAYMENT_TEST_FAILED", "Ces clés sont des clés de PRODUCTION : désactivez le mode bac à sable." if cfg.sandbox
                               else "Ces clés sont des clés de BAC À SABLE : activez le mode bac à sable.")
-        raise bad_request("PAYMENT_TEST_FAILED", f"Clé privée refusée par KKiaPay dans les deux modes (réponse {status}). Vérifiez que c'est bien la « Private API Key » et qu'elle n'a pas été régénérée depuis.")
+        raise bad_request("PAYMENT_TEST_FAILED", f"Clés refusées par KKiaPay dans les deux modes (réponse {status}). Vérifiez que la clé publique, la clé privée et la clé secrète viennent bien du même jeu de clés, et qu'il n'a pas été régénéré depuis.")
     if status >= 500:
         raise bad_request("PAYMENT_TEST_FAILED", f"KKiaPay a répondu par une erreur ({status}) : réessayez dans un instant")
 
@@ -118,5 +119,5 @@ async def save(body: PaymentConfigIn, a: AuthUser = SUP, db: AsyncSession = Depe
     payment_config.invalidate()
     await audit(db, a.id, "payment.config.update", "SystemSetting", payment_config.KEY,
                 {"before": {"provider": before.provider, "sandbox": before.sandbox}, "after": {"provider": cand.provider, "sandbox": cand.sandbox},
-                 "keysChanged": bool(body.privateKey or body.webhookSecret or body.publicKey)})  # jamais les clés elles-mêmes
+                 "keysChanged": bool(body.privateKey or body.secretKey or body.webhookSecret or body.publicKey)})  # jamais les clés elles-mêmes
     return await _view()

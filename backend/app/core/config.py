@@ -54,6 +54,7 @@ class Settings(BaseSettings):
     site_name: str = Field("Crushduo", alias="SITE_NAME")
     kkiapay_public_key: str | None = Field(None, alias="KKIAPAY_PUBLIC_KEY")
     kkiapay_private_key: str | None = Field(None, alias="KKIAPAY_PRIVATE_KEY")
+    kkiapay_secret_key: str | None = Field(None, alias="KKIAPAY_SECRET_KEY")
     kkiapay_webhook_secret: str | None = Field(None, alias="KKIAPAY_WEBHOOK_SECRET")
     kkiapay_sandbox: bool = Field(True, alias="KKIAPAY_SANDBOX")
     payment_webhook_secret: str = Field("dev-only-webhook-secret-change-me", alias="PAYMENT_WEBHOOK_SECRET")

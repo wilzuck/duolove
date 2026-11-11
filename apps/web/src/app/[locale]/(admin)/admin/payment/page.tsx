@@ -9,7 +9,7 @@ import { useApiError } from '@/hooks/useApiError';
 import { ApiError, api, post, put } from '@/lib/api';
 import { useUi } from '@/lib/store';
 
-interface PaymentView { source: 'env' | 'db'; provider: 'mock' | 'kkiapay'; publicKey: string | null; sandbox: boolean; live: boolean; hasPrivateKey: boolean; hasWebhookSecret: boolean; privateKeyMasked: string | null; webhookUrl: string; encryptionKeyConfigured: boolean; envProvider: string; isProd: boolean; reauth: 'password' | 'code' }
+interface PaymentView { source: 'env' | 'db'; provider: 'mock' | 'kkiapay'; publicKey: string | null; sandbox: boolean; live: boolean; hasPrivateKey: boolean; hasSecretKey: boolean; hasWebhookSecret: boolean; privateKeyMasked: string | null; webhookUrl: string; encryptionKeyConfigured: boolean; envProvider: string; isProd: boolean; reauth: 'password' | 'code' }
 
 /** Paiement en ligne (KKiaPay). Réservé au super administrateur ; les clés sont en écriture seule, chiffrées en base, et l'enregistrement redemande le mot de passe. */
 export default function AdminPaymentConfig() {
@@ -19,17 +19,17 @@ export default function AdminPaymentConfig() {
   const toast = useUi((s) => s.toast);
   const view = useQuery({ queryKey: ['admin', 'payment-config'], queryFn: () => api<PaymentView>('/admin/payment-config') });
   const v = view.data;
-  const [form, setForm] = useState<{ provider: 'mock' | 'kkiapay'; publicKey: string; privateKey: string; webhookSecret: string; sandbox: boolean } | null>(null);
+  const [form, setForm] = useState<{ provider: 'mock' | 'kkiapay'; publicKey: string; privateKey: string; secretKey: string; webhookSecret: string; sandbox: boolean } | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [mode, setMode] = useState<'password' | 'code' | null>(null);  // null : celui que le serveur conseille (code si le compte n'a pas de mot de passe)
   const how = mode ?? v?.reauth ?? 'password';
-  const f = form ?? { provider: v?.provider ?? 'mock', publicKey: v?.publicKey ?? '', privateKey: '', webhookSecret: '', sandbox: v?.sandbox ?? true };
+  const f = form ?? { provider: v?.provider ?? 'mock', publicKey: v?.publicKey ?? '', privateKey: '', secretKey: '', webhookSecret: '', sandbox: v?.sandbox ?? true };
   const set = <K extends keyof typeof f>(k: K, val: (typeof f)[K]) => setForm({ ...f, [k]: val });
   // Le serveur explique la cause précise d'un échec de test : on l'affiche tel quel (le message générique « Une erreur est survenue » n'apprend rien).
   const explain = (e: unknown) => (e instanceof ApiError && e.code === 'PAYMENT_TEST_FAILED' ? e.message : err(e));
-  const body = () => ({ provider: f.provider, publicKey: f.publicKey || undefined, privateKey: f.privateKey || undefined, webhookSecret: f.webhookSecret || undefined, sandbox: f.sandbox });
+  const body = () => ({ provider: f.provider, publicKey: f.publicKey || undefined, privateKey: f.privateKey || undefined, secretKey: f.secretKey || undefined, webhookSecret: f.webhookSecret || undefined, sandbox: f.sandbox });
   const kk = f.provider === 'kkiapay';
 
   const test = useMutation({ mutationFn: () => post('/admin/payment-config/test', body()), onSuccess: () => toast('success', t('admin.pay.testOk')), onError: (e) => toast('error', explain(e)) });
@@ -67,6 +67,7 @@ export default function AdminPaymentConfig() {
               <form className="grid gap-4 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); setConfirm(true); }}>
                 <Field label={t('admin.pay.publicKey')} hint={t('admin.pay.publicKeyHint')}>{(p) => <Input {...p} autoComplete="off" value={f.publicKey} onChange={(e) => set('publicKey', e.target.value)} required />}</Field>
                 <Field label={t('admin.pay.privateKey')} hint={v.hasPrivateKey ? t('admin.pay.keep', { masked: v.privateKeyMasked ?? '' }) : t('admin.pay.privateKeyHint')}>{(p) => <PasswordInput {...p} autoComplete="new-password" value={f.privateKey} onChange={(e) => set('privateKey', e.target.value)} required={!v.hasPrivateKey} />}</Field>
+                <Field label={t('admin.pay.secretKey')} hint={v.hasSecretKey ? t('admin.pay.keepSecretKey') : t('admin.pay.secretKeyHint')}>{(p) => <PasswordInput {...p} autoComplete="new-password" value={f.secretKey} onChange={(e) => set('secretKey', e.target.value)} required={!v.hasSecretKey} />}</Field>
                 <Field label={t('admin.pay.webhookSecret')} hint={v.hasWebhookSecret ? t('admin.pay.keepSecret') : t('admin.pay.webhookSecretHint')}>{(p) => <PasswordInput {...p} autoComplete="new-password" value={f.webhookSecret} onChange={(e) => set('webhookSecret', e.target.value)} required={!v.hasWebhookSecret} />}</Field>
                 <Field label={t('admin.pay.mode')} hint={t(f.sandbox ? 'admin.pay.sandboxOn' : 'admin.pay.sandboxOff')}>{(p) => (
                   <Select {...p} value={f.sandbox ? 'test' : 'production'} onChange={(e) => set('sandbox', e.target.value !== 'production')}>

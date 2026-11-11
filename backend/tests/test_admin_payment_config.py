@@ -8,7 +8,7 @@ from app.db.session import session_maker
 from app.models.models import SystemSetting
 from tests.support_c import admin, member
 
-PK, SK, WH = "pk_test_abcdef123456", "private_abcdef123456", "hash-secret-abcdef"
+PK, SK, SEC, WH = "pk_test_abcdef123456", "private_abcdef123456", "secret_abcdef123456", "hash-secret-abcdef"
 
 
 @pytest.fixture(autouse=True)
@@ -27,7 +27,7 @@ async def clean(app, monkeypatch):
 
 
 def body(**kw):
-    return {"provider": "kkiapay", "publicKey": PK, "privateKey": SK, "webhookSecret": WH, "sandbox": True, **kw}
+    return {"provider": "kkiapay", "publicKey": PK, "privateKey": SK, "secretKey": SEC, "webhookSecret": WH, "sandbox": True, **kw}
 
 
 async def test_parcours_complet_super_admin(app, db, monkeypatch):
@@ -36,8 +36,8 @@ async def test_parcours_complet_super_admin(app, db, monkeypatch):
 
     state = {"status": 404, "calls": []}
 
-    async def post_json(url, key, b, t):
-        state["calls"].append((url, key))
+    async def post_json(url, h, b, t):
+        state["calls"].append((url, h))
         return state["status"], {}
 
     monkeypatch.setattr(kkiapay, "post_json", post_json)
@@ -51,7 +51,7 @@ async def test_parcours_complet_super_admin(app, db, monkeypatch):
     assert (await ad.agent.post("/api/admin/payment-config/test", json=body())).status_code == 400
     state["status"] = 404  # clé acceptée (transaction inconnue)
     ok = await ad.agent.post("/api/admin/payment-config/test", json=body())
-    assert ok.status_code == 200 and state["calls"][-1] == ("https://api-sandbox.kkiapay.me/api/v1/transactions/status", SK)
+    assert ok.status_code == 200 and state["calls"][-1] == ("https://api-sandbox.kkiapay.me/api/v1/transactions/status", {"x-api-key": PK, "x-private-key": SK, "x-secret-key": SEC})
     assert (await ad.agent.put("/api/admin/payment-config", json=body(password="mauvais"))).status_code == 401  # mot de passe redemandé
     saved = await ad.agent.put("/api/admin/payment-config", json=body(password=PASSWORD))
     assert saved.status_code == 200
@@ -65,9 +65,9 @@ async def test_parcours_complet_super_admin(app, db, monkeypatch):
 
 
 def test_build_conserve_les_secrets_vides_et_refuse_les_valeurs_invalides():
-    old = payment_config.Effective(provider="kkiapay", public_key=PK, private_key=SK, webhook_secret=WH, sandbox=True)
+    old = payment_config.Effective(provider="kkiapay", public_key=PK, private_key=SK, secret_key=SEC, webhook_secret=WH, sandbox=True)
     kept = payment_config.build({"provider": "kkiapay", "sandbox": False}, old)
-    assert kept.private_key == SK and kept.webhook_secret == WH and kept.sandbox is False
+    assert kept.private_key == SK and kept.secret_key == SEC and kept.webhook_secret == WH and kept.sandbox is False
     with pytest.raises(Exception):
         payment_config.build({"provider": "kkiapay", "publicKey": "x"}, payment_config.Effective())
     with pytest.raises(Exception):
@@ -78,13 +78,13 @@ def test_build_conserve_les_secrets_vides_et_refuse_les_valeurs_invalides():
 async def test_les_cles_sont_chiffrees_en_base_et_relues(app, db, monkeypatch):
     cand = payment_config.build(body(), payment_config.Effective())
     row = payment_config.to_row(cand)
-    assert SK not in str(row) and WH not in str(row)
+    assert SK not in str(row) and SEC not in str(row) and WH not in str(row)
     async with session_maker()() as s:
         s.add(SystemSetting(key=payment_config.KEY, value=row))
         await s.commit()
     payment_config.invalidate()
     eff = await payment_config.effective()
-    assert eff.source == "db" and eff.provider == "kkiapay" and eff.private_key == SK and eff.webhook_secret == WH and eff.public_key == PK
+    assert eff.source == "db" and eff.provider == "kkiapay" and eff.private_key == SK and eff.secret_key == SEC and eff.webhook_secret == WH and eff.public_key == PK
     view = payment_config.public_view(eff, "https://api.exemple/webhook")
     assert SK not in str(view) and WH not in str(view) and view["hasPrivateKey"] and view["hasWebhookSecret"]
     async with session_maker()() as s:
@@ -99,7 +99,7 @@ async def test_compte_sans_mot_de_passe_confirme_par_code_e_mail(app, db, monkey
     from app.models.models import User
     from tests.support_c import set_role
 
-    async def post_json(url, key, b, t):
+    async def post_json(url, h, b, t):
         return 404, {}
 
     sent = []
@@ -133,7 +133,7 @@ async def test_le_test_detecte_le_mauvais_mode(app, db, monkeypatch):
     """Des clés de production saisies avec le bac à sable actif : le message le dit au lieu d'un simple « refusée »."""
     from tests.support_c import set_role
 
-    async def post_json(url, key, b, t):
+    async def post_json(url, h, b, t):
         return (404, {}) if "api-sandbox" not in url else (401, {})  # acceptée en réel seulement
 
     monkeypatch.setattr(kkiapay, "post_json", post_json)
@@ -143,7 +143,7 @@ async def test_le_test_detecte_le_mauvais_mode(app, db, monkeypatch):
     assert r.status_code == 400 and "PRODUCTION" in r.text
     assert (await ad.agent.post("/api/admin/payment-config/test", json=body(sandbox=False))).status_code == 200
 
-    async def refuse(url, key, b, t):
+    async def refuse(url, h, b, t):
         return 401, {}
 
     monkeypatch.setattr(kkiapay, "post_json", refuse)

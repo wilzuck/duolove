@@ -3500,7 +3500,10 @@
       "codeSent": "Code sent: check your inbox (and spam). It is valid for 10 minutes.",
       "mode": "Mode",
       "modeTest": "Test (sandbox)",
-      "modeProduction": "Production (real payments)"
+      "modeProduction": "Production (real payments)",
+      "secretKey": "Secret key",
+      "secretKeyHint": "KKiaPay's “Secret” (3rd value under API keys): KKiaPay requires it along with the private key to verify payments. It is not the webhook secret hash.",
+      "keepSecretKey": "Leave empty to keep the saved secret key."
     }
   },
   "pricingFaq": {

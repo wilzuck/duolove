@@ -3500,7 +3500,10 @@
       "codeSent": "Code envoyé : regarde ta boîte mail (et les courriers indésirables). Il est valable 10 minutes.",
       "mode": "Mode",
       "modeTest": "Test (bac à sable)",
-      "modeProduction": "Production (paiements réels)"
+      "modeProduction": "Production (paiements réels)",
+      "secretKey": "Clé secrète",
+      "secretKeyHint": "La « Secret » de KKiaPay (3ᵉ valeur de API keys) : KKiaPay l'exige avec la clé privée pour vérifier les paiements. Ce n'est pas le secret hash du webhook.",
+      "keepSecretKey": "Laisse vide pour garder la clé secrète enregistrée."
     }
   },
   "pricingFaq": {
