@@ -1,6 +1,7 @@
 """Stockage des fichiers (dossier local ou stockage objet S3, selon STORAGE_DRIVER) et assainissement des images (format réel, EXIF appliqué puis supprimé, ré-encodage WebP)."""
 import asyncio
 import io
+import logging
 import re
 import secrets
 from dataclasses import dataclass
@@ -172,6 +173,45 @@ async def migrate_local(cfg: storage_config.Effective, budget_seconds: float = 2
         return {"copied": copied, "errors": errors, "remaining": len(todo) - copied, "localTotal": len(local_keys()), "inBucket": len(present) + copied}
 
     return await asyncio.to_thread(_run)
+
+
+_wake = asyncio.Event()
+_log = logging.getLogger("duomatch.storage")
+
+
+def request_migration() -> None:
+    """Réveille la copie automatique (après l'activation du stockage objet) sans attendre le prochain passage."""
+    _wake.set()
+
+
+async def auto_migrate_once() -> dict | None:
+    """Un passage : si le stockage objet est actif et que des fichiers du disque n'y sont pas, en copie un lot. Ne supprime jamais rien du disque."""
+    cfg = await storage_config.effective()
+    if cfg.driver != "s3" or not await asyncio.to_thread(local_keys):
+        return None
+    r = await migrate_local(cfg)
+    if r["copied"] or r["errors"]:
+        _log.info("copie automatique vers le stockage objet : %s copiés, %s en échec, %s restants", r["copied"], r["errors"], r["remaining"])
+    return r
+
+
+async def auto_migrate_loop(interval: float = 600.0) -> None:
+    """Copie en continu, en tâche de fond, les photos du disque vers le stockage objet : plus aucune action manuelle après l'activation.
+    Passage immédiat à l'activation (request_migration), puis toutes les `interval` secondes ; enchaîne les lots tant qu'il en reste."""
+    await asyncio.sleep(30)
+    while True:
+        try:
+            while (r := await auto_migrate_once()) and r["remaining"] > 0 and r["copied"] > 0:
+                pass
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001 — réseau ou R2 indisponible : on réessaie au prochain passage
+            _log.exception("copie automatique vers le stockage objet interrompue")
+        try:
+            await asyncio.wait_for(_wake.wait(), interval)
+        except asyncio.TimeoutError:
+            pass
+        _wake.clear()
 
 
 @dataclass

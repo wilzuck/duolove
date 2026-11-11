@@ -224,3 +224,6 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 ## Bucket dédié aux sauvegardes (terminé, non commité)
 - Admin › Stockage : champ « Bucket des sauvegardes (facultatif) » (ou variable `S3_BACKUP_BUCKET`). Vide : les dumps restent dans le bucket des photos. Le test et l'enregistrement vérifient aussi l'écriture dans ce bucket. Les sauvegardes (nocturne, à la demande, liste, téléchargement) l'utilisent ; même clé d'accès que le bucket des photos. Tests ajoutés. Non essayé contre un vrai R2.
+
+## Copie automatique des photos vers R2 (terminé, non commité)
+- Dès que le stockage objet est enregistré, une tâche de fond de l'API copie les photos du disque vers R2 (immédiatement, puis toutes les 10 minutes, par lots, sans rien supprimer du disque). Le bouton « Migrer les photos » reste disponible mais n'est plus nécessaire. Tests unitaires avec un faux S3 ; non essayé contre un vrai R2.

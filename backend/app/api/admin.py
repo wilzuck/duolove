@@ -784,6 +784,8 @@ async def storage_set(body: StorageSet, a: AuthUser = SUP, db: AsyncSession = De
         db.add(SystemSetting(key=storage_config.KEY, value=value))
     await db.commit()
     storage_config.invalidate()
+    if cand.driver == "s3":
+        storage.request_migration()  # la copie des photos du disque démarre toute seule, en tâche de fond
     await audit(db, a.id, "storage.update", "SystemSetting", storage_config.KEY,
                 {"before": {"driver": before.driver, "bucket": before.bucket, "backupBucket": before.backup_bucket, "endpoint": before.endpoint, "prefix": before.prefix},
                  "after": {"driver": cand.driver, "bucket": cand.bucket, "backupBucket": cand.backup_bucket, "endpoint": cand.endpoint, "prefix": cand.prefix},

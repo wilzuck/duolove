@@ -251,3 +251,16 @@ async def test_probe_teste_le_bucket_demande(monkeypatch):
     await storage.probe(s3cfg())
     await storage.probe(s3cfg(), "b-backup")
     assert seen == ["b", "b-backup"]
+
+
+async def test_copie_automatique_sans_action_manuelle(monkeypatch, fake, tmp_path):
+    """Dès que le stockage objet est actif, un passage de fond copie les photos du disque ; rien à faire en mode local ; rien n'est supprimé."""
+    monkeypatch.setattr(get_settings(), "upload_dir", str(tmp_path))
+    (tmp_path / "photos").mkdir()
+    (tmp_path / "photos" / "a.webp").write_bytes(b"a")
+    use(monkeypatch, storage_config.Effective(driver="local", source="db"))
+    assert await storage.auto_migrate_once() is None and fake.objects == {}  # stockage local : rien à copier
+    use(monkeypatch, s3cfg())
+    r = await storage.auto_migrate_once()
+    assert r and r["copied"] == 1 and fake.objects["prod/photos/a.webp"] == b"a" and (tmp_path / "photos" / "a.webp").exists()
+    assert (await storage.auto_migrate_once())["copied"] == 0  # idempotent
