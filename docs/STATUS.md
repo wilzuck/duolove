@@ -227,3 +227,7 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 ## Copie automatique des photos vers R2 (terminé, non commité)
 - Dès que le stockage objet est enregistré, une tâche de fond de l'API copie les photos du disque vers R2 (immédiatement, puis toutes les 10 minutes, par lots, sans rien supprimer du disque). Le bouton « Migrer les photos » reste disponible mais n'est plus nécessaire. Tests unitaires avec un faux S3 ; non essayé contre un vrai R2.
+
+## Sauvegarde sans saisie ni clic (terminé, non commité)
+- `S3_BACKUP_BUCKET` (posé sur Railway, services api et backup : `crushduo-backup`) sert de bucket de sauvegarde par défaut ; une valeur saisie dans l'admin l'emporte.
+- Première sauvegarde automatique : une fois le stockage objet actif et si aucune sauvegarde n'a jamais été tentée, l'API en lance une (≈ 90 s après démarrage). Ensuite, cron de nuit. Un échec est enregistré, notifié par e-mail, et non retenté en boucle. Tests avec faux S3 ; non essayé sur un vrai R2.

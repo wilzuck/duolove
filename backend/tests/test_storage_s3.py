@@ -264,3 +264,11 @@ async def test_copie_automatique_sans_action_manuelle(monkeypatch, fake, tmp_pat
     r = await storage.auto_migrate_once()
     assert r and r["copied"] == 1 and fake.objects["prod/photos/a.webp"] == b"a" and (tmp_path / "photos" / "a.webp").exists()
     assert (await storage.auto_migrate_once())["copied"] == 0  # idempotent
+
+
+def test_bucket_sauvegarde_par_defaut_depuis_l_environnement(monkeypatch):
+    """Sans valeur saisie dans l'admin, S3_BACKUP_BUCKET sert de bucket de sauvegarde : rien à saisir à la main."""
+    monkeypatch.setattr(get_settings(), "s3_backup_bucket", "crushduo-backup")
+    row = {"driver": "s3", "endpoint": ENDPOINT, "bucket": "crushduo-media", "accessKeyId": ACCESS}
+    assert storage_config._from_row(row).backups_bucket == "crushduo-backup"
+    assert storage_config._from_row({**row, "backupBucket": "autre"}).backups_bucket == "autre"  # la saisie admin l'emporte

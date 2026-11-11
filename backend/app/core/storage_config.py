@@ -78,7 +78,7 @@ def from_env() -> Effective:
 def _from_row(v: dict) -> Effective:
     sec = decrypt(v["secretEnc"]) if v.get("secretEnc") else None
     return Effective(driver=v.get("driver", "local"), endpoint=v.get("endpoint"), bucket=v.get("bucket"), region=v.get("region") or "auto",
-                     prefix=v.get("prefix") or "", access_key_id=v.get("accessKeyId"), secret=sec, source="db", backup_bucket=v.get("backupBucket") or None)
+                     prefix=v.get("prefix") or "", access_key_id=v.get("accessKeyId"), secret=sec, source="db", backup_bucket=v.get("backupBucket") or get_settings().s3_backup_bucket or None)
 
 
 async def load_row(db: AsyncSession) -> dict | None:

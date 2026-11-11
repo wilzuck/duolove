@@ -203,3 +203,27 @@ async def run_and_record(trigger: str, database_url: str, dump_fn=None) -> dict:
     if not last["ok"]:
         await notify_failure(last["error"])  # après l'enregistrement : l'état s'affiche sans attendre l'envoi des e-mails
     return last
+
+
+async def first_backup_loop(interval: float = 600.0) -> None:
+    """Première sauvegarde automatique : dès que le stockage objet est actif et qu'aucune sauvegarde n'a jamais été tentée, en lance une (sans clic).
+    Ensuite la sauvegarde de nuit prend le relais ; un échec est enregistré, notifié aux administrateurs, et n'est pas retenté en boucle."""
+    from app.core import storage_config
+    from app.core.config import get_settings
+    from app.db.session import session_maker
+
+    await asyncio.sleep(90)
+    while True:
+        try:
+            cfg = await storage_config.effective()
+            if cfg.driver == "s3" and shutil.which("pg_dump"):
+                async with session_maker()() as db:
+                    status = await get_status(db)
+                if not status.get("last") and not is_running(status):
+                    await run_and_record("auto", get_settings().database_url)
+                    return
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001 — base ou stockage momentanément indisponible : nouvel essai au prochain passage
+            pass
+        await asyncio.sleep(interval)

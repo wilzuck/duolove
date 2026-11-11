@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
-from app.core import storage, broadcastsvc, callsvc, dailyqsvc, speedsvc, datesvc, icebreakers, maintenance, jsonfmt, mail, payments, plan_config, promptsvc, realtime
+from app.core import backups, storage, broadcastsvc, callsvc, dailyqsvc, speedsvc, datesvc, icebreakers, maintenance, jsonfmt, mail, payments, plan_config, promptsvc, realtime
 from app.core.config import get_settings
 from app.core.errors import install_error_handlers
 from app.core.ratelimit import global_limit
@@ -70,8 +70,9 @@ async def lifespan(_: FastAPI):
     speed_task = None if get_settings().node_env == "test" else asyncio.create_task(speedsvc.sweep_loop(session_maker()))
     broadcast_task = None if get_settings().node_env == "test" else asyncio.create_task(broadcastsvc.sweep_loop(session_maker()))
     migrate_task = None if get_settings().node_env == "test" else asyncio.create_task(storage.auto_migrate_loop())
+    backup_task = None if get_settings().node_env == "test" else asyncio.create_task(backups.first_backup_loop())
     yield
-    for tk in (task, dates_task, purge_task, calls_task, speed_task, broadcast_task, migrate_task):
+    for tk in (task, dates_task, purge_task, calls_task, speed_task, broadcast_task, migrate_task, backup_task):
         if tk:
             tk.cancel()
     await dispose()

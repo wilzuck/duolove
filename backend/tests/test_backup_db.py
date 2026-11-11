@@ -79,3 +79,34 @@ def test_vrai_pg_dump_relisible(tmp_path):
     p = tmp_path / "db.dump"
     b.dump(os.environ["DATABASE_URL"], p)  # lève une exception si le fichier est trop petit ou illisible
     assert p.stat().st_size >= b.MIN_BYTES
+
+
+async def test_premiere_sauvegarde_automatique(monkeypatch):
+    """Stockage objet actif et aucune sauvegarde jamais tentée : la boucle en lance une seule, sans clic."""
+    import asyncio
+
+    from app.core import backups, storage_config
+
+    async def eff():
+        return storage_config.Effective(driver="s3", bucket="b")
+
+    calls = []
+
+    async def fake_run(trigger, url, dump_fn=None):
+        calls.append(trigger)
+        return {"ok": True}
+
+    async def no_sleep(_):
+        return None
+
+    monkeypatch.setattr(storage_config, "effective", eff)
+    monkeypatch.setattr(backups, "run_and_record", fake_run)
+    monkeypatch.setattr(backups.shutil, "which", lambda _: "/usr/bin/pg_dump")
+    monkeypatch.setattr(asyncio, "sleep", no_sleep)
+
+    async def empty(_db):
+        return {}
+
+    monkeypatch.setattr(backups, "get_status", empty)
+    await asyncio.wait_for(backups.first_backup_loop(), 5)
+    assert calls == ["auto"]
