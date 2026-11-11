@@ -1,6 +1,6 @@
 import { AccordionItem } from '@/components/marketing/AccordionItem';
 import { FloatingHearts } from '@/components/marketing/FloatingHearts';
-import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, Heart, HeartHandshake, MessageCircle, Mail, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus, Users, Zap } from 'lucide-react';
+import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, HeartHandshake, Lock, Mail, MessageCircle, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button, Card } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
@@ -12,7 +12,8 @@ const BENEFITS = [
   [Sparkles, 'matching'], [BadgeCheck, 'verified'], [MessageCircleHeart, 'chat'], [ShieldCheck, 'safety'], [Smartphone, 'mobile'], [CalendarHeart, 'daily'], [Radio, 'live'], [Timer, 'speed'], [CreditCard, 'momo'],
 ] as const;
 const CHIPS = ['verified', 'serious', 'data'] as const;
-const STRIP = [[Users, 'community'], [ShieldCheck, 'security'], [Heart, 'profiles'], [Zap, 'simple']] as const;
+// Trois avantages concrets pour celles et ceux qui cherchent une vraie relation ou une amitié sincère.
+const STRIP = [[HeartHandshake, 'intent'], [ShieldCheck, 'real'], [Lock, 'control']] as const;
 const HOW = [[UserPlus, 's1'], [Search, 's2'], [MessageCircle, 's3']] as const;
 const FAQ = ['age', 'free', 'safety', 'payment', 'delete', 'verify'] as const;
 
@@ -47,8 +48,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      <section id="securite" className="relative z-10 mx-auto -mt-16 max-w-7xl scroll-mt-24 px-4 sm:px-6" aria-label={t('home.v2.strip.security.title')}>
-        <ul className="grid gap-6 rounded-[2rem] border border-line/70 bg-card/95 p-6 shadow-soft backdrop-blur sm:grid-cols-2 lg:grid-cols-4 lg:gap-4 lg:p-8">
+      <section id="securite" className="relative z-10 mx-auto -mt-16 max-w-7xl scroll-mt-24 px-4 sm:px-6" aria-label={t('home.v2.strip.real.title')}>
+        <ul className="grid gap-6 rounded-[2rem] border border-line/70 bg-card/95 p-6 shadow-soft backdrop-blur md:grid-cols-3 lg:gap-6 lg:p-8">
           {STRIP.map(([Icon, k]) => (
             <li key={k} className="flex items-start gap-4">
               <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-soft text-brand-ink"><Icon className="size-6" aria-hidden /></span>

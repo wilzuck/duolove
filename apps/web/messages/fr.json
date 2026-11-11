@@ -63,21 +63,17 @@
       "ctaDiscover": "Découvrir CrushDuo",
       "heroAlt": "Un couple souriant, joue contre joue, devant un grand cœur rose, avec la carte « C’est un match ! ».",
       "strip": {
-        "community": {
-          "title": "Une communauté respectueuse",
-          "text": "Des membres bienveillants et un cadre clair."
+        "intent": {
+          "title": "Des rencontres qui ont un sens",
+          "text": "Dites ce que vous cherchez : relation sérieuse, mariage ou amitié, et trouvez des personnes qui partagent votre intention."
         },
-        "security": {
-          "title": "Sécurité et confidentialité",
-          "text": "Vos données et vos échanges sont protégés."
+        "real": {
+          "title": "De vraies personnes, entre adultes",
+          "text": "Réservé aux 18 ans et plus, avec des profils vérifiés et un signalement en un geste."
         },
-        "profiles": {
-          "title": "Des profils authentiques",
-          "text": "Des personnes réelles, avec des profils vérifiés."
-        },
-        "simple": {
-          "title": "Simple et efficace",
-          "text": "Inscrivez-vous en quelques minutes et commencez à échanger."
+        "control": {
+          "title": "Vous gardez la main",
+          "text": "Votre position n’est jamais précise, vous choisissez avec qui échanger, et vous pouvez bloquer à tout moment."
         }
       },
       "how3": {

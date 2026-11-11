@@ -63,21 +63,17 @@
       "ctaDiscover": "Discover CrushDuo",
       "heroAlt": "A smiling couple, cheek to cheek, in front of a large pink heart, with the “It’s a match!” card.",
       "strip": {
-        "community": {
-          "title": "A respectful community",
-          "text": "Kind members and clear rules."
+        "intent": {
+          "title": "Meetings that mean something",
+          "text": "Say what you are looking for: a serious relationship, marriage or friendship, and find people who share your intention."
         },
-        "security": {
-          "title": "Security and privacy",
-          "text": "Your data and your conversations are protected."
+        "real": {
+          "title": "Real people, adults only",
+          "text": "For ages 18 and over, with verified profiles and one-tap reporting."
         },
-        "profiles": {
-          "title": "Authentic profiles",
-          "text": "Real people, with verified profiles."
-        },
-        "simple": {
-          "title": "Simple and effective",
-          "text": "Sign up in minutes and start chatting."
+        "control": {
+          "title": "You stay in control",
+          "text": "Your location is never exact, you choose who to talk to, and you can block at any time."
         }
       },
       "how3": {
