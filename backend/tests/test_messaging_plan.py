@@ -1,7 +1,17 @@
 """Idées de messagerie, appels et rendez-vous : réservés aux formules qui les incluent (Premium, VIP) ; la formule gratuite est refusée côté serveur."""
-from tests.helpers import make_premium
+import pytest
+
+from tests.helpers import make_premium, set_plan_feature
 from tests.support_c import matched
 from tests.test_dates import when as date_payload
+
+
+@pytest.fixture(autouse=True)
+async def _appels_actifs(app):
+    """Les appels sont coupés par défaut pour toutes les formules : ces tests les activent pour Premium, puis rétablissent."""
+    old = await set_plan_feature("PREMIUM", "calls_enabled", True)
+    yield
+    await set_plan_feature("PREMIUM", "calls_enabled", bool(old))
 
 
 def code(r):

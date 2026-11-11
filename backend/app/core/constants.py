@@ -30,6 +30,7 @@ PLAN_FEATURE_DEFAULTS: dict = {
     "live_match_enabled": False, "live_match_trials": 2, "match_tokens_monthly": 0, "chat_images_enabled": False,
     "read_receipts_control": False, "daily_picks_count": 5,
     # Messagerie : idées pour briser la glace, appels audio / vidéo, rendez-vous. Réservés aux formules qui les incluent (réglable en administration).
+    # Appels coupés par défaut tant qu'aucun fournisseur réel (LiveKit) n'est branché : l'administrateur les active par formule une fois les appels réels testés.
     "chat_suggestions_enabled": False, "calls_enabled": False, "dates_enabled": False,
 }
 
@@ -40,12 +41,12 @@ DEFAULT_PLANS = {
                 "features": {"daily_likes_limit": -1, "super_likes_weekly": 5, "can_see_likes": True, "advanced_filters": True,
                              "boosts_monthly": 0, "incognito_mode": False, "rewind_enabled": True, "ads_enabled": False,
                              "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 5, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 10,
-                             "chat_suggestions_enabled": True, "calls_enabled": True, "dates_enabled": True}},
+                             "chat_suggestions_enabled": True, "calls_enabled": False, "dates_enabled": True}},
     "VIP": {"name": "VIP", "priceXof": 5000, "featured": False, "sortOrder": 2,
             "features": {"daily_likes_limit": -1, "super_likes_weekly": 15, "can_see_likes": True, "advanced_filters": True,
                          "boosts_monthly": 2, "incognito_mode": True, "rewind_enabled": True, "ads_enabled": False,
                          "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 15, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 10,
-                         "chat_suggestions_enabled": True, "calls_enabled": True, "dates_enabled": True}},
+                         "chat_suggestions_enabled": True, "calls_enabled": False, "dates_enabled": True}},
 }
 
 DEFAULT_PRODUCTS = (

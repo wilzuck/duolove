@@ -1,6 +1,6 @@
 'use client';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Ban, CalendarHeart, Check, CheckCheck, Flag, HeartCrack, ImagePlus, Lightbulb, Lock, MoreVertical, Phone, Reply, Send, ShieldAlert, Smile, SmilePlus, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Ban, CalendarHeart, Check, CheckCheck, Flag, HeartCrack, ImagePlus, Lightbulb, Lock, MoreVertical, Reply, Send, ShieldAlert, Smile, SmilePlus, Trash2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { use, useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar, Button, Checkbox, cn, Dialog, IconButton, Skeleton, Spinner, Textarea } from '@duomatch/ui';
@@ -41,7 +41,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const [menu, setMenu] = useState(false);
   const [report, setReport] = useState(false);
   // Fonction réservée à une formule : ce que la personne voulait faire (photos, idées, appels, rendez-vous) pour afficher le bon message.
-  const [upsell, setUpsell] = useState<'images' | 'ideas' | 'calls' | 'dates' | null>(null);
+  const [upsell, setUpsell] = useState<'images' | 'ideas' | 'dates' | null>(null);
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const [ideas, setIdeas] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -123,9 +123,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         {conv ? (
           <Link href={`/profile/${conv.user.id}`} className="flex min-w-0 flex-1 items-center gap-3"><Avatar src={conv.user.thumbUrl} name={conv.user.displayName} size={42} /><span className="min-w-0"><span className="flex min-w-0 items-center gap-1 font-bold"><span className="truncate">{conv.user.displayName}</span>{conv.user.verified && <VerifiedBadge size="sm" />}</span><span className="block text-xs text-muted" aria-live="polite">{typing ? t('chat.typing') : (activityText ?? t('chat.viewProfile'))}</span></span></Link>
         ) : <Skeleton className="h-10 flex-1" />}
-        {cfg?.calls.enabled && !closed && conv && (lim?.calls
-          ? <CallButtons conversationId={id} name={conv.user.displayName} />
-          : <IconButton label={t('chat.callsLocked')} tone="plain" onClick={() => setUpsell('calls')}><span className="relative"><Phone className="size-5" /><Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden /></span></IconButton>)}
+        {cfg?.calls.enabled && lim?.calls && !closed && conv && <CallButtons conversationId={id} name={conv.user.displayName} />}
         {canDates && conv && <IconButton label={lim?.dates ? t('dates.open') : t('chat.datesLocked')} tone="plain" onClick={() => (lim?.dates ? setDatesOpen(true) : setUpsell('dates'))}><span className="relative"><CalendarHeart className="size-5" />{!lim?.dates && <Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden />}</span></IconButton>}
         <div className="relative">
           <IconButton label={t('chat.options')} tone="plain" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="menu"><MoreVertical className="size-5" /></IconButton>

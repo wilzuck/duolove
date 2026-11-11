@@ -86,3 +86,20 @@ async def age_all_members(minutes: int = 60) -> None:
         await s.execute(update(LiveInvite).where(LiveInvite.status == "PENDING").values(status="EXPIRED"))
         await s.execute(update(LiveSearch).where(LiveSearch.status == "ACTIVE").values(status="CLOSED"))
         await s.commit()
+
+
+async def set_plan_feature(code: str, key: str, value) -> object:
+    """Change une fonctionnalité d'une formule (comme le ferait l'administration) ; retourne l'ancienne valeur pour la rétablir."""
+    from sqlalchemy import select
+
+    from app.core import plan_config
+    from app.db.session import session_maker
+    from app.models.models import SubscriptionPlan
+
+    async with session_maker()() as s:
+        plan = (await s.execute(select(SubscriptionPlan).where(SubscriptionPlan.code == code))).scalar_one()
+        old = plan.features.get(key)
+        plan.features = {**plan.features, key: value}
+        await s.commit()
+    plan_config.invalidate()
+    return old
