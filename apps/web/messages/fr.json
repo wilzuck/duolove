@@ -1574,7 +1574,9 @@
     "CALL_NOT_ACTIVE": "Cet appel n’est plus en cours.",
     "CALLS_UNAVAILABLE": "Les appels ne sont pas disponibles pour le moment.",
     "UPLOAD_TIMEOUT": "L'envoi a pris trop de temps. Vérifiez votre connexion, puis réessayez.",
-    "PAYMENTS_UNAVAILABLE": "Les paiements en ligne ne sont pas encore disponibles. Réessayez plus tard."
+    "PAYMENTS_UNAVAILABLE": "Les paiements en ligne ne sont pas encore disponibles. Réessayez plus tard.",
+    "SOCIAL_URL_INVALID": "Adresse refusée : utilisez l'adresse https complète du compte, sur le domaine du réseau.",
+    "SOCIAL_URL_REQUIRED": "Renseignez au moins une adresse pour afficher ce réseau."
   },
   "app": {
     "nav": {
@@ -2146,7 +2148,8 @@
       "stats": "Statistiques",
       "newsletter": "Newsletter",
       "emails": "E-mails envoyés",
-      "guide": "Guide"
+      "guide": "Guide",
+      "social": "Réseaux sociaux"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -3212,6 +3215,22 @@
         "privacy": "Données personnelles",
         "privacyHint": "Les e-mails des membres ne se copient pas, ne s’envoient pas ailleurs."
       }
+    },
+    "social": {
+      "title": "Réseaux sociaux",
+      "subtitle": "Icônes affichées dans le pied de page du site : choisissez les réseaux visibles et l'adresse de chaque compte, en français et en anglais.",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "shown": "Affiché",
+      "hidden": "Masqué",
+      "show": "Afficher l'icône",
+      "urlFr": "Adresse (site en français)",
+      "urlEn": "Adresse (site en anglais)",
+      "urlEnHint": "Laisser vide pour reprendre l'adresse française.",
+      "save": "Enregistrer",
+      "saved": "Réseaux sociaux enregistrés",
+      "help": "Adresse https complète du compte ; le domaine du réseau est vérifié. Les changements apparaissent sur le site en moins d'une minute."
     }
   },
   "pricingFaq": {

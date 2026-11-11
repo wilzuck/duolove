@@ -1574,7 +1574,9 @@
     "CALL_NOT_ACTIVE": "This call is no longer in progress.",
     "CALLS_UNAVAILABLE": "Calls are not available right now.",
     "UPLOAD_TIMEOUT": "The upload took too long. Check your connection, then try again.",
-    "PAYMENTS_UNAVAILABLE": "Online payments are not available yet. Please try again later."
+    "PAYMENTS_UNAVAILABLE": "Online payments are not available yet. Please try again later.",
+    "SOCIAL_URL_INVALID": "Link rejected: use the account's full https address on the network's own domain.",
+    "SOCIAL_URL_REQUIRED": "Enter at least one link to show this network."
   },
   "app": {
     "nav": {
@@ -2146,7 +2148,8 @@
       "stats": "Statistics",
       "newsletter": "Newsletter",
       "emails": "Sent emails",
-      "guide": "Guide"
+      "guide": "Guide",
+      "social": "Social networks"
     },
     "storage": {
       "title": "File storage",
@@ -3212,6 +3215,22 @@
         "privacy": "Personal data",
         "privacyHint": "Members’ emails are not copied or sent elsewhere."
       }
+    },
+    "social": {
+      "title": "Social networks",
+      "subtitle": "Icons shown in the site footer: choose which networks are visible and each account's address, in French and in English.",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "shown": "Shown",
+      "hidden": "Hidden",
+      "show": "Show the icon",
+      "urlFr": "Link (French site)",
+      "urlEn": "Link (English site)",
+      "urlEnHint": "Leave empty to use the French link.",
+      "save": "Save",
+      "saved": "Social networks saved",
+      "help": "Full https address of the account; the network's domain is checked. Changes show on the site within a minute."
     }
   },
   "pricingFaq": {

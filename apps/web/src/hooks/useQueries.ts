@@ -13,6 +13,8 @@ export const keys = {
 export const useMe = () => useQuery({ queryKey: keys.me, queryFn: () => api<Me>('/users/me'), retry: false, staleTime: 30_000 });
 /** Le visiteur est-il connecté ? (pages publiques : « Ouvrir Crushduo » au lieu de « Se connecter » / « Créer mon compte »). Répond toujours 200. */
 export const useSession = () => useQuery({ queryKey: ['session'], queryFn: () => api<{ authenticated: boolean }>('/auth/session'), staleTime: 30_000, refetchOnWindowFocus: true });
+/** Réseaux sociaux affichés dans le pied de page (réglés dans l'administration) : adresse par langue, seulement ceux qui sont activés. */
+export const useSocialLinks = () => useQuery({ queryKey: ['social'], queryFn: () => api<Partial<Record<'facebook' | 'instagram' | 'tiktok', { fr: string; en: string }>>>('/social'), staleTime: 5 * 60_000 });
 export const useMyProfile = () => useQuery({ queryKey: keys.profile, queryFn: () => api<MyProfile>('/profiles/me') });
 /** Statut d'activité des personnes données (matchs uniquement) : actualisé chaque minute, et seulement si la liste n'est pas vide. */
 export const useActivity = (ids: string[]) => {

@@ -25,7 +25,7 @@ jsonfmt.install()
 # Routeurs (un module par domaine) : chacun expose `router`.
 ROUTERS = [
     "auth", "users", "profiles", "media", "discovery", "swipes", "matches", "chat", "subscriptions", "boosts",
-    "live", "referral", "reports", "notifications", "admin", "admin_blog", "blog", "engagement", "admin_engagement", "dates", "calls", "speed", "contact", "newsletter", "places", "ses_webhook", "installs",
+    "live", "referral", "reports", "notifications", "admin", "admin_blog", "blog", "engagement", "admin_engagement", "dates", "calls", "speed", "contact", "newsletter", "places", "ses_webhook", "installs", "social",
 ]
 
 
