@@ -79,7 +79,13 @@ export function PricingTable({ initial, current, action, defaultMonths = 1 }: { 
                 <p className="font-display text-4xl font-extrabold">{t('plans.free')}</p>
               ) : (
                 <div className="space-y-1">
-                  <p className="flex items-baseline gap-1"><span className="font-display text-4xl font-extrabold">{formatXof(price.monthlyEquivalentXof, locale)}</span><span className="text-sm text-muted">{t('plans.perMonth')}</span></p>
+                  <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
+                    {price.savingsXof > 0 && (
+                      <del className="text-lg font-semibold text-muted decoration-2"><span className="sr-only">{t('plans.regularPrice')} </span>{formatXof(Math.round((price.totalXof + price.savingsXof) / price.months), locale)}</del>
+                    )}
+                    <span className="font-display text-4xl font-extrabold"><span className="sr-only">{price.savingsXof > 0 ? `${t('plans.promoPrice')} ` : ''}</span>{formatXof(price.monthlyEquivalentXof, locale)}</span>
+                    <span className="text-sm text-muted">{t('plans.perMonth')}</span>
+                  </p>
                   <p className="text-sm text-muted">
                     {price.months === 1 ? t('plans.billedMonthly') : t('plans.billedOnce', { total: formatXof(price.totalXof, locale), n: price.months })}
                     {price.discountPercent > 0 && <span className="ml-2 font-semibold text-success-ink">{t('plans.save', { amount: formatXof(price.savingsXof, locale), pct: price.discountPercent })}</span>}
