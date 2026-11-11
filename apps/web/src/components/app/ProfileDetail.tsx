@@ -57,7 +57,10 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero }: { card: Card; 
         {!!card.prompts?.length && <PromptList items={card.prompts} onLike={canComment ? (a) => setComposer({ kind: 'PROMPT', ref: a.id }) : undefined} />}
         {card.interests.length > 0 && (
           <section><h3 className="mb-2 font-bold">{t('profile.interests')}</h3>
-            <ul className="flex flex-wrap gap-2">{card.interests.map((s) => <li key={s}><Badge tone={card.commonInterests.includes(s) ? 'brand' : 'neutral'}>{t(`interest.${s}` as never)}</Badge></li>)}</ul>
+            <ul className="flex flex-wrap gap-2">{[...card.interests].sort((a, b) => Number(card.commonInterests.includes(b)) - Number(card.commonInterests.includes(a))).map((s) => {
+              const common = card.commonInterests.includes(s);
+              return <li key={s}><Badge tone={common ? 'brand' : 'neutral'} className={common ? 'border border-brand-strong/70' : undefined}>{t(`interest.${s}` as never)}</Badge></li>;
+            })}</ul>
           </section>
         )}
         {canComment && <Button className="w-full" onClick={() => setComposer({ kind: 'PROFILE', ref: null })}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</Button>}

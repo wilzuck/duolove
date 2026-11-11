@@ -21,7 +21,7 @@ export function AffinityPanel({ affinity }: { affinity: Affinity }) {
       )}
       {affinity.commonInterests.length > 0 && (
         <div><p className="mb-1 text-sm font-semibold">{t('engagement.affinity.common')}</p>
-          <ul className="flex flex-wrap gap-1.5">{affinity.commonInterests.map((s) => <li key={s}><Badge tone="brand">{t(`interest.${s}` as never)}</Badge></li>)}</ul>
+          <ul className="flex flex-wrap gap-1.5">{affinity.commonInterests.map((s) => <li key={s}><Badge tone="brand" className="border border-brand-strong/70">{t(`interest.${s}` as never)}</Badge></li>)}</ul>
         </div>
       )}
       <p className="text-xs text-muted">{t('engagement.affinity.disclaimer')}</p>

@@ -5,8 +5,9 @@ import { Crown, Heart, Info, PauseCircle, RotateCcw, SlidersHorizontal, Sparkles
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Dialog, EmptyState, Skeleton, cn } from '@duomatch/ui';
+import { ActionButton } from '@/components/app/ActionButton';
 import { ProfileCard } from '@/components/app/ProfileCard';
-import { ProfileSheet } from '@/components/app/ProfileSheet';
+import { InlineProfile } from '@/components/app/InlineProfile';
 import { useApiError } from '@/hooks/useApiError';
 import { useMe } from '@/hooks/useQueries';
 import { Link } from '@/i18n/navigation';
@@ -77,7 +78,7 @@ export default function DiscoverPage() {
   const { data: me } = useMe();
   const [deck, setDeck] = useState<Card[]>([]);
   const [leaving, setLeaving] = useState<{ id: string; dir: Dir } | null>(null);
-  const [detail, setDetail] = useState<Card | null>(null);
+  const [detailCard, setDetail] = useState<Card | null>(null);
   const [upsell, setUpsell] = useState<'DAILY_LIMIT' | 'PLAN_REQUIRED' | 'NO_SUPER_LIKES' | null>(null);
   const busy = useRef(false);
 
@@ -97,7 +98,13 @@ export default function DiscoverPage() {
   useEffect(() => { if (deck.length > 0 && deck.length <= 3 && !feed.isFetching && feed.data?.nextCursor !== undefined) void feed.refetch(); }, [deck.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const top = deck[0];
-  const decide = useCallback((dir: Dir) => { if (top && !leaving && !busy.current) setLeaving({ id: top.id, dir }); }, [top, leaving]);
+  // Le profil ouvert suit la carte du dessus : s'il n'est plus celle-là (décision, retour arrière), il est refermé d'office.
+  const detail = detailCard && detailCard.id === top?.id ? detailCard : null;
+  const closeDetail = useCallback(() => { setDetail(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }, []);
+  const decide = useCallback((dir: Dir) => { if (top && !leaving && !busy.current) { setLeaving({ id: top.id, dir }); if (detail) closeDetail(); } }, [top, leaving, detail, closeDetail]);
+  const detailRef = useRef<HTMLDivElement>(null);
+  // À l'ouverture, la page défile jusqu'au profil.
+  useEffect(() => { if (detail) detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, [detail]);
 
   const onGone = useCallback(async () => {
     if (!leaving) return;
@@ -130,7 +137,7 @@ export default function DiscoverPage() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (detail || upsell || (e.target as HTMLElement).closest('input,textarea,select,dialog')) return;
+      if (upsell || (e.target as HTMLElement).closest('input,textarea,select,dialog')) return;
       if (e.key === 'ArrowRight') decide('right'); else if (e.key === 'ArrowLeft') decide('left'); else if ((e.key === 'ArrowUp' || e.key === 'i') && top) setDetail(top);
     };
     window.addEventListener('keydown', onKey);
@@ -151,7 +158,7 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      <div className={cn('relative mx-auto w-full', !feed.isLoading && deck.length === 0 ? 'min-h-[16rem]' : 'aspect-[3/4] max-h-[62dvh]')}>
+      <div className={cn('relative order-1 mx-auto w-full', !feed.isLoading && deck.length === 0 ? 'min-h-[16rem]' : 'aspect-[3/4] max-h-[62dvh]')}>
         {feed.isLoading && <Skeleton className="size-full rounded-[2rem]" />}
         {!feed.isLoading && deck.length === 0 && feed.data?.paused && (
           <EmptyState icon={<PauseCircle className="size-8" />} title={t('rhythm.pausedEmptyTitle')}>
@@ -170,20 +177,25 @@ export default function DiscoverPage() {
         ))}
       </div>
 
-      {top && (
-        <div className="flex items-center justify-center gap-4" role="group" aria-label={t('discover.actions')}>
-          <button type="button" onClick={rewind} disabled={!usage.data?.canRewind} aria-label={t('discover.rewind')} className="flex size-11 items-center justify-center rounded-full bg-card text-gold-ink shadow-soft ring-1 ring-line hover:bg-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"><RotateCcw className="size-5" /></button>
-          <button type="button" onClick={() => decide('left')} aria-label={t('discover.pass')} className="flex size-16 items-center justify-center rounded-full bg-card text-navy shadow-soft ring-1 ring-line transition hover:scale-105 hover:bg-soft"><X className="size-7" /></button>
-          <button type="button" onClick={() => decide('up')} aria-label={t('discover.superLike')} className="flex size-12 items-center justify-center rounded-full bg-card text-sky-600 shadow-soft ring-1 ring-line transition hover:scale-105 hover:bg-soft"><Star className="size-5 fill-current" /></button>
-          <button type="button" onClick={() => decide('right')} aria-label={t('discover.likeBtn')} className="flex size-16 items-center justify-center rounded-full bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-pop transition hover:scale-105"><Heart className="size-7 fill-current" /></button>
+
+      {top && <p className="order-3 text-center text-xs text-muted">{t('discover.sheetHint')}</p>}
+
+      {detail && (
+        <div ref={detailRef} className="order-4 scroll-mt-4">
+          <InlineProfile card={detail} onClose={closeDetail}
+            onBlocked={() => { setDeck((d) => d.filter((c) => c.id !== detail.id)); closeDetail(); }}
+            onLiked={(r) => { setDeck((d) => d.filter((c) => c.id !== detail.id)); closeDetail(); void qc.invalidateQueries({ queryKey: ['usage'] }); if (r.matched && r.match) showMatch({ matchId: r.match.id, conversationId: r.match.conversationId, user: r.match.user ?? detail }); }} />
         </div>
       )}
 
-      <ProfileSheet card={detail} open={!!detail} onClose={() => setDetail(null)} onDecide={(d) => { setDetail(null); decide(d); }}
-        onBlocked={() => { if (detail) setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); }}
-        onLiked={(r) => { if (detail) setDeck((d) => d.filter((c) => c.id !== detail.id)); setDetail(null); void qc.invalidateQueries({ queryKey: ['usage'] }); if (r.matched && r.match) showMatch({ matchId: r.match.id, conversationId: r.match.conversationId, user: r.match.user ?? detail ?? null }); }} />
-
-      {top && <p className="text-center text-xs text-muted">{t('discover.sheetHint')}</p>}
+      {top && (
+        <div className={cn('sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-20 mx-auto flex w-fit items-center justify-center gap-4 rounded-full bg-bg/85 px-4 py-2 backdrop-blur lg:bottom-14', detail ? 'order-9' : 'order-2')} role="group" aria-label={t('discover.actions')}>
+          <button type="button" onClick={rewind} disabled={!usage.data?.canRewind} aria-label={t('discover.rewind')} className="flex size-11 items-center justify-center rounded-full bg-card text-gold-ink shadow-soft ring-1 ring-line hover:bg-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"><RotateCcw className="size-5" /></button>
+          <ActionButton kind="pass" onAct={() => decide('left')} label={t('discover.pass')} className="flex size-16 items-center justify-center rounded-full bg-card text-navy shadow-soft ring-1 ring-line transition hover:scale-105 hover:bg-soft"><X className="size-7" /></ActionButton>
+          <ActionButton kind="super" onAct={() => decide('up')} label={t('discover.superLike')} className="flex size-12 items-center justify-center rounded-full bg-card text-sky-600 shadow-soft ring-1 ring-line transition hover:scale-105 hover:bg-soft"><Star className="size-5 fill-current" /></ActionButton>
+          <ActionButton kind="like" onAct={() => decide('right')} label={t('discover.likeBtn')} className="flex size-16 items-center justify-center rounded-full bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-pop transition hover:scale-105"><Heart className="size-7 fill-current" /></ActionButton>
+        </div>
+      )}
 
       <Dialog open={!!upsell} onClose={() => setUpsell(null)} title={t(upsell === 'DAILY_LIMIT' ? 'discover.limitTitle' : upsell === 'NO_SUPER_LIKES' ? 'discover.noSuperTitle' : 'discover.planTitle')} closeLabel={t('common.close')}>
         <div className="space-y-4">
