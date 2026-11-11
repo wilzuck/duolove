@@ -1,4 +1,4 @@
-import { CheckCircle2, Heart, Info, XCircle, type LucideIcon } from 'lucide-react';
+import { CheckCircle2, Heart, Info, Plus, XCircle, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { DocToc } from './DocToc';
 
@@ -20,7 +20,7 @@ export function DocBody({ sections, icons, tocLabel, listLabels, extra, footer }
   return (
     <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 pb-16 lg:grid-cols-[15rem_1fr]">
       <aside className="lg:sticky lg:top-24 lg:self-start">
-        <details className="rounded-2xl border border-line bg-card p-3 lg:hidden"><summary className="cursor-pointer px-3 py-2 font-semibold">{tocLabel}</summary><nav aria-label={tocLabel} className="mt-2">{toc}</nav></details>
+        <details className="group rounded-2xl border border-line bg-card p-3 lg:hidden"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-3 py-2 font-semibold marker:hidden [&::-webkit-details-marker]:hidden">{tocLabel}<Plus className="size-5 shrink-0 text-brand-ink transition-transform duration-200 group-open:rotate-45" aria-hidden /></summary><nav aria-label={tocLabel} className="mt-2">{toc}</nav></details>
         <nav aria-label={tocLabel} className="hidden lg:block"><p className="mb-2 px-3 text-sm font-bold">{tocLabel}</p>{toc}</nav>
       </aside>
       <div className="min-w-0 space-y-6">

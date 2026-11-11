@@ -1,3 +1,4 @@
+import { AccordionItem } from '@/components/marketing/AccordionItem';
 import { Coins, Rocket, Star } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BOOST_MINUTES } from '@duomatch/types';
@@ -91,7 +92,7 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
         <h2 id="faqp-title" className="text-2xl font-bold">{t('home.faqTitle')}</h2>
         <div className="mt-5 space-y-3">
           {FAQ.map((k) => (
-            <details key={k} className="rounded-2xl border border-line bg-card px-5 py-4 open:shadow-soft"><summary className="cursor-pointer list-none font-semibold marker:hidden">{t(`pricingFaq.${k}.q`)}</summary><p className="mt-3 text-muted">{t(`pricingFaq.${k}.a`)}</p></details>
+            <AccordionItem key={k} question={t(`pricingFaq.${k}.q`)}>{t(`pricingFaq.${k}.a`)}</AccordionItem>
           ))}
         </div>
       </section>

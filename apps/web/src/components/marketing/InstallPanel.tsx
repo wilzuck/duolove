@@ -1,4 +1,5 @@
 'use client';
+import { AccordionItem } from './AccordionItem';
 import { useQuery } from '@tanstack/react-query';
 import { Check, Download, EllipsisVertical, Maximize, Monitor, Share, Smartphone, SquarePlus, Users, Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -118,10 +119,7 @@ export function InstallPanel() {
       <section aria-labelledby="install-faq" className="space-y-3">
         <h2 id="install-faq" className="text-2xl font-bold">{t('install.faqTitle')}</h2>
         {([['f1q', 'f1a'], ['f2q', 'f2a'], ['f3q', 'f3a']] as const).map(([q, a]) => (
-          <details key={q} className="rounded-2xl border border-line bg-card px-5 py-4 shadow-soft">
-            <summary className="cursor-pointer font-semibold">{t(`install.${q}`)}</summary>
-            <p className="mt-2 text-muted">{t(`install.${a}`)}</p>
-          </details>
+          <AccordionItem key={q} question={t(`install.${q}`)} className="shadow-soft">{t(`install.${a}`)}</AccordionItem>
         ))}
       </section>
     </div>

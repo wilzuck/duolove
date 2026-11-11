@@ -1,4 +1,5 @@
 'use client';
+import { AccordionItem } from './AccordionItem';
 import { ArrowRight, BookOpen, CalendarHeart, CreditCard, HeartHandshake, Lock, Search, ShieldCheck, Sparkles, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
@@ -52,10 +53,7 @@ export function HelpCenter() {
           <h2 id={`h-${id}-t`} className="mb-4 flex items-center gap-3 text-2xl font-bold"><span className="flex size-10 items-center justify-center rounded-xl bg-soft text-brand-ink"><Icon className="size-5" aria-hidden /></span>{t(`help.sections.${id}`)}</h2>
           <div className="space-y-3">
             {items.map((i) => (
-              <details key={i.q} open={!!q && items.length <= 3} className="group rounded-2xl border border-line bg-card px-5 py-4 open:shadow-soft">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold marker:hidden">{i.q}<span aria-hidden className="text-xl text-brand-ink transition group-open:rotate-45">+</span></summary>
-                <p className="mt-3 leading-relaxed text-muted">{i.a}</p>
-              </details>
+              <AccordionItem key={i.q} question={i.q} open={!!q && items.length <= 3}>{i.a}</AccordionItem>
             ))}
           </div>
         </section>

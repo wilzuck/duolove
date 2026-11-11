@@ -1,3 +1,4 @@
+import { AccordionItem } from '@/components/marketing/AccordionItem';
 import { FloatingHearts } from '@/components/marketing/FloatingHearts';
 import { ArrowRight, BadgeCheck, CalendarHeart, Check, ChevronRight, CreditCard, Heart, HeartHandshake, MessageCircle, Mail, MessageCircleHeart, Radio, Search, ShieldCheck, Smartphone, Sparkles, Timer, UserPlus, Users, Zap } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -106,10 +107,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <h2 id="faq-title" className="text-center text-3xl font-extrabold md:text-4xl">{t('home.faqTitle')}</h2>
         <div className="mt-10 space-y-3">
           {FAQ.map((k) => (
-            <details key={k} className="group rounded-2xl border border-line bg-card px-5 py-4 open:shadow-soft">
-              <summary className="cursor-pointer list-none font-semibold marker:hidden">{t(`faq.${k}.q`)}</summary>
-              <p className="mt-3 text-muted">{t(`faq.${k}.a`)}</p>
-            </details>
+            <AccordionItem key={k} question={t(`faq.${k}.q`)}>{t(`faq.${k}.a`)}</AccordionItem>
           ))}
         </div>
       </section>
