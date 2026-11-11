@@ -16,7 +16,7 @@ export function Dialog({ open, onClose, title, children, closeLabel, className, 
   }, [open]);
   return (
     <dialog ref={ref} aria-labelledby={titleId} aria-busy={!dismissible || undefined} onClose={onClose} onCancel={(e) => { if (!dismissible) e.preventDefault(); }} onClick={(e) => e.target === ref.current && dismissible && onClose()}
-      className={cn('m-auto w-[min(92vw,28rem)] rounded-3xl border border-line bg-card p-0 text-fg shadow-pop backdrop:bg-black/50', className)}>
+      className={cn('m-auto w-[min(92vw,28rem)] rounded-3xl border border-line bg-card p-0 text-fg shadow-pop backdrop:bg-black/40 backdrop:backdrop-blur-sm', className)}>
       <div className="p-6">
         <div className="mb-4 flex items-start justify-between gap-4">
           <h2 id={titleId} className="font-display text-xl font-bold">{title}</h2>
