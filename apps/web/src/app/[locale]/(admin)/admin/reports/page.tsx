@@ -32,6 +32,7 @@ export default function AdminReports() {
       <StatusTabs label={t('admin.status')} value={status} onChange={setStatus} options={['OPEN', 'REVIEWING', 'RESOLVED', 'DISMISSED'].map((s) => ({ key: s, label: t(`admin.reportStatus.${s}`), count: countOf(sum?.reports, s) }))} />
       {list.isLoading ? <Skeleton className="h-40" /> : (
         <DataTableView
+          detailTitle={(r) => t(`report.reasons.${r.reason}` as never)}
           minWidth="48rem" rows={list.items} rowKey={(r) => r.id} empty={t('admin.noReports')} labels={tableLabels} exportName="signalements"
           hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
           rowActions={(r) => [

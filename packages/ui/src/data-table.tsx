@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
 import { cn } from './cn';
 
 export interface Column<T> {
@@ -34,13 +34,16 @@ export interface RowSelection {
   allLabel: string;
 }
 
+/** Vrai si le clic vient d'un élément interactif de la ligne (lien, bouton, case, menu) : il garde son propre rôle. */
+const fromControl = (t: EventTarget) => !!(t as HTMLElement).closest?.('a,button,input,select,textarea,label,summary,[role=menuitem],[popover]');
+
 const checkbox = 'size-[1.125rem] shrink-0 cursor-pointer accent-brand-strong';
 
 /**
  * Tableau de données : conteneur arrondi défilant horizontalement, en-têtes `scope="col"`, lignes séparées, message si vide.
  * Données simples : `rows` + `columns[].cell`. Lignes spéciales (formulaires en ligne) : passer `children` (le `<tbody>` complet).
  */
-export function DataTable<T>({ columns, rows, rowKey, minWidth = '36rem', empty, caption, rowClassName, children, className, sort, onSort, sortLabel, stacked, selection }: {
+export function DataTable<T>({ columns, rows, rowKey, minWidth = '36rem', empty, caption, rowClassName, children, className, sort, onSort, sortLabel, stacked, selection, onRowClick }: {
   columns: readonly Column<T>[];
   rows?: readonly T[];
   rowKey?: (row: T) => string;
@@ -60,7 +63,13 @@ export function DataTable<T>({ columns, rows, rowKey, minWidth = '36rem', empty,
   stacked?: boolean;
   /** Active les cases à cocher (une par ligne + « tout sélectionner » dans l'en-tête). Exige `rowKey`. */
   selection?: RowSelection;
+  /** Clic (ou Entrée) sur une ligne : ouvre le détail. Les clics sur un lien, un bouton, une case ou un menu de la ligne ne comptent pas. */
+  onRowClick?: (row: T) => void;
 }) {
+  const clickable = (row: T) => onRowClick ? {
+    tabIndex: 0, onClick: (e: MouseEvent<HTMLElement>) => { if (!fromControl(e.target)) onRowClick(row); },
+    onKeyDown: (e: KeyboardEvent<HTMLElement>) => { if (e.key === 'Enter' && e.target === e.currentTarget) onRowClick(row); },
+  } : {};
   const keyOf = (row: T, i: number) => (rowKey ? rowKey(row) : String(i));
   const allChecked = !!selection && (rows ?? []).length > 0 && (rows ?? []).every((r, i) => selection.selected.has(keyOf(r, i)));
   const someChecked = !!selection && (rows ?? []).some((r, i) => selection.selected.has(keyOf(r, i)));
@@ -73,7 +82,7 @@ export function DataTable<T>({ columns, rows, rowKey, minWidth = '36rem', empty,
         {caption && <p className="sr-only">{caption}</p>}
         <ul className="space-y-3">
           {(rows ?? []).map((row, i) => (
-            <li key={rowKey ? rowKey(row) : i} className={cn('relative rounded-3xl border bg-card p-4 transition-colors', selection?.selected.has(keyOf(row, i)) ? 'border-brand-strong bg-soft' : 'border-line', rowClassName)}>
+            <li key={rowKey ? rowKey(row) : i} {...clickable(row)} className={cn('relative rounded-3xl border bg-card p-4 transition-colors', onRowClick && 'cursor-pointer focus-visible:outline-2 focus-visible:outline-brand', selection?.selected.has(keyOf(row, i)) ? 'border-brand-strong bg-soft' : 'border-line', rowClassName)}>
               {selection && <label className="mb-3 flex w-fit cursor-pointer items-center gap-2 text-sm text-muted"><input type="checkbox" className={checkbox} aria-label={selection.rowLabel} checked={selection.selected.has(keyOf(row, i))} onChange={() => selection.onToggle(keyOf(row, i))} />{selection.rowLabel}</label>}
               {corner.length > 0 && <div className="absolute top-3 right-3">{corner.map((c) => <div key={c.key}>{c.cell?.(row)}</div>)}</div>}
               <dl className={cn('grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-3 gap-y-2 text-sm', corner.length > 0 && 'pr-10')}>
@@ -122,7 +131,7 @@ export function DataTable<T>({ columns, rows, rowKey, minWidth = '36rem', empty,
         {children ?? (
           <tbody>
             {(rows ?? []).map((row, i) => (
-              <tr key={rowKey ? rowKey(row) : i} className={cn('border-b border-line transition-colors last:border-0', selection?.selected.has(keyOf(row, i)) ? 'bg-soft hover:bg-soft' : 'hover:bg-soft/60', rowClassName)}>
+              <tr key={rowKey ? rowKey(row) : i} {...clickable(row)} className={cn('border-b border-line transition-colors last:border-0', onRowClick && 'cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand', selection?.selected.has(keyOf(row, i)) ? 'bg-soft hover:bg-soft' : 'hover:bg-soft/60', rowClassName)}>
                 {selection && <td className="w-px py-3 pr-0 pl-4"><input type="checkbox" className={checkbox} aria-label={selection.rowLabel} checked={selection.selected.has(keyOf(row, i))} onChange={() => selection.onToggle(keyOf(row, i))} /></td>}
                 {columns.map((c) => <td key={c.key} className={cn('px-4 py-3', c.cellClassName)}>{c.cell?.(row)}</td>)}
               </tr>

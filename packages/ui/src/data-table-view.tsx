@@ -2,7 +2,8 @@
 
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Columns3, Download, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button } from './button';
+import { Button, buttonVariants } from './button';
+import { cn } from './cn';
 import { DataTable, type Column, type SortState } from './data-table';
 import { Dialog } from './dialog';
 import { Popover } from './popover';
@@ -38,6 +39,8 @@ export interface DataTableLabels {
   /** Bouton de fermeture des boîtes de dialogue (« Terminé »). */
   done: string;
   close: string;
+  /** Titre par défaut de la boîte de détail d'une ligne. */
+  details: string;
   /** Menu de choix des colonnes affichées. */
   columnsMenu: string;
   /** Sélection multiple : noms accessibles des cases, compteur (« 3 sélectionnées »), « sélectionner les N résultats », vider, export de la sélection. */
@@ -99,7 +102,7 @@ function downloadCsv(name: string, head: string[], lines: unknown[][]) {
  * pagination (10, 20, 30, 50, 100 lignes) avec compteur. Les colonnes participent via `value` (et `filter`).
  * Avec `exportName`, un bouton exporte en CSV toutes les lignes filtrées et triées (pas seulement la page affichée).
  */
-export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidth, defaultPageSize = 10, toolbar, exportName, serverSearch, hasMore, onLoadMore, loadingMore, rowActions, selectable, bulkActions }: {
+export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidth, defaultPageSize = 10, toolbar, exportName, serverSearch, hasMore, onLoadMore, loadingMore, rowActions, selectable, bulkActions, rowDetail = true, detail, detailTitle }: {
   columns: readonly Column<T>[];
   rows: readonly T[];
   rowKey: (row: T) => string;
@@ -122,7 +125,14 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
   /** Cases à cocher + barre d'actions. Avec `exportName` la barre propose d'exporter la sélection ; `bulkActions` y ajoute d'autres actions. */
   selectable?: boolean;
   bulkActions?: readonly BulkAction<T>[];
+  /** Un clic sur une ligne ouvre une boîte avec tout le détail de la ligne (toutes les colonnes, même masquées) et ses actions en bas. `false` pour l'éviter. */
+  rowDetail?: boolean;
+  /** Contenu supplémentaire dans la boîte de détail (données qui n'ont pas de colonne). */
+  detail?: (row: T) => ReactNode;
+  /** Titre de la boîte de détail ; par défaut la valeur de la première colonne. */
+  detailTitle?: (row: T) => string;
 }) {
+  const [detailKey, setDetailKey] = useState<string | null>(null);
   const [q, setQ] = useState('');
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
   const [pending, setPending] = useState<BulkAction<T> | null>(null);
@@ -280,9 +290,47 @@ export function DataTableView<T>({ columns, rows, rowKey, labels, empty, minWidt
         </div>
       </Dialog>
 
-      <DataTable columns={displayed} rows={visible} rowKey={rowKey} minWidth={minWidth} stacked={narrow} sort={sort} onSort={onSort} sortLabel={labels.sortBy}
+      <DataTable columns={displayed} rows={visible} rowKey={rowKey} onRowClick={rowDetail ? (r) => setDetailKey(rowKey(r)) : undefined} minWidth={minWidth} stacked={narrow} sort={sort} onSort={onSort} sortLabel={labels.sortBy}
         selection={canSelect ? { selected, onToggle: toggle, onToggleAll: (on) => toggleKeys(visibleKeys, on), rowLabel: labels.selectRow, allLabel: labels.selectAll } : undefined}
         empty={rows.length === 0 ? empty : result.length === 0 ? labels.noResults : undefined} />
+
+
+      {rowDetail && (() => {
+        const row = detailKey === null ? undefined : rows.find((r) => rowKey(r) === detailKey);  // la ligne disparaît (résolue, filtrée…) : la boîte se ferme
+        const acts = row && rowActions ? rowActions(row) : [];
+        const fields = columns.filter((c) => !c.srOnlyHeader && !c.actions);
+        const first = fields.find((c) => c.value);
+        const title = row ? detailTitle?.(row) ?? String(first?.value?.(row) ?? '') : '';
+        const bar = (pos: string) => acts.length > 0 && (
+          <div className={cn('flex flex-wrap gap-2', pos)}>
+            {acts.map((a) => {
+              const variant = a.tone === 'danger' ? 'danger' : 'outline';
+              const done = () => { setDetailKey(null); a.onSelect?.(); };
+              return a.href
+                ? <a key={a.label} href={a.href} className={buttonVariants({ variant, size: 'sm' })} onClick={done}>{a.icon}{a.label}</a>
+                : <Button key={a.label} type="button" size="sm" variant={variant} disabled={a.disabled} onClick={done}>{a.icon}{a.label}</Button>;
+            })}
+          </div>
+        );
+        return (
+          <Dialog open={!!row} onClose={() => setDetailKey(null)} title={title || labels.details} closeLabel={labels.close} className="w-[min(94vw,40rem)]">
+            {row && (
+              <div className="space-y-4">
+                <dl className="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-x-4 gap-y-3 text-sm">
+                  {fields.map((c) => (
+                    <div key={c.key} className="contents">
+                      <dt className="text-muted">{c.header}</dt>
+                      <dd className="min-w-0 break-words whitespace-pre-wrap">{c.cell ? c.cell(row) : String(c.value?.(row) ?? '—')}</dd>
+                    </div>
+                  ))}
+                </dl>
+                {detail?.(row)}
+                {bar('border-t border-line pt-4')}
+              </div>
+            )}
+          </Dialog>
+        );
+      })()}
 
       {hasMore && <div className="text-center"><Button type="button" variant="outline" size="sm" onClick={onLoadMore} loading={loadingMore}>{labels.loadMore}</Button></div>}
       {rows.length > 0 && (
