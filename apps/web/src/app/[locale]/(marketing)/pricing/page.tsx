@@ -3,6 +3,7 @@ import { Coins, Rocket, Star } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BOOST_MINUTES } from '@duomatch/types';
 import { Button } from '@duomatch/ui';
+import { AuthSwitch } from '@/components/marketing/AuthSwitch';
 import { Link } from '@/i18n/navigation';
 import { PageToc } from '@/components/marketing/PageToc';
 import { PricingTable } from '@/components/marketing/PricingTable';
@@ -78,7 +79,7 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
                       {p.kind === 'BOOST' && <span className="text-sm text-muted">{t('plans.boostDuration')}</span>}
                       {p.kind !== 'BOOST' && p.quantity > 1 && <span className="text-sm text-muted">{t('plans.perUnit', { price: formatXof(Math.round(p.priceXof / p.quantity), locale) })}</span>}
                       <span className="mt-3 rounded-full bg-soft px-4 py-1.5 text-lg font-bold text-brand-ink">{formatXof(p.priceXof, locale)}</span>
-                      <Link href={`/shop#prod-${p.kind}`} className="mt-3 w-full"><Button size="sm" className="w-full">{t('plans.order')}</Button></Link>
+                      <AuthSwitch guest={null} member={<Link href={`/shop#prod-${p.kind}`} className="mt-3 w-full"><Button size="sm" className="w-full">{t('plans.order')}</Button></Link>} />
                     </li>
                   );
                 })}

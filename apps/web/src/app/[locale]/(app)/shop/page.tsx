@@ -74,12 +74,25 @@ export default function ShopPage() {
           <section key={g.kind} aria-labelledby={`prod-${g.kind}`}>
             <h2 id={`prod-${g.kind}`} className="font-bold">{g.title}</h2>
             <p className="mb-3 text-sm text-muted">{g.text}</p>
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {items.map((p) => (
-                <li key={p.code}><Card className="flex items-center justify-between gap-3 p-4">
-                  <div><p className="font-semibold">{p.name}</p><p className="text-sm text-muted">{p.kind === 'BOOST' ? t('shop.boostHint') : p.kind === 'TOKEN_PACK' ? t('shop.tokenPackHint', { n: p.quantity }) : t('shop.packHint', { n: p.quantity })}</p></div>
-                  <Button size="sm" loading={pending && variables?.key === p.code} onClick={() => pay({ key: p.code, body: { type: 'product', code: p.code, promoCode: promo?.code } })}>{promo ? <><s className="mr-1 text-xs opacity-70">{formatXof(p.priceXof, locale)}</s>{formatXof(discounted(p.priceXof, promo.percent), locale)}</> : formatXof(p.priceXof, locale)}</Button></Card></li>
-              ))}
+            <ul className="grid gap-3 sm:grid-cols-3">
+              {items.map((p) => {
+                const mins = BOOST_MINUTES[p.creditType as keyof typeof BOOST_MINUTES];
+                const big = p.kind === 'BOOST' ? t(mins >= 60 ? 'plans.hoursShort' : 'plans.minutesShort', { n: mins >= 60 ? mins / 60 : mins }) : String(p.quantity);
+                const what = p.kind === 'BOOST' ? t('plans.boostLabel') : p.kind === 'SUPER_LIKE_PACK' ? t('plans.superLikesLabel') : t('plans.tokensLabel');
+                const busy = pending && variables?.key === p.code;
+                return (
+                  <li key={p.code} className="flex flex-col items-center gap-1 rounded-3xl border border-line bg-card p-6 text-center shadow-soft">
+                    <span className="font-display text-5xl font-extrabold text-brand-ink">{big}</span>
+                    <span className="font-semibold">{what}</span>
+                    {p.kind === 'BOOST' && <span className="text-sm text-muted">{t('plans.boostDuration')}</span>}
+                    {p.kind !== 'BOOST' && p.quantity > 1 && <span className="text-sm text-muted">{t('plans.perUnit', { price: formatXof(Math.round((promo ? discounted(p.priceXof, promo.percent) : p.priceXof) / p.quantity), locale) })}</span>}
+                    <span className="mt-3 rounded-full bg-soft px-4 py-1.5 text-lg font-bold text-brand-ink">
+                      {promo ? <><s className="mr-1.5 text-sm font-medium opacity-60">{formatXof(p.priceXof, locale)}</s>{formatXof(discounted(p.priceXof, promo.percent), locale)}</> : formatXof(p.priceXof, locale)}
+                    </span>
+                    <Button size="sm" className="mt-3 w-full" loading={busy} onClick={() => pay({ key: p.code, body: { type: 'product', code: p.code, promoCode: promo?.code } })}>{t('plans.order')}</Button>
+                  </li>
+                );
+              })}
             </ul>
           </section>
         );
