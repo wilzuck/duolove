@@ -151,7 +151,7 @@ export default function DiscoverPage() {
   const remaining = usage.data && !usage.data.limits.unlimitedLikes ? Math.max(0, usage.data.limits.dailyLikes - usage.data.used.likes) : null;
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-4">
+    <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 py-4 lg:max-w-lg">
       <SectionTabs className="-mb-1" />
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-extrabold">{t('app.nav.discover')}</h1>
@@ -162,7 +162,7 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      <div className={cn('relative order-1 mx-auto w-full', !feed.isLoading && deck.length === 0 ? 'min-h-[16rem]' : 'aspect-[3/4] max-h-[62dvh]')}>
+      <div className={cn('relative order-1 mx-auto w-full', !feed.isLoading && deck.length === 0 ? 'min-h-[16rem]' : 'aspect-[3/4] max-h-[62dvh] lg:max-w-[max(26rem,min(100%,calc(62dvh*3/4)))]')}>
         {feed.isLoading && <Skeleton className="size-full rounded-[2rem]" />}
         {!feed.isLoading && deck.length === 0 && feed.data?.paused && (
           <EmptyState icon={<PauseCircle className="size-8" />} title={t('rhythm.pausedEmptyTitle')}>

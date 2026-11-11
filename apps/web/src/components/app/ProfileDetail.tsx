@@ -51,7 +51,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
   });
   return (
     <div className={wide ? 'grid grid-cols-[minmax(0,24rem)_minmax(0,1fr)] items-start gap-8 xl:grid-cols-[minmax(0,24rem)_minmax(0,1fr)_19rem] xl:gap-10' : 'space-y-6'}>
-      <div className={wide ? 'sticky top-24' : 'mx-auto w-full max-w-md'}>
+      <div className={wide ? 'sticky top-[4.5rem]' : 'mx-auto w-full max-w-md lg:max-w-lg'}>
         {hero ?? <ProfileGallery card={card} variant={wide ? 'stage' : 'mosaic'} />}
         {!hero && layout === 'split' && canComment && (
           <div className="mt-4 flex justify-center gap-3">
@@ -60,7 +60,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
           </div>
         )}
       </div>
-      <div className={wide ? 'space-y-5' : 'mx-auto max-w-md space-y-5'}>
+      <div className={wide ? 'space-y-5' : 'mx-auto max-w-md space-y-5 lg:max-w-lg'}>
         {!hero && <ProfileIdentity card={card} />}
         {card.affinity && <AffinityPanel affinity={card.affinity} />}
         {card.bio && <section><h3 className="mb-1.5 text-xl font-bold">{t('profileView.about')}</h3><p className="whitespace-pre-line text-muted">{card.bio}</p></section>}
@@ -124,18 +124,18 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
           </section>
         )}
         {canComment && (layout === 'stack' || !!hero) && (
-          <div className="flex gap-3">
-            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({}), 'min-w-0 flex-1')}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</ActionButton>
+          <div className="flex flex-wrap gap-3">
+            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({}), 'min-w-0 flex-1 basis-56')}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</ActionButton>
             <ActionButton kind="super" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} className={cn(buttonVariants({ variant: 'outline' }), 'shrink-0 border-sky-500 text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-950/30')}><Star className="size-4" aria-hidden />{t('engagement.composer.superButton')}</ActionButton>
           </div>
         )}
-        <div className="flex gap-3 border-t border-line pt-5">
+        <div className="flex flex-wrap gap-3 border-t border-line pt-5">
           {layout === 'stack' && <Link href={`/profile/${card.id}`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><Eye className="size-4" aria-hidden />{t('profileView.seeProfile')}</Link>}
           <Button variant="outline" size="sm" onClick={() => setReport(true)}><Flag className="size-4" aria-hidden />{t('report.cta')}</Button>
           <Button variant="outline" size="sm" onClick={() => block.mutate()} loading={block.isPending}><Ban className="size-4" aria-hidden />{t('report.block')}</Button>
         </div>
       </div>
-      {layout === 'split' && !hero && <aside className={wide ? 'sticky top-24 space-y-4 lg:col-span-2 xl:col-span-1' : ''}><SimilarProfiles userId={card.id} /></aside>}
+      {layout === 'split' && !hero && <aside className={wide ? 'sticky top-[4.5rem] space-y-4 lg:col-span-2 xl:col-span-1' : ''}><SimilarProfiles userId={card.id} /></aside>}
       {composer && <LikeComposer card={card} open initial={composer} onClose={() => setComposer(null)} onDone={onLiked} />}
       <ReportDialog userId={card.id} open={report} onClose={() => setReport(false)} />
     </div>

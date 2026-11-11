@@ -32,11 +32,11 @@ export function ProfileGallery({ card, variant, className }: { card: Card; varia
         <div className="space-y-3">
           <div className="aspect-[4/5] overflow-hidden rounded-3xl bg-soft shadow-soft">{open(Math.min(current, photos.length - 1))}</div>
           {photos.length > 1 && (
-            <ul className="flex gap-2" aria-label={t('gallery.thumbs')}>
+            <ul className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(photos.length, 6)}, minmax(0, 1fr))` }} aria-label={t('gallery.thumbs')}>
               {photos.slice(0, 6).map((p, n) => (
-                <li key={p.id} className="relative aspect-square min-w-0 flex-1">
+                <li key={p.id} className="relative aspect-square min-w-0">
                   <button type="button" onClick={() => (n === 5 && photos.length > 6 ? setViewer(5) : setCurrent(n))} aria-label={t('gallery.show', { n: n + 1 })} aria-current={n === current}
-                    className={cn('size-full overflow-hidden rounded-xl ring-2 transition', n === current ? 'ring-brand-strong' : 'ring-transparent hover:ring-line')}>
+                    className={cn('relative block size-full overflow-hidden rounded-xl ring-2 ring-inset transition', n === current ? 'ring-brand-strong' : 'ring-transparent hover:ring-line')}>
                     <img src={p.thumbUrl} alt="" draggable={false} className="size-full object-cover" />
                     {n === 5 && photos.length > 6 && <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-bold text-white">+{photos.length - 6}</span>}
                   </button>
