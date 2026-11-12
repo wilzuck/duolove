@@ -51,7 +51,7 @@ export default function LikesPage() {
             <li key={c.id}><Card className="flex items-center gap-4 p-3">
               <Link href={`/profile/${c.id}`} className="flex min-w-0 flex-1 items-center gap-4" aria-label={t('likes.view', { name: c.displayName })}>
                 <Avatar src={c.photos[0]?.thumbUrl} name={c.displayName} size={72} className="rounded-2xl" />
-                <span className="min-w-0"><span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <VerifiedBadge size="sm" />}{c.superLike && <Star className="size-4 fill-sky-500 text-sky-500" aria-label={t('likes.superLike')} />}</span>
+                <span className="min-w-0"><span className="flex items-center gap-1.5 font-bold">{c.displayName}, {c.age}{c.verified && <VerifiedBadge size="sm" />}{c.superLike && <Star className="size-4 fill-violet-700 text-violet-700" aria-label={t('likes.superLike')} />}</span>
                   <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span>
                   {c.comment && <span className="mt-1 block truncate text-sm italic text-muted"><span className="sr-only">{t('likes.commentLabel')} </span>« {c.comment} »</span>}</span>
               </Link>
@@ -126,7 +126,7 @@ export default function LikesPage() {
                           {state === 'online' && <span role="img" aria-label={t('activity.online')} className="size-2.5 shrink-0 rounded-full bg-emerald-500" />}
                           {state === 'today' && <span role="img" aria-label={t('activity.today')} className="size-2.5 shrink-0 rounded-full border-2 border-emerald-500" />}
                           {c.verified && <VerifiedBadge size="sm" />}
-                          {c.superLike && <Star className="size-4 shrink-0 fill-sky-500 text-sky-500" aria-label={t('likes.superLike')} />}
+                          {c.superLike && <Star className="size-4 shrink-0 fill-violet-700 text-violet-700" aria-label={t('likes.superLike')} />}
                         </span>
                         <span className="block truncate text-sm text-muted">{c.city}, {countryName(c.country, locale)}</span>
                         {c.comment

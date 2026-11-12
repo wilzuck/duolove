@@ -76,15 +76,15 @@ export function LikeComposer({ card, open, initial, onClose, onDone }: { card: C
           <Textarea id="like-comment" maxLength={max} className="min-h-24" placeholder={placeholder} value={comment} onChange={(e) => setComment(e.target.value)} />
           <p className="flex justify-between text-xs text-muted"><span>{t('engagement.composer.hint')}</span><span>{t('engagement.composer.counter', { n: comment.length, max })}</span></p>
         </div>
-        <label className={cn('flex cursor-pointer items-start gap-3 rounded-2xl border p-3 transition', superLike ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/30' : 'border-line hover:bg-soft', remaining === 0 && 'cursor-not-allowed opacity-70')}>
-          <input type="checkbox" className="mt-1 size-4 accent-sky-600" checked={superLike} disabled={remaining === 0} onChange={(e) => setSuperLike(e.target.checked)} />
+        <label className={cn('flex cursor-pointer items-start gap-3 rounded-2xl border p-3 transition', superLike ? 'border-violet-600 bg-violet-50 dark:bg-violet-950/30' : 'border-line hover:bg-soft', remaining === 0 && 'cursor-not-allowed opacity-70')}>
+          <input type="checkbox" className="mt-1 size-4 accent-violet-700" checked={superLike} disabled={remaining === 0} onChange={(e) => setSuperLike(e.target.checked)} />
           <span className="min-w-0 flex-1 text-sm">
-            <span className="flex items-center gap-1.5 font-semibold"><Star className="size-4 text-sky-600" aria-hidden />{t('engagement.composer.superTitle')}</span>
+            <span className="flex items-center gap-1.5 font-semibold"><Star className="size-4 text-violet-700" aria-hidden />{t('engagement.composer.superTitle')}</span>
             <span className="block text-muted">{remaining === 0 ? t('engagement.composer.superNone') : t('engagement.composer.superHint', { n: remaining ?? 0 })}</span>
             {remaining === 0 && <Link href="/shop#prod-SUPER_LIKE_PACK" className="mt-1 inline-block font-semibold text-brand-ink underline">{t('discover.buyPack')}</Link>}
           </span>
         </label>
-        <ActionButton kind={superLike ? 'super' : 'like'} type="submit" reach={120} disabled={!ready || send.isPending} className={cn(buttonVariants({ size: 'lg' }), 'w-full')}>{send.isPending ? <Loader2 className="size-5 animate-spin" aria-hidden /> : <Heart className="size-5 fill-current" aria-hidden />}{send.isPending ? t('engagement.composer.sending') : t('engagement.composer.send')}</ActionButton>
+        <ActionButton kind={superLike ? 'super' : 'like'} type="submit" reach={120} disabled={!ready || send.isPending} className={cn(buttonVariants({ size: 'lg' }), 'w-full', superLike && 'bg-none bg-violet-700 text-white hover:bg-violet-800')}>{send.isPending ? <Loader2 className="size-5 animate-spin" aria-hidden /> : <Heart className="size-5 fill-current" aria-hidden />}{send.isPending ? t('engagement.composer.sending') : t('engagement.composer.send')}</ActionButton>
       </form>
     </Dialog>
   );

@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Coins, Rocket, Star } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { BOOST_MINUTES, type CreditType } from '@duomatch/types';
-import { Badge, Button, Card, Skeleton } from '@duomatch/ui';
+import { Badge, Button, Card, cn, Skeleton } from '@duomatch/ui';
 import { useApiError } from '@/hooks/useApiError';
 import { usePay } from '@/hooks/usePay';
 import { keys, useCatalog, useMe, useMyProfile } from '@/hooks/useQueries';
@@ -54,7 +54,7 @@ export default function ShopPage() {
 
       <section aria-labelledby="bal"><h2 id="bal" className="mb-3 font-bold">{t('shop.balances')}</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="p-4"><p className="flex items-center gap-2 text-sm text-muted"><Star className="size-4 text-sky-500" aria-hidden />{t('shop.superLikes')}</p><p className="mt-1 font-display text-3xl font-extrabold">{b.SUPER_LIKE}</p><p className="text-xs text-muted">{t('shop.superLikesIncluded', { n: me.entitlement.limits.superLikesWeekly })}</p></Card>
+          <Card className="p-4"><p className="flex items-center gap-2 text-sm text-muted"><Star className="size-4 text-violet-700" aria-hidden />{t('shop.superLikes')}</p><p className="mt-1 font-display text-3xl font-extrabold">{b.SUPER_LIKE}</p><p className="text-xs text-muted">{t('shop.superLikesIncluded', { n: me.entitlement.limits.superLikesWeekly })}</p></Card>
           <Card className="p-4"><p className="flex items-center gap-2 text-sm text-muted"><Coins className="size-4 text-amber-500" aria-hidden />{t('shop.tokens')}</p><p className="mt-1 font-display text-3xl font-extrabold">{b.MATCH_TOKEN}</p><Link href="/match" className="text-xs font-semibold text-brand-ink hover:underline">{t('shop.tokensUse')}</Link></Card>
           {BOOSTS.map((c) => (
             <Card key={c} className="p-4"><p className="flex items-center gap-2 text-sm text-muted"><Rocket className="size-4 text-brand" aria-hidden />{label(c)}</p><p className="mt-1 font-display text-3xl font-extrabold">{b[c]}</p>
@@ -82,14 +82,14 @@ export default function ShopPage() {
                 const busy = pending && variables?.key === p.code;
                 return (
                   <li key={p.code} className="flex flex-col items-center gap-1 rounded-3xl border border-line bg-card p-6 text-center shadow-soft">
-                    <span className="font-display text-5xl font-extrabold text-brand-ink">{big}</span>
+                    <span className={cn('font-display text-5xl font-extrabold', p.kind === 'SUPER_LIKE_PACK' ? 'text-violet-700' : 'text-brand-ink')}>{big}</span>
                     <span className="font-semibold">{what}</span>
                     {p.kind === 'BOOST' && <span className="text-sm text-muted">{t('plans.boostDuration')}</span>}
                     {p.kind !== 'BOOST' && p.quantity > 1 && <span className="text-sm text-muted">{t('plans.perUnit', { price: formatXof(Math.round((promo ? discounted(p.priceXof, promo.percent) : p.priceXof) / p.quantity), locale) })}</span>}
-                    <span className="mt-3 rounded-full bg-soft px-4 py-1.5 text-lg font-bold text-brand-ink">
+                    <span className={cn('mt-3 rounded-full px-4 py-1.5 text-lg font-bold', p.kind === 'SUPER_LIKE_PACK' ? 'bg-violet-100 text-violet-800 dark:bg-violet-950/50 dark:text-violet-200' : 'bg-soft text-brand-ink')}>
                       {promo ? <><s className="mr-1.5 text-sm font-medium opacity-60">{formatXof(p.priceXof, locale)}</s>{formatXof(discounted(p.priceXof, promo.percent), locale)}</> : formatXof(p.priceXof, locale)}
                     </span>
-                    <Button size="sm" className="mt-3 w-full" loading={busy} onClick={() => pay({ key: p.code, body: { type: 'product', code: p.code, promoCode: promo?.code } })}>{t('plans.order')}</Button>
+                    <Button size="sm" className={cn('mt-3 w-full', p.kind === 'SUPER_LIKE_PACK' && 'bg-none bg-violet-700 text-white hover:bg-violet-800')} loading={busy} onClick={() => pay({ key: p.code, body: { type: 'product', code: p.code, promoCode: promo?.code } })}>{t('plans.order')}</Button>
                   </li>
                 );
               })}

@@ -8,10 +8,10 @@ interface Particle { id: number; dx: number; dy: number; rot: number; size: numb
 
 const COLORS: Record<Kind, string[]> = {
   like: ['#ff3d7f', '#ff6b81', '#e91e63', '#ffb3c6', '#ffd166'],
-  super: ['#0ea5e9', '#38bdf8', '#facc15', '#7dd3fc', '#ffffff'],
+  super: ['#6d28d9', '#a78bfa', '#facc15', '#c4b5fd', '#ffffff'],
   pass: ['#94a3b8', '#cbd5e1', '#64748b'],
 };
-const RING: Record<Kind, string> = { like: 'rgba(233,30,99,.55)', super: 'rgba(14,165,233,.55)', pass: 'rgba(100,116,139,.35)' };
+const RING: Record<Kind, string> = { like: 'rgba(233,30,99,.55)', super: 'rgba(109,40,217,.55)', pass: 'rgba(100,116,139,.35)' };
 
 /** Particules lancées en éventail : au hasard (à chaque clic), jamais deux fois la même gerbe. */
 function burst(kind: Kind, reach: number): Particle[] {

@@ -2,7 +2,7 @@ import { AccordionItem } from '@/components/marketing/AccordionItem';
 import { Coins, Rocket, Star } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { BOOST_MINUTES } from '@duomatch/types';
-import { Button } from '@duomatch/ui';
+import { Button, cn } from '@duomatch/ui';
 import { AuthSwitch } from '@/components/marketing/AuthSwitch';
 import { Link } from '@/i18n/navigation';
 import { PageToc } from '@/components/marketing/PageToc';
@@ -65,7 +65,7 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
           const Icon = g.icon;
           return (
             <div key={g.kind} className="mt-10" role="group" aria-labelledby={`g-${g.kind}`}>
-              <h3 id={`g-${g.kind}`} className="flex items-center gap-2 text-xl font-bold"><Icon className="size-5 text-brand-ink" aria-hidden />{t(g.title as never)}</h3>
+              <h3 id={`g-${g.kind}`} className="flex items-center gap-2 text-xl font-bold"><Icon className={cn('size-5', g.kind === 'SUPER_LIKE_PACK' ? 'text-violet-700' : 'text-brand-ink')} aria-hidden />{t(g.title as never)}</h3>
               <p className="mt-1 text-sm text-muted">{t(g.text as never)}</p>
               <ul className="mt-4 grid gap-3 sm:grid-cols-3">
                 {items.map((p) => {
@@ -74,12 +74,12 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
                   const label = p.kind === 'BOOST' ? t('plans.boostLabel') : p.kind === 'SUPER_LIKE_PACK' ? t('plans.superLikesLabel') : t('plans.tokensLabel');
                   return (
                     <li key={p.code} className="flex flex-col items-center gap-1 rounded-3xl border border-line bg-card p-6 text-center shadow-soft">
-                      <span className="font-display text-5xl font-extrabold text-brand-ink">{big}</span>
+                      <span className={cn('font-display text-5xl font-extrabold', p.kind === 'SUPER_LIKE_PACK' ? 'text-violet-700' : 'text-brand-ink')}>{big}</span>
                       <span className="font-semibold">{label}</span>
                       {p.kind === 'BOOST' && <span className="text-sm text-muted">{t('plans.boostDuration')}</span>}
                       {p.kind !== 'BOOST' && p.quantity > 1 && <span className="text-sm text-muted">{t('plans.perUnit', { price: formatXof(Math.round(p.priceXof / p.quantity), locale) })}</span>}
-                      <span className="mt-3 rounded-full bg-soft px-4 py-1.5 text-lg font-bold text-brand-ink">{formatXof(p.priceXof, locale)}</span>
-                      <AuthSwitch guest={null} member={<Link href={`/shop#prod-${p.kind}`} className="mt-3 w-full"><Button size="sm" className="w-full">{t('plans.order')}</Button></Link>} />
+                      <span className={cn('mt-3 rounded-full px-4 py-1.5 text-lg font-bold', p.kind === 'SUPER_LIKE_PACK' ? 'bg-violet-100 text-violet-800' : 'bg-soft text-brand-ink')}>{formatXof(p.priceXof, locale)}</span>
+                      <AuthSwitch guest={null} member={<Link href={`/shop#prod-${p.kind}`} className="mt-3 w-full"><Button size="sm" className={cn('w-full', p.kind === 'SUPER_LIKE_PACK' && 'bg-none bg-violet-700 text-white hover:bg-violet-800')}>{t('plans.order')}</Button></Link>} />
                     </li>
                   );
                 })}

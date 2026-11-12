@@ -82,7 +82,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
                     {canComment && (
                       <span className="flex gap-1.5">
                         <button type="button" onClick={() => setComposer({ kind: 'VALUE', ref: v })} aria-label={t('values.like', { name })} title={t('values.likeTitle')} className="grid size-8 place-items-center rounded-full border border-line text-brand-strong transition hover:bg-soft focus-visible:outline-2 focus-visible:outline-brand"><Heart className="size-4" aria-hidden /></button>
-                        <button type="button" onClick={() => setComposer({ kind: 'VALUE', ref: v, superLike: true })} aria-label={t('values.superLike', { name })} title={t('values.superLikeTitle')} className="grid size-8 place-items-center rounded-full border border-line text-sky-600 transition hover:bg-soft focus-visible:outline-2 focus-visible:outline-brand"><Star className="size-4" aria-hidden /></button>
+                        <button type="button" onClick={() => setComposer({ kind: 'VALUE', ref: v, superLike: true })} aria-label={t('values.superLike', { name })} title={t('values.superLikeTitle')} className="grid size-8 place-items-center rounded-full border border-line text-violet-700 transition hover:bg-violet-50 focus-visible:outline-2 focus-visible:outline-brand"><Star className="size-4" aria-hidden /></button>
                       </span>
                     )}
                   </li>
