@@ -115,6 +115,7 @@ class NotificationType(str, enum.Enum):
     CALL_MISSED = 'CALL_MISSED'
     SPEED_REMINDER = 'SPEED_REMINDER'
     ANNOUNCEMENT = 'ANNOUNCEMENT'
+    LIVE_EVENT = 'LIVE_EVENT'
 
 
 class PaymentKind(str, enum.Enum):
@@ -757,6 +758,44 @@ class NewsletterCampaign(Base):
     createdById: Mapped[Optional[str]] = mapped_column(Text)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     sentAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+
+
+class LiveEvent(Base):
+    """Soirée Match en direct : créneau annoncé par l'administration pour que beaucoup de monde soit en ligne en même temps.
+    Les membres s'inscrivent pour être rappelés (1 h avant, puis au début). `tzOffset` : décalage horaire d'affichage dans les e-mails, en minutes."""
+    __tablename__ = 'LiveEvent'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='LiveEvent_pkey'),
+        Index('LiveEvent_status_startsAt_idx', 'status', 'startsAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("''"))
+    city: Mapped[Optional[str]] = mapped_column(Text)
+    startsAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    endsAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False)
+    tzOffset: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('60'))
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'ACTIVE'"))
+    remindedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    startedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    createdById: Mapped[Optional[str]] = mapped_column(Text)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+
+
+class LiveEventRsvp(Base):
+    """Inscription d'un membre à une soirée (pour être rappelé)."""
+    __tablename__ = 'LiveEventRsvp'
+    __table_args__ = (
+        ForeignKeyConstraint(['eventId'], ['LiveEvent.id'], ondelete='CASCADE', onupdate='CASCADE', name='LiveEventRsvp_eventId_fkey'),
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='LiveEventRsvp_userId_fkey'),
+        PrimaryKeyConstraint('eventId', 'userId', name='LiveEventRsvp_pkey'),
+        Index('LiveEventRsvp_userId_idx', 'userId'),
+    )
+
+    eventId: Mapped[str] = mapped_column(Text, nullable=False)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'))
 
 
 class Broadcast(Base):

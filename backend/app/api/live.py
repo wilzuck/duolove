@@ -5,6 +5,7 @@ from fastapi import APIRouter, Body, Depends
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import live_events
 from app.core import live_service as live
 from app.core import realtime
 from app.core.auth import AuthUser, verified_user
@@ -19,6 +20,22 @@ realtime.on_presence = live.on_presence
 
 class OptIn(BaseModel):
     enabled: bool
+
+
+@router.get("/events")
+async def events(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    """Soirées Match en direct à venir ou en cours, avec mon inscription."""
+    return await live_events.upcoming(db, u.id)
+
+
+@router.put("/events/{event_id}/rsvp", dependencies=[limit(30)])
+async def event_rsvp(event_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live_events.rsvp(db, u.id, event_id)
+
+
+@router.delete("/events/{event_id}/rsvp", dependencies=[limit(30)])
+async def event_unrsvp(event_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    return await live_events.unrsvp(db, u.id, event_id)
 
 
 @router.get("/state")

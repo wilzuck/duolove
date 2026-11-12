@@ -182,6 +182,24 @@ async def send_renewal_reminder(to: str, name: str, plan_name: str, ends_at: dat
                       "Le paiement est ponctuel : l'abonnement ne se renouvelle pas automatiquement.", html, kind="subscription")
 
 
+async def send_live_event_reminder(to: str, name: str, title: str, starts_at: datetime.datetime, tz_offset: int, city: str | None) -> bool:
+    """Rappel d'une soirée Match en direct (une heure avant) : envoyé uniquement aux membres qui se sont inscrits."""
+    link = f"{get_settings().app_url}/match"
+    local = starts_at + datetime.timedelta(minutes=tz_offset)
+    sign = "+" if tz_offset >= 0 else "-"
+    zone = f"UTC{sign}{abs(tz_offset) // 60}" + (f":{abs(tz_offset) % 60:02d}" if abs(tz_offset) % 60 else "")
+    when = f"{local.strftime('%d/%m/%Y à %Hh%M')} ({zone})"
+    where = f" — {city}" if city else ""
+    subject = f"{title} commence dans une heure"
+    html = render_email(subject, [
+        p(f"Bonjour {esc_(name)}, la soirée « {esc_(title)} »{esc_(where)} commence le {when}."),
+        p("Connectez-vous à l’heure : c’est quand tout le monde est en ligne que les recherches aboutissent le plus vite."),
+        button("Ouvrir le Match en direct", link),
+        note("Vous recevez ce rappel parce que vous vous êtes inscrit(e) à cette soirée."),
+    ], preheader=f"{title} : {when}")
+    return await send(to, f"{subject} — Crushduo", f"Bonjour {name},\n\nLa soirée « {title} »{where} commence le {when}.\n\nConnectez-vous à l'heure : {link}\n\nVous recevez ce rappel parce que vous vous êtes inscrit(e) à cette soirée.", html, kind="notification")
+
+
 def notification_html(title: str, body: str, unsub_url: str | None = None) -> str:
     """E-mail de notification (message, match, like…) : même carte, bouton vers l'application et, si la notification est facultative, un lien de désabonnement."""
     footer = (f'<p style="margin:8px 0 0;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;font-size:13px;color:#45434F;text-align:center;">'
