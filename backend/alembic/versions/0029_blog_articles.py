@@ -26,7 +26,7 @@ HEAD = re.compile(r"\A---\n(.*?)\n---\n(.*)\Z", re.S)
 def _articles() -> list[dict]:
     out = []
     for name in sorted(os.listdir(DIR)):
-        if not name.endswith(".md"):
+        if not name.endswith(".md") or not ("01" <= name[:2] <= "10"):  # les articles 11 à 20 sont ajoutés par la migration 0030
             continue
         m = HEAD.match(open(os.path.join(DIR, name), encoding="utf-8").read().replace("\r\n", "\n"))
         if not m:
