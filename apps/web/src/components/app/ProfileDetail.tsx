@@ -57,7 +57,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
         {!hero && layout === 'split' && canComment && (
           <div className="mt-4 flex flex-wrap justify-start gap-3">
             <SuperLikeButton onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} />
-            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }))}><Heart className="size-5" aria-hidden />{t('discover.likeBtn')}</ActionButton>
+            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }))}><Heart className="size-5" aria-hidden />{t('engagement.composer.likeShort')}</ActionButton>
           </div>
         )}
       </div>
@@ -126,8 +126,9 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
         )}
         {canComment && (layout === 'stack' || !!hero) && (
           <div className="flex flex-wrap gap-3">
-            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }), 'min-w-0 flex-1 basis-56')}><Heart className="size-4" aria-hidden />{t('engagement.composer.likeWith')}</ActionButton>
+            {/* Toujours le Super Like AVANT « J'aime » ; « J'aime » ouvre la boîte de commentaire. */}
             <SuperLikeButton onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} className="shrink-0" />
+            <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }), 'min-w-0 flex-1 basis-40')}><Heart className="size-5" aria-hidden />{t('engagement.composer.likeShort')}</ActionButton>
           </div>
         )}
         <div className="flex flex-wrap gap-3 border-t border-line pt-5">

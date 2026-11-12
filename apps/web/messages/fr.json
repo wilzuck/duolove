@@ -4298,7 +4298,8 @@
       "chooseAnswer": "Choisissez la réponse",
       "chooseInterest": "Choisissez l’intérêt",
       "pickValue": "Choisissez la valeur",
-      "superButton": "Super Like"
+      "superButton": "Super Like",
+      "likeShort": "J’aime"
     },
     "daily": {
       "title": "Tes découvertes du jour",
