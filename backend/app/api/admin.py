@@ -10,7 +10,7 @@ from sqlalchemy import and_, distinct, func, inspect as sa_inspect, or_, select,
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import entitlements, flags as flagsvc
-from app.core import notifications, payments, plan_config, promo, refunds, storage, storage_config
+from app.core import notifications, payments, plan_config, promo, storage, storage_config
 from app.core.auth import AuthUser, has_role, require_role
 from app.core.constants import FEATURE_FLAGS
 from app.core.config import get_settings
@@ -20,10 +20,10 @@ from app.core.profile_card import thumb_key
 from app.db.session import get_db
 from app.models.models import (
     AppInstall, AuditLog, ContactMessage, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Preference, Product, Profile, ProfilePhoto,
-    PromoCode, Refund, Report, Session, Subscription, SubscriptionPlan, Swipe, SystemSetting, User, VerificationRequest,
+    PromoCode, Report, Session, Subscription, SubscriptionPlan, Swipe, SystemSetting, User, VerificationRequest,
 )
 from app.schemas.admin import (
-    FlagSet, PlanGrant, PlanPatch, ProductPatch, PromoCreate, PromoPatch, ReasonOnly, RefundApprove, RefundCreate, RefundReject, ResolveReport,
+    FlagSet, PlanGrant, PlanPatch, ProductPatch, PromoCreate, PromoPatch, ReasonOnly, ResolveReport,
     Review, RoleChange, Sanction,
 )
 
@@ -148,7 +148,6 @@ async def overview(days: int = Query(30), date_from: str | None = Query(None, al
     recent = (await db.execute(select(User).where(User.status != "DELETED").order_by(User.createdAt.desc()).limit(8))).scalars().all()
     profiles = {p.userId: p for p in (await db.execute(select(Profile).where(Profile.userId.in_([u.id for u in recent])))).scalars()}
     by_country = (await db.execute(select(Profile.country, func.count().label("n")).group_by(Profile.country).order_by(func.count().desc()).limit(6))).all()
-    refunded = (await db.execute(select(func.coalesce(func.sum(Refund.amountXof), 0)).where(Refund.status == "COMPLETED"))).scalar_one()
 
     end = start + days * DAY  # exclue : la période se termine à la fin de son dernier jour
 
@@ -174,7 +173,7 @@ async def overview(days: int = Query(30), date_from: str | None = Query(None, al
         "planDistribution": [{"plan": ev(p), "count": c} for p, c in plans],
         "recentSignups": [{"id": u.id, "displayName": profiles[u.id].displayName if u.id in profiles else "—", "city": profiles[u.id].city if u.id in profiles else "",
                            "country": profiles[u.id].country if u.id in profiles else "", "createdAt": u.createdAt} for u in recent],
-        "refundedXof": refunded, "topCountries": [{"country": c, "count": n} for c, n in by_country],
+        "topCountries": [{"country": c, "count": n} for c, n in by_country],
         "users": users, "signups7": await count(User, User.createdAt >= d(7)), "signups30": await count(User, User.createdAt >= d(30)),
         "active7": await count(User, User.lastActiveAt >= d(7), User.status == "ACTIVE"), "profilesCompleted": await count(Profile, Profile.completeness >= 80),
         "likes": await count(Swipe, Swipe.action.in_(["LIKE", "SUPER_LIKE"])), "matches": await count(Match),
@@ -272,7 +271,7 @@ async def summary(a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
         since = utcnow() - 30 * DAY
         pays = await by(Payment.status, Payment.createdAt >= since)
         revenue = (await db.execute(select(func.coalesce(func.sum(Payment.amountXof), 0)).where(Payment.status == "SUCCEEDED", Payment.paidAt >= since))).scalar_one()
-        out.update({"payments": {**pays, "revenue30": int(revenue)}, "subscriptions": await by(Subscription.status), "refunds": await by(Refund.status),
+        out.update({"payments": {**pays, "revenue30": int(revenue)}, "subscriptions": await by(Subscription.status),
                     "contact": await by(ContactMessage.status)})
     return out
 
@@ -557,40 +556,9 @@ async def payments_list(cursor: str | None = None, limit: str | None = None, _: 
     ids = [p.id for p in rows[:take]]
     names = await _display_names(db, [p.userId for p in rows[:take]])
     invs = dict((await db.execute(select(Invoice.paymentId, Invoice.number).where(Invoice.paymentId.in_(ids)))).all())
-    last_refund: dict[str, str] = {}
-    for pid, st in (await db.execute(select(Refund.paymentId, Refund.status).where(Refund.paymentId.in_(ids)).order_by(Refund.createdAt.asc()))).all():
-        last_refund[pid] = ev(st)  # le dernier (le plus récent) l'emporte
-    return paged(rows, take, [{"refund": last_refund.get(p.id), "id": p.id, "userId": p.userId, "displayName": names.get(p.userId), "amountXof": p.amountXof,
+    return paged(rows, take, [{"id": p.id, "userId": p.userId, "displayName": names.get(p.userId), "amountXof": p.amountXof,
                                "status": ev(p.status), "provider": p.provider, "failureReason": p.failureReason, "invoiceNumber": invs.get(p.id), "createdAt": p.createdAt}
                               for p in rows[:take]])
-
-
-# ───────── Remboursements (ADMIN) ─────────
-@router.get("/refunds")
-async def refunds_list(status: str | None = None, cursor: str | None = None, limit: str | None = None, _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
-    return await refunds.list_(db, status, cursor, page(limit))
-
-
-@router.post("/refunds", status_code=201)
-async def refund_create(body: RefundCreate, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
-    """Création par un administrateur : nécessite l'approbation d'un AUTRE administrateur."""
-    r = await refunds.request_by_admin(db, a.id, body.paymentId, body.reason)
-    await audit(db, a.id, "refund.request", "Payment", body.paymentId, {"refundId": r.id, "amountXof": r.amountXof})
-    return {"id": r.id, "status": ev(r.status)}
-
-
-@router.post("/refunds/{refund_id}/approve")
-async def refund_approve(refund_id: str, body: RefundApprove, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
-    r = await refunds.approve(db, a.id, refund_id, body.note, bool(body.manual))
-    await audit(db, a.id, "refund.approve", "Refund", refund_id, {"result": r["status"], "manual": bool(body.manual)})
-    return r
-
-
-@router.post("/refunds/{refund_id}/reject")
-async def refund_reject(refund_id: str, body: RefundReject, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
-    r = await refunds.reject(db, a.id, refund_id, body.note)
-    await audit(db, a.id, "refund.reject", "Refund", refund_id, {"note": body.note})
-    return r
 
 
 @router.post("/jobs/expire-subscriptions")

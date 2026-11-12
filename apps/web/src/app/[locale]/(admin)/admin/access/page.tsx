@@ -9,7 +9,7 @@ import { api, put } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { useUi } from '@/lib/store';
 
-interface AccessView { enabled: boolean; activatedAt: string | null; graceDays: number; graceEndsAt: string | null; ready: boolean; notReadyReason: string | null; counts: { members: number; paying: number; free: number } }
+interface AccessView { enabled: boolean; activatedAt: string | null; graceDays: number; trialDays: number; verifiedDiscountPercent: number; womenThreshold: number; women: { count: number; threshold: number; reached: boolean; notifiedAt: string | null; cities: { city: string | null; country: string | null; count: number }[] }; graceEndsAt: string | null; ready: boolean; notReadyReason: string | null; counts: { members: number; paying: number; free: number } }
 
 /** Accès payant obligatoire (« modèle B ») : un interrupteur réversible. Réservé au super administrateur. */
 export default function AdminAccess() {
@@ -20,12 +20,17 @@ export default function AdminAccess() {
   const toast = useUi((s) => s.toast);
   const view = useQuery({ queryKey: ['admin', 'access'], queryFn: () => api<AccessView>('/admin/access') });
   const v = view.data;
-  const [grace, setGrace] = useState<string | null>(null);
+  const [edit, setEdit] = useState<{ grace?: string; trial?: string; discount?: string; threshold?: string }>({});
   const [confirm, setConfirm] = useState(false);
-  const graceDays = grace === null ? (v?.graceDays ?? 30) : Math.min(365, Math.max(0, Number(grace) || 0));
+  const num = (x: string | undefined, def: number, min: number, max: number) => (x === undefined ? def : Math.min(max, Math.max(min, Math.round(Number(x)) || 0)));
+  const graceDays = num(edit.grace, v?.graceDays ?? 30, 0, 365);
+  const trialDays = num(edit.trial, v?.trialDays ?? 14, 0, 90);
+  const discount = num(edit.discount, v?.verifiedDiscountPercent ?? 0, 0, 90);
+  const threshold = num(edit.threshold, v?.womenThreshold ?? 200, 1, 1_000_000);
+  const dirty = Object.keys(edit).length > 0;
   const save = useMutation({
-    mutationFn: (enabled: boolean) => put<AccessView>('/admin/access', { enabled, graceDays }),
-    onSuccess: (r) => { toast('success', t(r.enabled ? 'admin.access.nowOn' : 'admin.access.nowOff')); setConfirm(false); setGrace(null); void qc.invalidateQueries({ queryKey: ['admin', 'access'] }); void qc.invalidateQueries({ queryKey: ['me'] }); },
+    mutationFn: (enabled: boolean) => put<AccessView>('/admin/access', { enabled, graceDays, trialDays, verifiedDiscountPercent: discount, womenThreshold: threshold }),
+    onSuccess: (r) => { toast('success', t(r.enabled ? 'admin.access.nowOn' : 'admin.access.nowOff')); setConfirm(false); setEdit({}); void qc.invalidateQueries({ queryKey: ['admin', 'access'] }); void qc.invalidateQueries({ queryKey: ['me'] }); },
     onError: (e) => { toast('error', err(e)); setConfirm(false); },
   });
   const fmt = (d: string) => formatDate(d, locale, { day: 'numeric', month: 'long', year: 'numeric' });
@@ -44,14 +49,27 @@ export default function AdminAccess() {
               <Badge tone={v.enabled ? 'success' : 'neutral'}>{t(v.enabled ? 'admin.access.badgeOn' : 'admin.access.badgeOff')}</Badge>
             </div>
             {!v.ready && <Alert variant="text">{t(v.notReadyReason === 'PAYMENTS_OFF' ? 'admin.access.notReadyFlag' : 'admin.access.notReadyProvider')}</Alert>}
-            <div className="flex flex-wrap items-end gap-4">
-              <Field label={t('admin.access.grace')} hint={t('admin.access.graceHint')}>{(p) => <Input {...p} type="number" min={0} max={365} className="w-32" value={grace ?? String(v.graceDays)} onChange={(e) => setGrace(e.target.value)} />}</Field>
-              <label className="flex items-center gap-3 pb-2 text-sm font-semibold">{t('admin.access.switch')}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Field label={t('admin.access.trial')} hint={t('admin.access.trialHint')}>{(p) => <Input {...p} type="number" min={0} max={90} value={edit.trial ?? String(v.trialDays)} onChange={(e) => setEdit({ ...edit, trial: e.target.value })} />}</Field>
+              <Field label={t('admin.access.grace')} hint={t('admin.access.graceHint')}>{(p) => <Input {...p} type="number" min={0} max={365} value={edit.grace ?? String(v.graceDays)} onChange={(e) => setEdit({ ...edit, grace: e.target.value })} />}</Field>
+              <Field label={t('admin.access.discount')} hint={t('admin.access.discountHint')}>{(p) => <Input {...p} type="number" min={0} max={90} value={edit.discount ?? String(v.verifiedDiscountPercent)} onChange={(e) => setEdit({ ...edit, discount: e.target.value })} />}</Field>
+              <Field label={t('admin.access.threshold')} hint={t('admin.access.thresholdHint')}>{(p) => <Input {...p} type="number" min={1} value={edit.threshold ?? String(v.womenThreshold)} onChange={(e) => setEdit({ ...edit, threshold: e.target.value })} />}</Field>
+            </div>
+            <div className="flex flex-wrap items-center gap-4">
+              <label className="flex items-center gap-3 text-sm font-semibold">{t('admin.access.switch')}
                 <Switch checked={v.enabled} disabled={save.isPending || (!v.enabled && !v.ready)} label={t('admin.access.switch')} onChange={(on) => (on ? setConfirm(true) : save.mutate(false))} />
               </label>
-              {v.enabled && (grace !== null && graceDays !== v.graceDays) && <Button size="sm" variant="outline" loading={save.isPending} onClick={() => save.mutate(true)}>{t('admin.access.saveGrace')}</Button>}
+              {dirty && <Button size="sm" variant="outline" loading={save.isPending} onClick={() => save.mutate(v.enabled)}>{t('admin.access.saveSettings')}</Button>}
             </div>
             {v.enabled && v.graceEndsAt && <p className="text-sm text-muted">{t('admin.access.graceEnds', { date: fmt(v.graceEndsAt) })}</p>}
+          </Card>
+
+          <Card className="space-y-3 p-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-2"><h3 className="font-semibold">{t('admin.access.womenTitle')}</h3>
+              <p className="font-display text-2xl font-extrabold">{v.women.count} <span className="text-base font-semibold text-muted">/ {v.women.threshold}</span></p></div>
+            <div className="h-2 overflow-hidden rounded-full bg-line"><div className="h-full rounded-full bg-linear-to-r from-brand-2 to-brand-strong" style={{ width: `${Math.min(100, (v.women.count / Math.max(1, v.women.threshold)) * 100)}%` }} /></div>
+            <p className="text-sm text-muted">{t(v.women.reached ? 'admin.access.womenReached' : 'admin.access.womenText')}{v.women.notifiedAt ? ` ${t('admin.access.womenNotified', { date: fmt(v.women.notifiedAt) })}` : ''}</p>
+            {v.women.cities.length > 0 && <ul className="flex flex-wrap gap-2 text-sm">{v.women.cities.map((c) => <li key={`${c.city}-${c.country}`} className="rounded-full bg-soft px-3 py-1 text-brand-ink">{c.city ?? '—'}{c.country ? `, ${c.country}` : ''} · {c.count}</li>)}</ul>}
           </Card>
 
           <Card className="grid gap-4 p-5 sm:grid-cols-3">
@@ -68,7 +86,7 @@ export default function AdminAccess() {
       )}
       <Dialog open={confirm} onClose={() => setConfirm(false)} title={t('admin.access.confirmTitle')} closeLabel={t('common.close')}>
         <div className="space-y-4">
-          <p className="text-sm">{t('admin.access.confirmText', { days: graceDays })}</p>
+          <p className="text-sm">{t('admin.access.confirmText', { days: graceDays, trial: trialDays })}</p>
           <div className="flex justify-end gap-2"><Button variant="ghost" onClick={() => setConfirm(false)}>{t('common.cancel')}</Button><Button onClick={() => save.mutate(true)} loading={save.isPending}>{t('admin.access.confirm')}</Button></div>
         </div>
       </Dialog>

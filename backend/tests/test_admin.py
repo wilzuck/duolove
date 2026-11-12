@@ -24,7 +24,7 @@ async def test_vue_d_ensemble_et_listes(app, db):
     for _ in range(2):  # un curseur n'existe que s'il reste des lignes après 2 : il faut 3 abonnements, sans dépendre de données déjà présentes (base vide en CI)
         await buy(await member(app, db), {"type": "subscription", "plan": "PREMIUM", "months": 1})
     o = (await ad.agent.get("/api/admin/overview")).json()
-    for k in ("users", "signups7", "revenueXof", "conversionRate", "retentionD7", "planDistribution", "recentSignups", "signupsPerDay", "topCountries", "refundedXof"):
+    for k in ("users", "signups7", "revenueXof", "conversionRate", "retentionD7", "planDistribution", "recentSignups", "signupsPerDay", "topCountries"):
         assert k in o
     assert o["revenueXof"] >= 2500 and o["users"] >= 2
     subs = (await ad.agent.get("/api/admin/subscriptions?limit=2")).json()
@@ -32,7 +32,7 @@ async def test_vue_d_ensemble_et_listes(app, db):
     page2 = (await ad.agent.get(f"/api/admin/subscriptions?limit=2&cursor={subs['nextCursor']}")).json()
     assert {i["id"] for i in subs["items"]}.isdisjoint({i["id"] for i in page2["items"]})
     pays = (await ad.agent.get("/api/admin/payments?limit=5")).json()["items"]
-    assert pays and {"id", "amountXof", "status", "provider", "invoiceNumber", "refund"} <= set(pays[0])
+    assert pays and {"id", "amountXof", "status", "provider", "invoiceNumber"} <= set(pays[0])
     assert (await ad.agent.post("/api/admin/jobs/expire-subscriptions")).json().keys() >= {"expired", "expiredStale", "reminded"}
 
 
@@ -115,7 +115,7 @@ async def test_summary_counts_by_section_and_hides_money_from_moderators(app, db
     await set_role(mod.id, "MODERATOR")
     a = (await ad.agent.get("/api/admin/summary")).json()
     assert a["users"]["total"] >= 2 and a["users"].get("ACTIVE", 0) >= 2
-    assert {"payments", "subscriptions", "refunds", "contact", "reports"} <= set(a) and "revenue30" in a["payments"]
+    assert {"payments", "subscriptions", "contact", "reports"} <= set(a) and "revenue30" in a["payments"]
     m = (await mod.agent.get("/api/admin/summary")).json()
     assert set(m) == {"users", "reports"}  # pas de chiffres financiers pour un modérateur
 

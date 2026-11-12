@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Button, Card, Skeleton } from '@duomatch/ui';
 import { FeatureOffDialog } from '@/components/app/FeatureOffDialog';
 import { PromoCard, type AppliedPromo } from '@/components/app/PromoCard';
+import { VerifiedDiscountCard } from '@/components/app/VerifiedDiscountCard';
 import { PricingTable } from '@/components/marketing/PricingTable';
 import { usePay } from '@/hooks/usePay';
 import { useMe, useSubscription } from '@/hooks/useQueries';
@@ -40,6 +41,7 @@ export default function AccessPage() {
           <p className="text-sm text-muted">{t('access.profileReady', { n: me.profile?.completeness ?? 0 })}</p>
         </Card>
       )}
+      <VerifiedDiscountCard />
       <div className="mx-auto max-w-md"><PromoCard applied={promo} onApply={setPromo} /></div>
       <PricingTable hideFree current={sub.plan} action={(p, months) => (
         <Button size="lg" className="w-full" variant={p.featured ? 'primary' : 'dark'} loading={pending && variables?.key === `${p.code}-${months}`}

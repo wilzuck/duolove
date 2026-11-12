@@ -55,9 +55,5 @@ class KkiapayConfirm(BaseModel):
     transactionId: Annotated[str, StringConstraints(pattern=r"^[A-Za-z0-9_-]{4,64}$")]
 
 
-class RefundRequest(BaseModel):
-    reason: Annotated[str, StringConstraints(strip_whitespace=True, min_length=5, max_length=500)]
-
-
 class SimulateOutcome(BaseModel):
     outcome: Literal["success", "fail"]

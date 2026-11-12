@@ -14,6 +14,12 @@ from app.models.models import Profile, User
 router = APIRouter(prefix="/access", tags=["access"])
 
 
+@router.get("/discount")
+async def discount(u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    """Réduction « profil vérifié » : pourcentage, droit du membre, et ce qu'il lui manque (vérification, photos validées)."""
+    return await access.verified_discount(db, u.id)
+
+
 @router.get("/preview")
 async def preview(u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
     """État d'accès + aperçu chiffré : nombre de profils actifs dans ma ville et mon pays, et ceux vus cette semaine. Des nombres seulement."""

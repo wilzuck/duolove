@@ -2,14 +2,14 @@
 from fastapi import APIRouter, Depends, Header, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import payments, plan_config, promo, refunds
+from app.core import payments, plan_config, promo
 from app.core.auth import AuthUser, current_user, verified_user
 from app.core.errors import bad_request
 from app.core.flags import require_flag
 from app.core.ratelimit import limit
 from app.db.session import get_db
 from app.schemas.payments import (
-    Checkout, KkiapayConfirm, LegacyCheckout, PromoPreview, PromoRedeem, RefundRequest, SimulateOutcome, SubscriptionCheckout,
+    Checkout, KkiapayConfirm, LegacyCheckout, PromoPreview, PromoRedeem, SimulateOutcome, SubscriptionCheckout,
 )
 
 router = APIRouter(tags=["subscriptions"])
@@ -85,16 +85,24 @@ async def history(u: AuthUser = Depends(current_user), db: AsyncSession = Depend
     return await payments.history(db, u.id)
 
 
-@router.post("/payments/{payment_id}/refund-request", status_code=201, dependencies=[limit(5, 3600)])
-async def refund_request(payment_id: str, body: RefundRequest, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
-    """Demande de remboursement d'un membre (dans le délai) ; un administrateur la traite."""
-    r = await refunds.request_by_user(db, u.id, payment_id, body.reason)
-    return {"id": r.id, "status": payments.ev(r.status)}
-
-
 @router.get("/payments/{payment_id}/invoice")
 async def invoice(payment_id: str, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
     return await payments.invoice(db, u.id, payment_id)
+
+
+@router.get("/payments/{payment_id}/invoice.pdf")
+async def invoice_pdf(payment_id: str, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    """Facture PDF téléchargeable (réservée à son titulaire)."""
+    import asyncio
+
+    from fastapi.responses import Response
+
+    from app.core import invoicing
+
+    d = await payments.invoice(db, u.id, payment_id)
+    fmt = lambda x: x.strftime("%d/%m/%Y") if x else ""  # noqa: E731
+    pdf = await asyncio.to_thread(invoicing.render_pdf, {**d, "issuedAt": fmt(d["issuedAt"]), "paidAt": fmt(d["paidAt"])})
+    return Response(content=pdf, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="Facture-{d["number"]}.pdf"', "Cache-Control": "private, no-store"})
 
 
 @router.post("/payments/webhook/{provider}")

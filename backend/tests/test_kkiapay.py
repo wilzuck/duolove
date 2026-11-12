@@ -27,14 +27,11 @@ def kk_env():
 
 @pytest.fixture
 def fake(monkeypatch):
-    state = {"revert_status": 200, "reverts": [], "txs": {}}
+    state = {"txs": {}}
 
     async def post_json(url, headers, body, timeout):
         # Comme le SDK officiel KKiaPay : clé publique dans x-api-key, clé privée dans x-private-key, secret dans x-secret-key.
         assert headers["x-api-key"] == "pk_test_fake" and headers["x-private-key"] == "private_fake" and headers["x-secret-key"] == "secret_fake"
-        if url == "https://api-sandbox.kkiapay.me/api/v1/transactions/revert":
-            state["reverts"].append(body["transactionId"])
-            return state["revert_status"], {}
         assert url == "https://api-sandbox.kkiapay.me/api/v1/transactions/status"
         tx = state["txs"].get(body["transactionId"])
         return (200, tx) if tx else (404, {})
@@ -132,52 +129,34 @@ async def test_simulation_inactive_avec_kkiapay(app, db, fake):
     assert (await a.agent.post("/api/payments/mock/mock_x/complete", json={"outcome": "success"})).status_code == 404
 
 
-async def _paid(app, db, fake):
-    a = await member(app, db)
+async def test_facture_pdf_titulaire_seulement_et_numerotation_continue(app, db, fake):
+    from app.models.models import Invoice
+
+    a, b = await member(app, db), await member(app, db)
     widget = (await a.agent.post("/api/subscriptions/checkout", json={"plan": "PREMIUM"})).json()["widget"]
-    tx = f"TX_RF_{RUN}_{secrets.token_hex(2)}"
+    tx = f"TX_INV_{RUN}"
     fake["txs"][tx] = {"status": "SUCCESS", "amount": 2500}
     await confirm(a, widget, tx)
+    pid = (await a.agent.get("/api/payments")).json()[0]["id"]
+    r = await a.agent.get(f"/api/payments/{pid}/invoice.pdf")
+    assert r.status_code == 200 and r.headers["content-type"] == "application/pdf" and r.content.startswith(b"%PDF")
+    assert "attachment" in r.headers["content-disposition"] and "Facture-CD-" in r.headers["content-disposition"]
+    assert (await b.agent.get(f"/api/payments/{pid}/invoice.pdf")).status_code == 404  # pas la facture d'un autre membre
+    data = (await a.agent.get(f"/api/payments/{pid}/invoice")).json()
+    assert data["totals"]["total"] == 2500 and data["seller"]["legalName"] and data["lines"][0]["quantity"] == 1
     async with session_maker()() as s:
-        pid = (await s.execute(select(Payment.id).where(Payment.userId == a.id, Payment.status == "SUCCEEDED"))).scalar_one()
-    ad = await member(app, db, gender="MAN")
-    await set_role(ad.id, "ADMIN")
-    req = await a.agent.post(f"/api/payments/{pid}/refund-request", json={"reason": "Demande de test remboursement"})
-    return a, tx, pid, req.json()["id"], ad
+        nums = sorted((await s.execute(select(Invoice.number).where(Invoice.number.like("CD-%")))).scalars().all())
+    assert len(nums) == len(set(nums))  # numéros uniques
 
 
-async def _status(pid):
-    async with session_maker()() as s:
-        return (await s.get(Payment, pid)).status.value
+async def test_facture_remise_et_tva_et_reglages(app, db, fake):
+    from app.core import invoicing
 
-
-async def test_remboursement_appelle_kkiapay_puis_retire_les_droits(app, db, fake):
-    a, tx, pid, rid, ad = await _paid(app, db, fake)
-    assert await plan_of(a) == "PREMIUM"
-    r = await ad.agent.post(f"/api/admin/refunds/{rid}/approve", json={})
-    assert r.json()["status"] == "COMPLETED"
-    assert tx in fake["reverts"]
-    assert await _status(pid) == "REFUNDED"
-    assert await plan_of(a) == "FREE"
-
-
-async def test_si_kkiapay_refuse_demande_en_echec_droits_intacts(app, db, fake):
-    from app.models.models import Refund
-
-    a, tx, pid, rid, ad = await _paid(app, db, fake)
-    fake["revert_status"] = 500
-    r = await ad.agent.post(f"/api/admin/refunds/{rid}/approve", json={})
-    assert r.json()["status"] == "FAILED" and "refusé" in r.json()["failureReason"]
-    assert await _status(pid) == "SUCCEEDED"
-    assert await plan_of(a) == "PREMIUM"
-    async with session_maker()() as s:
-        assert (await s.get(Refund, rid)).status.value == "FAILED"
-
-
-async def test_remboursement_manuel_sans_appel_fournisseur(app, db, fake):
-    a, tx, pid, rid, ad = await _paid(app, db, fake)
-    before = len(fake["reverts"])
-    r = await ad.agent.post(f"/api/admin/refunds/{rid}/approve", json={"manual": True, "note": "Remboursé depuis le tableau de bord KKiaPay"})
-    assert r.json()["status"] == "COMPLETED"
-    assert len(fake["reverts"]) == before and tx not in fake["reverts"]
-    assert await _status(pid) == "REFUNDED"
+    t = invoicing.totals(1250, 1250, 0)
+    assert t == {"gross": 2500, "discount": 1250, "ht": 1250, "vat": 0, "vatPercent": 0, "total": 1250}
+    v = invoicing.totals(1180, 0, 18)
+    assert v["ht"] + v["vat"] == 1180 and v["vat"] == 180
+    pdf = invoicing.render_pdf({"number": "CD-2026-000001", "issuedAt": "12/11/2026", "paidAt": "12/11/2026", "seller": {"legalName": "Crushduo", "address": "", "city": "Cotonou", "country": "Bénin", "registration": "", "email": "", "phone": "", "website": "https://crushduo.com", "footerNote": "Merci de votre confiance."},
+                                "customer": {"name": "Awa Dossou", "email": "awa@example.com", "memberId": "AB12CD34"}, "lines": [{"description": "Abonnement Crushduo Premium · 1 mois", "quantity": 1, "unitXof": 2500, "totalXof": 2500}],
+                                "totals": invoicing.totals(1250, 1250, 0), "discountLabel": "Réduction profil vérifié", "payment": {"method": "Paiement en ligne via KKiaPay", "reference": "tx_123"}})
+    assert pdf.startswith(b"%PDF") and len(pdf) > 2000

@@ -58,7 +58,7 @@ export interface SubscriptionState {
   plan: PlanCode; validUntil: string | null; limits: Limits; credits: Record<CreditType, number>;
   subscription: { id: string; plan: PlanCode; status: string; cancelAtPeriodEnd: boolean; currentPeriodEnd: string | null } | null;
 }
-export interface PaymentItem { refundable: boolean; refund: string | null; id: string; kind: 'SUBSCRIPTION' | 'PRODUCT'; months: number; product: string | null; amountXof: number; currency: string; status: string; provider: string; plan: PlanCode | null; createdAt: string; paidAt: string | null; invoiceNumber: string | null }
+export interface PaymentItem { id: string; kind: 'SUBSCRIPTION' | 'PRODUCT'; months: number; product: string | null; amountXof: number; currency: string; status: string; provider: string; plan: PlanCode | null; createdAt: string; paidAt: string | null; invoiceNumber: string | null }
 
 export interface LiveAccepted extends Card { inviteId: string; status: 'ACCEPTED' | 'CHOSEN'; conversationId: string | null; liked: boolean; expiresAt: string }
 export interface LiveState {

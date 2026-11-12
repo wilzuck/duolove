@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
-from app.core import backups, storage, broadcastsvc, callsvc, dailyqsvc, speedsvc, datesvc, icebreakers, maintenance, jsonfmt, mail, payments, plan_config, promptsvc, realtime
+from app.core import access, backups, storage, broadcastsvc, callsvc, dailyqsvc, speedsvc, datesvc, icebreakers, maintenance, jsonfmt, mail, payments, plan_config, promptsvc, realtime
 from app.core.config import get_settings
 from app.core.errors import install_error_handlers
 from app.core.ratelimit import global_limit
@@ -25,7 +25,7 @@ jsonfmt.install()
 # Routeurs (un module par domaine) : chacun expose `router`.
 ROUTERS = [
     "auth", "users", "profiles", "media", "discovery", "swipes", "matches", "chat", "subscriptions", "boosts",
-    "live", "referral", "reports", "notifications", "admin", "admin_blog", "blog", "engagement", "admin_engagement", "dates", "calls", "speed", "contact", "newsletter", "places", "ses_webhook", "installs", "social", "admin_backups", "admin_broadcasts", "admin_payment_config", "access", "admin_access",
+    "live", "referral", "reports", "notifications", "admin", "admin_blog", "blog", "engagement", "admin_engagement", "dates", "calls", "speed", "contact", "newsletter", "places", "ses_webhook", "installs", "social", "admin_backups", "admin_broadcasts", "admin_payment_config", "access", "admin_access", "admin_billing",
 ]
 
 
@@ -69,10 +69,11 @@ async def lifespan(_: FastAPI):
     calls_task = None if get_settings().node_env == "test" else asyncio.create_task(callsvc.sweep_loop(session_maker()))
     speed_task = None if get_settings().node_env == "test" else asyncio.create_task(speedsvc.sweep_loop(session_maker()))
     broadcast_task = None if get_settings().node_env == "test" else asyncio.create_task(broadcastsvc.sweep_loop(session_maker()))
+    threshold_task = None if get_settings().node_env == "test" else asyncio.create_task(access.threshold_loop())
     migrate_task = None if get_settings().node_env == "test" else asyncio.create_task(storage.auto_migrate_loop())
     backup_task = None if get_settings().node_env == "test" else asyncio.create_task(backups.first_backup_loop())
     yield
-    for tk in (task, dates_task, purge_task, calls_task, speed_task, broadcast_task, migrate_task, backup_task):
+    for tk in (task, dates_task, purge_task, calls_task, speed_task, broadcast_task, migrate_task, backup_task, threshold_task):
         if tk:
             tk.cancel()
     await dispose()

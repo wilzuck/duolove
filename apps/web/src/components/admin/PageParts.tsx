@@ -6,7 +6,7 @@ import { api } from '@/lib/api';
 
 export interface Summary {
   users: Record<string, number>; reports: Record<string, number>;
-  payments?: Record<string, number>; subscriptions?: Record<string, number>; refunds?: Record<string, number>; contact?: Record<string, number>;
+  payments?: Record<string, number>; subscriptions?: Record<string, number>; contact?: Record<string, number>;
 }
 
 /** Compteurs par section (indicateurs et onglets) ; rafraîchis chaque minute et après toute action d'administration. */

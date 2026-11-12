@@ -9,17 +9,20 @@ import datetime
 import time
 from dataclasses import dataclass
 
-from sqlalchemy import select
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import entitlements, flags, payment_config
+from app.core import entitlements, flags, mail, payment_config
 from app.core.config import get_settings
 from app.core.ids import utcnow
-from app.models.models import SystemSetting, User
+from app.models.models import Profile, ProfilePhoto, SystemSetting, User
 
 KEY = "access.config"
 TTL = 30.0
 DEFAULT_GRACE_DAYS = 30
+DEFAULT_TRIAL_DAYS = 14
+DEFAULT_WOMEN_THRESHOLD = 200
+MIN_APPROVED_PHOTOS = 2  # photos validées par la modération pour la réduction « profil vérifié »
 # Chemins qui restent ouverts à un membre bloqué : compte, profil à soi, paiement, notifications, parrainage, pages publiques.
 ALLOWED_PREFIXES = ("/api/auth", "/api/users", "/api/profiles/me", "/api/subscriptions", "/api/checkout", "/api/payments", "/api/plans", "/api/access",
                     "/api/notifications", "/api/referral", "/api/places", "/api/installs", "/api/contact", "/api/blog")
@@ -29,7 +32,11 @@ ALLOWED_PREFIXES = ("/api/auth", "/api/users", "/api/profiles/me", "/api/subscri
 class Config:
     enabled: bool = False
     activated_at: datetime.datetime | None = None
-    grace_days: int = DEFAULT_GRACE_DAYS
+    grace_days: int = DEFAULT_GRACE_DAYS          # anciens membres (inscrits avant l'activation)
+    trial_days: int = DEFAULT_TRIAL_DAYS          # essai gratuit de chaque nouvel inscrit, à partir de son inscription
+    verified_discount_percent: int = 0            # réduction à l'abonnement pour un profil vérifié avec photos validées (0 = aucune)
+    women_threshold: int = DEFAULT_WOMEN_THRESHOLD  # nombre de femmes actives et vérifiées qui déclenche l'alerte « on peut passer au payant »
+    threshold_notified_at: datetime.datetime | None = None
 
 
 _cache: dict = {"at": 0.0, "cfg": None}
@@ -46,9 +53,11 @@ def path_allowed(path: str) -> bool:
 def _parse(v: dict | None) -> Config:
     if not isinstance(v, dict):
         return Config()
-    at = v.get("activatedAt")
+    at, notified = v.get("activatedAt"), v.get("thresholdNotifiedAt")
     return Config(enabled=bool(v.get("enabled")), activated_at=datetime.datetime.fromisoformat(at) if at else None,
-                  grace_days=int(v.get("graceDays", DEFAULT_GRACE_DAYS)))
+                  grace_days=int(v.get("graceDays", DEFAULT_GRACE_DAYS)), trial_days=int(v.get("trialDays", DEFAULT_TRIAL_DAYS)),
+                  verified_discount_percent=int(v.get("verifiedDiscountPercent", 0)), women_threshold=int(v.get("womenThreshold", DEFAULT_WOMEN_THRESHOLD)),
+                  threshold_notified_at=datetime.datetime.fromisoformat(notified) if notified else None)
 
 
 async def load(db: AsyncSession) -> Config:
@@ -88,10 +97,78 @@ async def status(db: AsyncSession, user: User, cfg: Config | None = None) -> dic
     out["required"] = True
     if (await entitlements.get(db, user.id))["plan"] != "FREE":
         return out  # formule payante en cours
+    # Fin de l'accès offert : anciens membres = activation + délai de grâce ; nouveaux inscrits = inscription + essai gratuit.
     if cfg.activated_at and user.createdAt < cfg.activated_at:
         end = cfg.activated_at + datetime.timedelta(days=cfg.grace_days)
-        if utcnow() < end:
-            out["graceEndsAt"] = end
-            return out
+    else:
+        end = user.createdAt + datetime.timedelta(days=cfg.trial_days)
+    if utcnow() < end:
+        out["graceEndsAt"] = end
+        return out
     out["locked"] = True
     return out
+
+
+async def verified_discount(db: AsyncSession, user_id: str, cfg: Config | None = None) -> dict:
+    """Réduction « profil vérifié » : badge obtenu (selfie validé) ET au moins 2 photos approuvées par la modération. Ouverte à tous, sans condition de sexe.
+    Renvoie ce qu'il manque pour l'obtenir, afin que l'écran puisse le dire au membre."""
+    cfg = cfg or await config()
+    pct = cfg.verified_discount_percent
+    p = (await db.execute(select(Profile).where(Profile.userId == user_id))).scalar_one_or_none()
+    photos = (await db.execute(select(func.count()).select_from(ProfilePhoto).where(ProfilePhoto.profileId == p.id, ProfilePhoto.moderationStatus == "APPROVED"))).scalar_one() if p else 0
+    verified = bool(p and p.verified)
+    return {"percent": pct, "eligible": pct > 0 and verified and photos >= MIN_APPROVED_PHOTOS, "verified": verified, "approvedPhotos": photos, "photosNeeded": MIN_APPROVED_PHOTOS}
+
+
+async def discount_xof(db: AsyncSession, user_id: str, amount_xof: int) -> int:
+    d = await verified_discount(db, user_id)
+    return amount_xof * d["percent"] // 100 if d["eligible"] else 0
+
+
+async def women_progress(db: AsyncSession, cfg: Config | None = None) -> dict:
+    """Femmes actives (connectées depuis 14 jours), au profil complet et vérifié : le chiffre du seuil, et les villes qui en comptent le plus."""
+    cfg = cfg or await config()
+    since = utcnow() - datetime.timedelta(days=14)
+    where = (User.status == "ACTIVE", User.role == "USER", User.lastActiveAt >= since, Profile.gender == "WOMAN", Profile.verified.is_(True), Profile.onboardedAt.is_not(None))
+    base = select(Profile.city, Profile.country, func.count().label("n")).join(User, User.id == Profile.userId).where(*where).group_by(Profile.city, Profile.country)
+    rows = (await db.execute(base.order_by(func.count().desc()).limit(5))).all()
+    total = (await db.execute(select(func.count()).select_from(Profile).join(User, User.id == Profile.userId).where(*where))).scalar_one()
+    return {"count": total, "threshold": cfg.women_threshold, "reached": total >= cfg.women_threshold, "notifiedAt": cfg.threshold_notified_at,
+            "cities": [{"city": r.city, "country": r.country, "count": r.n} for r in rows]}
+
+
+async def check_threshold() -> bool:
+    """Une seule alerte par seuil : quand le nombre de femmes actives et vérifiées atteint le seuil, prévient les administrateurs (jamais de bascule automatique)."""
+    from app.db.session import session_maker
+
+    async with session_maker()() as db:
+        cfg = await load(db)
+        if cfg.threshold_notified_at:
+            return False
+        prog = await women_progress(db, cfg)
+        if not prog["reached"]:
+            return False
+        value = ((await db.execute(select(SystemSetting.value).where(SystemSetting.key == KEY))).scalar_one_or_none() or {})
+        await db.execute(update(SystemSetting).where(SystemSetting.key == KEY).values(value={**value, "thresholdNotifiedAt": utcnow().isoformat()}))
+        await db.commit()
+        invalidate()
+        to = list((await db.execute(select(User.email).where(User.role.in_(["ADMIN", "SUPER_ADMIN"]), User.status == "ACTIVE"))).scalars())
+    for addr in to:
+        await mail.send(addr, "Crushduo : le seuil de femmes est atteint",
+                        f"{prog['count']} femmes actives et vérifiées (seuil : {prog['threshold']}).\n\nVous pouvez maintenant décider de passer à l'accès payant : Administration › Accès payant.\n"
+                        "Rien n'est modifié automatiquement.", kind="other")
+    return True
+
+
+async def threshold_loop(interval: float = 3600.0) -> None:
+    import asyncio
+
+    await asyncio.sleep(120)
+    while True:
+        try:
+            await check_threshold()
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001 — base ou e-mail indisponible : nouvel essai à l'heure suivante
+            pass
+        await asyncio.sleep(interval)

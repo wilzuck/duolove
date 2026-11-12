@@ -67,26 +67,11 @@ async def verify_transaction(cfg: Effective, transaction_id: str) -> KkiapayTran
                               str(j["source"]).lower() if j.get("source") else None)
 
 
-async def revert_transaction(cfg: Effective, transaction_id: str) -> None:
-    """Annule (rembourse) une transaction chez KKiaPay. Lève une exception si KKiaPay refuse ou est injoignable."""
-    status, _ = await post_json(f"{_base(cfg)}/api/v1/transactions/revert", auth_headers(cfg), {"transactionId": transaction_id}, 15)
-    if not 200 <= status < 300:
-        raise RuntimeError(f"KKiaPay a refusé le remboursement ({status})")
-
-
 class KkiapayProvider:
     name = "kkiapay"
 
     def __init__(self, cfg: Effective):
         self.cfg = cfg
-
-    async def refund(self, provider_ref: str, amount_xof: int) -> dict:
-        # providerRef devient `tx_<id>` une fois la transaction confirmée.
-        tx = provider_ref[3:] if provider_ref.startswith("tx_") else None
-        if not tx:
-            raise RuntimeError("Transaction KKiaPay inconnue : remboursement manuel requis")
-        await revert_transaction(self.cfg, tx)
-        return {}
 
     async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None) -> dict:
         # Un même compte KKiaPay peut servir plusieurs applications (ex. WaMarket) : tout ce qui part de Crushduo est marqué, côté KKiaPay, par la

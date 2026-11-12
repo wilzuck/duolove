@@ -52,23 +52,6 @@ async def consume(db: AsyncSession, user_id: str, type_: str, qty: int, ref_id: 
     return True
 
 
-async def reverse(db: AsyncSession, user_id: str, type_: str, qty: int, ref_id: str) -> int:
-    """Retire des crédits suite à un remboursement : au plus ce qui reste. Retourne la quantité retirée."""
-    bal = (await db.execute(select(CreditWallet.balance).where(CreditWallet.userId == user_id, CreditWallet.type == type_))).scalar_one_or_none() or 0
-    x = min(bal, qty)
-    if x <= 0:
-        return 0
-    if not await _journal(db, user_id, type_, -x, "REFUND", ref_id):
-        return 0
-    res = await db.execute(
-        update(CreditWallet).where(CreditWallet.userId == user_id, CreditWallet.type == type_, CreditWallet.balance >= x)
-        .values(balance=CreditWallet.balance - x, updatedAt=utcnow())
-    )
-    if res.rowcount == 0:
-        raise AppError(409, "CREDITS_CHANGED", "Solde modifié pendant le remboursement")
-    return x
-
-
 async def history(db: AsyncSession, user_id: str, take: int = 50):
     q = select(CreditTransaction).where(CreditTransaction.userId == user_id).order_by(CreditTransaction.createdAt.desc()).limit(take)
     return (await db.execute(q)).scalars().all()

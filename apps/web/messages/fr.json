@@ -422,9 +422,9 @@
         "subject": "Compte et connexion"
       },
       "billing": {
-        "h": "Un paiement ou un remboursement",
+        "h": "Un paiement ou une facture",
         "p": "Abonnement, facture, double paiement.",
-        "subject": "Paiement ou remboursement"
+        "subject": "Paiement ou facture"
       },
       "safety": {
         "h": "Sécurité ou signalement",
@@ -619,7 +619,7 @@
         },
         {
           "q": "Puis-je être remboursé(e) ?",
-          "a": "Écrivez-nous depuis la page Contact avec la référence du paiement : chaque demande est examinée, notamment en cas de double paiement ou d’erreur."
+          "a": "Non : les abonnements et les achats ne sont pas remboursables. Vous pouvez annuler à tout moment pour ne pas prolonger, et vous gardez vos avantages jusqu'à la fin de la période payée. En cas de double paiement ou d'erreur technique avérée, écrivez-nous avec la référence du paiement."
         },
         {
           "q": "Mes boosts et Super Likes expirent-ils ?",
@@ -764,8 +764,8 @@
           "id": "paiements",
           "h": "Paiements, factures et remboursements",
           "paras": [
-            "Les paiements sont traités par un prestataire sécurisé (Mobile Money selon le pays, carte bancaire) ; nous ne conservons aucune donnée bancaire. Un avantage n’est activé qu’une fois le paiement confirmé, et une facture est disponible dans Paramètres → Paiements.",
-            "Pour une demande de remboursement (double paiement, erreur…), écrivez-nous avec la référence du paiement : chaque demande est examinée."
+            "Les paiements sont traités par un prestataire sécurisé (Mobile Money selon le pays, carte bancaire) ; nous ne conservons aucune donnée bancaire. Un avantage n’est activé qu’une fois le paiement confirmé, et une facture PDF est téléchargeable dans Paramètres → Paiements.",
+            "Les abonnements et les achats ne sont pas remboursables. En cas de double paiement ou d'erreur technique avérée, écrivez-nous avec la référence du paiement : chaque demande est examinée."
           ]
         },
         {
@@ -1533,9 +1533,6 @@
     "PRICE_NOT_AVAILABLE": "Cette durée n’est pas proposée.",
     "PRODUCT_NOT_FOUND": "Produit introuvable.",
     "FREE_PLAN_LOCKED": "La formule gratuite ne peut pas être payante.",
-    "REFUND_EXISTS": "Un remboursement existe déjà pour ce paiement.",
-    "NOT_REFUNDABLE": "Ce paiement ne peut pas être remboursé.",
-    "REFUND_WINDOW_EXPIRED": "Le délai de demande de remboursement est dépassé.",
     "SELF_APPROVAL": "Un autre administrateur doit approuver cette demande.",
     "REFUND_NOT_PENDING": "Cette demande a déjà été traitée.",
     "REFUND_NOT_FOUND": "Demande introuvable.",
@@ -2110,27 +2107,14 @@
       "success": "Paiement confirmé. Votre abonnement est actif.",
       "failed": "Le paiement a échoué. Aucun montant n’a été débité et rien n’a été activé.",
       "empty": "Aucun paiement pour le moment",
-      "invoice": "Facture",
-      "invoiceTitle": "Facture {n}",
-      "print": "Imprimer",
+      "invoice": "Facture PDF",
       "status": {
         "PENDING": "En attente",
         "SUCCEEDED": "Réussi",
         "FAILED": "Échoué",
         "REFUNDED": "Remboursé"
       },
-      "askRefund": "Demander un remboursement",
-      "refundText": "Vous pouvez demander un remboursement dans les 7 jours suivant le paiement. Un administrateur examine chaque demande ; si elle est acceptée, les avantages liés au paiement sont retirés.",
-      "refundReason": "Pourquoi souhaitez-vous être remboursé(e) ?",
-      "refundSend": "Envoyer la demande",
-      "refundSent": "Demande envoyée. Nous vous répondrons rapidement.",
-      "refund": {
-        "REQUESTED": "Remboursement demandé",
-        "PROCESSING": "Remboursement en cours",
-        "COMPLETED": "Remboursé",
-        "REJECTED": "Demande rejetée",
-        "FAILED": "Remboursement en échec"
-      }
+      "invoiceDownload": "Télécharger la facture {n} (PDF)"
     }
   },
   "admin": {
@@ -2192,7 +2176,6 @@
       "payments": "Paiements",
       "flags": "Feature flags",
       "plans": "Offres et tarifs",
-      "refunds": "Remboursements",
       "promos": "Codes promo",
       "blog": "Blog",
       "engagement": "Engagement",
@@ -2207,7 +2190,8 @@
       "backups": "Sauvegardes",
       "broadcasts": "Envois",
       "payment": "Paiement en ligne",
-      "access": "Accès payant"
+      "access": "Accès payant",
+      "billing": "Facturation"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -2269,7 +2253,25 @@
     "recentTitle": "Dernières inscriptions",
     "billing": {
       "subscriptions": "Abonnements",
-      "payments": "Paiements"
+      "payments": "Paiements",
+      "title": "Facturation",
+      "subtitle": "Les informations de l'émetteur imprimées sur chaque facture PDF des membres. Ce qui n'est pas renseigné n'apparaît pas sur la facture.",
+      "saved": "Informations de facturation enregistrées.",
+      "save": "Enregistrer",
+      "f": {
+        "legalName": "Nom légal de l'entreprise",
+        "address": "Adresse",
+        "city": "Ville",
+        "country": "Pays",
+        "registration": "Immatriculation (RCCM, IFU…)",
+        "registrationHint": "Les numéros que votre pays exige sur une facture. À vérifier avec votre comptable : ils ne sont pas inventés ici.",
+        "email": "E-mail de contact",
+        "phone": "Téléphone",
+        "website": "Site web",
+        "vatPercent": "TVA (%)",
+        "vatHint": "0 = « TVA non applicable ». Sinon la TVA est extraite du prix payé (prix TTC).",
+        "footerNote": "Note en bas de facture (facultatif)"
+      }
     },
     "tabs": {
       "overview": "Vue d’ensemble",
@@ -2474,40 +2476,6 @@
       },
       "freeHint": "Désactivée, la formule gratuite n'est plus affichée sur la page des tarifs. Les membres sans abonnement gardent ses droits : c'est leur niveau de départ, il ne disparaît pas."
     },
-    "refunds": {
-      "intro": "Une demande de membre est traitée par un administrateur. Une demande créée par un administrateur exige l’approbation d’un AUTRE administrateur (double validation). Le remboursement est intégral : l’abonnement est résilié et les crédits non utilisés sont repris.",
-      "status": {
-        "REQUESTED": "À traiter",
-        "PROCESSING": "En cours",
-        "COMPLETED": "Remboursé",
-        "REJECTED": "Rejeté",
-        "FAILED": "Échec"
-      },
-      "source": {
-        "USER": "Demande du membre",
-        "ADMIN": "Demande administrateur"
-      },
-      "empty": "Aucun remboursement",
-      "note": "Note :",
-      "creditsBack": "{n} crédit(s) repris",
-      "approve": "Approuver",
-      "reject": "Rejeter",
-      "needOther": "Un autre administrateur doit approuver",
-      "approveTitle": "Approuver le remboursement",
-      "rejectTitle": "Rejeter la demande",
-      "approveText": "Le fournisseur de paiement sera sollicité pour rembourser {amount}. Les droits liés au paiement seront retirés.",
-      "rejectText": "Le membre sera informé. Indiquez le motif du rejet.",
-      "noteLabel": "Note (conservée dans le journal)",
-      "manual": "J’ai déjà remboursé hors de l’application (tableau de bord du fournisseur) : ne pas appeler le fournisseur",
-      "done": "Décision enregistrée.",
-      "failed": "Le fournisseur a refusé :",
-      "created": "Demande créée : un autre administrateur doit l’approuver.",
-      "request": "Rembourser",
-      "requestTitle": "Demander un remboursement",
-      "requestText": "Remboursement intégral du paiement de {name} ({amount}). Un autre administrateur devra l’approuver.",
-      "reasonLabel": "Motif",
-      "action": "Action"
-    },
     "promos": {
       "title": "Codes promo",
       "subtitle": "Remises en pourcentage ou jetons Crush offerts. Un code ne s’utilise qu’une fois par membre.",
@@ -2561,7 +2529,7 @@
           "name": "Paiements",
           "what": "Permet de lancer de nouveaux paiements : abonnements, jetons Crush, boosts, Super Likes.",
           "on": "Les achats fonctionnent.",
-          "off": "Aucun nouvel achat ne peut démarrer. Un paiement déjà lancé peut se terminer, et les remboursements restent possibles.",
+          "off": "Aucun nouvel achat ne peut démarrer. Un paiement déjà lancé peut se terminer.",
           "useWhen": "En cas de panne ou de maintenance du fournisseur de paiement."
         },
         "promo_codes": {
@@ -2997,7 +2965,7 @@
       "signupsTotal": "{n} inscriptions sur la période",
       "revenueSection": "Revenus",
       "revenueChart": "Chiffre d’affaires par jour",
-      "revenueTotal": "{amount} sur la période · {refunded} remboursés au total",
+      "revenueTotal": "{amount} sur la période",
       "engagement": "Engagement",
       "engagementHint": "Ce que font les membres sur la période choisie, comparé à la précédente.",
       "likes": "J’aime envoyés",
@@ -3026,9 +2994,8 @@
       "users": "Retrouvez un membre, consultez son profil et appliquez une sanction si besoin.",
       "reports": "Les signalements envoyés par les membres : examinez-les, puis résolvez ou rejetez.",
       "contact": "Les messages reçus depuis la page Contact : répondez, classez, archivez.",
-      "payments": "Tous les paiements des 30 derniers jours et la possibilité de demander un remboursement.",
+      "payments": "Tous les paiements des 30 derniers jours.",
       "subscriptions": "Les abonnements Premium et VIP, leur état et leur date de fin.",
-      "refunds": "Les demandes de remboursement à approuver ou à rejeter.",
       "audit": "Qui a fait quoi dans l’administration, avec la date : utile pour comprendre un changement.",
       "moderation": "Les selfies à vérifier, les recours des membres sanctionnés et les photos publiées.",
       "stats": "L’évolution dans le temps : membres, likes, duos, Crush, abonnements et revenus, comparés à la période précédente.",
@@ -3199,7 +3166,7 @@
         "subscriptions": "Abonnés Premium et VIP",
         "plans": "Formules, prix, fonctionnalités",
         "promos": "Codes de réduction",
-        "payments": "Paiements et remboursements",
+        "payments": "Paiements",
         "refunds": "Demandes à approuver",
         "engagement": "Matching, quotas, questions",
         "speed": "Sessions de speed dating",
@@ -3537,10 +3504,21 @@
       "how4": "Si le paiement n'est pas opérationnel (fonction coupée, ou fournisseur non configuré en production), le blocage est suspendu automatiquement.",
       "how5": "Pour proposer un pass d'entrée à petit prix, baissez le tarif de la formule Premium (Formules) et masquez la formule gratuite.",
       "confirmTitle": "Activer l'accès payant ?",
-      "confirmText": "À partir de maintenant, chaque nouvel inscrit devra prendre une formule pour entrer. Les membres déjà inscrits gardent l'accès {days} jours. Tu peux le désactiver à tout moment.",
+      "confirmText": "À partir de maintenant, chaque nouvel inscrit aura {trial} jours gratuits, puis devra prendre une formule. Les membres déjà inscrits gardent l'accès {days} jours. Tu peux le désactiver à tout moment.",
       "confirm": "Activer",
       "nowOn": "Accès payant activé.",
-      "nowOff": "Accès payant désactivé : tout le monde peut de nouveau entrer."
+      "nowOff": "Accès payant désactivé : tout le monde peut de nouveau entrer.",
+      "trial": "Essai gratuit (jours)",
+      "trialHint": "Chaque nouvel inscrit est libre pendant ce délai à partir de son inscription, puis doit prendre une formule. 0 = payant dès l'inscription.",
+      "discount": "Réduction « profil vérifié » (%)",
+      "discountHint": "Badge vérifié + 2 photos validées = ce pourcentage de moins à l'abonnement, pour tout membre. 0 = aucune. Non cumulée avec un code promo.",
+      "threshold": "Seuil de femmes actives et vérifiées",
+      "thresholdHint": "Une alerte par e-mail t'est envoyée une seule fois quand il est atteint. Rien ne bascule tout seul.",
+      "saveSettings": "Enregistrer les réglages",
+      "womenTitle": "Femmes actives et vérifiées",
+      "womenText": "Profil complet, vérifié, connectée depuis 14 jours. Villes les mieux fournies :",
+      "womenReached": "Seuil atteint : tu peux décider de passer à l'accès payant.",
+      "womenNotified": "Alerte envoyée le {date}."
     }
   },
   "pricingFaq": {
@@ -3558,7 +3536,7 @@
     },
     "refund": {
       "q": "Puis-je être remboursé ?",
-      "a": "Écrivez-nous via la page Contact avec la référence de votre paiement : chaque demande est examinée, notamment en cas de double paiement ou d’erreur."
+      "a": "Non : les abonnements et les achats ne sont pas remboursables. Vous pouvez annuler à tout moment pour ne pas prolonger, et vous gardez vos avantages jusqu'à la fin de la période payée. En cas de double paiement ou d'erreur technique avérée, écrivez-nous avec la référence du paiement."
     },
     "guarantee": {
       "q": "Premium garantit-il des duos ?",
@@ -4453,6 +4431,10 @@
     "profileReady": "Ton profil est prêt à {n} %. Il t'attend de l'autre côté.",
     "note": "Paiement ponctuel, sans renouvellement automatique. Mobile Money et carte acceptés.",
     "graceStrip": "Accès offert jusqu'au {date}, puis il faudra choisir une formule.",
-    "graceCta": "Voir les formules"
+    "graceCta": "Voir les formules",
+    "discountTitle": "−{percent} % avec un profil vérifié",
+    "discountOk": "Réduction appliquée à ton paiement : profil vérifié et photos validées.",
+    "discountTodo": "Fais vérifier ton profil (selfie) et fais valider au moins {n} photos pour obtenir cette réduction.",
+    "discountCta": "Compléter mon profil"
   }
 }

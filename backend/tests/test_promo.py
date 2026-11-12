@@ -91,19 +91,6 @@ async def test_plafond_global_respecte_sous_concurrence(app, db):
         assert len((await s.execute(select(Payment).where(Payment.promoCodeId == p["id"]))).scalars().all()) == 1
 
 
-async def test_remise_correcte_au_remboursement(app, db):
-    a = await admin(app, db)
-    p = await create_promo(a, code=new_code(), kind="PERCENT", percent=40)
-    u = await member(app, db)
-    co = await u.agent.post("/api/checkout", json={"type": "subscription", "plan": "PREMIUM", "months": 1, "promoCode": p["code"]})
-    await u.agent.post(f"/api/payments/mock/{co.json()['providerRef']}/complete", json={"outcome": "success"})
-    req = await u.agent.post(f"/api/payments/{co.json()['paymentId']}/refund-request", json={"reason": "Je change d'avis"})
-    assert (await a.agent.post(f"/api/admin/refunds/{req.json()['id']}/approve", json={})).status_code == 200
-    async with session_maker()() as s:
-        r = (await s.execute(select(Refund).where(Refund.paymentId == co.json()["paymentId"]))).scalars().first()
-        assert r.amountXof == 1500  # 2500 − 40 %
-
-
 async def test_jetons_offerts_une_fois_par_membre_et_plafond_global(app, db):
     a = await admin(app, db)
     p = await create_promo(a, code=new_code("TK"), kind="TOKENS", tokens=4, maxRedemptions=2)

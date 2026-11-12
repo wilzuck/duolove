@@ -1,10 +1,10 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, LogOut, MapPin, Monitor, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
+import { Download, FileDown, LogOut, MapPin, Monitor, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
-import { Alert, Badge, Button, Card, cn, Dialog, EmptyState, Field, Skeleton, Switch, Textarea } from '@duomatch/ui';
+import { Alert, Badge, Button, buttonVariants, Card, cn, Dialog, EmptyState, Field, Skeleton, Switch } from '@duomatch/ui';
 import { PasswordInput } from '@/components/PasswordInput';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -161,20 +161,7 @@ function PaymentsTab() {
   const t = useTranslations();
   const locale = useLocale();
   const status = useSearchParams().get('status');
-  const qc = useQueryClient();
   const q = useQuery({ queryKey: keys.payments, queryFn: () => api<PaymentItem[]>('/payments') });
-  const toastP = useUi((s) => s.toast);
-  const errP = useApiError();
-  const [refundFor, setRefundFor] = useState<PaymentItem | null>(null);
-  const [refundReason, setRefundReason] = useState('');
-  const askRefund = useMutation({
-    mutationFn: () => post(`/payments/${refundFor!.id}/refund-request`, { reason: refundReason }),
-    onSuccess: () => { toastP('success', t('settings.pay.refundSent')); setRefundFor(null); setRefundReason(''); void qc.invalidateQueries({ queryKey: keys.payments }); },
-    onError: (e) => toastP('error', errP(e)),
-  });
-  const [invoice, setInvoice] = useState<{ number: string; issuedAt: string; customer: { name: string; email: string }; description: string; amountXof: number; currency: string } | null>(null);
-  const open = useMutation({ mutationFn: (id: string) => api<NonNullable<typeof invoice>>(`/payments/${id}/invoice`), onSuccess: setInvoice });
-  void qc;
   return (
     <div className="space-y-4">
       {status === 'success' && <p role="status" className="rounded-2xl bg-success/15 p-4 text-sm font-medium">{t('settings.pay.success')}</p>}
@@ -182,19 +169,9 @@ function PaymentsTab() {
       {!q.data ? <Skeleton className="h-40" /> : q.data.length === 0 ? <EmptyState icon={<Receipt className="size-8" aria-hidden />} title={t('settings.pay.empty')} /> : (
         <Card className="divide-y divide-line px-5">{q.data.map((p) => (
           <div key={p.id} className="flex items-center justify-between gap-3 py-4"><div><p className="font-semibold">{p.kind === 'PRODUCT' ? p.product : p.plan ? `${t(`plans.${p.plan}.name`)} · ${t('plans.months', { n: p.months })}` : '—'} · {formatXof(p.amountXof, locale)}</p><p className="text-xs text-muted">{formatDate(p.createdAt, locale)} · {p.provider}</p></div>
-            <div className="flex items-center gap-2"><Badge tone={p.status === 'SUCCEEDED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'neutral'}>{t(`settings.pay.status.${p.status}`)}</Badge>{p.refund && <Badge tone={p.refund === 'COMPLETED' ? 'success' : 'gold'}>{t(`settings.pay.refund.${p.refund}`)}</Badge>}{p.invoiceNumber && <Button variant="outline" size="sm" onClick={() => open.mutate(p.id)}>{t('settings.pay.invoice')}</Button>}{p.refundable && <Button variant="ghost" size="sm" onClick={() => setRefundFor(p)}>{t('settings.pay.askRefund')}</Button>}</div></div>
+            <div className="flex items-center gap-2"><Badge tone={p.status === 'SUCCEEDED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'neutral'}>{t(`settings.pay.status.${p.status}`)}</Badge>{p.invoiceNumber && <a href={`/api/payments/${p.id}/invoice.pdf`} download className={buttonVariants({ variant: 'outline', size: 'sm' })} aria-label={t('settings.pay.invoiceDownload', { n: p.invoiceNumber })}><FileDown className="size-4" aria-hidden />{t('settings.pay.invoice')}</a>}</div></div>
         ))}</Card>
       )}
-      <Dialog open={!!refundFor} onClose={() => setRefundFor(null)} title={t('settings.pay.askRefund')} closeLabel={t('common.close')}>
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); askRefund.mutate(); }}>
-          <p className="text-sm text-muted">{t('settings.pay.refundText')}</p>
-          <Field label={t('settings.pay.refundReason')}>{(pr) => <Textarea {...pr} required minLength={5} maxLength={500} value={refundReason} onChange={(e) => setRefundReason(e.target.value)} />}</Field>
-          <div className="flex justify-end gap-2"><Button variant="ghost" onClick={() => setRefundFor(null)}>{t('common.cancel')}</Button><Button type="submit" loading={askRefund.isPending}>{t('settings.pay.refundSend')}</Button></div>
-        </form>
-      </Dialog>
-      <Dialog open={!!invoice} onClose={() => setInvoice(null)} title={invoice ? t('settings.pay.invoiceTitle', { n: invoice.number }) : ''} closeLabel={t('common.close')}>
-        {invoice && <div className="space-y-3 text-sm" id="invoice"><p>{formatDate(invoice.issuedAt, locale)}</p><p className="font-semibold">{invoice.customer.name} — {invoice.customer.email}</p><p>{invoice.description}</p><p className="text-lg font-extrabold">{formatXof(invoice.amountXof, locale)}</p><Button variant="outline" size="sm" onClick={() => window.print()}>{t('settings.pay.print')}</Button></div>}
-      </Dialog>
     </div>
   );
 }

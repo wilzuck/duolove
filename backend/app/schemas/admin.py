@@ -141,19 +141,5 @@ class ProductPatch(BaseModel):
     sortOrder: int | None = Field(None, ge=0, le=100)
 
 
-class RefundCreate(BaseModel):
-    paymentId: str = Field(min_length=1)
-    reason: Trim(5, 500)
-
-
-class RefundApprove(BaseModel):
-    note: Annotated[str, StringConstraints(strip_whitespace=True, max_length=500)] | None = None
-    manual: bool | None = None
-
-
-class RefundReject(BaseModel):
-    note: Trim(3, 500)
-
-
 class FlagSet(BaseModel):
     enabled: bool = Field(strict=True)

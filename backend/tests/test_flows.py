@@ -347,7 +347,7 @@ async def test_subscription_requires_signed_webhook(http, app, db):
     assert await scalar(db, select(func.count()).select_from(Invoice).join(Payment, Payment.id == Invoice.paymentId).where(Payment.userId == me["id"])) == 1
 
     history = (await a.get("/api/payments")).json()
-    assert re.match(r"^DM-\d{8}-", history[0]["invoiceNumber"])
+    assert re.match(r"^CD-\d{4}-\d{6}$", history[0]["invoiceNumber"])
     assert (await a.get(f"/api/payments/{history[0]['id']}/invoice")).json()["amountXof"] == 2500
 
     target = await seed_member(db, gender="MAN", seeking="WOMEN", city=c6)

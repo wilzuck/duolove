@@ -422,9 +422,9 @@
         "subject": "Account and sign-in"
       },
       "billing": {
-        "h": "A payment or a refund",
+        "h": "A payment or an invoice",
         "p": "Subscription, invoice, double payment.",
-        "subject": "Payment or refund"
+        "subject": "Payment or invoice"
       },
       "safety": {
         "h": "Safety or a report",
@@ -619,7 +619,7 @@
         },
         {
           "q": "Can I get a refund?",
-          "a": "Write to us from the Contact page with the payment reference: every request is reviewed, especially for double payments or errors."
+          "a": "No: subscriptions and purchases are not refundable. You can cancel at any time so it is not extended, and you keep your benefits until the end of the paid period. In case of a double payment or a proven technical error, write to us with the payment reference."
         },
         {
           "q": "Do my boosts and Super Likes expire?",
@@ -764,8 +764,8 @@
           "id": "paiements",
           "h": "Payments, invoices and refunds",
           "paras": [
-            "Payments are processed by a secure provider (Mobile Money depending on the country, bank card); we keep no banking data. A benefit is only activated once the payment is confirmed, and an invoice is available in Settings → Payments.",
-            "For a refund request (double payment, error…), write to us with the payment reference: every request is reviewed."
+            "Payments are processed by a secure provider (Mobile Money depending on the country, bank card); we keep no banking data. A benefit is only activated once the payment is confirmed, and a PDF invoice can be downloaded in Settings → Payments.",
+            "Subscriptions and purchases are not refundable. In case of a double payment or a proven technical error, write to us with the payment reference: each request is reviewed."
           ]
         },
         {
@@ -1533,9 +1533,6 @@
     "PRICE_NOT_AVAILABLE": "This length is not offered.",
     "PRODUCT_NOT_FOUND": "Product not found.",
     "FREE_PLAN_LOCKED": "The free plan cannot be paid.",
-    "REFUND_EXISTS": "A refund already exists for this payment.",
-    "NOT_REFUNDABLE": "This payment cannot be refunded.",
-    "REFUND_WINDOW_EXPIRED": "The refund request period has expired.",
     "SELF_APPROVAL": "Another administrator must approve this request.",
     "REFUND_NOT_PENDING": "This request has already been handled.",
     "REFUND_NOT_FOUND": "Request not found.",
@@ -2110,27 +2107,14 @@
       "success": "Payment confirmed. Your subscription is active.",
       "failed": "The payment failed. Nothing was charged and nothing was activated.",
       "empty": "No payments yet",
-      "invoice": "Invoice",
-      "invoiceTitle": "Invoice {n}",
-      "print": "Print",
+      "invoice": "Invoice PDF",
       "status": {
         "PENDING": "Pending",
         "SUCCEEDED": "Succeeded",
         "FAILED": "Failed",
         "REFUNDED": "Refunded"
       },
-      "askRefund": "Request a refund",
-      "refundText": "You can request a refund within 7 days of payment. An administrator reviews each request; if accepted, the benefits tied to the payment are removed.",
-      "refundReason": "Why would you like a refund?",
-      "refundSend": "Send request",
-      "refundSent": "Request sent. We will get back to you soon.",
-      "refund": {
-        "REQUESTED": "Refund requested",
-        "PROCESSING": "Refund processing",
-        "COMPLETED": "Refunded",
-        "REJECTED": "Request rejected",
-        "FAILED": "Refund failed"
-      }
+      "invoiceDownload": "Download invoice {n} (PDF)"
     }
   },
   "admin": {
@@ -2192,7 +2176,6 @@
       "payments": "Payments",
       "flags": "Feature flags",
       "plans": "Plans and pricing",
-      "refunds": "Refunds",
       "promos": "Promo codes",
       "blog": "Blog",
       "engagement": "Engagement",
@@ -2207,7 +2190,8 @@
       "backups": "Backups",
       "broadcasts": "Sends",
       "payment": "Online payment",
-      "access": "Paid access"
+      "access": "Paid access",
+      "billing": "Billing"
     },
     "storage": {
       "title": "File storage",
@@ -2269,7 +2253,25 @@
     "recentTitle": "Latest sign-ups",
     "billing": {
       "subscriptions": "Subscriptions",
-      "payments": "Payments"
+      "payments": "Payments",
+      "title": "Billing",
+      "subtitle": "The issuer details printed on every member PDF invoice. Anything left empty does not appear on the invoice.",
+      "saved": "Billing details saved.",
+      "save": "Save",
+      "f": {
+        "legalName": "Company legal name",
+        "address": "Address",
+        "city": "City",
+        "country": "Country",
+        "registration": "Registration (RCCM, tax ID…)",
+        "registrationHint": "The numbers your country requires on an invoice. Check with your accountant: none are made up here.",
+        "email": "Contact e-mail",
+        "phone": "Phone",
+        "website": "Website",
+        "vatPercent": "VAT (%)",
+        "vatHint": "0 = “VAT not applicable”. Otherwise VAT is extracted from the price paid (VAT included).",
+        "footerNote": "Invoice footer note (optional)"
+      }
     },
     "tabs": {
       "overview": "Overview",
@@ -2474,40 +2476,6 @@
       },
       "freeHint": "When turned off, the free plan is no longer shown on the pricing page. Members without a subscription keep its rights: it is their starting level and does not go away."
     },
-    "refunds": {
-      "intro": "A member request is handled by one administrator. A request created by an administrator requires approval by ANOTHER administrator (double validation). Refunds are full: the subscription is cancelled and unused credits are taken back.",
-      "status": {
-        "REQUESTED": "To review",
-        "PROCESSING": "Processing",
-        "COMPLETED": "Refunded",
-        "REJECTED": "Rejected",
-        "FAILED": "Failed"
-      },
-      "source": {
-        "USER": "Member request",
-        "ADMIN": "Admin request"
-      },
-      "empty": "No refunds",
-      "note": "Note:",
-      "creditsBack": "{n} credit(s) taken back",
-      "approve": "Approve",
-      "reject": "Reject",
-      "needOther": "Another administrator must approve",
-      "approveTitle": "Approve the refund",
-      "rejectTitle": "Reject the request",
-      "approveText": "The payment provider will be asked to refund {amount}. Rights tied to the payment will be removed.",
-      "rejectText": "The member will be notified. State the reason for rejection.",
-      "noteLabel": "Note (kept in the log)",
-      "manual": "I already refunded outside the app (provider dashboard): do not call the provider",
-      "done": "Decision saved.",
-      "failed": "The provider refused:",
-      "created": "Request created: another administrator must approve it.",
-      "request": "Refund",
-      "requestTitle": "Request a refund",
-      "requestText": "Full refund of {name}’s payment ({amount}). Another administrator will have to approve it.",
-      "reasonLabel": "Reason",
-      "action": "Action"
-    },
     "promos": {
       "title": "Promo codes",
       "subtitle": "Percentage discounts or free Crush tokens. A code can be used once per member.",
@@ -2561,7 +2529,7 @@
           "name": "Payments",
           "what": "Allows starting new payments: subscriptions, Crush tokens, boosts, Super Likes.",
           "on": "Purchases work.",
-          "off": "No new purchase can start. A payment already started can complete, and refunds remain possible.",
+          "off": "No new purchase can start. A payment already in progress can still finish.",
           "useWhen": "When the payment provider has an outage or maintenance."
         },
         "promo_codes": {
@@ -2997,7 +2965,7 @@
       "signupsTotal": "{n} sign-ups in this period",
       "revenueSection": "Revenue",
       "revenueChart": "Revenue per day",
-      "revenueTotal": "{amount} in this period · {refunded} refunded in total",
+      "revenueTotal": "{amount} over the period",
       "engagement": "Engagement",
       "engagementHint": "What members do in the selected period, compared with the previous one.",
       "likes": "Likes sent",
@@ -3026,9 +2994,8 @@
       "users": "Find a member, view their profile and apply a sanction if needed.",
       "reports": "Reports sent by members: review them, then resolve or dismiss.",
       "contact": "Messages received from the Contact page: reply, sort, archive.",
-      "payments": "All payments from the last 30 days, with the option to request a refund.",
+      "payments": "All payments of the last 30 days.",
       "subscriptions": "Premium and VIP subscriptions, their status and end date.",
-      "refunds": "Refund requests waiting to be approved or rejected.",
       "audit": "Who did what in the administration, and when: useful to understand a change.",
       "moderation": "Selfies to verify, appeals from sanctioned members and published photos.",
       "stats": "Evolution over time: members, likes, duos, Crush, subscriptions and revenue, compared with the previous period.",
@@ -3199,7 +3166,7 @@
         "subscriptions": "Premium and VIP subscribers",
         "plans": "Plans, prices, features",
         "promos": "Discount codes",
-        "payments": "Payments and refunds",
+        "payments": "Payments",
         "refunds": "Requests to approve",
         "engagement": "Matching, quotas, questions",
         "speed": "Speed-dating sessions",
@@ -3537,10 +3504,21 @@
       "how4": "If payment is not working (feature off, or no provider configured in production), the lock is suspended automatically.",
       "how5": "To offer a cheap entry pass, lower the Premium plan price (Plans) and hide the free plan.",
       "confirmTitle": "Turn on paid access?",
-      "confirmText": "From now on, every new signup must pick a plan to get in. Existing members keep access for {days} days. You can turn it off at any time.",
+      "confirmText": "From now on, each new signup gets {trial} free days, then must pick a plan. Existing members keep access for {days} days. You can turn it off at any time.",
       "confirm": "Turn on",
       "nowOn": "Paid access turned on.",
-      "nowOff": "Paid access turned off: everyone can get in again."
+      "nowOff": "Paid access turned off: everyone can get in again.",
+      "trial": "Free trial (days)",
+      "trialHint": "Each new signup is free for this long from their signup, then needs a plan. 0 = paid from signup.",
+      "discount": "“Verified profile” discount (%)",
+      "discountHint": "Verified badge + 2 approved photos = this much off the subscription, for any member. 0 = none. Not combined with a promo code.",
+      "threshold": "Active verified women threshold",
+      "thresholdHint": "You get one e-mail alert when it is reached. Nothing switches by itself.",
+      "saveSettings": "Save settings",
+      "womenTitle": "Active verified women",
+      "womenText": "Complete, verified profile, online in the last 14 days. Best-stocked cities:",
+      "womenReached": "Threshold reached: you can decide to switch to paid access.",
+      "womenNotified": "Alert sent on {date}."
     }
   },
   "pricingFaq": {
@@ -3558,7 +3536,7 @@
     },
     "refund": {
       "q": "Can I get a refund?",
-      "a": "Write to us via the Contact page with your payment reference: each request is reviewed, notably for double payments or errors."
+      "a": "No: subscriptions and purchases are not refundable. You can cancel at any time so it is not extended, and you keep your benefits until the end of the paid period. In case of a double payment or a proven technical error, write to us with the payment reference."
     },
     "guarantee": {
       "q": "Does Premium guarantee duos?",
@@ -4453,6 +4431,10 @@
     "profileReady": "Your profile is {n}% ready. It is waiting for you on the other side.",
     "note": "One-off payment, no automatic renewal. Mobile Money and card accepted.",
     "graceStrip": "Free access until {date}, then you will need to pick a plan.",
-    "graceCta": "See plans"
+    "graceCta": "See plans",
+    "discountTitle": "{percent}% off with a verified profile",
+    "discountOk": "Discount applied at checkout: verified profile and approved photos.",
+    "discountTodo": "Get your profile verified (selfie) and at least {n} photos approved to unlock this discount.",
+    "discountCta": "Complete my profile"
   }
 }

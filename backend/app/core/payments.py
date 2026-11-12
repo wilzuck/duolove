@@ -13,7 +13,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import credits, entitlements, kkiapay, notifications, payment_config, plan_config, promo
+from app.core import access, credits, invoicing, entitlements, kkiapay, notifications, payment_config, plan_config, promo
 from app.core.config import get_settings
 from app.core.errors import AppError, bad_request, not_found, unauthorized
 from app.core.ids import new_id, utcnow
@@ -44,9 +44,6 @@ class MockProvider:
     """Fournisseur de simulation (dev/CI) : même chemin de webhook signé qu'un vrai fournisseur."""
 
     name = "mock"
-
-    async def refund(self, provider_ref: str, amount_xof: int) -> dict:
-        return {"providerRef": f"mock_refund_{random_token(6)}"}
 
     async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None) -> dict:
         ref = f"mock_{random_token(12)}"
@@ -94,11 +91,16 @@ async def checkout(db: AsyncSession, user_id: str, code: str, months: int = 1, p
     # Abonnement + paiement (+ remise) dans une transaction : le verrou du code promo garantit qu'il ne dépasse jamais son plafond.
     q = await promo.evaluate(db, user_id, promo_code, price["totalXof"], True) if promo_code else None
     amount = q.finalXof if q else price["totalXof"]
+    promo_id, discount = (q.promoId, q.discountXof) if q else (None, 0)
+    # Réduction « profil vérifié » (administration) : non cumulée avec un code promo, c'est la plus avantageuse des deux qui s'applique.
+    verified = await access.discount_xof(db, user_id, price["totalXof"])
+    if verified > discount:
+        amount, promo_id, discount = price["totalXof"] - verified, None, verified
     sub = Subscription(userId=user_id, planId=plan_row.id, provider=prov.name, months=months)
     db.add(sub)
     await db.flush()
     payment = Payment(userId=user_id, subscriptionId=sub.id, kind="SUBSCRIPTION", months=months, amountXof=amount,
-                      promoCodeId=q.promoId if q else None, discountXof=q.discountXof if q else 0, provider=prov.name,
+                      promoCodeId=promo_id, discountXof=discount, provider=prov.name,
                       providerRef=f"pending_{random_token(8)}")
     db.add(payment)
     await db.commit()
@@ -174,7 +176,7 @@ async def apply_success(db: AsyncSession, payment_id: str) -> None:
         await db.rollback()
         return
     payment = (await db.execute(select(Payment).where(Payment.id == payment_id).execution_options(populate_existing=True))).scalar_one()
-    db.add(Invoice(paymentId=payment.id, amountXof=payment.amountXof, number=f"DM-{now.strftime('%Y%m%d')}-{payment.id[-6:].upper()}"))
+    db.add(Invoice(paymentId=payment.id, amountXof=payment.amountXof, number=await invoicing.next_number(db, now)))
     product = await db.get(Product, payment.productId) if payment.productId else None
     sub = await db.get(Subscription, payment.subscriptionId) if payment.subscriptionId else None
     plan_code = None
@@ -311,13 +313,6 @@ async def simulate_provider(db: AsyncSession, user_id: str, provider_ref: str, o
     return await handle_webhook(db, "mock", raw, hmac_hex(get_settings().payment_webhook_secret, raw))
 
 
-async def provider_refund(provider_ref: str, amount_xof: int) -> dict:
-    prov = provider(await payment_config.effective())
-    if not hasattr(prov, "refund"):
-        raise RuntimeError("Le fournisseur ne gère pas le remboursement automatique")
-    return await prov.refund(provider_ref, amount_xof)
-
-
 async def cancel(db: AsyncSession, user_id: str, resume: bool = False) -> dict:
     res = await db.execute(update(Subscription).where(Subscription.userId == user_id, Subscription.status == "ACTIVE").values(cancelAtPeriodEnd=not resume, updatedAt=utcnow()))
     if res.rowcount == 0:
@@ -326,30 +321,17 @@ async def cancel(db: AsyncSession, user_id: str, resume: bool = False) -> dict:
     return await current(db, user_id)
 
 
-async def refund_window_days(db: AsyncSession) -> float:
-    v = (await db.execute(select(SystemSetting.value).where(SystemSetting.key == "refund_window_days"))).scalar_one_or_none()
-    return v if isinstance(v, (int, float)) and not isinstance(v, bool) else 7
-
-
 async def history(db: AsyncSession, user_id: str) -> list[dict]:
-    from app.models.models import Refund  # import local : évite de charger tout le module au démarrage des tests unitaires
-
-    days = await refund_window_days(db)
     pays = (await db.execute(select(Payment).where(Payment.userId == user_id).order_by(Payment.createdAt.desc()).limit(100))).scalars().all()
     out = []
-    now = utcnow()
     for p in pays:
         inv = (await db.execute(select(Invoice.number).where(Invoice.paymentId == p.id).limit(1))).scalar_one_or_none()
         prod = await db.get(Product, p.productId) if p.productId else None
         plan = None
         if p.subscriptionId:
             plan = (await db.execute(select(SubscriptionPlan.code).join(Subscription, Subscription.planId == SubscriptionPlan.id).where(Subscription.id == p.subscriptionId))).scalar_one_or_none()
-        last = (await db.execute(select(Refund.status).where(Refund.paymentId == p.id).order_by(Refund.createdAt.desc()).limit(1))).scalar_one_or_none()
-        blocking = (await db.execute(select(func.count()).select_from(Refund).where(
-            Refund.paymentId == p.id, Refund.status.in_(["REQUESTED", "PROCESSING", "COMPLETED"])))).scalar_one()
         out.append({
-            "refundable": ev(p.status) == "SUCCEEDED" and bool(p.paidAt) and (now - p.paidAt).total_seconds() < days * 86400 and not blocking,
-            "refund": ev(last) if last else None, "id": p.id, "kind": ev(p.kind), "months": p.months, "product": prod.name if prod else None,
+            "id": p.id, "kind": ev(p.kind), "months": p.months, "product": prod.name if prod else None,
             "amountXof": p.amountXof, "currency": p.currency, "status": ev(p.status), "provider": p.provider, "plan": ev(plan) if plan else None,
             "createdAt": p.createdAt, "paidAt": p.paidAt, "invoiceNumber": inv,
         })
@@ -357,6 +339,7 @@ async def history(db: AsyncSession, user_id: str) -> list[dict]:
 
 
 async def invoice(db: AsyncSession, user_id: str, payment_id: str) -> dict:
+    """Données de la facture d'un paiement réussi du membre (JSON de l'écran et base du PDF)."""
     p = (await db.execute(select(Payment).where(Payment.id == payment_id, Payment.userId == user_id, Payment.status == "SUCCEEDED"))).scalar_one_or_none()
     inv = (await db.execute(select(Invoice).where(Invoice.paymentId == payment_id))).scalars().first() if p else None
     if not p or not inv:
@@ -367,13 +350,27 @@ async def invoice(db: AsyncSession, user_id: str, payment_id: str) -> dict:
     if ev(p.kind) == "PRODUCT":
         prod = await db.get(Product, p.productId) if p.productId else None
         desc = f"{site} — {prod.name if prod else ''}"
+        line = prod.name if prod else site
     else:
         plan_name = ""
         if p.subscriptionId:
-            plan_name = (await db.execute(select(SubscriptionPlan.name).join(Subscription, Subscription.planId == SubscriptionPlan.id).where(Subscription.id == p.subscriptionId))).scalar_one_or_none() or ""
+            plan_name = (await db.execute(select(SubscriptionPlan.name).join(Subscription, Subscription.planId == SubscriptionPlan.id).where(Subscription.id == p.subscriptionId))).scalar_one_or_none()
         desc = f"Abonnement {site} {plan_name} — {p.months} mois"
-    return {"number": inv.number, "issuedAt": inv.issuedAt, "customer": {"name": name, "email": user.email}, "description": desc,
-            "amountXof": inv.amountXof, "currency": p.currency, "provider": p.provider}
+        line = f"Abonnement {site} {plan_name} · {p.months} mois"
+    company = await invoicing.company(db)
+    discount = int(p.discountXof or 0)
+    promo_code = None
+    if p.promoCodeId:
+        from app.models.models import PromoCode
+
+        promo_code = (await db.execute(select(PromoCode.code).where(PromoCode.id == p.promoCodeId))).scalar_one_or_none()
+    label = (f"Code promo {promo_code}" if promo_code else "Réduction profil vérifié") if discount > 0 else None
+    t = invoicing.totals(inv.amountXof, discount, company["vatPercent"])
+    method = {"kkiapay": "Paiement en ligne (Mobile Money ou carte) via KKiaPay"}.get(p.provider, "Paiement en ligne")
+    return {"number": inv.number, "issuedAt": inv.issuedAt, "customer": {"name": name, "email": user.email, "memberId": user.id[-8:].upper()}, "description": desc,
+            "amountXof": inv.amountXof, "currency": p.currency, "provider": p.provider, "paidAt": p.paidAt, "seller": company, "discountLabel": label,
+            "lines": [{"description": line, "quantity": 1, "unitXof": t["gross"], "totalXof": t["gross"]}], "totals": t,
+            "payment": {"method": method, "reference": p.providerRef}}
 
 
 async def run_expiry_job(db: AsyncSession, now: datetime.datetime | None = None) -> dict:

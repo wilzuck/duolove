@@ -12,7 +12,7 @@ import { formatXof, timeAgo } from '@/lib/format';
 
 interface Overview {
   planDistribution: { plan: string; count: number }[]; recentSignups: { id: string; displayName: string; city: string; country: string; createdAt: string }[]; topCountries: { country: string; count: number }[];
-  users: number; active7: number; profilesCompleted: number; activeConversations: number; activeSubscriptions: number; conversionRate: number; retentionD7: number; refundedXof: number;
+  users: number; active7: number; profilesCompleted: number; activeConversations: number; activeSubscriptions: number; conversionRate: number; retentionD7: number;
   generatedAt: string;
   period: { days: number; signups: Flow; likes: Flow; matches: Flow; messages: Flow; revenue: Flow; series: { signups: SeriesPoint[]; likes: SeriesPoint[]; matches: SeriesPoint[]; messages: SeriesPoint[]; revenue: SeriesPoint[] } };
 }
@@ -75,7 +75,7 @@ export default function AdminOverview() {
             <h3 id="charts-h" className="font-display text-lg font-bold">{t('admin.dash.growth')} · {t('admin.dash.revenueSection')}</h3>
             <div className="grid gap-4 lg:grid-cols-2">
               <TrendChart title={t('admin.dash.signupsChart')} points={data.period.series.signups} format={n} locale={locale} total={t('admin.dash.signupsTotal', { n: n(data.period.signups.current) })} delta={data.period.signups} />
-              <TrendChart title={t('admin.dash.revenueChart')} points={data.period.series.revenue} format={xof} locale={locale} total={t('admin.dash.revenueTotal', { amount: xof(data.period.revenue.current), refunded: xof(data.refundedXof) })} delta={data.period.revenue} />
+              <TrendChart title={t('admin.dash.revenueChart')} points={data.period.series.revenue} format={xof} locale={locale} total={t('admin.dash.revenueTotal', { amount: xof(data.period.revenue.current) })} delta={data.period.revenue} />
             </div>
           </section>
 
