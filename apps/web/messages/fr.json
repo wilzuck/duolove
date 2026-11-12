@@ -1918,7 +1918,8 @@
     "cropDone": "Utiliser cette photo",
     "cropError": "Ce fichier n’est pas une image lisible. Choisissez une photo JPEG, PNG ou WebP.",
     "uploading": "Envoi en cours…",
-    "interrupt": "Interrompre l'envoi"
+    "interrupt": "Interrompre l'envoi",
+    "viewerName": "Mes photos"
   },
   "onboarding": {
     "progress": "Étape {n} sur {total}",
@@ -1992,7 +1993,8 @@
       "CALL_MISSED": "Appel manqué.",
       "DATE_REMINDER": "Rappel : votre rendez-vous approche.",
       "MESSAGE_MANY": "{count} nouveaux messages.",
-      "SPEED_REMINDER": "Rappel : votre session de speed dating approche."
+      "SPEED_REMINDER": "Rappel : votre session de speed dating approche.",
+      "SUBSCRIPTION_EXPIRING_DAYS": "Votre abonnement se termine dans {n} jour(s). Prolongez-le : la durée s’ajoute à votre date de fin."
     }
   },
   "premium": {

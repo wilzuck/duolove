@@ -1918,7 +1918,8 @@
     "cropDone": "Use this photo",
     "cropError": "This file is not a readable image. Choose a JPEG, PNG or WebP photo.",
     "uploading": "Uploading…",
-    "interrupt": "Stop uploading"
+    "interrupt": "Stop uploading",
+    "viewerName": "My photos"
   },
   "onboarding": {
     "progress": "Step {n} of {total}",
@@ -1992,7 +1993,8 @@
       "CALL_MISSED": "Missed call.",
       "DATE_REMINDER": "Reminder: your date is coming up.",
       "MESSAGE_MANY": "{count} new messages.",
-      "SPEED_REMINDER": "Reminder: your speed-dating session is about to start."
+      "SPEED_REMINDER": "Reminder: your speed-dating session is about to start.",
+      "SUBSCRIPTION_EXPIRING_DAYS": "Your subscription ends in {n} day(s). Extend it: the duration is added to your end date."
     }
   },
   "premium": {

@@ -373,8 +373,37 @@ async def invoice(db: AsyncSession, user_id: str, payment_id: str) -> dict:
             "payment": {"method": method, "reference": p.providerRef}}
 
 
+REMINDER_DAYS = (7, 3, 1)  # rappels avant la fin d'un abonnement : e-mail + notification, une fois chacun par période
+
+
+async def send_renewal_reminders(db: AsyncSession, now: datetime.datetime) -> int:
+    """Rappelle les membres dont l'abonnement actif (non annulé) se termine dans 7, 3 puis 1 jour. Chaque palier n'est envoyé qu'une fois par date de fin ;
+    si le membre arrive tard (abonnement à 2 jours de la fin), seul le palier le plus urgent est envoyé. Le paiement étant ponctuel, rien ne se renouvelle seul."""
+    rows = (await db.execute(select(Subscription, SubscriptionPlan.name).join(SubscriptionPlan, SubscriptionPlan.id == Subscription.planId).where(
+        Subscription.status == "ACTIVE", Subscription.cancelAtPeriodEnd.is_(False), Subscription.currentPeriodEnd >= now,
+        Subscription.currentPeriodEnd < now + (REMINDER_DAYS[0] * DAY)))).all()
+    sent = 0
+    for s, plan_name in rows:
+        left = (s.currentPeriodEnd - now).total_seconds() / 86400
+        stage = min(d for d in REMINDER_DAYS if left <= d)  # palier le plus urgent atteint
+        ends = s.currentPeriodEnd.isoformat(timespec="milliseconds") + "Z"
+        done = (await db.execute(select(Notification.data).where(Notification.userId == s.userId, Notification.type == "SUBSCRIPTION_EXPIRING",
+                                                                  Notification.data["endsAt"].astext == ends))).scalars().all()
+        if any(isinstance(d, dict) and d.get("stage") is not None and int(d["stage"]) <= stage for d in done):
+            continue  # ce palier (ou un plus urgent) est déjà parti pour cette date de fin
+        await notifications.create(db, s.userId, "SUBSCRIPTION_EXPIRING", {"endsAt": ends, "stage": stage, "daysLeft": stage})
+        user = await db.get(User, s.userId)
+        name = (await db.execute(select(Profile.displayName).where(Profile.userId == s.userId))).scalar_one_or_none() or ""
+        if user:
+            from app.core import mail
+
+            await mail.send_renewal_reminder(user.email, name, plan_name, s.currentPeriodEnd, stage)
+        sent += 1
+    return sent
+
+
 async def run_expiry_job(db: AsyncSession, now: datetime.datetime | None = None) -> dict:
-    """Expire les abonnements échus (ou les passe « impayé »), rappelle les échéances à J-3. Appelable manuellement (admin/tests)."""
+    """Expire les abonnements échus (ou les passe « impayé »), rappelle les échéances à J-7, J-3 et J-1. Appelable manuellement (admin/tests)."""
     now = now or utcnow()
     due = (await db.execute(select(Subscription).where(Subscription.status == "ACTIVE", Subscription.currentPeriodEnd < now))).scalars().all()
     for s in due:
@@ -384,15 +413,7 @@ async def run_expiry_job(db: AsyncSession, now: datetime.datetime | None = None)
         await notifications.create(db, s.userId, "SUBSCRIPTION_EXPIRING", {"expired": True})
     stale = await db.execute(update(Subscription).where(Subscription.status == "PAST_DUE", Subscription.currentPeriodEnd < now - PAST_DUE_GRACE_DAYS * DAY).values(status="EXPIRED"))
     await db.commit()
-    soon = (await db.execute(select(Subscription).where(Subscription.status == "ACTIVE", Subscription.cancelAtPeriodEnd.is_(False),
-                                                         Subscription.currentPeriodEnd >= now, Subscription.currentPeriodEnd < now + 3 * DAY))).scalars().all()
-    reminded = 0
-    for s in soon:
-        already = (await db.execute(select(func.count()).select_from(Notification).where(
-            Notification.userId == s.userId, Notification.type == "SUBSCRIPTION_EXPIRING", Notification.createdAt > now - 4 * DAY))).scalar_one()
-        if not already:
-            await notifications.create(db, s.userId, "SUBSCRIPTION_EXPIRING", {"endsAt": s.currentPeriodEnd.isoformat(timespec="milliseconds") + "Z" if s.currentPeriodEnd else None})
-            reminded += 1
+    reminded = await send_renewal_reminders(db, now)
     return {"expired": len(due), "expiredStale": stale.rowcount, "reminded": reminded}
 
 

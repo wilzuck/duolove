@@ -55,7 +55,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
       <div className={wide ? 'sticky top-[4.5rem]' : 'mx-auto w-full max-w-md lg:max-w-lg'}>
         {hero ?? <ProfileGallery card={card} variant={wide ? 'stage' : 'mosaic'} />}
         {!hero && layout === 'split' && canComment && (
-          <div className="mt-4 flex justify-center gap-3">
+          <div className="mt-4 flex flex-wrap justify-start gap-3">
             <SuperLikeButton onAct={() => setComposer({ kind: 'PROFILE', ref: null, superLike: true })} />
             <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }))}><Heart className="size-5" aria-hidden />{t('discover.likeBtn')}</ActionButton>
           </div>

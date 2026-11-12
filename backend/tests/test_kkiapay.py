@@ -160,3 +160,66 @@ async def test_facture_remise_et_tva_et_reglages(app, db, fake):
                                 "customer": {"name": "Awa Dossou", "email": "awa@example.com", "memberId": "AB12CD34"}, "lines": [{"description": "Abonnement Crushduo Premium · 1 mois", "quantity": 1, "unitXof": 2500, "totalXof": 2500}],
                                 "totals": invoicing.totals(1250, 1250, 0), "discountLabel": "Réduction profil vérifié", "payment": {"method": "Paiement en ligne via KKiaPay", "reference": "tx_123"}})
     assert pdf.startswith(b"%PDF") and len(pdf) > 2000
+
+
+async def test_rappels_de_fin_d_abonnement_j7_j3_j1(app, db, fake, monkeypatch):
+    """Un e-mail + une notification à J-7, J-3 puis J-1, une fois chacun par date de fin ; pas de rappel pour un abonnement annulé ; paiement ponctuel rappelé dans le texte."""
+    import datetime
+
+    from sqlalchemy import update
+
+    from app.core import mail, payments
+    from app.core.ids import utcnow
+    from app.models.models import Notification, Subscription
+
+    sent = []
+
+    async def fake_send(to, subject, text, html=None, **k):
+        sent.append((to, subject, text))
+        return True
+
+    monkeypatch.setattr(mail, "send", fake_send)
+    a = await member(app, db)
+    widget = (await a.agent.post("/api/subscriptions/checkout", json={"plan": "PREMIUM"})).json()["widget"]
+    tx = f"TX_RAPPEL_{RUN}"
+    fake["txs"][tx] = {"status": "SUCCESS", "amount": 2500}
+    await confirm(a, widget, tx)
+    now = utcnow()
+
+    async def end_in(days: float, cancel: bool = False):
+        async with session_maker()() as s:
+            await s.execute(update(Subscription).where(Subscription.userId == a.id, Subscription.status == "ACTIVE").values(currentPeriodEnd=now + datetime.timedelta(days=days), cancelAtPeriodEnd=cancel))
+            await s.commit()
+
+    async def run():
+        async with session_maker()() as s:
+            return await payments.send_renewal_reminders(s, now)
+
+    async def stages():
+        async with session_maker()() as s:
+            rows = (await s.execute(select(Notification.data).where(Notification.userId == a.id, Notification.type == "SUBSCRIPTION_EXPIRING"))).scalars().all()
+        return sorted(r["stage"] for r in rows if r.get("stage"))
+
+    await end_in(20)
+    assert await run() == 0 and sent == []  # trop tôt
+    await end_in(6.5)
+    assert await run() == 1 and await run() == 0  # J-7, une seule fois
+    assert "ne se renouvelle pas automatiquement" in sent[-1][2] and "/premium" in sent[-1][2]
+    await end_in(2.5)
+    assert await run() == 1 and await stages() == [3, 7]
+    await end_in(0.5)
+    assert await run() == 1 and await stages() == [1, 3, 7] and len(sent) == 3
+    await end_in(0.5, cancel=True)
+    before = len(sent)
+    async with session_maker()() as s:
+        await s.execute(delete_notifications(a.id))
+        await s.commit()
+    assert await run() == 0 and len(sent) == before  # abonnement annulé : aucun rappel
+
+
+def delete_notifications(user_id):
+    from sqlalchemy import delete
+
+    from app.models.models import Notification
+
+    return delete(Notification).where(Notification.userId == user_id, Notification.type == "SUBSCRIPTION_EXPIRING")

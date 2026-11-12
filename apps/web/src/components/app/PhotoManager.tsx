@@ -1,4 +1,5 @@
 'use client';
+import { PhotoViewer } from './ProfileGallery';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, ArrowRight, Plus, Star, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -20,6 +21,7 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
   const toast = useUi((s) => s.toast);
   const input = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [viewer, setViewer] = useState<number | null>(null);  // photo ouverte en grand (clic sur l'image)
   const abort = useRef<AbortController | null>(null);
   const done = (p: MyProfile) => qc.setQueryData(keys.profile, p);
   const fail = (e: unknown) => toast('error', err(e));
@@ -44,7 +46,9 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {photos.map((p, i) => (
           <li key={p.id} className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-soft">
-            <img src={p.thumbUrl} alt={t('photos.alt', { n: i + 1 })} className="size-full object-cover" />
+            <button type="button" onClick={() => setViewer(i)} aria-label={t('gallery.open', { n: i + 1 })} className="absolute inset-0 block size-full cursor-zoom-in">
+              <img src={p.thumbUrl} alt={t('photos.alt', { n: i + 1 })} draggable={false} className="size-full object-cover" />
+            </button>
             {i === 0 && <Badge className="absolute top-2 left-2 bg-brand-strong text-white">{t('photos.main')}</Badge>}
             <button type="button" className={cn(btn, 'absolute top-2 right-2 bg-danger-strong/90 hover:bg-danger-strong')} onClick={() => remove.mutate(p.id)} aria-label={t('photos.remove')}><Trash2 className="size-4" /></button>
             <div className="absolute inset-x-2 bottom-2 flex items-center justify-center gap-1.5">
@@ -65,6 +69,7 @@ export function PhotoManager({ photos }: { photos: MyProfile['photos'] }) {
       </ul>
       <p className="mt-3 text-sm text-muted">{t('photos.hint', { max: MAX })}</p>
       <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" aria-hidden className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; if (f) setFile(f); e.target.value = ''; }} />
+      {viewer != null && <PhotoViewer photos={photos} name={t('photos.viewerName')} start={Math.min(viewer, photos.length - 1)} onClose={() => setViewer(null)} />}
       <PhotoCropper file={file} busy={add.isPending} onInterrupt={() => abort.current?.abort()} onCancel={() => setFile(null)} onDone={(b) => add.mutate(b)} />
     </div>
   );

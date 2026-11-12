@@ -164,6 +164,23 @@ async def send_magic_link(to: str, name: str, token: str, remember: bool = True)
                "Lien valable 15 minutes, utilisable une seule fois. Si vous n'avez rien demandé, ignorez ce message : personne ne peut se connecter sans lui.", html, kind="magic_link")
 
 
+async def send_renewal_reminder(to: str, name: str, plan_name: str, ends_at: datetime.datetime, days_left: int) -> bool:
+    """Rappel d'échéance (J-7, J-3, J-1) : le paiement étant ponctuel, rien ne se renouvelle seul ; le bouton mène à la page de prolongation (la durée s'ajoute à la date de fin)."""
+    link = f"{get_settings().app_url}/premium"
+    when = "demain" if days_left <= 1 else f"dans {days_left} jours"
+    date = ends_at.strftime("%d/%m/%Y")
+    title = f"Votre abonnement se termine {when}"
+    html = render_email(title, [
+        p(f"Bonjour {esc_(name)}, votre abonnement {esc_(plan_name)} se termine le {date}."),
+        p("Pour garder vos avantages sans interruption, prolongez-le dès maintenant : la durée choisie s’ajoute à votre date de fin, vous ne perdez rien."),
+        button("Prolonger mon abonnement", link),
+        note("Le paiement est ponctuel : votre abonnement ne se renouvelle pas automatiquement. Si vous ne faites rien, vous repassez simplement à la formule gratuite après la date de fin."),
+    ], preheader=f"{plan_name} : fin le {date}")
+    return await send(to, f"{title} — Crushduo",
+                      f"Bonjour {name},\n\nVotre abonnement {plan_name} se termine le {date}.\n\nProlongez-le pour garder vos avantages : la durée choisie s'ajoute à votre date de fin.\n{link}\n\n"
+                      "Le paiement est ponctuel : l'abonnement ne se renouvelle pas automatiquement.", html, kind="subscription")
+
+
 def notification_html(title: str, body: str, unsub_url: str | None = None) -> str:
     """E-mail de notification (message, match, like…) : même carte, bouton vers l'application et, si la notification est facultative, un lien de désabonnement."""
     footer = (f'<p style="margin:8px 0 0;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;font-size:13px;color:#45434F;text-align:center;">'
