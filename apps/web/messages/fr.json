@@ -1628,6 +1628,7 @@
     "PAYMENT_NOT_READY": "Activez d'abord un vrai paiement.",
     "COUNTRY_NOT_OPEN": "Crushduo n’est pas encore ouvert dans votre pays.",
     "CITY_NOT_OPEN": "Crushduo n’est pas encore ouvert dans votre ville : rejoignez la liste d’attente.",
+    "EVENT_OTHER_CITY": "Cette soirée est réservée aux membres de sa ville.",
     "NO_COUNTRY": "Gardez au moins un pays ouvert.",
     "DATE_IN_FUTURE": "La date ne peut pas être dans le futur."
   },
@@ -3601,7 +3602,7 @@
         "canceled": "Annulée"
       },
       "country": "Pays",
-      "cityHint": "Indicatif : affichée sur l’annonce, elle ne limite l’accès à personne (la soirée se déroule en ligne).",
+      "cityHint": "Facultative. Sans ville : la soirée est proposée à tous les membres. Avec une ville : seuls les membres de cette ville et de son agglomération la voient (Cotonou : Abomey-Calavi, Godomey, Sèmè-Kpodji ; Abidjan : Anyama, Bingerville).",
       "descriptionPh": "Quelques mots pour donner envie de venir…",
       "templates": "Messages types (cliquez pour ajouter ou retirer)",
       "tpl": {

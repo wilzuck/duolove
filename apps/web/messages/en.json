@@ -1628,6 +1628,7 @@
     "PAYMENT_NOT_READY": "Turn on a real payment first.",
     "COUNTRY_NOT_OPEN": "Crushduo is not open in your country yet.",
     "CITY_NOT_OPEN": "Crushduo is not open in your city yet: join the waiting list.",
+    "EVENT_OTHER_CITY": "This evening is reserved for members of its city.",
     "NO_COUNTRY": "Keep at least one country open.",
     "DATE_IN_FUTURE": "The date cannot be in the future."
   },
@@ -3601,7 +3602,7 @@
         "canceled": "Canceled"
       },
       "country": "Country",
-      "cityHint": "Indicative: shown on the announcement, it doesn’t restrict access (the evening takes place online).",
+      "cityHint": "Optional. No city: the evening is offered to all members. With a city: only members of that city and its surrounding area see it (Cotonou: Abomey-Calavi, Godomey, Sèmè-Kpodji; Abidjan: Anyama, Bingerville).",
       "descriptionPh": "A few words to make people want to join…",
       "templates": "Message templates (click to add or remove)",
       "tpl": {

@@ -28,7 +28,7 @@ def at(minutes: int) -> str:
 
 
 async def make(ad, minutes=30, **kw):
-    r = await ad.agent.post("/api/admin/live-events", json={"title": "Soirée de Cotonou", "startsAt": at(minutes), "durationMinutes": 120, "city": "Cotonou", **kw})
+    r = await ad.agent.post("/api/admin/live-events", json={"title": "Soirée de Cotonou", "startsAt": at(minutes), "durationMinutes": 120, **kw})
     assert r.status_code == 201, r.text
     return r.json()
 
@@ -103,3 +103,21 @@ async def test_annulation_retire_la_soiree_et_arrete_les_rappels(app, db):
         assert await live_events.run_due(s) == {"reminded": 0, "started": 0}
     assert (await u.agent.put(f"/api/live/events/{ev['id']}/rsvp")).status_code == 404
     assert any(i["id"] == ev["id"] and i["phase"] == "canceled" for i in (await ad.agent.get("/api/admin/live-events")).json()["items"])
+
+
+async def test_soiree_d_une_ville_visible_seulement_par_les_membres_de_cette_zone(app, db):
+    ad = await admin(app, db)
+    cot, calavi, parakou = await member(app, db, city="Cotonou"), await member(app, db, city="Abomey-Calavi"), await member(app, db, city="Parakou")
+    local = await make(ad, 60, title="Soirée Duo de Cotonou", city="Cotonou")
+    everyone = await make(ad, 90, title="Soirée Duo pour tous")  # sans ville : proposée à tous
+    ids = lambda r: {e["id"] for e in r.json()["events"]}  # noqa: E731
+    assert ids(await cot.agent.get("/api/live/events")) == {local["id"], everyone["id"]}
+    assert ids(await calavi.agent.get("/api/live/events")) == {local["id"], everyone["id"]}  # agglomération de Cotonou
+    assert ids(await parakou.agent.get("/api/live/events")) == {everyone["id"]}
+    r = await parakou.agent.put(f"/api/live/events/{local['id']}/rsvp")
+    assert r.status_code == 403 and r.json()["error"]["code"] == "EVENT_OTHER_CITY"
+    assert (await cot.agent.put(f"/api/live/events/{local['id']}/rsvp")).status_code == 200
+    assert (await parakou.agent.put(f"/api/live/events/{everyone['id']}/rsvp")).status_code == 200
+    # Sans accent ni majuscule : « lome » = « Lomé ».
+    from app.core.cities import same_area
+    assert same_area("Lomé", "lome") and same_area("COTONOU", "godomey") and not same_area("Cotonou", "Abidjan") and not same_area("", "Cotonou")

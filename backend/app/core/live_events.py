@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core import mail, notifications, realtime
 from app.core.errors import AppError, not_found
 from app.core.ids import utcnow
+from app.core.cities import same_area
 from app.models.models import LiveEvent, LiveEventRsvp, Profile, User
 
 log = logging.getLogger(__name__)
@@ -44,10 +45,21 @@ def view(e: LiveEvent, now: datetime.datetime, rsvps: int, mine: bool) -> dict:
             "rsvps": rsvps, "rsvped": mine}
 
 
+async def _member_city(db: AsyncSession, user_id: str) -> str | None:
+    return (await db.execute(select(Profile.city).where(Profile.userId == user_id))).scalar_one_or_none()
+
+
+def eligible(e: LiveEvent, member_city: str | None) -> bool:
+    """Une soirée sans ville est pour tous ; une soirée d'une ville est pour les membres de cette ville et de son agglomération."""
+    return not e.city or same_area(e.city, member_city)
+
+
 async def upcoming(db: AsyncSession, user_id: str, limit: int = 3) -> dict:
-    """Soirées à venir ou en cours (les plus proches d'abord), avec l'inscription du membre et le nombre de personnes connectées en ce moment."""
+    """Soirées à venir ou en cours (les plus proches d'abord) qui concernent CE membre (sa ville), avec son inscription et le nombre de personnes connectées en ce moment."""
     now = utcnow()
-    rows = (await db.execute(select(LiveEvent).where(LiveEvent.status == "ACTIVE", LiveEvent.endsAt > now).order_by(LiveEvent.startsAt).limit(limit))).scalars().all()
+    city = await _member_city(db, user_id)
+    pool = (await db.execute(select(LiveEvent).where(LiveEvent.status == "ACTIVE", LiveEvent.endsAt > now).order_by(LiveEvent.startsAt).limit(50))).scalars().all()
+    rows = [e for e in pool if eligible(e, city)][:limit]
     ids = [e.id for e in rows]
     counts = await _counts(db, ids)
     mine = set((await db.execute(select(LiveEventRsvp.eventId).where(LiveEventRsvp.userId == user_id, LiveEventRsvp.eventId.in_(ids)))).scalars().all()) if ids else set()
@@ -64,7 +76,9 @@ async def _open_event(db: AsyncSession, event_id: str) -> LiveEvent:
 
 
 async def rsvp(db: AsyncSession, user_id: str, event_id: str) -> dict:
-    await _open_event(db, event_id)
+    e = await _open_event(db, event_id)
+    if not eligible(e, await _member_city(db, user_id)):
+        raise AppError(403, "EVENT_OTHER_CITY", "Cette soirée est réservée aux membres de sa ville")
     await db.execute(pg_insert(LiveEventRsvp).values(eventId=event_id, userId=user_id).on_conflict_do_nothing())
     await db.commit()
     return {"rsvped": True}

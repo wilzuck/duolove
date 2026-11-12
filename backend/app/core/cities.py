@@ -23,6 +23,27 @@ MIN_MEMBERS = 2
 MAX_RESULTS = 8
 
 
+# Agglomérations : un membre d'une commune voisine est « de la même ville » pour les soirées (la clé et les valeurs sont comparées sans accents ni majuscules).
+AGGLOMERATIONS: dict[str, tuple[str, ...]] = {
+    "Cotonou": ("Abomey-Calavi", "Godomey", "Sèmè-Kpodji"),
+    "Abidjan": ("Anyama", "Bingerville"),
+}
+
+
+def same_area(a: str | None, b: str | None) -> bool:
+    """Deux villes sont-elles la même zone ? Égalité sans accents ni casse, ou même agglomération (voir AGGLOMERATIONS)."""
+    fa, fb = fold(a or ""), fold(b or "")
+    if not fa or not fb:
+        return False
+    if fa == fb:
+        return True
+    for head, towns in AGGLOMERATIONS.items():
+        group = {fold(head), *(fold(t) for t in towns)}
+        if fa in group and fb in group:
+            return True
+    return False
+
+
 def fold(s: str) -> str:
     """Minuscules sans accents ni tirets : « Lomé », « lome » et « LOMÉ » se valent ; « saint etienne » trouve « Saint-Étienne »."""
     s = unicodedata.normalize("NFD", s.strip().lower())
