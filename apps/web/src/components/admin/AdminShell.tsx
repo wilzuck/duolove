@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, BookOpen, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LayoutGrid, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, BookOpen, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, ImageOff, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LayoutGrid, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -47,6 +47,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/social', key: 'social', icon: Share2, min: 'ADMIN' },
     { href: '/admin/backups', key: 'backups', icon: DatabaseBackup, min: 'ADMIN' },
     { href: '/admin/storage', key: 'storage', icon: CloudUpload, min: 'SUPER_ADMIN' },
+    { href: '/admin/orphans', key: 'orphans', icon: ImageOff, min: 'ADMIN' },
     { href: '/admin/payment', key: 'payment', icon: CreditCard, min: 'SUPER_ADMIN' },
     { href: '/admin/access', key: 'access', icon: LockKeyhole, min: 'SUPER_ADMIN' },
     { href: '/admin/billing', key: 'billing', icon: FileText, min: 'SUPER_ADMIN' },

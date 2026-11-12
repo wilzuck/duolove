@@ -1,4 +1,5 @@
 """Stockage des fichiers : pilote S3/R2, configuration modifiable par le super administrateur, secret chiffré, migration."""
+import datetime
 import json
 from pathlib import Path
 
@@ -44,7 +45,7 @@ class FakeS3:
 
     def get_paginator(self, name):
         fake = self
-        return type("P", (), {"paginate": lambda self_, Bucket, Prefix="": iter([{"Contents": [{"Key": k} for k in fake.objects if k.startswith(Prefix)]}])})()
+        return type("P", (), {"paginate": lambda self_, Bucket, Prefix="": iter([{"Contents": [{"Key": k, "Size": len(v), "LastModified": datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)} for k, v in fake.objects.items() if k.startswith(Prefix)]}])})()
 
 
 @pytest.fixture
@@ -272,3 +273,13 @@ def test_bucket_sauvegarde_par_defaut_depuis_l_environnement(monkeypatch):
     row = {"driver": "s3", "endpoint": ENDPOINT, "bucket": "crushduo-media", "accessKeyId": ACCESS}
     assert storage_config._from_row(row).backups_bucket == "crushduo-backup"
     assert storage_config._from_row({**row, "backupBucket": "autre"}).backups_bucket == "autre"  # la saisie admin l'emporte
+
+
+async def test_listing_s3_retire_le_prefixe(monkeypatch, fake, tmp_path):
+    use(monkeypatch, s3cfg("prod"))
+    monkeypatch.setattr(get_settings(), "upload_dir", str(tmp_path))
+    await storage.put("blog/" + "a" * 32 + ".webp", b"12345")
+    fake.objects["autre/blog/" + "b" * 32 + ".webp"] = b"x"  # hors du préfixe configuré : ignoré
+    fake.objects["prod/healthcheck/probe-1.webp"] = b"x"
+    objs = await storage.list_objects()
+    assert [(o["key"], o["size"]) for o in objs] == [("blog/" + "a" * 32 + ".webp", 5)]

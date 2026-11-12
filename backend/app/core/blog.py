@@ -64,6 +64,17 @@ async def upload_image(data: bytes) -> dict:
     return {"key": key, "url": url_of(key), "thumbUrl": thumb_url_of(key), "width": img.width, "height": img.height}
 
 
+async def delete_cover_files(db: AsyncSession, key: str) -> bool:
+    """Supprime l'image et sa miniature, sauf si un autre article (ou une autre table) la référence encore. Renvoie True si supprimée."""
+    from app.core import orphans
+
+    if not COVER_RE.match(key) or key in await orphans.referenced_keys(db):
+        return False
+    await storage.delete(key)
+    await storage.delete(thumb_key(key))
+    return True
+
+
 async def _check(db: AsyncSession, p: BlogPost) -> None:
     if p.coverKey and (not COVER_RE.match(p.coverKey) or await storage.get(p.coverKey) is None):
         raise bad_request("INVALID_COVER", "Image de couverture introuvable : téléversez-la d'abord")
@@ -120,8 +131,7 @@ async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
     await _check(db, p)
     await db.commit()
     if "coverKey" in data and old_cover and old_cover != p.coverKey:
-        await storage.delete(old_cover)
-        await storage.delete(thumb_key(old_cover))
+        await delete_cover_files(db, old_cover)
     return p
 
 
@@ -133,5 +143,4 @@ async def delete(db: AsyncSession, post_id: str) -> None:
     await db.delete(p)
     await db.commit()
     if key:
-        await storage.delete(key)
-        await storage.delete(thumb_key(key))
+        await delete_cover_files(db, key)

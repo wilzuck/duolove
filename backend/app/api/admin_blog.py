@@ -26,6 +26,13 @@ async def upload(file: UploadFile | None = File(None), _: AuthUser = ADM):
     return await blog.upload_image(await read_upload(file))
 
 
+@router.delete("/images", status_code=204)
+async def discard_image(key: str, _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Retire une image téléversée mais jamais enregistrée (remplacée avant la sauvegarde) ; sans effet si un article la référence."""
+    await blog.delete_cover_files(db, key)
+    return Response(status_code=204)
+
+
 @router.get("/{post_id}")
 async def get_one(post_id: str, _: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     p = await db.get(BlogPost, post_id)

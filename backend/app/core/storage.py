@@ -1,5 +1,6 @@
 """Stockage des fichiers (dossier local ou stockage objet S3, selon STORAGE_DRIVER) et assainissement des images (format réel, EXIF appliqué puis supprimé, ré-encodage WebP)."""
 import asyncio
+import datetime
 import io
 import logging
 import re
@@ -145,6 +146,41 @@ def local_keys() -> list[str]:
         return []
     keys = [f.relative_to(root).as_posix() for f in root.rglob("*.webp") if f.is_file()]
     return sorted(k for k in keys if KEY_RE.match(k) and not k.startswith("healthcheck/"))
+
+
+def _local_objects() -> list[dict]:
+    root = _root()
+    if not root.exists():
+        return []
+    out = []
+    for f in root.rglob("*.webp"):
+        k = f.relative_to(root).as_posix()
+        if f.is_file() and KEY_RE.match(k):
+            st = f.stat()
+            out.append({"key": k, "size": st.st_size, "modified": datetime.datetime.fromtimestamp(st.st_mtime, datetime.timezone.utc)})
+    return out
+
+
+def _s3_objects(cfg: storage_config.Effective) -> list[dict]:
+    prefix = cfg.prefix.strip("/")
+    base = f"{prefix}/" if prefix else ""
+    out = []
+    for page in _s3_client(cfg).get_paginator("list_objects_v2").paginate(Bucket=cfg.bucket, Prefix=base):
+        for o in page.get("Contents", []):
+            k = o["Key"][len(base):]
+            if KEY_RE.match(k) and ".." not in k:
+                out.append({"key": k, "size": o["Size"], "modified": o["LastModified"]})
+    return out
+
+
+async def list_objects() -> list[dict]:
+    """Toutes les images stockées (clé, taille, date), sur le disque et, si actif, dans le bucket. `healthcheck/` exclu."""
+    cfg = await storage_config.effective()
+    found = {o["key"]: o for o in await asyncio.to_thread(_local_objects)}
+    if cfg.driver == "s3":
+        for o in await asyncio.to_thread(_s3_objects, cfg):
+            found[o["key"]] = o
+    return sorted((o for k, o in found.items() if not k.startswith("healthcheck/")), key=lambda o: o["key"])
 
 
 async def migrate_local(cfg: storage_config.Effective, budget_seconds: float = 20.0) -> dict:

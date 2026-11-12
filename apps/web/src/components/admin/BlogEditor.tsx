@@ -62,7 +62,12 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
   });
   const cover = useMutation({
     mutationFn: (file: File) => upload<Uploaded>('/admin/blog/images', file, file.name),
-    onSuccess: (r) => { setF((s) => ({ ...s, coverKey: r.key, coverUrl: r.url })); toast('success', t('admin.blog.coverUploaded')); },
+    onSuccess: (r) => {
+      // Remplacement avant enregistrement : l'image téléversée juste avant n'est référencée par rien, on la supprime tout de suite.
+      // (L'ancienne image déjà enregistrée est supprimée par le serveur à la sauvegarde.)
+      if (f.coverKey && f.coverKey !== post?.coverKey) void del(`/admin/blog/images?key=${encodeURIComponent(f.coverKey)}`).catch(() => undefined);
+      setF((s) => ({ ...s, coverKey: r.key, coverUrl: r.url })); toast('success', t('admin.blog.coverUploaded'));
+    },
     onError: (e) => toast('error', err(e)),
   });
   const inline = useMutation({
@@ -152,6 +157,7 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
           <Button loading={remove.isPending} onClick={() => remove.mutate()}>{t('admin.blog.delete')}</Button>
         </div>
       </Dialog>
+      <Link href="/admin/blog" className="inline-block text-sm font-semibold text-brand-ink">← {t('admin.blog.back')}</Link>
     </div>
   );
 }
