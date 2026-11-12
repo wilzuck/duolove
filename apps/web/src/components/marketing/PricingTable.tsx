@@ -14,10 +14,10 @@ const ICON = { FREE: Star, PREMIUM: Sparkles, VIP: Crown } as const;
 const BASE = ['plans.feat.signup', 'plans.feat.discover', 'plans.feat.matches', 'plans.feat.chat', 'plans.feat.safety'] as const;
 
 /** Les avantages affichés sont LUS dans la configuration de l'offre (jamais codés par formule). */
-function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) => string): string[] {
+function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) => string, freeShown: boolean): string[] {
   const f = p.features;
   const out: string[] = [];
-  if (p.code !== 'FREE') out.push(t('plans.feat.allFree'));
+  if (p.code !== 'FREE' && freeShown) out.push(t('plans.feat.allFree'));  // « Tout Gratuit » n'a de sens que si l'offre gratuite est affichée
   out.push(f.daily_likes_limit < 0 ? t('plans.feat.likesUnlimited') : t('plans.feat.likes', { n: f.daily_likes_limit }));
   if (f.super_likes_weekly > 0) out.push(t('plans.feat.superLikesWeekly', { n: f.super_likes_weekly }));
   if (f.can_see_likes) out.push(t('plans.feat.seeLikers'));
@@ -64,11 +64,11 @@ export function PricingTable({ initial, current, action, defaultMonths = 1 }: { 
           ))}
         </div>
       )}
-      <div className="grid justify-items-center gap-5 lg:grid-cols-3">
+      <div className={cn('grid justify-items-center gap-5', plans.length === 2 ? 'mx-auto max-w-[52rem] lg:grid-cols-2' : plans.length === 1 ? '' : 'lg:grid-cols-3')}>
         {plans.map((p) => {
           const Icon = ICON[p.code];
           const price = p.prices.find((x) => x.months === months) ?? p.prices[0];
-          const lines = [...(p.code === 'FREE' ? BASE.map((k) => t(k)) : []), ...featureLines(p, t as never)];
+          const lines = [...(p.code === 'FREE' ? BASE.map((k) => t(k)) : []), ...featureLines(p, t as never, plans.some((x) => x.code === 'FREE'))];
           return (
             <Card key={p.code} className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
               {p.featured && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-linear-to-br from-brand-strong to-brand-strong-2 text-white">{t('plans.popular')}</Badge>}

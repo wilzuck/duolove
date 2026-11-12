@@ -85,6 +85,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 .rdp-root.rdp-root .rdp-chevron { fill: currentColor; }
 .rdp-root.rdp-root .rdp-selected .rdp-day_button { color: var(--brand-ink); font-weight: 700; }
+/* Plage de dates : les deux extrémités sont des pastilles roses pleines (texte blanc, contraste 4,95:1), le milieu reste en rose d'encre sur rose très pâle. */
+.rdp-root.rdp-root .rdp-range_start .rdp-day_button,
+.rdp-root.rdp-root .rdp-range_end .rdp-day_button { background: var(--brand-strong); border-color: var(--brand-strong); color: #fff; font-weight: 700; }
 .rdp-root.rdp-root .rdp-caption_label { text-transform: capitalize; }
 .rdp-root.rdp-root .rdp-today:not(.rdp-outside) { font-weight: 700; }
 .rdp-root.rdp-root .rdp-dropdown { background: var(--card); color: var(--fg); }

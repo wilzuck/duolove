@@ -35,7 +35,8 @@ function PlanForm({ plan, onDone, onCancel }: { plan: PlanRow; onDone: () => voi
     <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); save.mutate(); }}>
       <div className="flex flex-wrap items-center justify-between gap-3"><h3 className="flex items-center gap-2 text-lg font-bold">{plan.code}<Badge tone={d.active ? 'success' : 'neutral'}>{d.active ? t('admin.plans.active') : t('admin.plans.inactive')}</Badge></h3>
         <div className="flex items-center gap-4 text-sm"><label className="flex items-center gap-2">{t('admin.plans.featured')}<Switch checked={d.featured} onChange={(v) => setD({ ...d, featured: v })} label={t('admin.plans.featured')} /></label>
-          <label className="flex items-center gap-2">{t('admin.plans.active')}<Switch checked={d.active} disabled={plan.code === 'FREE'} onChange={(v) => setD({ ...d, active: v })} label={t('admin.plans.active')} /></label></div></div>
+          <label className="flex items-center gap-2">{t('admin.plans.active')}<Switch checked={d.active} onChange={(v) => setD({ ...d, active: v })} label={t('admin.plans.active')} /></label></div></div>
+      {plan.code === 'FREE' && <p className="rounded-2xl bg-soft p-3 text-sm text-muted">{t('admin.plans.freeHint')}</p>}
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label={t('admin.plans.name')}>{(p) => <Input {...p} value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />}</Field>
         <Field label={t('admin.plans.monthlyPrice')} hint={t('admin.plans.currencyHint')}>{(p) => <Input {...p} type="number" min={0} disabled={plan.code === 'FREE'} value={d.priceXof} onChange={(e) => setD({ ...d, priceXof: num(e.target.value) })} />}</Field>

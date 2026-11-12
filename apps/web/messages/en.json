@@ -1532,7 +1532,7 @@
     "NO_CREDITS": "Not enough credits.",
     "PRICE_NOT_AVAILABLE": "This length is not offered.",
     "PRODUCT_NOT_FOUND": "Product not found.",
-    "FREE_PLAN_LOCKED": "The free plan cannot be paid or disabled.",
+    "FREE_PLAN_LOCKED": "The free plan cannot be paid.",
     "REFUND_EXISTS": "A refund already exists for this payment.",
     "NOT_REFUNDABLE": "This payment cannot be refunded.",
     "REFUND_WINDOW_EXPIRED": "The refund request period has expired.",
@@ -2468,7 +2468,8 @@
         "calls_enabled": "Start audio and video calls",
         "dates_enabled": "Propose dates",
         "daily_picks_count": "Daily picks (count)"
-      }
+      },
+      "freeHint": "When turned off, the free plan is no longer shown on the pricing page. Members without a subscription keep its rights: it is their starting level and does not go away."
     },
     "refunds": {
       "intro": "A member request is handled by one administrator. A request created by an administrator requires approval by ANOTHER administrator (double validation). Refunds are full: the subscription is cancelled and unused credits are taken back.",

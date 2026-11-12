@@ -230,5 +230,5 @@ async def test_email_html_charte_et_echappement(app, db):
     await mail.send_verification("a@duo.test", "<b>Zoé</b>", "tok", "123456", 15)
     m = mail.outbox[-1]
     assert "123456" in m["text"] and m["html"] and "123456" in m["html"]
-    assert "#C2185B" in m["html"] and "crushduo-logo-email.png" in m["html"] and "verify-email?token=tok" in m["html"]
+    assert "#D81B60" in m["html"] and "#C2185B" in m["html"] and "crushduo-logo-email.png" in m["html"] and "email-hero.jpg" in m["html"] and "Lien sécurisé" in m["html"] and "verify-email?token=tok" in m["html"]
     assert "<b>Zoé</b>" not in m["html"] and "&lt;b&gt;" in m["html"]  # le nom est échappé : aucune injection de HTML

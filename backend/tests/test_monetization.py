@@ -158,3 +158,19 @@ async def test_production_sans_kkiapay_refuse_la_simulation(monkeypatch):
     dev = SimpleNamespace(is_prod=False, payment_provider="mock")
     monkeypatch.setattr(payments, "get_settings", lambda: dev)
     assert (await payments.checkout_provider()).name == "mock"
+
+
+async def test_formule_gratuite_peut_etre_retiree_de_l_offre(app, http, db):
+    """Désactiver la formule gratuite la retire du catalogue affiché ; elle reste le niveau de départ (droits inchangés) et ne peut pas devenir payante."""
+    from tests.support_c import admin
+
+    ad, u = await admin(app, db), await member(app, db)
+    try:
+        assert (await ad.agent.patch("/api/admin/plans/FREE", json={"active": False})).status_code == 200
+        codes = [p["code"] for p in (await http.get("/api/plans")).json()["plans"]]
+        assert "FREE" not in codes and "PREMIUM" in codes
+        assert (await u.agent.get("/api/subscriptions/me")).json()["plan"] == "FREE"  # le membre garde son niveau de départ
+        assert (await ad.agent.patch("/api/admin/plans/FREE", json={"priceXof": 100})).status_code == 403
+    finally:
+        assert (await ad.agent.patch("/api/admin/plans/FREE", json={"active": True})).status_code == 200
+    assert "FREE" in [p["code"] for p in (await http.get("/api/plans")).json()["plans"]]

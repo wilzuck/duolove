@@ -1532,7 +1532,7 @@
     "NO_CREDITS": "Crédits insuffisants.",
     "PRICE_NOT_AVAILABLE": "Cette durée n’est pas proposée.",
     "PRODUCT_NOT_FOUND": "Produit introuvable.",
-    "FREE_PLAN_LOCKED": "La formule gratuite ne peut ni être payante ni désactivée.",
+    "FREE_PLAN_LOCKED": "La formule gratuite ne peut pas être payante.",
     "REFUND_EXISTS": "Un remboursement existe déjà pour ce paiement.",
     "NOT_REFUNDABLE": "Ce paiement ne peut pas être remboursé.",
     "REFUND_WINDOW_EXPIRED": "Le délai de demande de remboursement est dépassé.",
@@ -2468,7 +2468,8 @@
         "calls_enabled": "Lancer des appels audio et vidéo",
         "dates_enabled": "Proposer des rendez-vous",
         "daily_picks_count": "Découvertes du jour (nombre)"
-      }
+      },
+      "freeHint": "Désactivée, la formule gratuite n'est plus affichée sur la page des tarifs. Les membres sans abonnement gardent ses droits : c'est leur niveau de départ, il ne disparaît pas."
     },
     "refunds": {
       "intro": "Une demande de membre est traitée par un administrateur. Une demande créée par un administrateur exige l’approbation d’un AUTRE administrateur (double validation). Le remboursement est intégral : l’abonnement est résilié et les crédits non utilisés sont repris.",

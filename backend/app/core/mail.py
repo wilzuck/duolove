@@ -133,7 +133,7 @@ async def send_verification(to: str, name: str, token: str, code: str, minutes: 
         p(f"Bonjour {esc_(name)}, bienvenue sur Crushduo !"), p(f"Saisissez ce code dans l’application : il est valable {minutes} minutes."), code_box(code),
         p("Vous pouvez aussi confirmer en un clic :"), button("Confirmer mon adresse", link),
         note("Ne communiquez jamais ce code. Si vous n’êtes pas à l’origine de cette inscription, ignorez ce message : le compte sera supprimé automatiquement. Le lien est valable 24 h."),
-    ], preheader=f"Votre code de confirmation : {code}")
+    ], preheader=f"Votre code de confirmation : {code}", trust=True)
     await send(to, "Votre code de confirmation — Crushduo",
                f"Bonjour {name},\n\nBienvenue sur Crushduo !\n\nVotre code de confirmation : {code}\n"
                f"Saisissez-le dans l'application (valable {minutes} minutes).\n\n"
@@ -144,9 +144,10 @@ async def send_verification(to: str, name: str, token: str, code: str, minutes: 
 async def send_password_reset(to: str, name: str, token: str) -> None:
     link = f"{get_settings().app_url}/reset-password?token={token}"
     html = render_email("Choisissez un nouveau mot de passe", [
-        p(f"Bonjour {esc_(name)}, vous avez demandé à réinitialiser votre mot de passe."), button("Choisir un nouveau mot de passe", link),
-        note("Lien valable 1 h. Si vous n’avez rien demandé, ignorez ce message : votre mot de passe reste inchangé."),
-    ], preheader="Réinitialisation de votre mot de passe")
+        p(f"Bonjour {esc_(name)}, vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe en toute sécurité."),
+        button("Choisir un nouveau mot de passe", link),
+        note("Ce lien est valable pendant 1 heure. Si vous n’avez pas demandé cette réinitialisation, vous pouvez ignorer cet e-mail : votre mot de passe restera inchangé."),
+    ], preheader="Réinitialisation de votre mot de passe", trust=True)
     await send(to, "Réinitialisation de votre mot de passe — Crushduo",
                f"Bonjour {name},\n\nPour choisir un nouveau mot de passe : {link}\n\n"
                "Lien valable 1 h. Si vous n'avez rien demandé, ignorez ce message : votre mot de passe reste inchangé.", html, kind="password_reset")
@@ -157,7 +158,7 @@ async def send_magic_link(to: str, name: str, token: str, remember: bool = True)
     html = render_email("Votre lien de connexion", [
         p(f"Bonjour {esc_(name)}, voici votre lien pour vous connecter sans mot de passe."), button("Me connecter", link),
         note("Lien valable 15 minutes, utilisable une seule fois. Si vous n’avez rien demandé, ignorez ce message : personne ne peut se connecter sans lui."),
-    ], preheader="Connexion à Crushduo sans mot de passe")
+    ], preheader="Connexion à Crushduo sans mot de passe", trust=True)
     await send(to, "Votre lien de connexion — Crushduo",
                f"Bonjour {name},\n\nPour vous connecter sans mot de passe : {link}\n\n"
                "Lien valable 15 minutes, utilisable une seule fois. Si vous n'avez rien demandé, ignorez ce message : personne ne peut se connecter sans lui.", html, kind="magic_link")

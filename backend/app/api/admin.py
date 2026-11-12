@@ -618,8 +618,9 @@ async def patch_plan(code: str, body: PlanPatch, a: AuthUser = ADM, db: AsyncSes
     plan = (await db.execute(select(SubscriptionPlan).where(SubscriptionPlan.code == code))).scalar_one_or_none() if code in ("FREE", "PREMIUM", "VIP") else None
     if not plan:
         raise not_found("PLAN_NOT_FOUND")
-    if ev(plan.code) == "FREE" and ((body.priceXof or 0) > 0 or body.active is False):
-        raise forbidden("FREE_PLAN_LOCKED", "La formule gratuite ne peut ni être payante ni être désactivée")
+    # La formule gratuite reste le niveau de départ de tout membre (ses droits ne changent pas) : on peut la retirer de l'offre affichée (`active` = faux), pas la rendre payante.
+    if ev(plan.code) == "FREE" and (body.priceXof or 0) > 0:
+        raise forbidden("FREE_PLAN_LOCKED", "La formule gratuite ne peut pas être payante")
     before = {"name": plan.name, "priceXof": plan.priceXof, "active": plan.active}
     data = body.model_dump(mode="json", exclude_unset=True)
     for k in ("name", "priceXof", "active", "featured", "sortOrder"):
