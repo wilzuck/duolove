@@ -4450,5 +4450,26 @@
     "discountTitleMonths": "{percent}% off your first {n} months with a verified profile",
     "discountSpent": "You have already used this discount.",
     "discountCap": "The offer is full: all verified-profile spots have been taken."
+  },
+  "topbar": {
+    "group": "Shortcuts",
+    "buy": "Buy",
+    "superLike": {
+      "title": "Super Likes",
+      "text": "Stand out to someone you really like: your profile jumps the queue and they are invited to reply.",
+      "balance": "You have {n} left."
+    },
+    "boost": {
+      "title": "Visibility boost",
+      "text": "Put your profile in front of compatible people for the length you choose.",
+      "activate": "Activate {duration} ({n} available)"
+    },
+    "private": {
+      "title": "Private mode",
+      "text": "Browse profiles without appearing in visitors. Your messages and matches stay normal.",
+      "locked": "Private mode is included in paid plans.",
+      "switch": "Turn on private mode",
+      "upgrade": "See plans"
+    }
   }
 }

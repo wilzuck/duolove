@@ -4450,5 +4450,26 @@
     "discountTitleMonths": "−{percent} % sur tes {n} premiers mois avec un profil vérifié",
     "discountSpent": "Tu as déjà profité de cette réduction.",
     "discountCap": "L'offre est complète : tous les profils vérifiés ont été servis."
+  },
+  "topbar": {
+    "group": "Raccourcis",
+    "buy": "Acheter",
+    "superLike": {
+      "title": "Super Likes",
+      "text": "Démarquez-vous auprès d'une personne qui vous plaît vraiment : votre profil passe en priorité et elle est invitée à vous répondre.",
+      "balance": "Il vous en reste {n}."
+    },
+    "boost": {
+      "title": "Boost de visibilité",
+      "text": "Mettez votre profil en avant auprès des personnes compatibles pendant une durée choisie.",
+      "activate": "Activer {duration} ({n} disponible(s))"
+    },
+    "private": {
+      "title": "Mode privé",
+      "text": "Parcourez les profils sans apparaître dans les visiteurs. Vos messages et vos matches restent normaux.",
+      "locked": "Le mode privé est inclus dans les formules payantes.",
+      "switch": "Activer le mode privé",
+      "upgrade": "Voir les formules"
+    }
   }
 }

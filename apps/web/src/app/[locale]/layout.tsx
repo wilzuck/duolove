@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale });
   return {
     metadataBase: new URL(SITE_URL),
+    verification: { google: 'wQJy1ZCPPCmpy7nH0U2qs-4OinytvSTcFMjqTu7C3bE' },  // Google Search Console (balise meta ; le fichier googled50b92c5ae936d80.html de /public fait le même office)
     title: { default: t('meta.title'), template: `%s · Crushduo` },
     description: t('meta.description'),
     applicationName: 'Crushduo',
