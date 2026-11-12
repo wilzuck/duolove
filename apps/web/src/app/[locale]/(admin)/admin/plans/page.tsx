@@ -24,7 +24,7 @@ function PlanForm({ plan, onDone, onCancel }: { plan: PlanRow; onDone: () => voi
   const err = useApiError();
   const toast = useUi((s) => s.toast);
   const [d, setD] = useState(() => ({ taglineFr: plan.taglineFr ?? '', taglineEn: plan.taglineEn ?? '', name: plan.name, priceXof: plan.priceXof, active: plan.active, featured: plan.featured, sortOrder: plan.sortOrder, features: plan.features,
-    prices: DURATION_MONTHS.map((m) => { const p = plan.prices.find((x) => x.months === m); return { months: m, discountPercent: p?.discountPercent ?? 0, amountOverride: p?.amountOverride ?? null, active: p?.active ?? true }; }) }));
+    prices: DURATION_MONTHS.map((m) => { const p = plan.prices.find((x) => x.months === m); return { months: m, discountPercent: p?.discountPercent ?? 0, amountOverride: p?.amountOverride ?? null, active: p?.active ?? m !== 0 }; }) })); // la formule de 7 jours reste désactivée tant qu'on ne l'active pas
   const save = useMutation({
     mutationFn: () => patch(`/admin/plans/${plan.code}`, { name: d.name, priceXof: d.priceXof, active: d.active, featured: d.featured, sortOrder: d.sortOrder, taglineFr: d.taglineFr, taglineEn: d.taglineEn, features: d.features, ...(plan.code === 'FREE' ? {} : { prices: d.prices }) }),
     onSuccess: () => { toast('success', t('admin.plans.saved')); void qc.invalidateQueries({ queryKey: ['admin', 'plans'] }); void qc.invalidateQueries({ queryKey: ['plans'] }); onDone(); },
@@ -64,7 +64,7 @@ function PlanForm({ plan, onDone, onCancel }: { plan: PlanRow; onDone: () => voi
           >
             <tbody>{d.prices.map((p, i) => (
               <tr key={p.months} className="border-b border-line last:border-0">
-                <td className="px-3 py-2 font-semibold">{t('plans.months', { n: p.months })}</td>
+                <td className="px-3 py-2 font-semibold">{p.months === 0 ? t('plans.week') : t('plans.months', { n: p.months })}</td>
                 <td className="px-3 py-2"><Input aria-label={t('admin.plans.col.discount')} type="number" min={0} max={90} className="h-10 w-24" value={p.discountPercent} onChange={(e) => setD({ ...d, prices: d.prices.map((x, j) => (j === i ? { ...x, discountPercent: num(e.target.value) } : x)) })} /></td>
                 <td className="px-3 py-2"><Input aria-label={t('admin.plans.col.override')} type="number" min={0} className="h-10 w-32" placeholder="—" value={p.amountOverride ?? ''} onChange={(e) => setD({ ...d, prices: d.prices.map((x, j) => (j === i ? { ...x, amountOverride: e.target.value === '' ? null : num(e.target.value) } : x)) })} /></td>
                 <td className="px-3 py-2 font-semibold">{formatXof(priceForDuration(d.priceXof, p.months, p.discountPercent, p.amountOverride), locale)}</td>
@@ -122,7 +122,7 @@ function PlanCard({ plan }: { plan: PlanRow }) {
           <ul className="flex flex-wrap gap-2 text-sm">
             {DURATION_MONTHS.map((m) => { const p = plan.prices.find((x) => x.months === m); if (!p) return null; return (
               <li key={m} className={`rounded-2xl border border-line px-3 py-2 ${p.active ? '' : 'opacity-50'}`}>
-                <span className="font-semibold">{t('plans.months', { n: m })}</span>{p.discountPercent > 0 && <Badge tone="gold" className="ml-1.5">−{p.discountPercent} %</Badge>}
+                <span className="font-semibold">{m === 0 ? t('plans.week') : t('plans.months', { n: m })}</span>{p.discountPercent > 0 && <Badge tone="gold" className="ml-1.5">−{p.discountPercent} %</Badge>}
                 <span className="block text-muted">{formatXof(priceForDuration(plan.priceXof, m, p.discountPercent, p.amountOverride), locale)}{!p.active && ` · ${t('admin.plans.hidden')}`}</span>
               </li>); })}
           </ul>

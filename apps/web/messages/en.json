@@ -356,7 +356,11 @@
     "order": "Order",
     "showFeatures": "Show all benefits",
     "hideFeatures": "Hide benefits",
-    "promoTotal": "With {code} (−{percent}%): {total} on your next payment, for {n, plural, one {# month} other {# months}}."
+    "promoTotal": "With {code} (−{percent}%): {total} on your next payment, for {n, plural, one {# month} other {# months}}.",
+    "week": "7 days",
+    "perWeek": "/ 7 days",
+    "billedWeek": "Valid for 7 days, no renewal",
+    "promoTotalWeek": "With {code} (−{percent}%): {total} on your next payment, for 7 days."
   },
   "about": {
     "title": "About Crushduo",

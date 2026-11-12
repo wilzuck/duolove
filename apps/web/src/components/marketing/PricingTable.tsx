@@ -59,7 +59,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
           {durations.map((m) => (
             <button key={m} type="button" role="radio" aria-checked={months === m} onClick={() => setMonths(m)}
               className={cn('flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition', months === m ? 'bg-linear-to-br from-brand-strong to-brand-strong-2 text-white shadow-soft' : 'text-brand-ink hover:bg-card')}>
-              {t('plans.months', { n: m })}
+              {m === 0 ? t('plans.week') : t('plans.months', { n: m })}
               {maxDiscount(m) > 0 && <span className={cn('rounded-full px-1.5 text-[11px]', months === m ? 'bg-white/25' : 'bg-linear-to-br from-brand-strong to-brand-strong-2 text-white')}>−{maxDiscount(m)}%</span>}
             </button>
           ))}
@@ -86,10 +86,10 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
                 <div className="space-y-1">
                   <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
                     <del className="text-lg font-semibold text-muted decoration-2"><span className="sr-only">{t('plans.regularPrice')} </span>{formatXof(Math.round((price.totalXof + price.savingsXof) / price.months), locale)}</del>
-                    <span className="font-display text-4xl font-extrabold"><span className="sr-only">{t('plans.promoPrice')} </span>{formatXof(Math.round((price.totalXof - Math.round((price.totalXof * promo.percent) / 100)) / price.months), locale)}</span>
-                    <span className="text-sm text-muted">{t('plans.perMonth')}</span>
+                    <span className="font-display text-4xl font-extrabold"><span className="sr-only">{t('plans.promoPrice')} </span>{formatXof(Math.round((price.totalXof - Math.round((price.totalXof * promo.percent) / 100)) / Math.max(1, price.months)), locale)}</span>
+                    <span className="text-sm text-muted">{t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')}</span>
                   </p>
-                  <p className="text-sm font-semibold text-success-ink">{t('plans.promoTotal', { code: promo.code, percent: promo.percent, total: formatXof(price.totalXof - Math.round((price.totalXof * promo.percent) / 100), locale), n: price.months })}</p>
+                  <p className="text-sm font-semibold text-success-ink">{t(price.months === 0 ? 'plans.promoTotalWeek' : 'plans.promoTotal', { code: promo.code, percent: promo.percent, total: formatXof(price.totalXof - Math.round((price.totalXof * promo.percent) / 100), locale), n: price.months })}</p>
                 </div>
               ) : (
                 <div className="space-y-1">
@@ -98,10 +98,10 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
                       <del className="text-lg font-semibold text-muted decoration-2"><span className="sr-only">{t('plans.regularPrice')} </span>{formatXof(Math.round((price.totalXof + price.savingsXof) / price.months), locale)}</del>
                     )}
                     <span className="font-display text-4xl font-extrabold"><span className="sr-only">{price.savingsXof > 0 ? `${t('plans.promoPrice')} ` : ''}</span>{formatXof(price.monthlyEquivalentXof, locale)}</span>
-                    <span className="text-sm text-muted">{t('plans.perMonth')}</span>
+                    <span className="text-sm text-muted">{t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')}</span>
                   </p>
                   <p className="text-sm text-muted">
-                    {price.months === 1 ? t('plans.billedMonthly') : t('plans.billedOnce', { total: formatXof(price.totalXof, locale), n: price.months })}
+                    {price.months === 0 ? t('plans.billedWeek') : price.months === 1 ? t('plans.billedMonthly') : t('plans.billedOnce', { total: formatXof(price.totalXof, locale), n: price.months })}
                     {price.discountPercent > 0 && <span className="ml-2 font-semibold text-success-ink">{t('plans.save', { amount: formatXof(price.savingsXof, locale), pct: price.discountPercent })}</span>}
                   </p>
                 </div>

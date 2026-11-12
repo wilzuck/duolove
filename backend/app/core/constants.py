@@ -20,8 +20,11 @@ LIVING = ("ALONE", "FAMILY", "ROOMMATES")
 TRI = ("ANY", "YES", "NO")
 CREDIT_TYPES = ("SUPER_LIKE", "BOOST_30", "BOOST_120", "BOOST_1440", "MATCH_TOKEN")
 BOOST_MINUTES = {"BOOST_30": 30, "BOOST_120": 120, "BOOST_1440": 1440}
-DURATION_MONTHS = (1, 3, 6, 12)
-DEFAULT_DISCOUNTS = {1: 0, 3: 10, 6: 20, 12: 30}
+# Durées proposées. 0 = « formule de 7 jours » (essai payant sans engagement) : une durée en JOURS, pas en mois ; créée DÉSACTIVÉE, l'administration l'active.
+WEEK = 0
+WEEK_DAYS = 7
+DURATION_MONTHS = (WEEK, 1, 3, 6, 12)
+DEFAULT_DISCOUNTS = {WEEK: 0, 1: 0, 3: 10, 6: 20, 12: 30}
 UNLIMITED_LIKES_CAP = 1000
 
 PLAN_FEATURE_DEFAULTS: dict = {
@@ -135,9 +138,20 @@ def limits_from_features(f: dict) -> dict:
     }
 
 
+def months_equiv(months: int) -> float:
+    """Équivalent en mois d'une durée (7 jours ≈ 7/30) : sert à proportionner les jetons et boosts inclus dans la formule."""
+    return WEEK_DAYS / 30 if months == WEEK else float(months)
+
+
+def duration_label(months: int) -> str:
+    return f"{WEEK_DAYS} jours" if months == WEEK else f"{months} mois"
+
+
 def price_for_duration(monthly_xof: int, months: int, discount_percent: int, amount_override: int | None = None) -> int:
     if amount_override is not None:
         return amount_override
+    if months == WEEK:  # 7 jours : 40 % du tarif mensuel, arrondi à 50 FCFA (modifiable par l'administration)
+        return max(50, int(monthly_xof * 0.4 / 50 + 0.5) * 50)
     # Même arrondi que Math.round (moitié vers le haut) pour des montants positifs.
     return int((monthly_xof * months * (100 - discount_percent)) / 100 + 0.5)
 

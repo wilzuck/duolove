@@ -17,7 +17,7 @@ def _promo(v):
 
 
 PromoCode = Annotated[str, BeforeValidator(_promo)]
-Months = Literal[1, 3, 6, 12]
+Months = Literal[0, 1, 3, 6, 12]  # 0 = formule de 7 jours
 
 
 class LegacyCheckout(BaseModel):

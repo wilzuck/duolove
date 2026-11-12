@@ -9,6 +9,7 @@ from sqlalchemy.orm import selectinload
 
 from app.core.constants import (
     DEFAULT_DISCOUNTS, DEFAULT_PLANS, DEFAULT_PRODUCTS, DURATION_MONTHS, PLAN_CODES, PLAN_FEATURE_DEFAULTS, price_for_duration,
+    WEEK,
 )
 from app.core.errors import bad_request, not_found
 from app.core.ids import new_id, utcnow
@@ -64,7 +65,7 @@ async def ensure_defaults(db: AsyncSession) -> None:
         if code != "FREE":
             for months in DURATION_MONTHS:
                 await db.execute(
-                    insert(PlanPrice).values(id=new_id(), planId=plan.id, months=months, discountPercent=DEFAULT_DISCOUNTS[months])
+                    insert(PlanPrice).values(id=new_id(), planId=plan.id, months=months, discountPercent=DEFAULT_DISCOUNTS[months], active=months != WEEK)
                     .on_conflict_do_nothing(index_elements=["planId", "months"])
                 )
     for code, kind, credit, name, qty, price, order in DEFAULT_PRODUCTS:
@@ -91,8 +92,9 @@ async def _load(db: AsyncSession) -> dict[str, dict]:
             if not p.active:
                 continue
             total = price_for_duration(r.priceXof, p.months, p.discountPercent, p.amountOverride)
+            week = p.months == WEEK  # 7 jours : pas de « prix par mois » ni d'économie (le prix est celui de la période)
             prices.append({"months": p.months, "discountPercent": p.discountPercent, "totalXof": total,
-                           "monthlyEquivalentXof": int(total / p.months + 0.5), "savingsXof": max(0, r.priceXof * p.months - total)})
+                           "monthlyEquivalentXof": total if week else int(total / p.months + 0.5), "savingsXof": 0 if week else max(0, r.priceXof * p.months - total)})
         plans[r.code.value] = {"code": r.code.value, "name": r.name, "priceXof": r.priceXof, "currency": r.currency, "features": features,
                                "featured": r.featured, "sortOrder": r.sortOrder, "prices": prices,
                                "taglineFr": r.taglineFr, "taglineEn": r.taglineEn}

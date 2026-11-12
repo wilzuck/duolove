@@ -102,14 +102,17 @@ export function limitsFromFeatures(f: PlanFeatures): Limits {
   };
 }
 
-export const DURATION_MONTHS = [1, 3, 6, 12] as const;
+/** Durée 0 = « formule de 7 jours » (essai payant sans engagement ; désactivée tant que l'administration ne l'active pas). */
+export const WEEK = 0;
+export const DURATION_MONTHS = [0, 1, 3, 6, 12] as const;
 export type DurationMonths = (typeof DURATION_MONTHS)[number];
 /** Remises par durée proposées à l'initialisation ; modifiables dans l'administration. */
-export const DEFAULT_DISCOUNTS: Record<DurationMonths, number> = { 1: 0, 3: 10, 6: 20, 12: 30 };
+export const DEFAULT_DISCOUNTS: Record<DurationMonths, number> = { 0: 0, 1: 0, 3: 10, 6: 20, 12: 30 };
 
 /** Prix d'une durée, calculé à partir du tarif mensuel RÉELLEMENT configuré (jamais d'un montant client). */
 export function priceForDuration(monthlyXof: number, months: number, discountPercent: number, amountOverride?: number | null): number {
   if (amountOverride != null) return amountOverride;
+  if (months === WEEK) return Math.max(50, Math.round((monthlyXof * 0.4) / 50) * 50); // 7 jours : 40 % du tarif mensuel, arrondi à 50 FCFA
   return Math.round((monthlyXof * months * (100 - discountPercent)) / 100);
 }
 

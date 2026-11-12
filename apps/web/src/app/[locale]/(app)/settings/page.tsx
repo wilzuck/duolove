@@ -192,7 +192,7 @@ function PaymentsTab() {
       {status === 'fail' && <Alert className="font-medium">{t('settings.pay.failed')}</Alert>}
       {!q.data ? <Skeleton className="h-40" /> : q.data.length === 0 ? <EmptyState icon={<Receipt className="size-8" aria-hidden />} title={t('settings.pay.empty')} /> : (
         <Card className="divide-y divide-line px-5">{q.data.map((p) => (
-          <div key={p.id} className="flex items-center justify-between gap-3 py-4"><div><p className="font-semibold">{p.kind === 'PRODUCT' ? p.product : p.plan ? `${t(`plans.${p.plan}.name`)} · ${t('plans.months', { n: p.months })}` : '—'} · {formatXof(p.amountXof, locale)}</p><p className="text-xs text-muted">{formatDate(p.createdAt, locale)} · {p.provider}</p></div>
+          <div key={p.id} className="flex items-center justify-between gap-3 py-4"><div><p className="font-semibold">{p.kind === 'PRODUCT' ? p.product : p.plan ? `${t(`plans.${p.plan}.name`)} · ${p.months === 0 ? t('plans.week') : t('plans.months', { n: p.months })}` : '—'} · {formatXof(p.amountXof, locale)}</p><p className="text-xs text-muted">{formatDate(p.createdAt, locale)} · {p.provider}</p></div>
             <div className="flex items-center gap-2"><Badge tone={p.status === 'SUCCEEDED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'neutral'}>{t(`settings.pay.status.${p.status}`)}</Badge>{p.invoiceNumber && <a href={`/api/payments/${p.id}/invoice.pdf`} download className={buttonVariants({ variant: 'outline', size: 'sm' })} aria-label={t('settings.pay.invoiceDownload', { n: p.invoiceNumber })}><FileDown className="size-4" aria-hidden />{t('settings.pay.invoice')}</a>}</div></div>
         ))}</Card>
       )}

@@ -1,4 +1,4 @@
-import { DEFAULT_DISCOUNTS, DEFAULT_PLANS, DEFAULT_PRODUCTS, DURATION_MONTHS, priceForDuration, type PlanCode } from '@duomatch/types';
+import { DEFAULT_DISCOUNTS, DEFAULT_PLANS, DEFAULT_PRODUCTS, DURATION_MONTHS, WEEK, priceForDuration, type PlanCode } from '@duomatch/types';
 import type { Catalog } from './types';
 
 /** Catalogue de repli (valeurs par défaut) : sert quand l'API est injoignable (build, panne) — jamais pour encaisser. */
@@ -8,7 +8,7 @@ export function fallbackCatalog(): Catalog {
       const d = DEFAULT_PLANS[code];
       return {
         code, name: d.name, priceXof: d.priceXof, currency: 'XOF', features: d.features, featured: d.featured, sortOrder: d.sortOrder,
-        prices: code === 'FREE' ? [] : DURATION_MONTHS.map((months) => {
+        prices: code === 'FREE' ? [] : DURATION_MONTHS.filter((m) => m !== WEEK).map((months) => {
           const total = priceForDuration(d.priceXof, months, DEFAULT_DISCOUNTS[months]);
           return { months, discountPercent: DEFAULT_DISCOUNTS[months], totalXof: total, monthlyEquivalentXof: Math.round(total / months), savingsXof: d.priceXof * months - total };
         }),

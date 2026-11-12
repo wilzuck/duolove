@@ -13,6 +13,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.constants import WEEK, WEEK_DAYS, duration_label, months_equiv
 from app.core import access, credits, invoicing, entitlements, kkiapay, notifications, payment_config, plan_config, promo
 from app.core.config import get_settings
 from app.core.errors import AppError, bad_request, not_found, unauthorized
@@ -31,6 +32,16 @@ TX_RE = re.compile(r"^[A-Za-z0-9_-]{4,64}$")
 def ev(x):
     """Valeur d'une colonne enum (membre d'enum après lecture, simple chaîne après affectation)."""
     return getattr(x, "value", x)
+
+
+def add_duration(d: datetime.datetime, months: int) -> datetime.datetime:
+    """Fin d'une période : 7 jours pour la formule courte (durée 0), sinon `months` mois."""
+    return d + datetime.timedelta(days=WEEK_DAYS) if months == WEEK else add_months(d, months)
+
+
+def scaled(monthly: int, months: int) -> int:
+    """Quantité mensuelle incluse (jetons, boosts) proportionnée à la durée achetée : 7 jours ≈ 7/30 de mois, arrondi à l'entier le plus proche."""
+    return int(monthly * months_equiv(months) + 0.5)
 
 
 def add_months(d: datetime.datetime, n: int) -> datetime.datetime:
@@ -188,20 +199,23 @@ async def apply_success(db: AsyncSession, payment_id: str) -> None:
     elif sub:
         plan_row = await db.get(SubscriptionPlan, sub.planId)
         plan_code = ev(plan_row.code)
+        # Rachat de la MÊME formule avant la fin : la nouvelle période s'ajoute à la date de fin déjà payée (jamais de jours perdus). Autre formule : changement immédiat.
+        prev_end = (await db.execute(select(func.max(Subscription.currentPeriodEnd)).where(
+            Subscription.userId == payment.userId, Subscription.planId == sub.planId, Subscription.id != sub.id, Subscription.status == "ACTIVE", Subscription.currentPeriodEnd > now))).scalar_one_or_none()
         # Un seul abonnement actif à la fois : les autres sont clôturés (changement de formule immédiat).
         await db.execute(update(Subscription).where(Subscription.userId == payment.userId, Subscription.id != sub.id,
                                                     Subscription.status.in_(["ACTIVE", "PAST_DUE", "PENDING"])).values(status="CANCELED"))
-        base = sub.currentPeriodEnd if (ev(sub.status) == "ACTIVE" and sub.currentPeriodEnd and sub.currentPeriodEnd > now) else now
-        valid_until = add_months(base, sub.months)
+        base = sub.currentPeriodEnd if (ev(sub.status) == "ACTIVE" and sub.currentPeriodEnd and sub.currentPeriodEnd > now) else (prev_end or now)
+        valid_until = add_duration(base, sub.months)
         sub.status, sub.currentPeriodEnd, sub.cancelAtPeriodEnd = "ACTIVE", valid_until, False
         await entitlements.set_(db, payment.userId, plan_code, valid_until)
         feats = await plan_config.features_of(db, plan_code)
         # Boosts inclus dans la formule (configurable) : crédités pour chaque mois acheté.
-        if feats["boosts_monthly"] > 0:
-            await credits.grant(db, payment.userId, "BOOST_120", feats["boosts_monthly"] * sub.months, "GRANT_PLAN", payment.id)
+        if scaled(feats["boosts_monthly"], sub.months) > 0:
+            await credits.grant(db, payment.userId, "BOOST_120", scaled(feats["boosts_monthly"], sub.months), "GRANT_PLAN", payment.id)
         # Jetons Match inclus : référence distincte, car l'unicité du journal ne tient pas compte du type.
-        if feats["match_tokens_monthly"] > 0:
-            await credits.grant(db, payment.userId, "MATCH_TOKEN", feats["match_tokens_monthly"] * sub.months, "GRANT_PLAN", f"{payment.id}:tokens")
+        if scaled(feats["match_tokens_monthly"], sub.months) > 0:
+            await credits.grant(db, payment.userId, "MATCH_TOKEN", scaled(feats["match_tokens_monthly"], sub.months), "GRANT_PLAN", f"{payment.id}:tokens")
         await db.commit()
     else:
         await db.commit()
@@ -355,8 +369,8 @@ async def invoice(db: AsyncSession, user_id: str, payment_id: str) -> dict:
         plan_name = ""
         if p.subscriptionId:
             plan_name = (await db.execute(select(SubscriptionPlan.name).join(Subscription, Subscription.planId == SubscriptionPlan.id).where(Subscription.id == p.subscriptionId))).scalar_one_or_none()
-        desc = f"Abonnement {site} {plan_name} — {p.months} mois"
-        line = f"Abonnement {site} {plan_name} · {p.months} mois"
+        desc = f"Abonnement {site} {plan_name} — {duration_label(p.months)}"
+        line = f"Abonnement {site} {plan_name} · {duration_label(p.months)}"
     company = await invoicing.company(db)
     discount = int(p.discountXof or 0)
     promo_code = None
@@ -385,6 +399,8 @@ async def send_renewal_reminders(db: AsyncSession, now: datetime.datetime) -> in
     sent = 0
     for s, plan_name in rows:
         left = (s.currentPeriodEnd - now).total_seconds() / 86400
+        if s.months == WEEK and left > 1:
+            continue  # formule de 7 jours : un seul rappel, la veille de la fin (J-7 et J-3 partiraient dès l'achat)
         stage = min(d for d in REMINDER_DAYS if left <= d)  # palier le plus urgent atteint
         ends = s.currentPeriodEnd.isoformat(timespec="milliseconds") + "Z"
         done = (await db.execute(select(Notification.data).where(Notification.userId == s.userId, Notification.type == "SUBSCRIPTION_EXPIRING",
