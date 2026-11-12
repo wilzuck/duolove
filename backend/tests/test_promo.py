@@ -226,3 +226,25 @@ async def test_rappel_de_fin_d_offre_une_seule_fois_notification_et_email_selon_
     assert {soon.id, quiet.id} <= got and early.id not in got
     assert count == 1 and notes[soon.id]["kind"] == "PROMO_ENDING" and notes[soon.id]["code"] == p["code"] and notes[soon.id]["percent"] == 50
     assert soon.email in mailed and quiet.email not in mailed and early.email not in mailed  # e-mail réservé aux membres ayant accepté les offres
+
+
+async def test_un_code_propose_plus_ancien_reste_visible_malgre_des_codes_plus_recents_inutilisables(app, db):
+    from sqlalchemy import update
+
+    from app.models.models import PromoCode, User
+    async with session_maker()() as s:  # isole le test : plus aucun autre code proposé
+        await s.execute(update(PromoCode).values(featured=False))
+        await s.commit()
+    a = await admin(app, db)
+    old = await create_promo(a, code=new_code("ANC"), kind="PERCENT", percent=50, featured=True)
+    for i in range(6):  # six codes plus récents, avec un délai de 1 h : écoulé pour ce membre
+        await create_promo(a, code=new_code(f"EXP{i}"), kind="PERCENT", percent=10, featured=True, claimHours=1)
+    u = await member(app, db)
+    async with session_maker()() as s:
+        await s.execute(update(User).where(User.id == u.id).values(createdAt=datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None) - datetime.timedelta(hours=5)))
+        await s.commit()
+    items = (await u.agent.get("/api/promo/featured")).json()["items"]
+    assert [x["code"] for x in items] == [old["code"]]
+    async with session_maker()() as s:  # ne laisse rien de proposé derrière soi
+        await s.execute(update(PromoCode).values(featured=False))
+        await s.commit()

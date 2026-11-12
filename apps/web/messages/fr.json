@@ -355,7 +355,8 @@
     "hoursShort": "{n} h",
     "order": "Commander",
     "showFeatures": "Afficher tous les avantages",
-    "hideFeatures": "Masquer les avantages"
+    "hideFeatures": "Masquer les avantages",
+    "promoTotal": "Avec {code} (−{percent} %) : {total} au prochain paiement, pour {n, plural, one {# mois} other {# mois}}."
   },
   "about": {
     "title": "À propos de Crushduo",

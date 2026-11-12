@@ -138,7 +138,7 @@ async def featured(db: AsyncSession, user_id: str) -> list[dict]:
     rows = (await db.execute(
         select(PromoCode).where(PromoCode.featured.is_(True), PromoCode.active.is_(True),
                                 or_(PromoCode.startsAt.is_(None), PromoCode.startsAt <= now), or_(PromoCode.expiresAt.is_(None), PromoCode.expiresAt >= now))
-        .order_by(PromoCode.createdAt.desc()).limit(5))).scalars().all()
+        .order_by(PromoCode.createdAt.desc()).limit(40))).scalars().all()  # on lit large puis on garde les 5 premiers UTILISABLES : un code plus ancien ne doit pas disparaître
     used = await usage_map(db, list(rows))
     out = []
     for p in rows:
@@ -153,6 +153,8 @@ async def featured(db: AsyncSession, user_id: str) -> list[dict]:
             mine = await _token_uses(db, f"promo:{p.id}", user_id)
         if mine:
             continue
+        if len(out) >= 5:
+            break  # au plus 5 offres affichées
         out.append({"code": p.code, "kind": p.kind.value, "percent": p.percent, "tokens": p.tokens,
                     "remaining": None if p.maxRedemptions is None else p.maxRedemptions - used[p.id],
                     "expiresAt": iso(p.expiresAt) if p.expiresAt else None,

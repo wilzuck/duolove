@@ -42,7 +42,7 @@ function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) =>
  * Grille des offres avec choix de la durée (mensuel / 3 / 6 / 12 mois). `initial` vient du serveur ; le catalogue
  * est ensuite rafraîchi en continu : un changement de tarif dans l'administration apparaît sans rechargement.
  */
-export function PricingTable({ initial, current, action, defaultMonths = 1, hideFree = false, collapseFeatures = false }: { /** Avantages masqués par défaut : un seul bouton sous la grille les affiche pour toutes les offres (page d'arrivée après l'inscription). */ collapseFeatures?: boolean; initial?: Catalog; current?: PlanCode; /** Absent = pages publiques : bouton « Créer mon compte » intégré (une fonction ne peut pas traverser serveur → client). */ action?: (plan: PlanView, months: number) => ReactNode; defaultMonths?: number; /** Accès payant : la formule gratuite n'est pas proposée. */ hideFree?: boolean }) {
+export function PricingTable({ initial, current, action, defaultMonths = 1, hideFree = false, collapseFeatures = false, promo }: { /** Code promo appliqué (remise en %) : les prix des cartes sont affichés remise comprise (le serveur reste seul juge du montant payé, même arrondi). */ promo?: { code: string; percent: number } | null; /** Avantages masqués par défaut : un seul bouton sous la grille les affiche pour toutes les offres (page d'arrivée après l'inscription). */ collapseFeatures?: boolean; initial?: Catalog; current?: PlanCode; /** Absent = pages publiques : bouton « Créer mon compte » intégré (une fonction ne peut pas traverser serveur → client). */ action?: (plan: PlanView, months: number) => ReactNode; defaultMonths?: number; /** Accès payant : la formule gratuite n'est pas proposée. */ hideFree?: boolean }) {
   const t = useTranslations();
   const locale = useLocale();
   const { data } = useCatalog(initial);
@@ -81,6 +81,16 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
               <p className="text-sm text-muted">{(locale === 'en' ? p.taglineEn : p.taglineFr) || t(`plans.${p.code}.tagline`)}</p>
               {p.code === 'FREE' || !price ? (
                 <p className="font-display text-4xl font-extrabold">{t('plans.free')}</p>
+              ) : promo ? (
+                // Remise du code : prix barré, prix remisé et total du prochain paiement (même arrondi que le serveur : remise = round(total × % / 100)).
+                <div className="space-y-1">
+                  <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
+                    <del className="text-lg font-semibold text-muted decoration-2"><span className="sr-only">{t('plans.regularPrice')} </span>{formatXof(Math.round((price.totalXof + price.savingsXof) / price.months), locale)}</del>
+                    <span className="font-display text-4xl font-extrabold"><span className="sr-only">{t('plans.promoPrice')} </span>{formatXof(Math.round((price.totalXof - Math.round((price.totalXof * promo.percent) / 100)) / price.months), locale)}</span>
+                    <span className="text-sm text-muted">{t('plans.perMonth')}</span>
+                  </p>
+                  <p className="text-sm font-semibold text-success-ink">{t('plans.promoTotal', { code: promo.code, percent: promo.percent, total: formatXof(price.totalXof - Math.round((price.totalXof * promo.percent) / 100), locale), n: price.months })}</p>
+                </div>
               ) : (
                 <div className="space-y-1">
                   <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
