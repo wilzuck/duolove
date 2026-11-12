@@ -1875,7 +1875,11 @@
     "boosted": "Boost activé pour 1 heure !",
     "boostShopText": "Mettez votre profil en avant avec un boost (30 min, 2 h ou 24 h).",
     "memberSince": "Membre depuis {date}",
-    "newMember": "Nouveau"
+    "newMember": "Nouveau",
+    "editTitle": "Modifier mon profil",
+    "editCta": "Modifier mon profil",
+    "previewCta": "Voir mon profil",
+    "completenessShort": "Profil complet à {n} %"
   },
   "profileView": {
     "about": "À propos",

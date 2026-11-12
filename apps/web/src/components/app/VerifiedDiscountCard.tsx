@@ -23,7 +23,7 @@ export function VerifiedDiscountCard({ compact = false }: { compact?: boolean })
       <div className="text-sm">
         <p className="font-bold">{title}</p>
         <p className="text-muted">{data.eligible ? t('access.discountOk') : data.capReached ? t('access.discountCap') : spent ? t('access.discountSpent') : t('access.discountTodo', { n: data.photosNeeded })}</p>
-        {!data.eligible && !spent && !data.capReached && <Link href="/profile" className="mt-1 inline-block font-semibold text-brand-ink underline">{t('access.discountCta')}</Link>}
+        {!data.eligible && !spent && !data.capReached && <Link href="/profile?edit=1" className="mt-1 inline-block font-semibold text-brand-ink underline">{t('access.discountCta')}</Link>}
       </div>
     </Card>
   );

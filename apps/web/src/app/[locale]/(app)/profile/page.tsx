@@ -1,10 +1,12 @@
 'use client';
 import { VerifiedDiscountCard } from '@/components/app/VerifiedDiscountCard';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { BadgeCheck, Camera, Crown, Rocket } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { BadgeCheck, Camera, Crown, Eye, Pencil, Rocket } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
-import { Badge, Button, Card, Skeleton } from '@duomatch/ui';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useRef, useState } from 'react';
+import { Badge, Button, Card, EmptyState, Skeleton } from '@duomatch/ui';
+import { ProfileDetail } from '@/components/app/ProfileDetail';
 import { PhotoManager } from '@/components/app/PhotoManager';
 import { ProfileTips } from '@/components/app/ProfileTips';
 import { PromptsEditor } from '@/components/app/PromptsEditor';
@@ -12,12 +14,12 @@ import { AboutFields, InterestPicker, LifestyleFields, PreferenceFields, SaveBar
 import { useApiError } from '@/hooks/useApiError';
 import { keys, useMe, useMyProfile } from '@/hooks/useQueries';
 import { Link } from '@/i18n/navigation';
-import { patch, put, upload } from '@/lib/api';
+import { api, patch, put, upload } from '@/lib/api';
 import { useUi } from '@/lib/store';
-import type { MyProfile } from '@/lib/types';
+import type { Card as ProfileCard, MyProfile } from '@/lib/types';
 import { SectionTabs } from '@/components/app/SectionTabs';
 
-export default function ProfilePage() {
+function ProfileEditor() {
   const t = useTranslations();
   const qc = useQueryClient();
   const err = useApiError();
@@ -37,7 +39,7 @@ export default function ProfilePage() {
       if (pref) next = await put<MyProfile>('/profiles/me/preferences', pref);
       return next;
     },
-    onSuccess: (n) => { qc.setQueryData(keys.profile, n); setAbout(null); setLife(null); setPref(null); void qc.invalidateQueries({ queryKey: ['feed'] }); toast('success', t('profile.saved')); },
+    onSuccess: (n) => { qc.setQueryData(keys.profile, n); void qc.invalidateQueries({ queryKey: ['profile', n.id] }); setAbout(null); setLife(null); setPref(null); void qc.invalidateQueries({ queryKey: ['feed'] }); toast('success', t('profile.saved')); },
     onError: (e) => toast('error', err(e)),
   });
   const verify = useMutation({ mutationFn: (f: File) => upload('/profiles/me/verification', f, f.name), onSuccess: () => { void qc.invalidateQueries({ queryKey: keys.profile }); toast('success', t('profile.verifySent')); }, onError: (e) => toast('error', err(e)) });
@@ -51,7 +53,7 @@ export default function ProfilePage() {
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 px-4 py-4">
       <SectionTabs />
-      <div className="flex items-center justify-between"><h1 className="text-2xl font-extrabold">{t('app.nav.profile')}</h1><Link href={`/profile/${p.id}`} className="hidden" aria-hidden /></div>
+      <div className="flex items-center justify-between gap-3"><h1 className="text-2xl font-extrabold">{t('profile.editTitle')}</h1><Link href="/profile"><Button variant="outline" size="sm"><Eye className="size-4" aria-hidden />{t('profile.previewCta')}</Button></Link></div>
 
       <VerifiedDiscountCard compact />
       <Card className={me.entitlement.plan === 'FREE' ? 'flex flex-wrap items-center justify-between gap-4 border-brand/30 bg-linear-to-br from-soft to-card p-5' : 'flex flex-wrap items-center justify-between gap-4 p-5'}>
@@ -94,3 +96,30 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+/** Mon profil tel que les AUTRES le voient (même fiche que celle d'un autre membre, sans les boutons J'aime / Signaler / Bloquer) ; « Modifier » ouvre le formulaire. */
+function ProfileView() {
+  const t = useTranslations();
+  const { data: me } = useMe();
+  const { data: p } = useMyProfile();
+  const q = useQuery({ queryKey: ['profile', me?.id], enabled: !!me?.id, queryFn: () => api<ProfileCard>(`/profiles/${me!.id}`), retry: false });
+  return (
+    <div className="mx-auto w-full max-w-lg space-y-4 px-4 py-4 lg:max-w-5xl xl:max-w-7xl">
+      <SectionTabs />
+      <div className="flex items-center justify-between gap-3">
+        {p ? <p className="text-sm font-medium text-muted">{t('profile.completenessShort', { n: p.completeness })}</p> : <Skeleton className="h-5 w-32" />}
+        <Link href="/profile?edit=1"><Button><Pencil className="size-4" aria-hidden />{t('profile.editCta')}</Button></Link>
+      </div>
+      {(q.isLoading || !me) && <Skeleton className="aspect-[4/5] rounded-[2rem]" />}
+      {q.isError && <EmptyState icon={<Eye className="size-8" aria-hidden />} title={t('profileView.unavailable')}><Link href="/profile?edit=1" className="font-semibold text-brand-ink underline">{t('profile.editCta')}</Link></EmptyState>}
+      {q.data && <ProfileDetail card={q.data} self />}
+    </div>
+  );
+}
+
+function ProfileContent() {
+  const edit = useSearchParams().get('edit') === '1';
+  return edit ? <ProfileEditor /> : <ProfileView />;
+}
+
+export default function ProfilePage() { return <Suspense><ProfileContent /></Suspense>; }

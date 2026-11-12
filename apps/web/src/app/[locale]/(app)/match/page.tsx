@@ -99,7 +99,7 @@ function TokenGuide({ tokensPerChat, giftTokens, completeness }: { tokensPerChat
           <p className="font-semibold">{t('live.guideStep1')}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             <Link href="/shop"><Button size="sm"><Coins className="size-4" aria-hidden />{t('live.buyTokens')}</Button></Link>
-            {completeness < 100 && <Link href="/profile"><Button size="sm" variant="outline"><Sparkles className="size-4" aria-hidden />{t('live.guideProfile', { n: giftTokens })}</Button></Link>}
+            {completeness < 100 && <Link href="/profile?edit=1"><Button size="sm" variant="outline"><Sparkles className="size-4" aria-hidden />{t('live.guideProfile', { n: giftTokens })}</Button></Link>}
             <Link href="/shop"><Button size="sm" variant="ghost">{t('live.guidePromo')}</Button></Link>
           </div>
         </li>
@@ -186,7 +186,7 @@ export default function MatchPage() {
       {live.tokens === 0 && live.gift.completeness < 100 && (
         <Card className="flex items-start gap-3 border-brand/30 bg-soft p-4">
           <Sparkles className="mt-0.5 size-5 shrink-0 text-brand-strong" aria-hidden />
-          <p className="text-sm"><strong>{t('live.giftTitle', { n: live.gift.tokens })}</strong> {t('live.giftText', { pct: live.gift.completeness })} <Link href="/profile" className="font-semibold text-brand-ink underline">{t('live.giftCta')}</Link></p>
+          <p className="text-sm"><strong>{t('live.giftTitle', { n: live.gift.tokens })}</strong> {t('live.giftText', { pct: live.gift.completeness })} <Link href="/profile?edit=1" className="font-semibold text-brand-ink underline">{t('live.giftCta')}</Link></p>
         </Card>
       )}
 

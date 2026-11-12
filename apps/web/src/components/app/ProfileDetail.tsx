@@ -25,6 +25,8 @@ import { SimilarProfiles } from './SimilarProfiles';
 import { SuperLikeButton } from './SuperLikeButton';
 import type { ReactNode } from 'react';
 
+/** Pastilles du profil (mode de vie, centres d'intérêt) : plus grandes que les badges ordinaires pour rester lisibles. */
+const CHIP = 'gap-2 px-4 py-2 text-base font-medium [&_svg]:size-5';
 const WIDE = '(min-width: 1024px)';
 const useWide = () => useSyncExternalStore(
   (cb) => { const m = window.matchMedia(WIDE); m.addEventListener('change', cb); return () => m.removeEventListener('change', cb); },
@@ -35,7 +37,7 @@ const useWide = () => useSyncExternalStore(
  * `layout="split"` (page profil) : sur ordinateur, photos à gauche (grande photo + vignettes, fixes pendant la lecture) et infos à droite ; sur téléphone, mosaïque en haut.
  * `layout="stack"` (feuille de la découverte, colonne étroite) : mosaïque puis infos.
  */
-export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split' }: { card: Card; onBlocked?: () => void; onLiked?: (r: SwipeResult) => void; hero?: ReactNode; layout?: 'split' | 'stack' }) {
+export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split', self = false }: { card: Card; onBlocked?: () => void; onLiked?: (r: SwipeResult) => void; hero?: ReactNode; layout?: 'split' | 'stack'; /** Mon propre profil (aperçu tel que les autres le voient) : aucun J'aime, Super Like, Signaler ni Bloquer. */ self?: boolean }) {
   const t = useTranslations();
   const locale = useLocale();
   const err = useApiError();
@@ -44,7 +46,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
   const [report, setReport] = useState(false);
   const [composer, setComposer] = useState<LikeTarget | null>(null);
   const { data: cfg } = useEngagementConfig();
-  const canComment = !!cfg?.flags.like_comments && !card.decision;
+  const canComment = !self && !!cfg?.flags.like_comments && !card.decision;
   const block = useMutation({
     mutationFn: () => post(`/blocks/${card.id}`),
     onSuccess: () => { toast('success', t('report.blocked', { name: card.displayName })); onBlocked?.(); },
@@ -102,16 +104,16 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
         {(card.heightCm != null || card.hasChildren != null || card.likesPets != null || card.living || card.originCountry || card.maritalStatus || card.education || card.smoking || card.alcohol || card.religion) && (
           <section aria-labelledby={`life-${card.id}`}><h3 id={`life-${card.id}`} className="mb-3 text-xl font-bold">{t('profileView.lifestyle')}</h3>
             <ul className="flex flex-wrap gap-2">
-              {card.heightCm != null && <li><Badge tone="neutral"><Ruler className="size-3.5" aria-hidden />{t('life.height')} : {formatHeight(card.heightCm, locale)}</Badge></li>}
-              {card.hasChildren != null && <li><Badge tone="neutral"><Baby className="size-3.5" aria-hidden />{t(card.hasChildren ? 'profileView.hasChildren' : 'profileView.noChildren')}</Badge></li>}
-              {card.likesPets != null && <li><Badge tone="neutral"><PawPrint className="size-3.5" aria-hidden />{t(card.likesPets ? 'profileView.likesPets' : 'profileView.noPets')}</Badge></li>}
-              {card.living && <li><Badge tone="neutral"><Home className="size-3.5" aria-hidden />{t(`life.livingOpt.${card.living}` as never)}</Badge></li>}
-              {card.maritalStatus && <li><Badge tone="neutral"><HeartHandshake className="size-3.5" aria-hidden />{t(`life.maritalOpt.${card.maritalStatus}` as never)}</Badge></li>}
-              {card.education && <li><Badge tone="neutral"><GraduationCap className="size-3.5" aria-hidden />{t(`life.educationOpt.${card.education}` as never)}</Badge></li>}
-              {card.smoking && <li><Badge tone="neutral"><Cigarette className="size-3.5" aria-hidden />{t('life.smoking')} : {t(`life.habit.${card.smoking}` as never)}</Badge></li>}
-              {card.alcohol && <li><Badge tone="neutral"><Wine className="size-3.5" aria-hidden />{t('life.alcohol')} : {t(`life.habit.${card.alcohol}` as never)}</Badge></li>}
-              {card.religion && <li><Badge tone="neutral"><BookOpen className="size-3.5" aria-hidden />{t(`life.religionOpt.${card.religion}` as never)}</Badge></li>}
-              {card.originCountry && <li><Badge tone="neutral"><MapPin className="size-3.5" aria-hidden />{t('profileView.from', { country: countryName(card.originCountry, locale) })}</Badge></li>}
+              {card.heightCm != null && <li><Badge tone="neutral" className={CHIP}><Ruler className="size-3.5" aria-hidden />{t('life.height')} : {formatHeight(card.heightCm, locale)}</Badge></li>}
+              {card.hasChildren != null && <li><Badge tone="neutral" className={CHIP}><Baby className="size-3.5" aria-hidden />{t(card.hasChildren ? 'profileView.hasChildren' : 'profileView.noChildren')}</Badge></li>}
+              {card.likesPets != null && <li><Badge tone="neutral" className={CHIP}><PawPrint className="size-3.5" aria-hidden />{t(card.likesPets ? 'profileView.likesPets' : 'profileView.noPets')}</Badge></li>}
+              {card.living && <li><Badge tone="neutral" className={CHIP}><Home className="size-3.5" aria-hidden />{t(`life.livingOpt.${card.living}` as never)}</Badge></li>}
+              {card.maritalStatus && <li><Badge tone="neutral" className={CHIP}><HeartHandshake className="size-3.5" aria-hidden />{t(`life.maritalOpt.${card.maritalStatus}` as never)}</Badge></li>}
+              {card.education && <li><Badge tone="neutral" className={CHIP}><GraduationCap className="size-3.5" aria-hidden />{t(`life.educationOpt.${card.education}` as never)}</Badge></li>}
+              {card.smoking && <li><Badge tone="neutral" className={CHIP}><Cigarette className="size-3.5" aria-hidden />{t('life.smoking')} : {t(`life.habit.${card.smoking}` as never)}</Badge></li>}
+              {card.alcohol && <li><Badge tone="neutral" className={CHIP}><Wine className="size-3.5" aria-hidden />{t('life.alcohol')} : {t(`life.habit.${card.alcohol}` as never)}</Badge></li>}
+              {card.religion && <li><Badge tone="neutral" className={CHIP}><BookOpen className="size-3.5" aria-hidden />{t(`life.religionOpt.${card.religion}` as never)}</Badge></li>}
+              {card.originCountry && <li><Badge tone="neutral" className={CHIP}><MapPin className="size-3.5" aria-hidden />{t('profileView.from', { country: countryName(card.originCountry, locale) })}</Badge></li>}
             </ul>
           </section>
         )}
@@ -120,7 +122,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
           <section><h3 className="mb-3 text-xl font-bold">{t('profile.interests')}</h3>
             <ul className="flex flex-wrap gap-2">{[...card.interests].sort((a, b) => Number(card.commonInterests.includes(b)) - Number(card.commonInterests.includes(a))).map((s) => {
               const common = card.commonInterests.includes(s);
-              return <li key={s}><Badge tone={common ? 'brand' : 'neutral'} className={common ? 'border border-brand-strong/70' : undefined}>{t(`interest.${s}` as never)}</Badge></li>;
+              return <li key={s}><Badge tone={common ? 'brand' : 'neutral'} className={cn(CHIP, common && 'border border-brand-strong/70')}>{t(`interest.${s}` as never)}</Badge></li>;
             })}</ul>
           </section>
         )}
@@ -131,15 +133,15 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
             <ActionButton kind="like" reach={120} delay={350} onAct={() => setComposer({ kind: 'PROFILE', ref: null })} className={cn(buttonVariants({ size: 'lg' }), 'min-w-0 flex-1 basis-40')}><Heart className="size-5" aria-hidden />{t('engagement.composer.likeShort')}</ActionButton>
           </div>
         )}
-        <div className="flex flex-wrap gap-3 border-t border-line pt-5">
+        {!self && <div className="flex flex-wrap gap-3 border-t border-line pt-5">
           {layout === 'stack' && <Link href={`/profile/${card.id}`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><Eye className="size-4" aria-hidden />{t('profileView.seeProfile')}</Link>}
           <Button variant="outline" size="sm" onClick={() => setReport(true)}><Flag className="size-4" aria-hidden />{t('report.cta')}</Button>
           <Button variant="outline" size="sm" onClick={() => block.mutate()} loading={block.isPending}><Ban className="size-4" aria-hidden />{t('report.block')}</Button>
-        </div>
+        </div>}
       </div>
-      {layout === 'split' && !hero && <aside className={wide ? 'sticky top-[4.5rem] space-y-4 lg:col-span-2 xl:col-span-1' : ''}><SimilarProfiles userId={card.id} /></aside>}
+      {layout === 'split' && !hero && !self && <aside className={wide ? 'sticky top-[4.5rem] space-y-4 lg:col-span-2 xl:col-span-1' : ''}><SimilarProfiles userId={card.id} /></aside>}
       {composer && <LikeComposer card={card} open initial={composer} onClose={() => setComposer(null)} onDone={onLiked} />}
-      <ReportDialog userId={card.id} open={report} onClose={() => setReport(false)} />
+      {!self && <ReportDialog userId={card.id} open={report} onClose={() => setReport(false)} />}
     </div>
   );
 }

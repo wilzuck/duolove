@@ -158,7 +158,7 @@ export default function DiscoverPage() {
         <div className="flex items-center gap-2">
           {remaining != null && me?.entitlement.plan === 'FREE' && <span className="rounded-full bg-soft px-3 py-1.5 text-xs font-semibold text-brand-ink" aria-live="polite">{t('discover.likesLeft', { n: remaining })}</span>}
           <Link href="/daily" aria-label={t('app.nav.daily')} className="rounded-full p-2.5 text-brand-ink hover:bg-soft"><Sparkles className="size-5" /></Link>
-          <Link href="/profile#filters" aria-label={t('discover.filters')} className="rounded-full p-2.5 text-muted hover:bg-soft"><SlidersHorizontal className="size-5" /></Link>
+          <Link href="/profile?edit=1#filters" aria-label={t('discover.filters')} className="rounded-full p-2.5 text-muted hover:bg-soft"><SlidersHorizontal className="size-5" /></Link>
         </div>
       </div>
 
