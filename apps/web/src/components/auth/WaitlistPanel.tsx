@@ -21,6 +21,7 @@ export function WaitlistPanel({ openCities, city, country, email }: { openCities
   const [mail, setMail] = useState(email);
   const [error, setError] = useState<string | null>(null);
   const join = useMutation({ mutationFn: () => post('/waitlist', { email: mail.trim(), country, city: city.trim() }), onError: (e) => setError(err(e)) });
+  const send = () => { setError(null); join.mutate(); };
   const list = new Intl.ListFormat(locale, { style: 'long', type: 'conjunction' }).format(openCities.slice(0, 3));
   return (
     <div role="status" className="space-y-3 rounded-2xl border border-brand/30 bg-soft p-4">
@@ -28,10 +29,11 @@ export function WaitlistPanel({ openCities, city, country, email }: { openCities
       {join.isSuccess ? (
         <p className="text-sm font-semibold text-success-ink">{t('auth.waitlistDone')}</p>
       ) : (
-        <form className="flex items-end gap-2" onSubmit={(e) => { e.preventDefault(); setError(null); join.mutate(); }}>
-          <div className="flex-1"><Field label={t('auth.email')} error={error ?? undefined}>{(p) => <Input {...p} type="email" required autoComplete="email" value={mail} onChange={(e) => setMail(e.target.value)} />}</Field></div>
-          <Button type="submit" variant="secondary" loading={join.isPending}>{t('auth.waitlistJoin')}</Button>
-        </form>
+        // Pas de <form> : ce bloc est affiché DANS le formulaire d'inscription (deux formulaires imbriqués soumettraient le mauvais).
+        <div className="flex items-end gap-2">
+          <div className="flex-1"><Field label={t('auth.email')} error={error ?? undefined}>{(p) => <Input {...p} type="email" autoComplete="email" value={mail} onChange={(e) => setMail(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } }} />}</Field></div>
+          <Button type="button" variant="secondary" loading={join.isPending} disabled={!/^\S+@\S+\.\S+$/.test(mail.trim())} onClick={send}>{t('auth.waitlistJoin')}</Button>
+        </div>
       )}
     </div>
   );
