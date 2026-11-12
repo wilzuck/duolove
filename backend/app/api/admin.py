@@ -11,7 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import and_, distinct, func, inspect as sa_inspect, or_, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import accountsvc, entitlements, flags as flagsvc
+from app.core import accountsvc, appsettings, entitlements, flags as flagsvc
 from app.core import notifications, payments, plan_config, promo, storage, storage_config
 from app.core.auth import AuthUser, has_role, require_role
 from app.core.constants import FEATURE_FLAGS
@@ -258,7 +258,9 @@ async def badges(_: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
         return (await db.execute(select(func.count()).select_from(model).where(*w))).scalar_one()
 
     reports, verifs, appeals = await c(Report, Report.status == "OPEN"), await c(VerificationRequest, VerificationRequest.status == "PENDING"), await c(ModerationAction, ModerationAction.appealStatus == "PENDING")
-    return {"reports": reports, "moderation": verifs + appeals, "verifications": verifs, "appeals": appeals}
+    sla = await appsettings.get(db, "moderation.sla_hours")
+    overdue = await c(Report, Report.status.in_(["OPEN", "REVIEWING"]), Report.createdAt < utcnow() - datetime.timedelta(hours=sla))
+    return {"reports": reports, "reportsOverdue": overdue, "moderation": verifs + appeals, "verifications": verifs, "appeals": appeals}
 
 
 @router.get("/summary")
@@ -455,9 +457,14 @@ async def reports(status: str = "OPEN", cursor: str | None = None, limit: str | 
     rows = (await db.execute(stmt.limit(take + 1))).scalars().all()
     page_rows = rows[:take]
     names = await _display_names(db, [r.reporterId for r in page_rows] + [r.targetId for r in page_rows])
+    sla = await appsettings.get(db, "moderation.sla_hours")
+    now = utcnow()
     targets = {u.id: u for u in (await db.execute(select(User).where(User.id.in_([r.targetId for r in page_rows])))).scalars()}
     totals = dict((await db.execute(select(Report.targetId, func.count()).where(Report.targetId.in_([r.targetId for r in page_rows])).group_by(Report.targetId))).all())
     return paged(rows, take, [{"id": r.id, "reason": ev(r.reason), "details": r.details, "status": ev(r.status), "createdAt": r.createdAt,
+                               # Délai de traitement : heures écoulées depuis le signalement ; « en retard » quand un signalement NON traité dépasse le délai annoncé.
+                               "ageHours": round((now - r.createdAt).total_seconds() / 3600, 1), "slaHours": sla,
+                               "overdue": ev(r.status) in ("OPEN", "REVIEWING") and (now - r.createdAt).total_seconds() > sla * 3600,
                                "evidenceCount": len((r.evidence or {}).get("messages", [])),
                                "reporter": {"id": r.reporterId, "displayName": names.get(r.reporterId)},
                                "target": {"id": r.targetId, "displayName": names.get(r.targetId), "status": ev(targets[r.targetId].status), "totalReports": totals.get(r.targetId, 0)}}

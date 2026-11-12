@@ -34,6 +34,7 @@ INT_SPECS = {  # clé → (défaut, min, max)
     "calls.max_per_day": (20, 1, 100),
     "signup.unverified_ttl_hours": (72, 1, 720),
     "notifications.max_emails_per_day": (5, 0, 50),
+    "moderation.sla_hours": (24, 1, 168),  # délai annoncé pour traiter un signalement (et seuil du badge « en retard » en administration)
 }
 WEIGHT_KEY = "matching.weights"
 KEYS = (WEIGHT_KEY, *INT_SPECS)

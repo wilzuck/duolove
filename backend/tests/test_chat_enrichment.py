@@ -284,3 +284,17 @@ async def test_admin_can_grant_read_receipts_control_to_the_free_plan(app, db):
     finally:
         await a.agent.patch("/api/admin/plans/FREE", json={"features": feats})
     assert (await free.agent.get("/api/profiles/me")).json()["readReceipts"] is True  # le réglage est suspendu avec la fonctionnalité
+
+
+# ───────── avertissement d'arnaque ─────────
+async def test_avertissement_d_arnaque_pour_le_destinataire_seulement(app, db):
+    w, m, conv = await matched(app, db)
+    sent = await say(w, conv, "Peux-tu m'envoyer de l'argent par Orange Money ? c'est urgent")
+    assert sent["risk"] is None  # l'expéditeur ne voit pas d'avertissement sur son propre message
+    await say(w, conv, "Salut, quelle belle journée !")
+    seen = {x["body"]: x for x in await messages(m, conv)}
+    assert seen["Peux-tu m'envoyer de l'argent par Orange Money ? c'est urgent"]["risk"]["level"] == "high"
+    assert seen["Salut, quelle belle journée !"]["risk"] is None
+    assert all(x["risk"] is None for x in await messages(w, conv))
+    prudence = await say(w, conv, "On continue sur WhatsApp ?")
+    assert {x["id"]: x for x in await messages(m, conv)}[prudence["id"]]["risk"]["level"] == "caution"

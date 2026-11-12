@@ -13,7 +13,7 @@ import { timeAgo } from '@/lib/format';
 import { useUi } from '@/lib/store';
 import { Link } from '@/i18n/navigation';
 
-interface Report { id: string; evidenceCount: number; reason: string; details: string | null; status: string; createdAt: string; reporter: { displayName?: string }; target: { id: string; displayName?: string; status: string; totalReports: number } }
+interface Report { id: string; evidenceCount: number; reason: string; details: string | null; status: string; createdAt: string; ageHours?: number; slaHours?: number; overdue?: boolean; reporter: { displayName?: string }; target: { id: string; displayName?: string; status: string; totalReports: number } }
 
 interface Evidence { conversationId: string | null; capturedAt: string | null; messages: { from: 'reporter' | 'target'; body: string; image: boolean; at: string }[] }
 
@@ -72,12 +72,12 @@ export default function AdminReports() {
             { label: t('admin.dismiss'), icon: <X className="size-4" aria-hidden />, onSelect: () => resolve.mutate({ id: r.id, s: 'DISMISSED' }) },
           ]}
           columns={[
-            { key: 'reason', header: t('admin.cols.reason'), value: (r) => r.reason, filter: { options: ['FAKE_PROFILE', 'SCAM', 'HARASSMENT', 'INAPPROPRIATE_CONTENT', 'UNDERAGE', 'SPAM', 'OTHER'].map((x) => ({ value: x, label: t(`report.reasons.${x}` as never) })) }, cell: (r) => <Badge tone="danger">{t(`report.reasons.${r.reason}` as never)}</Badge> },
+            { key: 'reason', header: t('admin.cols.reason'), value: (r) => r.reason, filter: { options: ['FAKE_PROFILE', 'SCAM', 'HARASSMENT', 'INAPPROPRIATE_CONTENT', 'UNDERAGE', 'SPAM', 'OTHER'].map((x) => ({ value: x, label: t(`report.reasons.${x}` as never) })) }, cell: (r) => <span className="inline-flex flex-wrap items-center gap-1.5"><Badge tone="danger">{t(`report.reasons.${r.reason}` as never)}</Badge>{r.overdue && <Badge tone="gold">{t('admin.reportOverdue', { h: Math.round((r.ageHours ?? 0) - (r.slaHours ?? 0)) })}</Badge>}</span> },
             { key: 'target', header: t('admin.cols.target'), value: (r) => r.target.displayName ?? '', cell: (r) => <><Link href={`/admin/users?focus=${r.target.id}`} className="font-semibold text-brand-ink underline">{r.target.displayName}</Link><span className="block text-xs text-muted">{t('admin.totalReports', { n: r.target.totalReports })}</span></> },
             { key: 'reporter', mobileHidden: true, header: t('admin.cols.reporter'), value: (r) => r.reporter.displayName ?? '', cell: (r) => r.reporter.displayName ?? '?' },
             { key: 'details', header: t('admin.cols.message'), value: (r) => r.details ?? '', cellClassName: 'max-w-xs whitespace-pre-wrap', cell: (r) => r.details ?? '—' },
             { key: 'evidence', mobileHidden: true, header: t('admin.evidence.evidenceCol'), value: (r) => r.evidenceCount, cell: (r) => (r.evidenceCount > 0 ? <Badge tone="brand">{r.evidenceCount}</Badge> : '—') },
-            { key: 'date', mobileHidden: true, header: t('admin.cols.date'), value: (r) => r.createdAt, cellClassName: 'text-muted', cell: (r) => timeAgo(r.createdAt, locale) },
+            { key: 'date', mobileHidden: true, header: t('admin.cols.date'), value: (r) => r.createdAt, cellClassName: 'text-muted', cell: (r) => <>{timeAgo(r.createdAt, locale)}</> },
           ]}
         />
       )}

@@ -5,7 +5,7 @@ from collections import defaultdict
 from sqlalchemy import and_, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import entitlements, flags, notifications, realtime, storage
+from app.core import entitlements, flags, notifications, realtime, scamcheck, storage
 from app.core.config import get_settings
 from app.core.constants import REACTION_EMOJIS
 from app.core.errors import AppError, forbidden, not_found
@@ -69,6 +69,8 @@ def _serialize(m: Message, atts: list[MessageAttachment], viewer_id: str, read_r
         "body": None if m.deletedAt else m.body, "deleted": bool(m.deletedAt), "createdAt": iso(m.createdAt),
         # Indicateur de lecture : exposé à l'expéditeur seulement si le lecteur l'autorise.
         "readAt": iso(m.readAt) if (mine and read_receipts_of_reader and m.readAt) else None,
+        # Avertissement d'arnaque : seulement pour le DESTINATAIRE (jamais pour l'expéditeur), calculé sur le texte affiché ; None = rien à signaler.
+        "risk": None if (mine or m.deletedAt) else (lambda r: r if r["level"] != "none" else None)(scamcheck.analyze(m.body)),
         "attachments": [] if m.deletedAt else [
             {"id": a.id, "url": f"{get_settings().api_url}/api/conversations/attachments/{a.id}", "mime": a.mime} for a in atts],
     }

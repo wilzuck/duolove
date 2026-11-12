@@ -1815,7 +1815,18 @@
     "iceMore": "Autres idées",
     "iceEmpty": "Pas d’idée pour le moment.",
     "iceOpen": "Idées pour commencer",
-    "iceCommon": "En commun : {list}"
+    "iceCommon": "En commun : {list}",
+    "risk": {
+      "high": {
+        "title": "Attention : ce message ressemble à une arnaque",
+        "text": "Ne versez jamais d’argent, ne rechargez aucun numéro et ne donnez aucun code à quelqu’un que vous n’avez pas rencontré, même s’il y a urgence. Crushduo ne vous le demandera jamais."
+      },
+      "caution": {
+        "title": "Gardez la conversation ici pour l’instant",
+        "text": "Avant de partager un numéro, un lien ou de passer sur une autre messagerie, prenez le temps de mieux connaître la personne."
+      },
+      "report": "Signaler cette personne"
+    }
   },
   "profile": {
     "completeness": "Complétude du profil",
@@ -1974,7 +1985,8 @@
       "OTHER": "Autre"
     },
     "shareMessages": "Joindre les derniers messages de cette conversation",
-    "shareHint": "Jusqu'à 20 messages, copiés avec votre signalement : la modération pourra les lire pour vérifier les faits. Rien d'autre de votre messagerie n'est accessible. Décochez pour ne rien joindre."
+    "shareHint": "Jusqu'à 20 messages, copiés avec votre signalement : la modération pourra les lire pour vérifier les faits. Rien d'autre de votre messagerie n'est accessible. Décochez pour ne rien joindre.",
+    "sentSla": "Merci, votre signalement a été transmis. Nous le traitons sous {h} h."
   },
   "notifications": {
     "readAll": "Tout marquer comme lu",
@@ -3887,7 +3899,8 @@
           "note": "Réservé au super administrateur : copie automatique des photos vers R2."
         }
       }
-    }
+    },
+    "reportOverdue": "En retard de {h} h"
   },
   "pricingFaq": {
     "renew": {

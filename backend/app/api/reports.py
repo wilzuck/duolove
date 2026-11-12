@@ -7,6 +7,7 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import appsettings
 from app.core.auth import AuthUser, current_user
 from app.core.errors import AppError, not_found
 from app.core.ids import new_id, utcnow
@@ -70,7 +71,7 @@ async def report(body: ReportIn, u: AuthUser = Depends(current_user), db: AsyncS
         conversation_id, evidence = await _snapshot(db, u.id, body.targetId, body.conversationId)
     db.add(Report(reporterId=u.id, targetId=body.targetId, reason=body.reason, details=body.details, conversationId=conversation_id, evidence=evidence))
     await db.commit()
-    return {"ok": True}
+    return {"ok": True, "slaHours": await appsettings.get(db, "moderation.sla_hours")}  # délai annoncé à la personne qui signale
 
 
 @router.post("/blocks/{user_id}")

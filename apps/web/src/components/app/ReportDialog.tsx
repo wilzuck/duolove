@@ -9,16 +9,19 @@ import { post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 
 /** `conversationId` : signalement fait depuis une conversation ; la personne peut alors joindre les derniers messages (preuves), avec son accord explicite. */
-export function ReportDialog({ userId, open, onClose, conversationId }: { userId: string; open: boolean; onClose: () => void; conversationId?: string }) {
+export function ReportDialog({ userId, open, onClose, conversationId, defaultReason }: { userId: string; open: boolean; onClose: () => void; conversationId?: string; /** Motif présélectionné à l'ouverture (ex. SCAM depuis un avertissement d'arnaque). */ defaultReason?: string }) {
   const t = useTranslations();
   const err = useApiError();
   const toast = useUi((s) => s.toast);
-  const [reason, setReason] = useState<string>(REPORT_REASONS[0]);
+  // Motif choisi par la personne ; à défaut, celui présélectionné par l'appelant (valeur dérivée, pas d'effet), puis le premier de la liste.
+  const [picked, setPicked] = useState<string | null>(null);
+  const reason = picked ?? (defaultReason && (REPORT_REASONS as readonly string[]).includes(defaultReason) ? defaultReason : REPORT_REASONS[0]);
+  const setReason = setPicked;
   const [details, setDetails] = useState('');
   const [share, setShare] = useState(true);
   const m = useMutation({
-    mutationFn: () => post('/reports', { targetId: userId, reason, details: details || undefined, ...(conversationId ? { conversationId, shareMessages: share } : {}) }),
-    onSuccess: () => { toast('success', t('report.sent')); setDetails(''); onClose(); },
+    mutationFn: () => post<{ ok: boolean; slaHours?: number }>('/reports', { targetId: userId, reason, details: details || undefined, ...(conversationId ? { conversationId, shareMessages: share } : {}) }),
+    onSuccess: (r) => { toast('success', r.slaHours ? t('report.sentSla', { h: r.slaHours }) : t('report.sent')); setDetails(''); setPicked(null); onClose(); },
     onError: (e) => toast('error', err(e)),
   });
   return (

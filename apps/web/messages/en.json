@@ -1815,7 +1815,18 @@
     "iceMore": "More ideas",
     "iceEmpty": "No idea right now.",
     "iceOpen": "Ideas to get started",
-    "iceCommon": "In common: {list}"
+    "iceCommon": "In common: {list}",
+    "risk": {
+      "high": {
+        "title": "Careful: this message looks like a scam",
+        "text": "Never send money, top up a phone number or share a code with someone you haven’t met, even if it’s urgent. Crushduo will never ask you to."
+      },
+      "caution": {
+        "title": "Keep the conversation here for now",
+        "text": "Before sharing a number or a link, or moving to another app, take the time to get to know the person."
+      },
+      "report": "Report this person"
+    }
   },
   "profile": {
     "completeness": "Profile completeness",
@@ -1974,7 +1985,8 @@
       "OTHER": "Other"
     },
     "shareMessages": "Attach the latest messages of this conversation",
-    "shareHint": "Up to 20 messages, copied with your report: moderators can read them to check the facts. Nothing else in your messages is accessible. Untick to attach nothing."
+    "shareHint": "Up to 20 messages, copied with your report: moderators can read them to check the facts. Nothing else in your messages is accessible. Untick to attach nothing.",
+    "sentSla": "Thank you, your report was sent. We handle reports within {h} h."
   },
   "notifications": {
     "readAll": "Mark all as read",
@@ -3887,7 +3899,8 @@
           "note": "Super admin only: automatic copy of photos to R2."
         }
       }
-    }
+    },
+    "reportOverdue": "{h} h overdue"
   },
   "pricingFaq": {
     "renew": {

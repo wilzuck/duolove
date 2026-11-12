@@ -45,6 +45,8 @@ export interface ConversationItem {
 export interface ChatMessage {
   id: string; conversationId: string; senderId: string; mine: boolean; body: string | null; deleted: boolean;
   createdAt: string; readAt: string | null; attachments: { id: string; url: string; mime: string }[];
+  /** Avertissement d'arnaque sur un message REÇU (jamais sur les siens) ; null = rien à signaler. */
+  risk: { level: 'high' | 'caution'; flags: string[] } | null;
   reactions: { emoji: string; count: number; mine: boolean }[]; replyTo: { id: string; mine: boolean; deleted: boolean; body: string | null; hasImage: boolean } | null;
 }
 export interface Paged<T> { items: T[]; nextCursor: string | null }

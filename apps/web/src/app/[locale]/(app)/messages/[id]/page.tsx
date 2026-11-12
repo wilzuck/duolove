@@ -40,6 +40,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const [emoji, setEmoji] = useState(false);
   const [menu, setMenu] = useState(false);
   const [report, setReport] = useState(false);
+  const [reportReason, setReportReason] = useState<string | undefined>(undefined);
   // Fonction réservée à une formule : ce que la personne voulait faire (photos, idées, appels, rendez-vous) pour afficher le bon message.
   const [upsell, setUpsell] = useState<'images' | 'ideas' | 'dates' | null>(null);
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
@@ -131,7 +132,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
             <ul role="menu" className="absolute right-0 z-20 mt-1 w-56 overflow-hidden rounded-2xl border border-line bg-card py-1 shadow-pop">
               <li><button role="menuitem" className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm hover:bg-soft" onClick={() => { setMenu(false); unmatch.mutate(); }}><HeartCrack className="size-4" aria-hidden />{t('chat.unmatch')}</button></li>
               <li><button role="menuitem" className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm hover:bg-soft" onClick={() => { setMenu(false); block.mutate(); }}><Ban className="size-4" aria-hidden />{t('report.block')}</button></li>
-              <li><button role="menuitem" className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm hover:bg-soft" onClick={() => { setMenu(false); setReport(true); }}><Flag className="size-4" aria-hidden />{t('report.cta')}</button></li>
+              <li><button role="menuitem" className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm hover:bg-soft" onClick={() => { setMenu(false); setReportReason(undefined); setReport(true); }}><Flag className="size-4" aria-hidden />{t('report.cta')}</button></li>
             </ul>
           )}
         </div>
@@ -162,6 +163,13 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
                       </>)}
                       <p className={cn('mt-0.5 flex items-center justify-end gap-1 text-[11px]', m.mine ? 'text-white/80' : 'text-muted')}>{formatTime(m.createdAt, locale)}{m.mine && !m.deleted && (m.readAt ? <CheckCheck className="size-3.5" aria-label={t('chat.read')} /> : <Check className="size-3.5" aria-label={t('chat.sent')} />)}</p>
                     </div>
+                    {m.risk && !m.deleted && (
+                      <div role="note" className={cn('mt-1.5 rounded-2xl border px-3 py-2 text-xs', m.risk.level === 'high' ? 'border-danger/40 bg-danger/10 text-danger-ink' : 'border-line bg-soft text-fg')}>
+                        <p className="flex items-start gap-1.5 font-semibold"><ShieldAlert className="mt-0.5 size-3.5 shrink-0" aria-hidden />{t(`chat.risk.${m.risk.level}.title`)}</p>
+                        <p className="mt-0.5">{t(`chat.risk.${m.risk.level}.text`)}</p>
+                        {m.risk.level === 'high' && <button type="button" className="mt-1 font-semibold underline" onClick={() => { setReportReason('SCAM'); setReport(true); }}>{t('chat.risk.report')}</button>}
+                      </div>
+                    )}
                     {canReact && m.reactions.length > 0 && (
                       <ul className="-mt-2 flex flex-wrap gap-1 px-2" aria-label={t('chat.react')}>
                         {m.reactions.map((r) => (
@@ -235,7 +243,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         <div className="mt-4 flex justify-end gap-2"><Button variant="ghost" onClick={() => setUpsell(null)}>{t('common.close')}</Button><Link href="/premium"><Button>{t('chat.seePlans')}</Button></Link></div>
       </Dialog>
       {conv && <DatesPanel conversationId={id} name={conv.user.displayName} open={datesOpen} onClose={() => setDatesOpen(false)} />}
-      {conv && <ReportDialog userId={conv.user.id} conversationId={id} open={report} onClose={() => setReport(false)} />}
+      {conv && <ReportDialog userId={conv.user.id} conversationId={id} defaultReason={reportReason} open={report} onClose={() => setReport(false)} />}
     </div>
   );
 }

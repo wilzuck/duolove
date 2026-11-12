@@ -191,3 +191,36 @@ async def test_signalement_avec_preuves_de_conversation(app, db):
     c, d, other = await pair(app, db)
     bad = await a.agent.post("/api/reports", json={"targetId": b.id, "reason": "SCAM", "conversationId": other, "shareMessages": True})
     assert bad.status_code == 400 and bad.json()["error"]["code"] == "INVALID_CONVERSATION"
+
+
+async def test_delai_de_traitement_annonce_et_signalement_en_retard(app, db):
+    """Le signalant apprend le délai annoncé ; l'administration voit l'ancienneté et un badge « en retard » une fois le délai dépassé."""
+    import datetime
+
+    from sqlalchemy import update
+
+    from app.db.session import session_maker
+    from app.models.models import Report
+    from tests.support_c import admin, member
+    reporter, target, ad = await member(app, db), await member(app, db), await admin(app, db)
+    r = await reporter.agent.post("/api/reports", json={"targetId": target.id, "reason": "SCAM"})
+    assert r.status_code == 201 and r.json()["slaHours"] == 24
+    before = (await ad.agent.get("/api/admin/badges")).json()
+    async def find() -> dict:  # liste du plus ancien au plus récent, paginée : on la parcourt jusqu'à notre signalement
+        cursor = None
+        while True:
+            page = (await ad.agent.get("/api/admin/reports?limit=100" + (f"&cursor={cursor}" if cursor else ""))).json()
+            for x in page["items"]:
+                if x["target"]["id"] == target.id:
+                    return x
+            cursor = page["nextCursor"]
+            assert cursor, "signalement introuvable"
+
+    items = {target.id: await find()}
+    assert items[target.id]["overdue"] is False and items[target.id]["slaHours"] == 24 and items[target.id]["ageHours"] < 1
+    async with session_maker()() as s:  # le signalement a 30 h : en retard
+        await s.execute(update(Report).where(Report.targetId == target.id).values(createdAt=datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None) - datetime.timedelta(hours=30)))
+        await s.commit()
+    items = {target.id: await find()}
+    assert items[target.id]["overdue"] is True and items[target.id]["ageHours"] >= 30
+    assert (await ad.agent.get("/api/admin/badges")).json()["reportsOverdue"] == before["reportsOverdue"] + 1
