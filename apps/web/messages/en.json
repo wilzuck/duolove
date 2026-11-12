@@ -1418,7 +1418,10 @@
       "Free to start, no credit card.",
       "Real profiles: human moderation and a “verified” badge.",
       "You stay in control: hideable profile, pause mode."
-    ]
+    ],
+    "cityClosed": "Crushduo is opening in {cities} first. We can’t create accounts in {city} yet: leave your email and we’ll let you know when it opens.",
+    "waitlistJoin": "Notify me",
+    "waitlistDone": "Noted. We’ll write to you as soon as your city opens."
   },
   "gender": {
     "MAN": "Man",
@@ -1624,6 +1627,7 @@
     "ACCESS_PAYWALL": "A plan is required to get in.",
     "PAYMENT_NOT_READY": "Turn on a real payment first.",
     "COUNTRY_NOT_OPEN": "Crushduo is not open in your country yet.",
+    "CITY_NOT_OPEN": "Crushduo is not open in your city yet: join the waiting list.",
     "NO_COUNTRY": "Keep at least one country open.",
     "DATE_IN_FUTURE": "The date cannot be in the future."
   },
@@ -2004,7 +2008,8 @@
       "SUBSCRIPTION_EXPIRING_DAYS": "Your subscription ends in {n} day(s). Extend it: the duration is added to your end date.",
       "LIVE_EVENT": "Duo Night: “{event}” starts in one hour. Be there!",
       "LIVE_EVENT_START": "“{event}” is starting: launch your search!"
-    }
+    },
+    "promoEnding": "Your welcome offer ends soon ({code}): {offer}. Apply it in one click."
   },
   "premium": {
     "title": "Choose your plan",
@@ -3630,7 +3635,20 @@
       "help": "Only new sign-ups are limited: existing members are never blocked, whatever their country.",
       "count": "{n} countries",
       "saved": "Countries saved.",
-      "atLeastOne": "Keep at least one country open."
+      "atLeastOne": "Keep at least one country open.",
+      "citiesTitle": "Restrict sign-up to certain cities (optional)",
+      "citiesHelp": "Off by default. If you list cities, only people from those cities can create an account; others join a waiting list. Empty the list to turn it off. Existing members are never blocked. This does not affect Duo Nights: their city is chosen when each evening is created.",
+      "citiesEditor": "One city per line (nearby suburbs can be added: Abomey-Calavi, Anyama…)",
+      "citiesCount": "{n, plural, =0 {All cities} one {# city} other {# cities}}",
+      "citiesAll": "Off: sign-up is open to every city of the open countries.",
+      "waitlistTitle": "Waiting list",
+      "waitlistHelp": "People who wanted to sign up from a city that isn’t open yet. Open the city above once the threshold is reached, then write to them.",
+      "waitlistEmpty": "Nobody waiting.",
+      "waitlistTotal": "{n} waiting",
+      "colCity": "City",
+      "colEmail": "E-mail",
+      "colDate": "Joined",
+      "colCount": "Waiting"
     },
     "bulk": {
       "delete": "Delete",

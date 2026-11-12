@@ -68,6 +68,7 @@ async def _create_user_with_profile(db: AsyncSession, *, email: str, password_ha
     from app.core import launch
 
     await launch.assert_open(db, profile.get("country"))  # inscription limitée aux pays ouverts par l'administration
+    await launch.assert_city_open(db, profile.get("city"))  # … et, si l'administration en a listé, aux villes ouvertes
     now = utcnow()
     user = User(email=email, passwordHash=password_hash, acceptedTermsAt=now, emailVerifiedAt=now if email_verified else None)
     db.add(user)

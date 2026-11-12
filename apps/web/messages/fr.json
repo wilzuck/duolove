@@ -1418,7 +1418,10 @@
       "Gratuit pour commencer, sans carte bancaire.",
       "De vrais profils : modération humaine et badge « vérifié ».",
       "Vous gardez la main : profil masquable, mode pause."
-    ]
+    ],
+    "cityClosed": "Crushduo ouvre d’abord à {cities}. Nous ne pouvons pas encore créer de compte à {city} : laissez votre e-mail, nous vous prévenons dès l’ouverture.",
+    "waitlistJoin": "Me prévenir",
+    "waitlistDone": "C’est noté. Nous vous écrirons dès que votre ville ouvre."
   },
   "gender": {
     "MAN": "Homme",
@@ -1624,6 +1627,7 @@
     "ACCESS_PAYWALL": "Un abonnement est requis pour entrer.",
     "PAYMENT_NOT_READY": "Activez d'abord un vrai paiement.",
     "COUNTRY_NOT_OPEN": "Crushduo n’est pas encore ouvert dans votre pays.",
+    "CITY_NOT_OPEN": "Crushduo n’est pas encore ouvert dans votre ville : rejoignez la liste d’attente.",
     "NO_COUNTRY": "Gardez au moins un pays ouvert.",
     "DATE_IN_FUTURE": "La date ne peut pas être dans le futur."
   },
@@ -2004,7 +2008,8 @@
       "SUBSCRIPTION_EXPIRING_DAYS": "Votre abonnement se termine dans {n} jour(s). Prolongez-le : la durée s’ajoute à votre date de fin.",
       "LIVE_EVENT": "Soirée Duo : « {event} » commence dans une heure. Soyez là !",
       "LIVE_EVENT_START": "La soirée « {event} » commence : lancez votre recherche !"
-    }
+    },
+    "promoEnding": "Votre offre de bienvenue se termine bientôt ({code}) : {offer}. Appliquez-la en un clic."
   },
   "premium": {
     "title": "Choisissez votre formule",
@@ -3630,7 +3635,20 @@
       "help": "Seules les nouvelles inscriptions sont limitées : les membres déjà inscrits, quel que soit leur pays, ne sont jamais bloqués.",
       "count": "{n} pays",
       "saved": "Pays enregistrés.",
-      "atLeastOne": "Gardez au moins un pays ouvert."
+      "atLeastOne": "Gardez au moins un pays ouvert.",
+      "citiesTitle": "Restreindre l’inscription à certaines villes (facultatif)",
+      "citiesHelp": "Désactivé par défaut. Si vous listez des villes, seules les personnes de ces villes peuvent créer un compte ; les autres rejoignent une liste d’attente. Videz la liste pour désactiver. Les membres déjà inscrits ne sont jamais bloqués. Cela ne concerne pas les soirées Duo : leur ville se choisit à la création de chaque soirée.",
+      "citiesEditor": "Une ville par ligne (l’agglomération proche peut être ajoutée : Abomey-Calavi, Anyama…)",
+      "citiesCount": "{n, plural, =0 {Toutes les villes} one {# ville} other {# villes}}",
+      "citiesAll": "Désactivé : l’inscription est ouverte à toutes les villes des pays ouverts.",
+      "waitlistTitle": "Liste d’attente",
+      "waitlistHelp": "Personnes qui voulaient s’inscrire depuis une ville pas encore ouverte. Ouvrez la ville ci-dessus quand le seuil est atteint, puis écrivez-leur.",
+      "waitlistEmpty": "Personne en attente.",
+      "waitlistTotal": "{n} en attente",
+      "colCity": "Ville",
+      "colEmail": "E-mail",
+      "colDate": "Inscrit le",
+      "colCount": "En attente"
     },
     "bulk": {
       "delete": "Supprimer",

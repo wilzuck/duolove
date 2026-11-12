@@ -10,6 +10,7 @@ import { GoogleButton } from '@/components/auth/GoogleButton';
 import { PasswordInput } from '@/components/auth/PasswordInput';
 import { PasswordStrength } from '@/components/auth/PasswordStrength';
 import { CityInput } from '@/components/CityInput';
+import { WaitlistPanel, foldCity } from '@/components/auth/WaitlistPanel';
 import { useApiError } from '@/hooks/useApiError';
 import { Link, useRouter } from '@/i18n/navigation';
 import { ApiError, api, post } from '@/lib/api';
@@ -38,10 +39,13 @@ function RegisterForm() {
   useEffect(() => { useUi.getState().setGoogleToken(null); }, []);  // le jeton ne reste pas en mémoire plus longtemps que nécessaire
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((s) => ({ ...s, [k]: v }));
   // Seuls les pays ouverts par l'administration sont proposés ; tant que la liste n'est pas arrivée, les pays de lancement par défaut.
-  const launch = useQuery({ queryKey: ['launch-countries'], staleTime: 60_000, queryFn: () => api<{ countries: string[] }>('/launch-countries') });
+  const launch = useQuery({ queryKey: ['launch-countries'], staleTime: 60_000, queryFn: () => api<{ countries: string[]; cities?: string[] }>('/launch-countries') });
   const openCodes = launch.data?.countries ?? LAUNCH_DEFAULT;
+  // Villes ouvertes : liste vide = pas de restriction. Le serveur reste seul juge (403 CITY_NOT_OPEN) ; ceci évite de remplir tout le formulaire pour rien.
+  const openCities = launch.data?.cities ?? [];
   const countries = COUNTRIES.filter((c) => openCodes.includes(c.code));
   const country = countries.some((c) => c.code === f.country) ? f.country : (countries[0]?.code ?? f.country);
+  const cityClosed = openCities.length > 0 && f.city.trim().length >= 2 && !openCities.some((c) => foldCity(c) === foldCity(f.city));
   // Lien d'invitation : /register?ref=CODE pré-remplit le code ; la saisie du membre prend le dessus (valeur dérivée, pas d'effet).
   const urlRef = (useSearchParams().get('ref') ?? '').trim().toUpperCase().slice(0, 32);
   const referralCode = f.referralCode || urlRef;
@@ -120,6 +124,7 @@ function RegisterForm() {
           </Field>
           <Field label={t('auth.city')} error={errors.city}>{(p) => <CityInput {...p} country={country} value={f.city} onChange={(v) => set('city', v)} />}</Field>
         </div>
+        {cityClosed && <WaitlistPanel openCities={openCities} city={f.city} country={country} email={f.email} />}
         {!googleToken && (showRef
           ? <Field label={t('referral.registerLabel')} hint={t('referral.registerHint')}>{(p) => <Input {...p} autoComplete="off" autoCapitalize="characters" maxLength={32} value={referralCode} onChange={(e) => set('referralCode', e.target.value.toUpperCase())} />}</Field>
           : <button type="button" aria-expanded={false} onClick={() => setRefOpen(true)} className="text-sm font-semibold text-brand-ink underline">{t('referral.registerToggle')}</button>)}
@@ -131,7 +136,7 @@ function RegisterForm() {
           {errors.acceptTerms && <Alert variant="text">{errors.acceptTerms}</Alert>}
         </div>
         <div className="max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-7 max-sm:-mb-1 max-sm:border-t max-sm:border-line max-sm:bg-card max-sm:px-7 max-sm:py-3">
-          <Button type="submit" size="lg" className="w-full" loading={reg.isPending || google.isPending}>{t('auth.createAccount')}</Button>
+          <Button type="submit" size="lg" className="w-full" loading={reg.isPending || google.isPending} disabled={cityClosed}>{t('auth.createAccount')}</Button>
         </div>
         <p className="text-center text-xs text-muted">{t('auth.adultsNote')} {t('auth.privacyNote')}</p>
       </form>
