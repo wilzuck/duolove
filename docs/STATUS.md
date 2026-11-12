@@ -322,3 +322,10 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 ## Menu admin
 - Le badge « Administration » du menu latéral est retiré (déjà dans l'en-tête).
+
+## Soirées Match en direct : essai en navigateur (local)
+- **Vu et essayé dans le navigateur** (API et site de test sur d'autres ports, base locale) : création d'une soirée par l'admin, affichage dans la liste, bannière côté membre (mobile et ordinateur), inscription « Me prévenir », annulation (la bannière passe à la soirée suivante), et **rappel une heure avant** : notification `LIVE_EVENT` créée et e-mail « commence dans une heure » généré avec la bonne heure (UTC+1). Pas essayés : la notification de début, l'envoi réel de l'e-mail (boîte de développement seulement).
+- Limite connue : une personne qui s'inscrit **après** l'envoi du rappel (moins d'une heure avant) ne reçoit que la notification de début. L'annulation d'une soirée n'a pas de fenêtre de confirmation.
+
+## Admin › Services (terminé, non commité)
+- Nouvelle page **Services** (menu Pilotage) : 27 services en cartes de trois étapes illustrées, avec l'**interrupteur** des 20 services qui ont un feature flag (même réglage que la page « Interrupteurs »), l'état du réglage dédié et le lien vers la page de réglage pour les autres (accès payant, pays, soirées, blog, envois, sauvegardes, stockage). Les textes « si désactivé » reprennent ceux des interrupteurs (aucun texte inventé). Essayé dans le navigateur : affichage, bascule d'un interrupteur (état enregistré côté serveur et rétabli).

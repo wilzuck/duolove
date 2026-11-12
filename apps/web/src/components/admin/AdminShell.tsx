@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, BookOpen, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, BookOpen, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LayoutGrid, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -21,6 +21,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/stats', key: 'stats', icon: ChartLine, min: 'ADMIN' },
     { href: '/admin/audit-log', key: 'audit', icon: History, min: 'ADMIN' },
     { href: '/admin/guide', key: 'guide', icon: BookOpen, min: 'MODERATOR' },
+    { href: '/admin/services', key: 'services', icon: LayoutGrid, min: 'ADMIN' },
   ] },
   { id: 'members', items: [
     { href: '/admin/users', key: 'users', icon: Users, min: 'MODERATOR' },

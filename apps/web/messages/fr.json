@@ -2199,7 +2199,8 @@
       "access": "Accès payant",
       "billing": "Facturation",
       "liveEvents": "Soirées Match",
-      "countries": "Pays de lancement"
+      "countries": "Pays de lancement",
+      "services": "Services"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -3597,6 +3598,224 @@
         "unsuspend": "Lever la suspension",
         "ban": "Bannir",
         "delete": "Supprimer définitivement"
+      }
+    },
+    "services": {
+      "title": "Services de l’application",
+      "subtitle": "Comment chaque service fonctionne, en trois étapes, et son interrupteur.",
+      "open": "Ouvrir le réglage",
+      "ownSetting": "Réglage dédié",
+      "group": {
+        "access": "Accès et inscription",
+        "money": "Argent",
+        "social": "Rencontres et messagerie",
+        "content": "Contenu et envois",
+        "tech": "Technique"
+      },
+      "items": {
+        "registration_open": {
+          "steps": [
+            "S’inscrire",
+            "Code e-mail",
+            "Profil rempli"
+          ]
+        },
+        "access": {
+          "steps": [
+            "Interrupteur",
+            "Essai gratuit",
+            "Formule requise"
+          ],
+          "name": "Accès payant obligatoire",
+          "note": "Interrupteur dans sa page : essai, délai de grâce, réductions."
+        },
+        "countries": {
+          "steps": [
+            "Cocher les pays",
+            "Inscriptions limitées",
+            "Membres inchangés"
+          ],
+          "name": "Pays de lancement",
+          "note": "Limite les nouvelles inscriptions ; les membres actuels ne sont jamais bloqués."
+        },
+        "payments_enabled": {
+          "steps": [
+            "Choisir une offre",
+            "Payer (mobile money)",
+            "Accès activé"
+          ]
+        },
+        "promo_codes": {
+          "steps": [
+            "Saisir le code",
+            "Remise ou jetons",
+            "Achat"
+          ]
+        },
+        "boosts": {
+          "steps": [
+            "Boost acheté ou inclus",
+            "Activer",
+            "Plus de visibilité"
+          ]
+        },
+        "live_match": {
+          "steps": [
+            "Critères",
+            "Invitations aux connectés",
+            "Chat (1 jeton)"
+          ]
+        },
+        "live_events": {
+          "steps": [
+            "Créer la soirée",
+            "Rappel 1 h avant",
+            "Soirée en cours"
+          ],
+          "name": "Soirées Match en direct",
+          "note": "Pas d’interrupteur : on crée ou on annule chaque soirée."
+        },
+        "speed_dating": {
+          "steps": [
+            "Session publiée",
+            "Inscription",
+            "Échanges en texte"
+          ]
+        },
+        "super_likes": {
+          "steps": [
+            "Super Like",
+            "Profil prioritaire",
+            "Invitée à répondre"
+          ]
+        },
+        "like_comments": {
+          "steps": [
+            "Cibler un élément",
+            "Ajouter un mot",
+            "Envoyer"
+          ]
+        },
+        "daily_picks": {
+          "steps": [
+            "Sélection du jour",
+            "Profils compatibles",
+            "Liker ou passer"
+          ]
+        },
+        "profile_prompts": {
+          "steps": [
+            "Question",
+            "Réponse",
+            "Sur la carte"
+          ]
+        },
+        "daily_question": {
+          "steps": [
+            "Question du jour",
+            "Je réponds",
+            "Voir les réponses"
+          ]
+        },
+        "profile_tips": {
+          "steps": [
+            "Profil analysé",
+            "Conseils",
+            "Profil amélioré"
+          ]
+        },
+        "icebreakers": {
+          "steps": [
+            "Idées d’accroche",
+            "Choisir",
+            "Conversation"
+          ]
+        },
+        "message_reactions": {
+          "steps": [
+            "Message reçu",
+            "Choisir un emoji",
+            "Réaction affichée"
+          ]
+        },
+        "message_replies": {
+          "steps": [
+            "Message précis",
+            "Répondre dessus",
+            "Citation affichée"
+          ]
+        },
+        "chat_images": {
+          "steps": [
+            "Choisir",
+            "Envoyer",
+            "Dans la conversation"
+          ]
+        },
+        "date_proposals": {
+          "steps": [
+            "Proposer",
+            "Lieu et heure",
+            "Accepter"
+          ]
+        },
+        "calls": {
+          "steps": [
+            "Duo actif",
+            "Appeler",
+            "Audio ou vidéo"
+          ]
+        },
+        "pause_mode": {
+          "steps": [
+            "Activer",
+            "Invisible",
+            "Sans alertes"
+          ]
+        },
+        "referral_program": {
+          "steps": [
+            "Lien d’invitation",
+            "Ami inscrit",
+            "Jetons offerts"
+          ]
+        },
+        "blog": {
+          "steps": [
+            "Brouillon",
+            "Image + description",
+            "Publié"
+          ],
+          "name": "Blog",
+          "note": "Un article ne se publie qu’avec une image et sa description."
+        },
+        "broadcasts": {
+          "steps": [
+            "Choisir le public",
+            "E-mail ou annonce",
+            "Envoi ou planifié"
+          ],
+          "name": "Envois (e-mail et annonces)",
+          "note": "Chaque envoi est planifié, suivi et annulable avant l’heure."
+        },
+        "backups": {
+          "steps": [
+            "Copie automatique",
+            "Stockée sur R2",
+            "Restauration"
+          ],
+          "name": "Sauvegardes",
+          "note": "Copie de la base sur un bucket R2 séparé, sans action manuelle."
+        },
+        "storage": {
+          "steps": [
+            "Photos",
+            "Bucket R2",
+            "Copie du disque"
+          ],
+          "name": "Stockage des photos (R2)",
+          "note": "Réservé au super administrateur : copie automatique des photos vers R2."
+        }
       }
     }
   },

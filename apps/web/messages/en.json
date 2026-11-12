@@ -2199,7 +2199,8 @@
       "access": "Paid access",
       "billing": "Billing",
       "liveEvents": "Match evenings",
-      "countries": "Launch countries"
+      "countries": "Launch countries",
+      "services": "Services"
     },
     "storage": {
       "title": "File storage",
@@ -3597,6 +3598,224 @@
         "unsuspend": "Lift suspension",
         "ban": "Ban",
         "delete": "Delete permanently"
+      }
+    },
+    "services": {
+      "title": "App services",
+      "subtitle": "How each service works, in three steps, and its switch.",
+      "open": "Open settings",
+      "ownSetting": "Own setting",
+      "group": {
+        "access": "Access and sign-up",
+        "money": "Money",
+        "social": "Dating and messaging",
+        "content": "Content and broadcasts",
+        "tech": "Technical"
+      },
+      "items": {
+        "registration_open": {
+          "steps": [
+            "Sign up",
+            "E-mail code",
+            "Profile filled"
+          ]
+        },
+        "access": {
+          "steps": [
+            "Switch",
+            "Free trial",
+            "Plan required"
+          ],
+          "name": "Mandatory paid access",
+          "note": "Switch on its page: trial, grace period, discounts."
+        },
+        "countries": {
+          "steps": [
+            "Tick countries",
+            "Sign-ups limited",
+            "Members unchanged"
+          ],
+          "name": "Launch countries",
+          "note": "Limits new sign-ups; current members are never blocked."
+        },
+        "payments_enabled": {
+          "steps": [
+            "Pick an offer",
+            "Pay (mobile money)",
+            "Access on"
+          ]
+        },
+        "promo_codes": {
+          "steps": [
+            "Enter the code",
+            "Discount or tokens",
+            "Purchase"
+          ]
+        },
+        "boosts": {
+          "steps": [
+            "Boost bought or included",
+            "Activate",
+            "More visibility"
+          ]
+        },
+        "live_match": {
+          "steps": [
+            "Criteria",
+            "Invite people online",
+            "Chat (1 token)"
+          ]
+        },
+        "live_events": {
+          "steps": [
+            "Create the evening",
+            "Reminder 1 h before",
+            "Evening live"
+          ],
+          "name": "Live Match evenings",
+          "note": "No switch: create or cancel each evening."
+        },
+        "speed_dating": {
+          "steps": [
+            "Session published",
+            "Sign up",
+            "Text exchanges"
+          ]
+        },
+        "super_likes": {
+          "steps": [
+            "Super Like",
+            "Priority profile",
+            "Invited to reply"
+          ]
+        },
+        "like_comments": {
+          "steps": [
+            "Target an item",
+            "Add a note",
+            "Send"
+          ]
+        },
+        "daily_picks": {
+          "steps": [
+            "Daily selection",
+            "Compatible profiles",
+            "Like or pass"
+          ]
+        },
+        "profile_prompts": {
+          "steps": [
+            "Question",
+            "Answer",
+            "On the card"
+          ]
+        },
+        "daily_question": {
+          "steps": [
+            "Daily question",
+            "I answer",
+            "See answers"
+          ]
+        },
+        "profile_tips": {
+          "steps": [
+            "Profile analyzed",
+            "Tips",
+            "Better profile"
+          ]
+        },
+        "icebreakers": {
+          "steps": [
+            "Opener ideas",
+            "Pick one",
+            "Conversation"
+          ]
+        },
+        "message_reactions": {
+          "steps": [
+            "Message received",
+            "Pick an emoji",
+            "Reaction shown"
+          ]
+        },
+        "message_replies": {
+          "steps": [
+            "Specific message",
+            "Reply to it",
+            "Quote shown"
+          ]
+        },
+        "chat_images": {
+          "steps": [
+            "Choose",
+            "Send",
+            "In the chat"
+          ]
+        },
+        "date_proposals": {
+          "steps": [
+            "Propose",
+            "Place and time",
+            "Accept"
+          ]
+        },
+        "calls": {
+          "steps": [
+            "Active duo",
+            "Call",
+            "Audio or video"
+          ]
+        },
+        "pause_mode": {
+          "steps": [
+            "Turn on",
+            "Invisible",
+            "No alerts"
+          ]
+        },
+        "referral_program": {
+          "steps": [
+            "Invite link",
+            "Friend signs up",
+            "Tokens offered"
+          ]
+        },
+        "blog": {
+          "steps": [
+            "Draft",
+            "Image + description",
+            "Published"
+          ],
+          "name": "Blog",
+          "note": "An article can only be published with an image and its description."
+        },
+        "broadcasts": {
+          "steps": [
+            "Pick the audience",
+            "E-mail or announcement",
+            "Send or schedule"
+          ],
+          "name": "Broadcasts (e-mail and announcements)",
+          "note": "Each broadcast is scheduled, tracked and cancelable before the time."
+        },
+        "backups": {
+          "steps": [
+            "Automatic copy",
+            "Stored on R2",
+            "Restore"
+          ],
+          "name": "Backups",
+          "note": "Database copy to a separate R2 bucket, no manual step."
+        },
+        "storage": {
+          "steps": [
+            "Photos",
+            "R2 bucket",
+            "Disk copy"
+          ],
+          "name": "Photo storage (R2)",
+          "note": "Super admin only: automatic copy of photos to R2."
+        }
       }
     }
   },
