@@ -231,6 +231,43 @@ async def send_login_alert(to: str, name: str, country_code: str) -> bool:
     return await send(to, f"{subject}", f"Bonjour {name},\n\nVotre compte vient d'être utilisé depuis {where}, un autre pays que lors de votre dernière connexion.\n\nSi ce n'est pas vous, changez votre mot de passe : {link}", html, kind="notification")
 
 
+def _plural(n: int, one: str, many: str) -> str:
+    return f"{n} {one if n == 1 else many}"
+
+
+async def send_weekly_digest(to: str, name: str, user_id: str, c: dict, premium: bool, event: dict | None) -> bool:
+    """Résumé de la semaine (facultatif, désabonnement en un clic). Les nombres seulement : le nom des visiteurs reste réservé à Premium/VIP, comme dans l'application."""
+    from app.core.notifications import unsub_token
+    base = get_settings().app_url.rstrip("/")
+    unsub = f"{base}/notifications-unsubscribe?token={unsub_token(user_id)}"
+    lines = []
+    if c["likes"]:
+        lines.append(_plural(c["likes"], "personne vous a liké et attend votre réponse", "personnes vous ont liké et attendent votre réponse"))
+    if c["visits"]:
+        lines.append(_plural(c["visits"], "personne a consulté votre profil", "personnes ont consulté votre profil"))
+    if c["duos"]:
+        lines.append(_plural(c["duos"], "nouveau duo", "nouveaux duos"))
+    if c["unread"]:
+        lines.append(_plural(c["unread"], "conversation avec un message non lu", "conversations avec des messages non lus"))
+    if not lines:
+        return False
+    top = lines[0]
+    subject = f"Votre semaine sur Crushduo : {top}"
+    blocks = [p(f"Bonjour {esc_(name)}, voici votre semaine sur Crushduo :")] + [p(f"• {esc_(x)}") for x in lines]
+    if c["likes"] or c["visits"]:
+        blocks.append(p("Ne laissez pas ces personnes attendre : une réponse rapide double les chances d'échanger." if c["likes"] else "Un profil à jour (photos, présentation) donne envie de lui répondre."))
+    if not premium and (c["likes"] or c["visits"]):
+        blocks.append(p("Premium vous montre qui vous a liké et qui a consulté votre profil."))
+    if event:
+        blocks.append(p(f"Prochaine soirée : {esc_(event['title'])}. Rendez-vous dans l'application pour vous y inscrire."))
+    blocks += [button("Ouvrir Crushduo", base + "/discover"),
+               note(f'Vous recevez ce résumé chaque semaine parce que vous avez accepté nos offres. <a href="{esc_(unsub)}" style="color:#C2185B;font-weight:700;text-decoration:underline;">Ne plus recevoir ce résumé</a>')]
+    html = render_email(subject, blocks, preheader=top)
+    text = (f"Bonjour {name},\n\nVotre semaine sur Crushduo :\n" + "\n".join(f"- {x}" for x in lines) + (f"\n\nProchaine soirée : {event['title']}" if event else "")
+            + f"\n\n{base}/discover\n\nNe plus recevoir ce résumé : {unsub}")
+    return await send(to, subject, text, html, kind="notification", headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"})
+
+
 def notification_html(title: str, body: str, unsub_url: str | None = None) -> str:
     """E-mail de notification (message, match, like…) : même carte, bouton vers l'application et, si la notification est facultative, un lien de désabonnement."""
     footer = (f'<p style="margin:8px 0 0;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;font-size:13px;color:#45434F;text-align:center;">'

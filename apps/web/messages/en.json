@@ -2096,7 +2096,9 @@
       "pushTest": "Send a test",
       "pushTested": "Test sent: look at your device.",
       "pushTestFailed": "The test could not be sent.",
-      "pushError": "Couldn’t turn on notifications on this device."
+      "pushError": "Couldn’t turn on notifications on this device.",
+      "weekly": "Weekly summary",
+      "weeklyText": "One e-mail on Sunday evening: people who viewed your profile, pending likes, new duos and unread messages. Sent only if you accepted to receive our offers, and only when there is news."
     },
     "privacy": {
       "visible": "Visible profile",

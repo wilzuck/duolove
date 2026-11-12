@@ -108,6 +108,7 @@ class NotifPrefsIn(Body):
     emailMatches: bool | None = None
     emailMessages: bool | None = None
     pushEnabled: bool | None = None
+    emailWeekly: bool | None = None
 
 
 class DeleteAccountIn(Body):

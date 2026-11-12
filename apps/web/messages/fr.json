@@ -2096,7 +2096,9 @@
       "pushTest": "Envoyer un essai",
       "pushTested": "Essai envoyé : regardez votre appareil.",
       "pushTestFailed": "L’essai n’a pas pu être envoyé.",
-      "pushError": "Impossible d’activer les notifications sur cet appareil."
+      "pushError": "Impossible d’activer les notifications sur cet appareil.",
+      "weekly": "Résumé de la semaine",
+      "weeklyText": "Un e-mail le dimanche soir : personnes qui ont vu votre profil, likes en attente, nouveaux duos et messages non lus. Envoyé seulement si vous avez accepté de recevoir nos offres, et seulement s’il y a du nouveau."
     },
     "privacy": {
       "visible": "Profil visible",
