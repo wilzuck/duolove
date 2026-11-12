@@ -68,7 +68,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
       <div className={cn('grid justify-items-center gap-5', plans.length === 2 ? 'mx-auto max-w-[52rem] lg:grid-cols-2' : plans.length === 1 ? '' : 'lg:grid-cols-3')}>
         {plans.map((p) => {
           const Icon = ICON[p.code];
-          const price = p.prices.find((x) => x.months === months) ?? p.prices[0];
+          const price = p.prices.find((x) => x.months === months); // pas de repli : une formule qui n'a pas cette durée (ex. 7 jours seulement sur Premium) ne l'affiche pas
           const lines = [...(p.code === 'FREE' ? BASE.map((k) => t(k)) : []), ...featureLines(p, t as never, plans.some((x) => x.code === 'FREE'))];
           return (
             <Card key={p.code} className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
@@ -79,8 +79,10 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
                 {current === p.code && <Badge tone="success">{t('plans.current')}</Badge>}
               </div>
               <p className="text-sm text-muted">{(locale === 'en' ? p.taglineEn : p.taglineFr) || t(`plans.${p.code}.tagline`)}</p>
-              {p.code === 'FREE' || !price ? (
+              {p.code === 'FREE' ? (
                 <p className="font-display text-4xl font-extrabold">{t('plans.free')}</p>
+              ) : !price ? (
+                <p className="text-sm font-medium text-muted">{t('plans.durationUnavailable')}</p>
               ) : promo ? (
                 // Remise du code : prix barré, prix remisé et total du prochain paiement (même arrondi que le serveur : remise = round(total × % / 100)).
                 <div className="space-y-1">
@@ -109,7 +111,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
               {showAll ? <ul id="plan-features" className="flex-1 space-y-3 text-sm">
                 {lines.map((l) => <li key={l} className="flex gap-3"><Check className="mt-0.5 size-4 shrink-0 text-success-ink" aria-hidden /><span>{l}</span></li>)}
               </ul> : <div className="flex-1" />}
-              {action ? action(p, months) : (
+              {!price && p.code !== 'FREE' ? null : action ? action(p, months) : (
                 <Link href="/register"><Button className="w-full" size="lg" variant={p.featured ? 'primary' : 'outline'}>{t(p.code === 'FREE' ? 'plans.ctaFree' : 'plans.ctaPaid')}</Button></Link>
               )}
             </Card>

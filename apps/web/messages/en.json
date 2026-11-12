@@ -360,7 +360,8 @@
     "week": "7 days",
     "perWeek": "/ 7 days",
     "billedWeek": "Valid for 7 days, no renewal",
-    "promoTotalWeek": "With {code} (−{percent}%): {total} on your next payment, for 7 days."
+    "promoTotalWeek": "With {code} (−{percent}%): {total} on your next payment, for 7 days.",
+    "durationUnavailable": "Not offered for this duration: pick another duration."
   },
   "about": {
     "title": "About Crushduo",

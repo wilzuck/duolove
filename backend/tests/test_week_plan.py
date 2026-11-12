@@ -95,3 +95,15 @@ def test_prix_par_defaut_et_equivalents():
     assert months_equiv(0) == pytest.approx(7 / 30) and months_equiv(3) == 3
     assert duration_label(0) == "7 jours" and duration_label(1) == "1 mois"
     assert payments.scaled(5, 0) == 1 and payments.scaled(15, 0) == 4 and payments.scaled(2, 0) == 0 and payments.scaled(5, 3) == 15
+
+
+async def test_l_ecran_d_administration_envoie_toutes_les_durees_d_un_coup(app, db):
+    """L'écran envoie les 5 durées (7 jours, 1, 3, 6, 12 mois) à chaque enregistrement : le serveur doit les accepter."""
+    ad = await admin(app, db)
+    body = {"prices": [{"months": m, "discountPercent": d, "amountOverride": None, "active": True} for m, d in ((0, 0), (1, 0), (3, 10), (6, 20), (12, 30))]}
+    r = await ad.agent.patch("/api/admin/plans/PREMIUM", json=body)
+    assert r.status_code == 200, r.text
+    prices = (await ad.agent.get("/api/plans")).json()["plans"]
+    week = next(p for p in prices if p["code"] == "PREMIUM")["prices"]
+    assert [x["months"] for x in week] == [0, 1, 3, 6, 12]
+    assert (await ad.agent.patch("/api/admin/plans/PREMIUM", json={"prices": body["prices"] + [{"months": 99, "discountPercent": 0}]})).status_code == 400  # durée inconnue refusée

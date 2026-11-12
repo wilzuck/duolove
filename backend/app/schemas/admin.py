@@ -132,7 +132,7 @@ class PlanPatch(BaseModel):
     featured: bool | None = None
     sortOrder: int | None = Field(None, ge=0, le=100)
     features: PlanFeatures | None = None
-    prices: list[PriceIn] | None = Field(None, max_length=4)
+    prices: list[PriceIn] | None = Field(None, max_length=len(DURATION_MONTHS))  # une entrée par durée proposée (7 jours incluse)
     taglineFr: Trim(0, 120) | None = None
     taglineEn: Trim(0, 120) | None = None
 
