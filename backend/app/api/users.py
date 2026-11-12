@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Response
-from sqlalchemy import delete, func, or_, select, update
+from sqlalchemy import func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.inspection import inspect
 
-from app.core import access, credits, entitlements, rhythm, storage
+from app.core import access, accountsvc, credits, entitlements, rhythm
 from app.core.auth import AuthUser, current_user, current_user_allow_suspended, current_user_allow_unverified
 from app.core.errors import AppError, bad_request, unauthorized
 from app.core.ids import utcnow
@@ -12,8 +12,8 @@ from app.core.ratelimit import limit
 from app.core.security import verify_password
 from app.db.session import get_db
 from app.models.models import (
-    Account, Block, Interest, Invoice, Match, Message, ModerationAction, Notification, NotificationPreference, Payment, Preference, Profile,
-    ProfilePhoto, Report, Session, Subscription, Swipe, User, VerificationToken, Conversation, t_UserInterest,
+    Block, Interest, Invoice, Match, Message, ModerationAction, Notification, NotificationPreference, Payment, Preference, Profile,
+    ProfilePhoto, Report, Session, Swipe, User, Conversation, t_UserInterest,
 )
 from app.schemas.profiles import AppealIn, ConsentIn, DeleteAccountIn
 
@@ -115,24 +115,5 @@ async def remove(body: DeleteAccountIn, u: AuthUser = Depends(current_user_allow
     user = await db.get(User, u.id)
     if user.passwordHash and not (body.password and await verify_password(user.passwordHash, body.password)):
         raise unauthorized("INVALID_CREDENTIALS", "Mot de passe incorrect")
-    profile = (await db.execute(select(Profile).where(Profile.userId == u.id))).scalar_one_or_none()
-    keys = []
-    if profile:
-        keys = list((await db.execute(select(ProfilePhoto.key).where(ProfilePhoto.profileId == profile.id))).scalars().all())
-    now = utcnow()
-    await db.execute(update(User).where(User.id == u.id).values(status="DELETED", deletedAt=now, email=f"deleted+{u.id}@duomatch.invalid", passwordHash=None, emailVerifiedAt=None, marketingConsent=False))
-    await db.execute(delete(Account).where(Account.userId == u.id))
-    await db.execute(delete(Session).where(Session.userId == u.id))
-    await db.execute(delete(VerificationToken).where(VerificationToken.userId == u.id))
-    if profile:
-        await db.execute(delete(ProfilePhoto).where(ProfilePhoto.profileId == profile.id))
-    await db.execute(delete(t_UserInterest).where(t_UserInterest.c.userId == u.id))
-    await db.execute(update(Profile).where(Profile.userId == u.id).values(displayName="Compte supprimé", bio="", occupation=None, pronouns=None, visibility="HIDDEN", approxLat=None, approxLng=None))
-    await db.execute(update(Message).where(Message.senderId == u.id).values(body="", deletedAt=now))
-    await db.execute(update(Match).where(or_(Match.userAId == u.id, Match.userBId == u.id), Match.status == "ACTIVE").values(status="UNMATCHED", unmatchedById=u.id))
-    await db.execute(update(Subscription).where(Subscription.userId == u.id, Subscription.status.in_(["ACTIVE", "PENDING", "PAST_DUE"])).values(status="CANCELED", cancelAtPeriodEnd=True))
-    await db.commit()
-    for k in keys:
-        await storage.delete(k)
-        await storage.delete(thumb_key(k))
+    await accountsvc.anonymize(db, u.id)
     return {"ok": True}

@@ -1,5 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Ban, Clock, RotateCcw, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Badge, Button, DataTableView, Dialog, Field, Input, Select, Skeleton } from '@duomatch/ui';
@@ -48,6 +49,31 @@ export default function AdminUsers() {
   const grant = useMutation({ mutationFn: () => post(`/admin/users/${sel}/grant-plan`, { plan: grantPlan, days: grantDays, reason }), onSuccess: () => { refresh(); toast('success', t('admin.done')); }, onError: (e) => toast('error', err(e)) });
   const revoke = useMutation({ mutationFn: () => post(`/admin/users/${sel}/revoke-plan`, { reason }), onSuccess: () => { refresh(); toast('success', t('admin.done')); }, onError: (e) => toast('error', err(e)) });
   const d = detail.data;
+
+  // Actions groupées : on coche des comptes, on choisit l'action, puis une fenêtre demande le motif (obligatoire). Les comptes du personnel sont ignorés par le serveur.
+  type BulkKind = 'suspend' | 'ban' | 'unsuspend' | 'delete';
+  const [bulk, setBulk] = useState<{ kind: BulkKind; rows: Row[]; resolve: () => void; reject: () => void } | null>(null);
+  const [bulkReason, setBulkReason] = useState('');
+  const [bulkDays, setBulkDays] = useState(7);
+  const closeBulk = () => { bulk?.reject(); setBulk(null); setBulkReason(''); };
+  const runBulk = useMutation({
+    mutationFn: () => post<{ done: string[]; failed: { id: string; code: string }[] }>('/admin/users/bulk', { ids: bulk!.rows.map((r) => r.id), action: bulk!.kind, reason: bulkReason.trim(), ...(bulk!.kind === 'suspend' ? { days: bulkDays } : {}) }),
+    onSuccess: (r) => {
+      toast(r.failed.length ? 'info' : 'success', t('admin.bulk.result', { done: r.done.length, failed: r.failed.length }));
+      void qc.invalidateQueries({ queryKey: ['admin'] });
+      bulk?.resolve(); setBulk(null); setBulkReason('');
+    },
+    onError: (e) => toast('error', err(e)),
+  });
+  const isAdmin = me?.role === 'ADMIN' || me?.role === 'SUPER_ADMIN';
+  const askBulk = (kind: BulkKind) => (rows: Row[]) => new Promise<void>((resolve, reject) => { setBulk({ kind, rows, resolve, reject }); });
+  const canSanction = (rows: Row[]) => rows.some((r) => r.role === 'USER');
+  const bulkActions = [
+    { key: 'suspend', label: t('admin.suspend'), icon: <Clock className="size-4" aria-hidden />, onRun: askBulk('suspend'), enabled: canSanction },
+    { key: 'unsuspend', label: t('admin.unsuspend'), icon: <RotateCcw className="size-4" aria-hidden />, onRun: askBulk('unsuspend'), enabled: canSanction },
+    { key: 'ban', label: t('admin.ban'), icon: <Ban className="size-4" aria-hidden />, tone: 'danger' as const, onRun: askBulk('ban'), enabled: canSanction },
+    ...(isAdmin ? [{ key: 'delete', label: t('admin.bulk.delete'), icon: <Trash2 className="size-4" aria-hidden />, tone: 'danger' as const, onRun: askBulk('delete'), enabled: canSanction }] : []),
+  ];
   const tone = (s: string) => (s === 'ACTIVE' ? 'success' : s === 'DELETED' ? 'neutral' : 'danger') as 'success' | 'neutral' | 'danger';
 
   return (
@@ -62,7 +88,7 @@ export default function AdminUsers() {
       <label className="flex w-fit items-center gap-2 text-sm"><input type="checkbox" checked={mismatch} onChange={(e) => setMismatch(e.target.checked)} className="size-4 accent-brand-strong" />{t('admin.users.mismatchFilter')}</label>
       {list.isLoading ? <Skeleton className="h-64" /> : (
         <DataTableView
-          minWidth="40rem" rows={list.items} rowKey={(u) => u.id} empty={t('admin.empty')} labels={tableLabels} exportName="utilisateurs"
+          bulkActions={bulkActions} minWidth="40rem" rows={list.items} rowKey={(u) => u.id} empty={t('admin.empty')} labels={tableLabels} exportName="utilisateurs"
           serverSearch={{ value: q, onChange: setQ }} hasMore={list.hasNextPage} onLoadMore={() => void list.fetchNextPage()} loadingMore={list.isFetchingNextPage}
           columns={[
             { key: 'name', header: t('admin.cols.name'), value: (u) => `${u.displayName} ${u.email ?? ''}`, cell: (u) => <><button className="text-left font-semibold text-brand-ink underline-offset-2 hover:underline" onClick={() => setSel(u.id)}>{u.displayName}</button><span className="block text-xs text-muted">{u.email ?? u.id.slice(0, 8)} · {u.role}</span></> },
@@ -73,6 +99,21 @@ export default function AdminUsers() {
           ]}
         />
       )}
+
+      <Dialog open={!!bulk} onClose={() => !runBulk.isPending && closeBulk()} title={bulk ? t(`admin.bulk.title.${bulk.kind}`) : ''} closeLabel={t('common.close')} className="w-[min(94vw,30rem)]" dismissible={!runBulk.isPending}>
+        {bulk && (
+          <form className="space-y-4 text-sm" onSubmit={(e) => { e.preventDefault(); runBulk.mutate(); }}>
+            <p>{t('admin.bulk.message', { count: bulk.rows.length })}</p>
+            {bulk.kind === 'delete' && <p className="rounded-2xl bg-danger-soft px-4 py-3 font-medium text-danger-ink">{t('admin.bulk.deleteWarning')}</p>}
+            <Field label={t('admin.reason')} hint={bulkReason.trim().length < 3 ? t('admin.reasonNeeded') : undefined}>{(p) => <Input {...p} value={bulkReason} onChange={(e) => setBulkReason(e.target.value)} required minLength={3} maxLength={300} autoFocus />}</Field>
+            {bulk.kind === 'suspend' && <Field label={t('admin.days')}>{(p) => <Input {...p} type="number" min={1} max={365} value={bulkDays} onChange={(e) => setBulkDays(Math.min(365, Math.max(1, Number(e.target.value) || 7)))} />}</Field>}
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={closeBulk} disabled={runBulk.isPending}>{t('common.cancel')}</Button>
+              <Button type="submit" variant={bulk.kind === 'suspend' || bulk.kind === 'unsuspend' ? 'primary' : 'danger'} loading={runBulk.isPending} disabled={bulkReason.trim().length < 3}>{t(`admin.bulk.confirm.${bulk.kind}`)}</Button>
+            </div>
+          </form>
+        )}
+      </Dialog>
 
       <Dialog open={!!sel} onClose={() => setSel(null)} title={d?.profile?.displayName ?? t('admin.user')} closeLabel={t('common.close')} className="w-[min(94vw,38rem)]">
         {!d ? <Skeleton className="h-40" /> : (

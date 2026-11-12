@@ -5,11 +5,13 @@ import asyncio
 import datetime
 
 from fastapi import APIRouter, Depends, Query, Response
-from pydantic import BaseModel, ConfigDict
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import and_, distinct, func, inspect as sa_inspect, or_, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import entitlements, flags as flagsvc
+from app.core import accountsvc, entitlements, flags as flagsvc
 from app.core import notifications, payments, plan_config, promo, storage, storage_config
 from app.core.auth import AuthUser, has_role, require_role
 from app.core.constants import FEATURE_FLAGS
@@ -17,6 +19,7 @@ from app.core.config import get_settings
 from app.core.errors import AppError, bad_request, forbidden, not_found
 from app.core.ids import utcnow
 from app.core.profile_card import thumb_key
+from app.core.ratelimit import limit
 from app.db.session import get_db
 from app.models.models import (
     AppInstall, AuditLog, ContactMessage, Conversation, Entitlement, FeatureFlag, Match, Message, ModerationAction, Payment, PlanPrice, Preference, Product, Profile, ProfilePhoto,
@@ -357,6 +360,43 @@ async def ban(user_id: str, body: Sanction, a: AuthUser = MOD, db: AsyncSession 
     await db.commit()
     await audit(db, a.id, "user.ban", "User", user_id)
     return {"ok": True}
+
+
+class BulkIn(BaseModel):
+    ids: list[str] = Field(min_length=1, max_length=100)
+    action: Literal["suspend", "ban", "unsuspend", "delete"]
+    reason: str = Field(min_length=3, max_length=500)
+    days: int | None = Field(None, ge=1, le=365)
+
+
+@router.post("/users/bulk", dependencies=[limit(20, 3600)])
+async def bulk(body: BulkIn, a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
+    """Sanctionne plusieurs comptes d'un coup (suspension, bannissement, levée, suppression). Chaque compte est traité à part avec les mêmes garde-fous que l'action
+    individuelle : un échec (compte introuvable, rôle protégé, soi-même) n'arrête pas les autres. La suppression est réservée aux administrateurs et est irréversible."""
+    if body.action == "delete" and not has_role(a.role, "ADMIN"):
+        raise forbidden("ADMIN_ONLY")
+    done, failed = [], []
+    for uid in dict.fromkeys(body.ids):
+        try:
+            if body.action == "delete":
+                t = await guard_target(db, a, uid)
+                if ev(t.status) == "DELETED":
+                    raise not_found("USER_NOT_FOUND")
+                await accountsvc.anonymize(db, uid)
+                db.add(ModerationAction(moderatorId=a.id, targetUserId=uid, type="BAN", reason=f"Suppression : {body.reason}"))
+                await db.commit()
+                await audit(db, a.id, "user.delete", "User", uid, {"reason": body.reason})
+            elif body.action == "suspend":
+                await suspend(uid, Sanction(reason=body.reason, days=body.days), a, db)
+            elif body.action == "ban":
+                await ban(uid, Sanction(reason=body.reason), a, db)
+            else:
+                await unsuspend(uid, ReasonOnly(reason=body.reason[:300]), a, db)
+            done.append(uid)
+        except AppError as e:
+            await db.rollback()
+            failed.append({"id": uid, "code": e.code})
+    return {"done": done, "failed": failed}
 
 
 @router.post("/users/{user_id}/unsuspend")
