@@ -1,4 +1,5 @@
 """E-mails : API HTTP Brevo si BREVO_API_KEY est défini, sinon SMTP si SMTP_URL est défini, sinon journal + boîte d'envoi mémoire (dev/tests uniquement)."""
+import datetime
 import logging
 from email.message import EmailMessage
 from email.utils import parseaddr
