@@ -1,10 +1,11 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
+import { useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { useApiError } from '@/hooks/useApiError';
 import { useRouter } from '@/i18n/navigation';
 import { post } from '@/lib/api';
-import { payWithKkiapay, type KkiapayWidgetConfig } from '@/lib/kkiapay';
+import { CANCELLED, payWithKkiapay, type KkiapayWidgetConfig } from '@/lib/kkiapay';
 import { useUi } from '@/lib/store';
 
 type Body = { type: 'subscription'; plan: string; months: number; promoCode?: string } | { type: 'product'; code: string; promoCode?: string };
@@ -18,12 +19,20 @@ export function usePay() {
   const router = useRouter();
   const err = useApiError();
   const toast = useUi((s) => s.toast);
+  const again = useRef<(() => void) | null>(null);
   const m = useMutation({
     mutationFn: async ({ body }: { key: string; body: Body }) => {
       const r = await post<{ checkoutUrl?: string; widget?: KkiapayWidgetConfig }>('/checkout', body);
       if (r.widget) {
         let transactionId: string;
-        try { transactionId = await payWithKkiapay(r.widget); } catch { router.replace('/settings?tab=payments&status=fail'); return; }
+        try { transactionId = await payWithKkiapay(r.widget); } catch (e) {
+          if (e instanceof Error && e.message === CANCELLED) {  // fenêtre fermée sans payer : on rend la main (bouton libéré) et on propose de réessayer
+            useUi.getState().setPayInterrupted({ retry: () => again.current?.() });
+            return;
+          }
+          router.replace('/settings?tab=payments&status=fail');
+          return;
+        }
         const c = await post<{ status: string }>('/payments/kkiapay/confirm', { reference: r.widget.reference, transactionId });
         if (c.status === 'PENDING') { toast('info', t('premium.pending')); return; }
         router.replace(`/settings?tab=payments&status=${c.status === 'SUCCEEDED' ? 'success' : 'fail'}`);
@@ -33,5 +42,6 @@ export function usePay() {
     },
     onError: (e) => toast('error', err(e)),
   });
-  return { pay: m.mutate, pending: m.isPending, variables: m.variables };
+  const pay: typeof m.mutate = (vars, opts) => { again.current = () => m.mutate(vars); m.mutate(vars, opts); };
+  return { pay, pending: m.isPending, variables: m.variables };
 }

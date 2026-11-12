@@ -2,6 +2,7 @@
 le serveur interroge l'API KKiaPay avec les clés privées pour obtenir le statut et le montant réels."""
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 
 import httpx
@@ -11,6 +12,8 @@ from app.core.payment_config import Effective
 from app.core.security import random_token
 
 BASE = {"sandbox": "https://api-sandbox.kkiapay.me", "live": "https://api.kkiapay.me"}
+REF_PREFIX = "crushduo_"
+LEGACY_REF_PREFIX = "kk_"  # références créées avant le marquage : toujours acceptées
 STATES = {"SUCCESS": "SUCCESS", "FAILED": "FAILED", "FAILURE": "FAILED", "PENDING": "PENDING"}
 
 
@@ -86,5 +89,10 @@ class KkiapayProvider:
         return {}
 
     async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None) -> dict:
-        ref = f"kk_{random_token(12)}"
-        return {"providerRef": ref, "widget": {"publicKey": self.cfg.public_key, "sandbox": self.cfg.sandbox, "amount": amount_xof, "reference": ref, "name": get_settings().site_name}}
+        # Un même compte KKiaPay peut servir plusieurs applications (ex. WaMarket) : tout ce qui part de Crushduo est marqué, côté KKiaPay, par la
+        # référence (partnerId) qui commence par « crushduo_ », le motif « Crushduo · Premium » et le champ `data`.
+        ref = f"{REF_PREFIX}{random_token(12)}"
+        site = get_settings().site_name
+        reason = f"{site} · {plan.replace('_', ' ').title()}" if plan else site
+        return {"providerRef": ref, "widget": {"publicKey": self.cfg.public_key, "sandbox": self.cfg.sandbox, "amount": amount_xof, "reference": ref, "name": site, "reason": reason,
+                                               "data": json.dumps({"app": "crushduo", "paymentId": payment_id}, separators=(",", ":"))}}

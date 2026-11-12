@@ -257,6 +257,8 @@ async def handle_kkiapay_webhook(db: AsyncSession, raw: bytes, secret_header: st
     if not await _record_event(db, "kkiapay", f"{tx_id}:{event}", event):
         return {"duplicate": True}
     tx = await kkiapay.verify_transaction(cfg, tx_id)
+    if tx and tx.reference and not tx.reference.startswith((kkiapay.REF_PREFIX, kkiapay.LEGACY_REF_PREFIX)):
+        return {"ok": True, "ignored": True}  # transaction d'une autre application du même compte KKiaPay (ex. WaMarket) : ce n'est pas la nôtre
     refs = [f"tx_{tx_id}"] + ([tx.reference] if tx and tx.reference else [])
     payment = (await db.execute(select(Payment).where(Payment.provider == "kkiapay", Payment.providerRef.in_(refs)))).scalars().first()
     if not payment:

@@ -51,7 +51,7 @@ class PromoPreview(BaseModel):
 
 
 class KkiapayConfirm(BaseModel):
-    reference: Annotated[str, StringConstraints(pattern=r"^kk_[A-Za-z0-9_-]{8,40}$")]
+    reference: Annotated[str, StringConstraints(pattern=r"^(crushduo|kk)_[A-Za-z0-9_-]{8,40}$")]
     transactionId: Annotated[str, StringConstraints(pattern=r"^[A-Za-z0-9_-]{4,64}$")]
 
 

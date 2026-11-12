@@ -2,6 +2,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
 import { ApiError } from '@/lib/api';
+import { PayInterrupted } from './PayInterrupted';
 import { Toaster } from './Toaster';
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -19,6 +20,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={client}>
       {children}
       <Toaster />
+      <PayInterrupted />
     </QueryClientProvider>
   );
 }

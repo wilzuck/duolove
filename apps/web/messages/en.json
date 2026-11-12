@@ -4399,5 +4399,11 @@
     "STABILITY": "Stability",
     "GROWTH": "Personal growth",
     "SPIRITUALITY": "Spirituality"
+  },
+  "pay": {
+    "interruptedTitle": "Payment interrupted",
+    "interruptedText": "The payment window was closed before the end. If the payment did go through, it will be taken into account automatically. Otherwise, you can try again.",
+    "retry": "Try again",
+    "cancel": "Cancel"
   }
 }

@@ -54,7 +54,7 @@ async def test_checkout_renvoie_la_config_du_widget_et_n_active_rien(app, db, fa
     b = r.json()
     assert b["checkoutUrl"] is None
     assert b["widget"]["publicKey"] == "pk_test_fake" and b["widget"]["sandbox"] is True and b["widget"]["amount"] == 2500 and b["widget"]["name"] == "Crushduo"
-    assert b["widget"]["reference"].startswith("kk_")
+    assert b["widget"]["reference"].startswith("crushduo_") and "Premium" in b["widget"]["reason"] and "crushduo" in b["widget"]["data"]
     assert await plan_of(a) == "FREE"
     assert "private_fake" not in r.text  # les clés privées ne sortent jamais
 
@@ -121,6 +121,10 @@ async def test_webhook_secret_exige_reverification_et_rejeu_ignore(app, http, db
     forged = f'{{"transactionId":"TX_FORGED_{RUN}","event":"transaction.success"}}'
     f = await http.post("/api/payments/webhook/kkiapay", content=forged, headers={"content-type": "application/json", "x-kkiapay-secret": SECRET})
     assert f.status_code == 200
+    # une transaction d'une autre application du même compte KKiaPay est ignorée, sans rien activer
+    fake["txs"][f"TX_OTHER_{RUN}"] = {"status": "SUCCESS", "amount": 2500, "partnerId": "wamarket_abc123def456"}
+    other = await http.post("/api/payments/webhook/kkiapay", content=f'{{"transactionId":"TX_OTHER_{RUN}","event":"transaction.success"}}', headers={"content-type": "application/json", "x-kkiapay-secret": SECRET})
+    assert other.status_code == 200 and other.json().get("ignored") is True
 
 
 async def test_simulation_inactive_avec_kkiapay(app, db, fake):

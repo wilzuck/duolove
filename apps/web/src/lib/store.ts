@@ -9,6 +9,9 @@ interface UiState {
   setGoogleToken: (t: string | null) => void;
   callOutcome: { id: string; status: string; direction: 'incoming' | 'outgoing'; name: string } | null;
   setCallOutcome: (o: { id: string; status: string; direction: 'incoming' | 'outgoing'; name: string } | null) => void;
+  /** Paiement dont la fenêtre a été fermée sans payer : propose de réessayer ou d'annuler. */
+  payInterrupted: { retry: () => void } | null;
+  setPayInterrupted: (p: { retry: () => void } | null) => void;
   toast: (kind: Toast['kind'], text: string) => void;
   dismiss: (id: number) => void;
   match: { matchId: string; conversationId: string; user: Pick<Card, 'id' | 'displayName' | 'photos'> | null; kind?: 'CRUSH' } | null;
@@ -24,6 +27,8 @@ export const useUi = create<UiState>((set, get) => ({
   setGoogleToken: (googleToken) => set({ googleToken }),
   callOutcome: null,
   setCallOutcome: (callOutcome) => set({ callOutcome }),
+  payInterrupted: null,
+  setPayInterrupted: (payInterrupted) => set({ payInterrupted }),
   toast: (kind, text) => {
     const id = ++seq;
     set((s) => ({ toasts: [...s.toasts.slice(-2), { id, kind, text }] }));

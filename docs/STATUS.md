@@ -245,3 +245,7 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 ## KKiaPay : en-têtes alignés sur le SDK officiel (terminé, non commité)
 - Audit du test des clés refusé : le SDK officiel (`@kkiapay-org/nodejs-sdk`, lu dans le paquet npm) envoie `x-api-key` = clé **publique**, `x-private-key` = clé privée, `x-secret-key` = **secret**. Notre adaptateur envoyait la clé privée dans `x-api-key` (réponse réelle de KKiaPay constatée avec une clé bidon : 401 « Invalid API KEY »). Corrigé ; la **clé secrète** est un nouveau champ (page Paiement en ligne, chiffrée, ou `KKIAPAY_SECRET_KEY`). Tests avec faux KKiaPay ; reste à valider avec tes vraies clés.
+
+## Paiement : repérage Crushduo et fenêtre fermée (terminé, non commité)
+- Les paiements de Crushduo se distinguent de ceux de WaMarket dans le tableau de bord KKiaPay : référence (`partnerId`) qui commence par `crushduo_`, motif « Crushduo · Premium », champ `data` `{"app":"crushduo",…}`. Le webhook ignore les transactions d'une autre application du même compte (référence qui n'est pas la nôtre). Anciennes références `kk_` toujours acceptées.
+- Fenêtre KKiaPay fermée sans payer : le bouton n'est plus bloqué en chargement ; une fenêtre propose « Réessayer » ou « Annuler ». Détection par l'événement de fermeture de `k.js` s'il existe, sinon par surveillance du cadre du widget (repli) : **non vérifié avec le vrai widget**, à tester au premier essai.
