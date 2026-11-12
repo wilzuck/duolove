@@ -287,3 +287,12 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 ## Barre du haut (ordinateur) et Google Search Console (terminé, non commité)
 - Barre du haut sur ordinateur : trois icônes sobres — Super Likes (pastille de solde, achat), Boost (solde, activation d'un boost possédé, statut du boost en cours, achat), Mode privé (interrupteur pour les formules qui l'incluent, sinon lien vers les formules) — chacune avec une petite fenêtre au clic ; masquées pour un membre bloqué par l'accès payant ; téléphone inchangé. Rendu non vu dans le navigateur.
 - Google Search Console : fichier `public/googled50b92c5ae936d80.html` (accessible à la racine du site) **et** balise meta `google-site-verification` dans le layout ; ne pas les supprimer, même après validation.
+
+## Choix de l'offre après l'inscription (terminé, non testé dans le navigateur)
+- À la fin du profil, si l'accès payant est actif et que la personne est sur le plan Gratuit, le bouton « Découvrir » mène à `/access?welcome=1` : carte « essai gratuit » (durée lue dans la configuration, 14 j par défaut) avec bouton « Commencer l'essai », réduction « profil vérifié », code promo, offres Premium/VIP. Cet écran n'est proposé qu'une fois (mémorisé dans le navigateur, `localStorage`).
+- **L'essai démarre à la fin du profil** (`Profile.onboardedAt`), plus à l'inscription ; bandeau « N jours d'essai restants » dans l'application.
+- Tests backend (11 dans `test_access_paywall.py`, dont le démarrage de l'essai). **Le parcours complet inscription → code → profil → choix d'offre n'a pas été rejoué dans un navigateur** (API locale du port 4000 sur l'ancien code).
+
+## Admin : recherche dans le menu et courbes (terminé, non testé dans le navigateur)
+- Zone « Aller à un menu… » en haut du menu (ordinateur et mobile) : filtre sans accents ni majuscules, Entrée ouvre le premier résultat, Échap efface, Ctrl/Cmd + K donne le focus ; seuls les menus du rôle sont proposés.
+- Graphes de l'aperçu et des statistiques : courbe lissée avec dégradé, point et infobulle au survol, à la place des barres ; mini-courbes des indicateurs lissées aussi. Typecheck, lint et tests unitaires passés ; rendu non vérifié visuellement.

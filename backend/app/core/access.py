@@ -101,11 +101,13 @@ async def status(db: AsyncSession, user: User, cfg: Config | None = None) -> dic
     out["required"] = True
     if (await entitlements.get(db, user.id))["plan"] != "FREE":
         return out  # formule payante en cours
-    # Fin de l'accès offert : anciens membres = activation + délai de grâce ; nouveaux inscrits = inscription + essai gratuit.
+    # Fin de l'accès offert : anciens membres = activation + délai de grâce ; nouveaux inscrits = fin de leur profil + essai gratuit.
     if cfg.activated_at and user.createdAt < cfg.activated_at:
         end = cfg.activated_at + datetime.timedelta(days=cfg.grace_days)
     else:
-        end = user.createdAt + datetime.timedelta(days=cfg.trial_days)
+        # L'essai démarre quand le profil est terminé (page « Découvrir »), pas à l'inscription ; tant qu'il ne l'est pas, il n'a pas commencé.
+        started = (await db.execute(select(Profile.onboardedAt).where(Profile.userId == user.id))).scalar_one_or_none()
+        end = (started or utcnow()) + datetime.timedelta(days=cfg.trial_days)
     if utcnow() < end:
         out["graceEndsAt"] = end
         return out

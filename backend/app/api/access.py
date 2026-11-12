@@ -36,4 +36,4 @@ async def preview(u: AuthUser = Depends(current_user), db: AsyncSession = Depend
         counts["city"] = await count(Profile.city == mine.city, Profile.country == mine.country)
         counts["country"] = await count(Profile.country == mine.country)
         counts["activeWeek"] = await count(User.lastActiveAt >= week)
-    return {**await access.status(db, user), "counts": counts, "city": mine.city if mine else None}
+    return {**await access.status(db, user), "counts": counts, "city": mine.city if mine else None, "trialDays": (await access.config()).trial_days}

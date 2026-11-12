@@ -10,7 +10,8 @@ import { PhotoManager } from '@/components/app/PhotoManager';
 import { useApiError } from '@/hooks/useApiError';
 import { keys, useMe, useMyProfile } from '@/hooks/useQueries';
 import { useRouter } from '@/i18n/navigation';
-import { patch, post, put } from '@/lib/api';
+import { api, patch, post, put } from '@/lib/api';
+import { planChoiceSeen } from '@/lib/planChoice';
 import { useUi } from '@/lib/store';
 import type { Me, MyProfile } from '@/lib/types';
 
@@ -42,7 +43,12 @@ function Wizard({ profile, me }: { profile: MyProfile; me: Me }) {
       await put('/profiles/me/preferences', { ...pref, maxDistanceKm: undefined, languages: [], interests: [], verifiedOnly: false, activeRecently: false });
       return post<MyProfile>('/profiles/me/onboarding/complete');
     },
-    onSuccess: async () => { await qc.invalidateQueries(); router.replace('/discover'); },
+    onSuccess: async () => {
+      await qc.invalidateQueries();
+      // Accès payant activé : le membre choisit son offre (essai gratuit, Premium ou VIP) avant de découvrir ; sinon, directement la découverte.
+      const m = await api<Me>('/users/me').catch(() => null);
+      router.replace(m?.access?.required && m.entitlement.plan === 'FREE' && !planChoiceSeen() ? '/access?welcome=1' : '/discover');
+    },
     onError: (e) => toast('error', err(e)),
   });
 

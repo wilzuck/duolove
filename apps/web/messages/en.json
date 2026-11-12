@@ -3530,7 +3530,9 @@
       "mismatchFilter": "Connection country differs from declared country",
       "mismatchBadge": "Declared {declared} · seen {seen}",
       "countryLine": "Last connection from: {seen} (a hint only: VPNs and travel are possible)."
-    }
+    },
+    "menuSearch": "Go to a menu…",
+    "menuSearchEmpty": "No menu matches."
   },
   "pricingFaq": {
     "renew": {
@@ -4449,7 +4451,14 @@
     "discountCta": "Complete my profile",
     "discountTitleMonths": "{percent}% off your first {n} months with a verified profile",
     "discountSpent": "You have already used this discount.",
-    "discountCap": "The offer is full: all verified-profile spots have been taken."
+    "discountCap": "The offer is full: all verified-profile spots have been taken.",
+    "welcomeTitle": "Pick your plan",
+    "trialTitle": "{n} free days, no payment",
+    "trialRunning": "Your free trial runs until {date}",
+    "trialText": "Browse profiles, like and chat during the trial. Pick a plan whenever you like, before it ends.",
+    "trialStart": "Start my {n} free days",
+    "trialContinue": "Keep using my free trial",
+    "trialLeft": "Free trial: {n} day(s) left, until {date}. Pick a plan to keep going without interruption."
   },
   "topbar": {
     "group": "Shortcuts",

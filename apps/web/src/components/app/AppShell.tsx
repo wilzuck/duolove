@@ -1,7 +1,7 @@
 'use client';
 import { BadgeCheck, Bell, ChevronLeft, Compass, Crown, Heart, Radio, MessageCircle, ShieldAlert, User } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Avatar, Button, Logo, cn } from '@duomatch/ui';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { formatDate } from '@/lib/format';
@@ -40,6 +40,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
   const inChat = /^\/messages\/.+/.test(path);
   // Accès payant : un membre sans formule ne garde que ces pages (compte, profil, paiement). Le reste ramène à la page d'abonnement.
   const lockedOk = ['/access', '/premium', '/checkout', '/profile', '/settings', '/referral', '/notifications', '/onboarding'].some((x) => path === x || path.startsWith(`${x}/`));
+  const [nowMs] = useState(() => Date.now());  // instant de référence du compte à rebours de l'essai (pur : fixé une fois)
   const blocked = !!me.access?.locked && !lockedOk;
   useEffect(() => { if (blocked) router.replace('/access'); }, [blocked, router]);
   if (blocked) return null;
@@ -111,7 +112,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
         {!inChat && <InstallBanner />}
         {me.access?.graceEndsAt && !inChat && (
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-soft px-4 py-2 text-center text-sm text-brand-ink">
-            <span>{t('access.graceStrip', { date: formatDate(me.access.graceEndsAt, locale, { day: 'numeric', month: 'long' }) })}</span>
+            <span>{t('access.trialLeft', { n: Math.max(1, Math.ceil((new Date(me.access.graceEndsAt).getTime() - nowMs) / 86_400_000)), date: formatDate(me.access.graceEndsAt, locale, { day: 'numeric', month: 'long' }) })}</span>
             <Link href="/premium" className="font-bold underline">{t('access.graceCta')}</Link>
           </div>
         )}

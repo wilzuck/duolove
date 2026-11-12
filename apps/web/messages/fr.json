@@ -3530,7 +3530,9 @@
       "mismatchFilter": "Pays de connexion différent du pays déclaré",
       "mismatchBadge": "Déclaré {declared} · vu {seen}",
       "countryLine": "Dernière connexion depuis : {seen} (indice seulement : VPN et voyages possibles)."
-    }
+    },
+    "menuSearch": "Aller à un menu…",
+    "menuSearchEmpty": "Aucun menu ne correspond."
   },
   "pricingFaq": {
     "renew": {
@@ -4449,7 +4451,14 @@
     "discountCta": "Compléter mon profil",
     "discountTitleMonths": "−{percent} % sur tes {n} premiers mois avec un profil vérifié",
     "discountSpent": "Tu as déjà profité de cette réduction.",
-    "discountCap": "L'offre est complète : tous les profils vérifiés ont été servis."
+    "discountCap": "L'offre est complète : tous les profils vérifiés ont été servis.",
+    "welcomeTitle": "Choisis ton offre",
+    "trialTitle": "{n} jours gratuits, sans paiement",
+    "trialRunning": "Ton essai gratuit court jusqu'au {date}",
+    "trialText": "Découvre les profils, like et discute pendant l'essai. Tu choisis une formule quand tu veux, avant la fin.",
+    "trialStart": "Commencer mes {n} jours gratuits",
+    "trialContinue": "Continuer mon essai gratuit",
+    "trialLeft": "Essai gratuit : encore {n} jour(s), jusqu'au {date}. Choisis ta formule pour continuer sans interruption."
   },
   "topbar": {
     "group": "Raccourcis",

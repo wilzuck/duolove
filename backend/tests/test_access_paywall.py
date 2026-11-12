@@ -6,7 +6,7 @@ from sqlalchemy import delete, update
 
 from app.core import access, entitlements
 from app.db.session import session_maker
-from app.models.models import SystemSetting, User
+from app.models.models import Profile, SystemSetting, User
 from tests.support_c import admin, member, set_role
 
 
@@ -99,6 +99,7 @@ async def test_essai_gratuit_par_membre_puis_blocage(app, db):
         row = (await s.execute(select(SystemSetting).where(SystemSetting.key == access.KEY))).scalar_one()
         row.value = {**row.value, "activatedAt": (now - datetime.timedelta(days=20)).isoformat()}
         await s.execute(update(User).where(User.id == u.id).values(createdAt=now - datetime.timedelta(days=15)))
+        await s.execute(update(Profile).where(Profile.userId == u.id).values(onboardedAt=now - datetime.timedelta(days=15)))  # l'essai court depuis la fin du profil
         await s.commit()
     access.invalidate()
     assert (await u.agent.get("/api/discovery")).status_code == 402  # essai de 14 jours terminé hier
@@ -212,3 +213,21 @@ async def test_reduction_plafonnee_au_nombre_de_beneficiaires(app, db):
     d2 = (await second.agent.get("/api/access/discount")).json()
     assert d2["capReached"] is True and d2["eligible"] is False
     assert (await first.agent.get("/api/access/discount")).json()["eligible"] is True  # un bénéficiaire garde son droit
+
+
+async def test_l_essai_demarre_a_la_fin_du_profil(app, db):
+    """Tant que le profil n'est pas terminé l'essai n'a pas commencé (jamais bloqué) ; il court depuis la fin du profil."""
+    ad, u = await super_admin(app, db), await member(app, db)
+    await ad.agent.put("/api/admin/access", json={"enabled": True, "graceDays": 0, "trialDays": 14})
+    now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+    async with session_maker()() as s:
+        await s.execute(update(User).where(User.id == u.id).values(createdAt=now))  # inscrit après l'activation
+        await s.execute(update(Profile).where(Profile.userId == u.id).values(onboardedAt=None))
+        await s.commit()
+    st = (await u.agent.get("/api/users/me")).json()["access"]
+    assert st["locked"] is False and st["graceEndsAt"] is not None  # profil non terminé : essai pas commencé
+    async with session_maker()() as s:  # profil terminé il y a 20 jours : l'essai de 14 jours est fini
+        await s.execute(update(Profile).where(Profile.userId == u.id).values(onboardedAt=now - datetime.timedelta(days=20)))
+        await s.commit()
+    assert (await u.agent.get("/api/users/me")).json()["access"]["locked"] is True
+    assert (await u.agent.get("/api/access/preview")).json()["trialDays"] == 14
