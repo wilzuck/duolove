@@ -57,7 +57,7 @@ export default function AccessPage() {
       )}
       <VerifiedDiscountCard />
       <div className="mx-auto max-w-md"><PromoCard applied={promo} onApply={setPromo} /></div>
-      <PricingTable hideFree current={sub.plan} action={(p, months) => (
+      <PricingTable hideFree collapseFeatures current={sub.plan} action={(p, months) => (
         <Button size="lg" className="w-full" variant={p.featured ? 'primary' : 'dark'} loading={pending && variables?.key === `${p.code}-${months}`}
           onClick={() => pay({ key: `${p.code}-${months}`, body: { type: 'subscription', plan: p.code, months, promoCode: promo?.code } })}>{t('premium.choose', { plan: p.name })}</Button>
       )} />

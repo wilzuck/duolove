@@ -300,7 +300,7 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 ## Super Likes toujours en violet (terminé, non commité, non vérifié visuellement)
 - Tout ce qui touche aux Super Likes passe en violet (`violet-700`, charte : un seul violet) : icône et pastille de la barre du haut (+ bouton « Acheter » de sa fenêtre), bouton d'envoi du Like quand « Super Like » est coché, étoile des Super Likes reçus, bouton sur les valeurs d'un profil, pack Super Likes de la boutique et de la page Tarifs (chiffre, prix, bouton, icône), animation du bouton (particules et halo). Auparavant ces éléments étaient bleu ciel ou roses.
 
-## Soirées Match en direct (terminé, non commité, non vu dans le navigateur)
+## Soirées Duo (ex-« Soirées Match en direct », terminé, non commité, non vu dans le navigateur)
 - **Admin › Soirées Match** : création (nom, début, durée, fuseau affiché dans les e-mails, ville facultative, description), liste avec nombre d'inscrits et état (à venir, en cours, terminée, annulée), annulation. Migration `0028_live_events` (tables `LiveEvent`, `LiveEventRsvp`, type de notification `LIVE_EVENT`).
 - **Membre** : bannière en haut de la page Match (date lue dans le fuseau de l'appareil, inscrits ou personnes en ligne, bouton « Me prévenir »). Les inscrits reçoivent **un e-mail et une notification une heure avant**, puis **une notification au début** ; chaque étape part une seule fois (réclamée par un UPDATE conditionnel, même avec plusieurs répliques). Boucle de balayage toutes les 60 s.
 - Ne change pas le fonctionnement du Match : elle donne rendez-vous. Pour inviter tout le monde, utiliser « Envois ». 6 tests backend ; **aucun e-mail réel envoyé, rendu de la bannière non vérifié visuellement**.
@@ -323,7 +323,7 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 ## Menu admin
 - Le badge « Administration » du menu latéral est retiré (déjà dans l'en-tête).
 
-## Soirées Match en direct : essai en navigateur (local)
+## Soirées Duo : essai en navigateur (local)
 - **Vu et essayé dans le navigateur** (API et site de test sur d'autres ports, base locale) : création d'une soirée par l'admin, affichage dans la liste, bannière côté membre (mobile et ordinateur), inscription « Me prévenir », annulation (la bannière passe à la soirée suivante), et **rappel une heure avant** : notification `LIVE_EVENT` créée et e-mail « commence dans une heure » généré avec la bonne heure (UTC+1). Pas essayés : la notification de début, l'envoi réel de l'e-mail (boîte de développement seulement).
 - Limite connue : une personne qui s'inscrit **après** l'envoi du rappel (moins d'une heure avant) ne reçoit que la notification de début. L'annulation d'une soirée n'a pas de fenêtre de confirmation.
 
@@ -334,3 +334,27 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 - **10 nouveaux articles** en français (1 430 à 2 090 mots) dans `backend/app/assets/blog/11-*.md` à `20-*.md`, ajoutés par la migration `0030_blog_articles_2` : **brouillon, sans image, sans rien effacer** (les 10 premiers restent). Un lien (slug) déjà présent est ignoré. La migration `0029` ne lit plus que les articles 01 à 10 (déjà appliquée en production, sans effet là-bas ; elle évite un doublon sur une base neuve). Total : 20 articles, tous en brouillon.
 - **Dates modifiables** dans l'éditeur : « Date d'ajout » (administration seulement) et « Date de publication » (affichée sur le blog et qui sert à l'ordre de la liste). Vide à la publication : le moment de la publication. **Jamais dans le futur** (`DATE_IN_FUTURE`) : ce n'est pas une planification, un article publié apparaît tout de suite. 1 test backend ajouté.
 - Textes toujours en **français seulement** ; non relus par un humain ni par un juriste ; interface de l'éditeur non vue dans le navigateur.
+
+## Fenêtre « Nouvelle soirée » (terminé côté code, non vu dans le navigateur)
+- Fuseau et description sur toute la largeur ; description en zone de texte (500 caractères, compteur) ; 5 messages types en pastilles (ajout/retrait dans la description, FR/EN).
+- Ville : saisie semi-automatique `CityInput` avec un sélecteur de pays (le champ ne limite pas l'accès : les soirées sont en ligne). Les autres champs ville des membres (inscription, profil, préférences, soirées Speed) l'utilisaient déjà. **Non converti** : la ville de l'adresse de facturation (admin › Facturation), où le pays est un texte libre et non un code.
+- Renommées **« Soirée Duo »** (FR) / **« Duo Night »** (EN) : menus, bannière, notifications, e-mail de rappel. Le menu **« Match en direct »** (`/match`, recherche de personnes en ligne) garde son nom. **Non modifiés** : l'article de blog 04 et les mentions dans les articles 01 et 20 (déjà insérés en base par migration, ils parlent encore de « soirées Match en direct »).
+
+## Code promo proposé à tous les membres, bouton « Appliquer » (terminé, non commité)
+- Nouvelle colonne `PromoCode.featured` (migration `0031_promo_featured`). Admin › Codes promo : interrupteur « Proposer ce code à tous les membres » à la création, badge « Proposé » dans la liste, action « Proposer aux membres / Ne plus proposer ».
+- `GET /api/promo/featured` : renvoie les codes cochés encore utilisables PAR CE MEMBRE (actifs, dans leur période, non épuisés, pas déjà utilisés par lui), avec le nombre de places restantes. Un code non coché n'est jamais révélé. Coupé si l'interrupteur « codes promo » est désactivé.
+- Membre : sur Premium et Boutique, l'encart « Code promo » affiche l'offre (« −50 % sur votre prochain paiement · FONDATEUR · N places restantes ») avec un bouton **Appliquer** ; un clic applique la remise (boutons « Choisir Premium · −50 % »). Le plafond « 1000 premiers » est celui de « Utilisations max » : le serveur le vérifie au paiement, sous verrou. Le code disparaît quand il est épuisé, expiré ou déjà utilisé.
+- Vérifié : pytest `test_promo.py` 9/9 ; essai navigateur (base de test) : création par l'admin avec l'interrupteur, encart visible côté membre, clic Appliquer → remise −50 % sur Premium et VIP. **Non vérifié** : un vrai paiement avec la remise ; l'affichage sur la Boutique et sur la page Accès.
+- Pour ton code FONDATEUR déjà créé : ouvrir la ligne › « Proposer aux membres ».
+
+## Codes promo : modifier et supprimer, délai réel après inscription (terminé côté code, non commité)
+- **Modifier** (admin › Codes promo, bouton « Modifier » par ligne) : plafond d'utilisations (jamais sous le nombre déjà utilisé), date d'expiration, délai, mise en avant. Le **code, le type et la valeur restent figés** (volontaire : un paiement a pu s'appuyer dessus ; il suffit de désactiver et recréer).
+- **Supprimer** : seulement un code **jamais utilisé** (sinon 409 « déjà utilisé : désactivez-le ») ; tracé au journal d'audit.
+- **Délai réel** : colonne `claimHours` (migration `0032_promo_claim_hours`). Le code ne vaut que N heures après la création du compte du membre ; la fin est calculée et vérifiée par le serveur (offre, saisie manuelle et paiement), jamais par le navigateur. Compte à rebours dans l'encart de l'offre (Premium, Boutique, page d'arrivée) ; l'offre disparaît à zéro. Les membres inscrits avant ne voient pas un code à délai déjà écoulé.
+- Non fait : rappel par e-mail/notification avant la fin du délai ; relance du compte à rebours dans le navigateur non vue (machine saturée pendant l'essai).
+- Analyse produit et phases : [PISTES_VALEUR_ET_PHASES.md](PISTES_VALEUR_ET_PHASES.md).
+
+## Phase 0 : test de restauration d'une sauvegarde (fait le 2026-11-12, en local)
+- **Fait** : sauvegarde de la base de test avec la fonction de production (`backups.dump`, pg_dump format custom, 25,9 Mo, relue par `pg_restore --list`) → restauration dans une base vierge (`pg_restore --exit-on-error`, 97 s, aucune erreur) → comparaison : **68 tables, nombre de lignes identique** (la seule différence, `EmailLog`, vient d'un serveur de test que j'avais laissé tourner pendant l'essai : à l'heure de la sauvegarde, 30 888 lignes des deux côtés), 76 clés étrangères et 180 index identiques, version Alembic restaurée `0032_promo_claim_hours`. Base temporaire supprimée.
+- **Limites** : ce n'est pas une restauration de la sauvegarde de PRODUCTION téléchargée depuis R2 ; à rejouer avec un vrai fichier R2 (Admin › Sauvegardes › télécharger) avant d'inviter du monde. Les photos (fichiers R2) ne font pas partie du dump de la base.
+- **Reste de la phase 0** : validation KKiaPay avec de vraies clés (sandbox puis un paiement réel) ; surveillance d'erreurs (Sentry : il faut un compte/DSN) ; relecture juridique ; demande SES (en cours).

@@ -1,5 +1,5 @@
 'use client';
-import { Check, Crown, Sparkles, Star } from 'lucide-react';
+import { Check, ChevronDown, Crown, Sparkles, Star } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 import type { PlanCode } from '@duomatch/types';
@@ -42,11 +42,12 @@ function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) =>
  * Grille des offres avec choix de la durée (mensuel / 3 / 6 / 12 mois). `initial` vient du serveur ; le catalogue
  * est ensuite rafraîchi en continu : un changement de tarif dans l'administration apparaît sans rechargement.
  */
-export function PricingTable({ initial, current, action, defaultMonths = 1, hideFree = false }: { initial?: Catalog; current?: PlanCode; /** Absent = pages publiques : bouton « Créer mon compte » intégré (une fonction ne peut pas traverser serveur → client). */ action?: (plan: PlanView, months: number) => ReactNode; defaultMonths?: number; /** Accès payant : la formule gratuite n'est pas proposée. */ hideFree?: boolean }) {
+export function PricingTable({ initial, current, action, defaultMonths = 1, hideFree = false, collapseFeatures = false }: { /** Avantages masqués par défaut : un seul bouton sous la grille les affiche pour toutes les offres (page d'arrivée après l'inscription). */ collapseFeatures?: boolean; initial?: Catalog; current?: PlanCode; /** Absent = pages publiques : bouton « Créer mon compte » intégré (une fonction ne peut pas traverser serveur → client). */ action?: (plan: PlanView, months: number) => ReactNode; defaultMonths?: number; /** Accès payant : la formule gratuite n'est pas proposée. */ hideFree?: boolean }) {
   const t = useTranslations();
   const locale = useLocale();
   const { data } = useCatalog(initial);
   const [months, setMonths] = useState(defaultMonths);
+  const [showAll, setShowAll] = useState(!collapseFeatures);
   const plans = [...(data?.plans ?? [])].filter((p) => !hideFree || p.code !== 'FREE').sort((a, b) => a.sortOrder - b.sortOrder);
   const durations = [...new Set(plans.flatMap((p) => p.prices.map((x) => x.months)))].sort((a, b) => a - b);
   const maxDiscount = (m: number) => Math.max(0, ...plans.map((p) => p.prices.find((x) => x.months === m)?.discountPercent ?? 0));
@@ -95,9 +96,9 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
                   </p>
                 </div>
               )}
-              <ul className="flex-1 space-y-3 text-sm">
+              {showAll ? <ul id="plan-features" className="flex-1 space-y-3 text-sm">
                 {lines.map((l) => <li key={l} className="flex gap-3"><Check className="mt-0.5 size-4 shrink-0 text-success-ink" aria-hidden /><span>{l}</span></li>)}
-              </ul>
+              </ul> : <div className="flex-1" />}
               {action ? action(p, months) : (
                 <Link href="/register"><Button className="w-full" size="lg" variant={p.featured ? 'primary' : 'outline'}>{t(p.code === 'FREE' ? 'plans.ctaFree' : 'plans.ctaPaid')}</Button></Link>
               )}
@@ -105,6 +106,13 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
           );
         })}
       </div>
+      {collapseFeatures && (
+        <div className="text-center">
+          <Button type="button" variant="outline" aria-expanded={showAll} aria-controls="plan-features" onClick={() => setShowAll((v) => !v)}>
+            {t(showAll ? 'plans.hideFeatures' : 'plans.showFeatures')}<ChevronDown className={cn('size-4 transition-transform', showAll && 'rotate-180')} aria-hidden />
+          </Button>
+        </div>
+      )}
       <p className="mx-auto max-w-2xl text-center text-sm text-muted">{t('plans.renewalNote')}</p>
     </div>
   );
