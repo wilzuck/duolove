@@ -9,6 +9,20 @@ from app.models.models import AuditLog, Payment, Refund
 from tests.helpers import uid
 from tests.support_c import admin, balances, member
 
+import pytest  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+async def _no_featured_left(app):
+    yield
+    from sqlalchemy import update
+
+    from app.models.models import PromoCode
+    async with session_maker()() as s:  # les tests n'ont pas à laisser de codes proposés actifs dans la base partagée
+        await s.execute(update(PromoCode).where(PromoCode.code != "FONDATEUR").values(featured=False))
+        await s.commit()
+
+
 new_code = lambda p="T": f"{p}{uid()}".upper()  # noqa: E731
 
 
@@ -232,7 +246,8 @@ async def test_un_code_propose_plus_ancien_reste_visible_malgre_des_codes_plus_r
     from sqlalchemy import update
 
     from app.models.models import PromoCode, User
-    async with session_maker()() as s:  # isole le test : plus aucun autre code proposé
+    async with session_maker()() as s:  # isole le test : plus aucun autre code proposé (FONDATEUR est rétabli à la fin)
+        was = list((await s.execute(select(PromoCode.id).where(PromoCode.featured.is_(True)))).scalars().all())
         await s.execute(update(PromoCode).values(featured=False))
         await s.commit()
     a = await admin(app, db)
@@ -245,6 +260,24 @@ async def test_un_code_propose_plus_ancien_reste_visible_malgre_des_codes_plus_r
         await s.commit()
     items = (await u.agent.get("/api/promo/featured")).json()["items"]
     assert [x["code"] for x in items] == [old["code"]]
-    async with session_maker()() as s:  # ne laisse rien de proposé derrière soi
+    async with session_maker()() as s:
+        await s.execute(update(PromoCode).where(PromoCode.id.in_(was)).values(featured=True))
+        await s.commit()
+
+
+async def test_au_plus_trois_offres_affichees(app, db):
+    from sqlalchemy import update
+
+    from app.models.models import PromoCode
+    async with session_maker()() as s:
+        was = list((await s.execute(select(PromoCode.id).where(PromoCode.featured.is_(True)))).scalars().all())
         await s.execute(update(PromoCode).values(featured=False))
+        await s.commit()
+    a = await admin(app, db)
+    for i in range(5):
+        await create_promo(a, code=new_code(f"TRI{i}"), kind="PERCENT", percent=10 + i, featured=True)
+    u = await member(app, db)
+    assert len((await u.agent.get("/api/promo/featured")).json()["items"]) == 3
+    async with session_maker()() as s:
+        await s.execute(update(PromoCode).where(PromoCode.id.in_(was)).values(featured=True))
         await s.commit()

@@ -24,6 +24,7 @@ log = logging.getLogger("promo")
 # Rappel de fin d'offre : envoyé une fois, quand il reste au plus ce délai.
 REMINDER_LEAD = datetime.timedelta(hours=3)
 REMINDER_BATCH = 500
+MAX_OFFERS = 3  # offres proposées affichées à un membre
 
 # Un paiement en attente depuis moins d'une heure « réserve » le code ; au-delà il est considéré abandonné.
 PENDING_HOLD = datetime.timedelta(hours=1)
@@ -138,7 +139,7 @@ async def featured(db: AsyncSession, user_id: str) -> list[dict]:
     rows = (await db.execute(
         select(PromoCode).where(PromoCode.featured.is_(True), PromoCode.active.is_(True),
                                 or_(PromoCode.startsAt.is_(None), PromoCode.startsAt <= now), or_(PromoCode.expiresAt.is_(None), PromoCode.expiresAt >= now))
-        .order_by(PromoCode.createdAt.desc()).limit(40))).scalars().all()  # on lit large puis on garde les 5 premiers UTILISABLES : un code plus ancien ne doit pas disparaître
+        .order_by(PromoCode.createdAt.desc()).limit(40))).scalars().all()  # on lit large puis on garde les 3 premiers UTILISABLES : un code plus ancien ne doit pas disparaître
     used = await usage_map(db, list(rows))
     out = []
     for p in rows:
@@ -153,8 +154,8 @@ async def featured(db: AsyncSession, user_id: str) -> list[dict]:
             mine = await _token_uses(db, f"promo:{p.id}", user_id)
         if mine:
             continue
-        if len(out) >= 5:
-            break  # au plus 5 offres affichées
+        if len(out) >= MAX_OFFERS:
+            break  # au plus 3 offres affichées : au-delà, l'offre se dilue
         out.append({"code": p.code, "kind": p.kind.value, "percent": p.percent, "tokens": p.tokens,
                     "remaining": None if p.maxRedemptions is None else p.maxRedemptions - used[p.id],
                     "expiresAt": iso(p.expiresAt) if p.expiresAt else None,
