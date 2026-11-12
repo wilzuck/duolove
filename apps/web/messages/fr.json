@@ -2089,7 +2089,14 @@
       "push": "Notifications push",
       "pushText": "Notifications sur votre appareil, après votre consentement.",
       "newsletter": "Newsletter",
-      "newsletterText": "Les nouveautés et conseils de Crushduo par e-mail. Désinscription en un clic."
+      "newsletterText": "Les nouveautés et conseils de Crushduo par e-mail. Désinscription en un clic.",
+      "pushUnsupported": "Ce navigateur ne permet pas les notifications push.",
+      "pushIos": "Sur iPhone, ajoutez d’abord Crushduo à l’écran d’accueil (Partager › Sur l’écran d’accueil), puis ouvrez-le depuis l’icône.",
+      "pushDenied": "Les notifications sont bloquées pour ce site : autorisez-les dans les réglages de votre navigateur.",
+      "pushTest": "Envoyer un essai",
+      "pushTested": "Essai envoyé : regardez votre appareil.",
+      "pushTestFailed": "L’essai n’a pas pu être envoyé.",
+      "pushError": "Impossible d’activer les notifications sur cet appareil."
     },
     "privacy": {
       "visible": "Profil visible",

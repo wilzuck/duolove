@@ -14,6 +14,7 @@ Pillow>=10.0
 aiosmtplib>=3.0
 cryptography>=42  # chiffrement des secrets saisis dans la console d'administration (SETTINGS_ENCRYPTION_KEY)
 reportlab>=4.0  # factures PDF
+pywebpush>=2.0  # notifications push (Web Push + VAPID) : VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY
 boto3>=1.34  # stockage objet S3 (Railway Buckets, Cloudflare R2, AWS) : STORAGE_DRIVER=s3
 python-dotenv>=1.0
 

@@ -833,6 +833,27 @@ class WaitlistEntry(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class PushSubscription(Base):
+    """Appareil d'un membre qui a accepté les notifications push (une ligne par navigateur/appareil). Supprimée quand le service push répond « abonnement expiré »."""
+    __tablename__ = 'PushSubscription'
+    __table_args__ = (
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='PushSubscription_userId_fkey'),
+        PrimaryKeyConstraint('id', name='PushSubscription_pkey'),
+        Index('PushSubscription_endpoint_key', 'endpoint', unique=True),
+        Index('PushSubscription_userId_idx', 'userId'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    endpoint: Mapped[str] = mapped_column(Text, nullable=False)
+    p256dh: Mapped[str] = mapped_column(Text, nullable=False)
+    auth: Mapped[str] = mapped_column(Text, nullable=False)
+    userAgent: Mapped[Optional[str]] = mapped_column(Text)
+    lang: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'fr'"), default='fr')  # langue du texte des notifications (celle du navigateur à l'abonnement)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    lastSentAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+
+
 class Broadcast(Base):
     """Envoi de l'administration (e-mail et/ou annonce dans l'application) à un public ciblé, immédiat ou planifié.
     Statut : SCHEDULED, SENDING, SENT, CANCELED, FAILED. `kind` : SERVICE (information du service) ou MARKETING (réservé aux membres ayant accepté)."""

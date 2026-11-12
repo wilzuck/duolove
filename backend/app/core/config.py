@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     db_pool_size: int = Field(10, alias="DB_POOL_SIZE", ge=1, le=200)
     db_max_overflow: int = Field(10, alias="DB_MAX_OVERFLOW", ge=0, le=200)
     ses_sns_topic_arn: str | None = Field(None, alias="SES_SNS_TOPIC_ARN")
+    # Notifications push (Web Push). Paire de clés VAPID générée avec `python scripts/gen_vapid.py` ; sans elles les notifications push sont simplement désactivées (aucune erreur).
+    vapid_public_key: str | None = Field(None, alias="VAPID_PUBLIC_KEY")
+    vapid_private_key: str | None = Field(None, alias="VAPID_PRIVATE_KEY")
+    vapid_subject: str = Field("mailto:contact@crushduo.com", alias="VAPID_SUBJECT")
     upload_dir: str = Field("./uploads", alias="UPLOAD_DIR")
     # Stockage des fichiers : « local » (dossier UPLOAD_DIR, volume) ou « s3 » (stockage objet compatible S3 : Railway Buckets, Cloudflare R2, AWS).
     storage_driver: str = Field("local", alias="STORAGE_DRIVER")

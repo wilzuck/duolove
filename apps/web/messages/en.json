@@ -2089,7 +2089,14 @@
       "push": "Push notifications",
       "pushText": "Notifications on your device, after your consent.",
       "newsletter": "Newsletter",
-      "newsletterText": "Crushduo news and tips by email. One-click unsubscribe."
+      "newsletterText": "Crushduo news and tips by email. One-click unsubscribe.",
+      "pushUnsupported": "This browser doesn’t support push notifications.",
+      "pushIos": "On iPhone, first add Crushduo to your Home Screen (Share › Add to Home Screen), then open it from the icon.",
+      "pushDenied": "Notifications are blocked for this site: allow them in your browser settings.",
+      "pushTest": "Send a test",
+      "pushTested": "Test sent: look at your device.",
+      "pushTestFailed": "The test could not be sent.",
+      "pushError": "Couldn’t turn on notifications on this device."
     },
     "privacy": {
       "visible": "Visible profile",

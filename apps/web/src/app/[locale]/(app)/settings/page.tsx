@@ -1,4 +1,5 @@
 'use client';
+import { usePush } from '@/hooks/usePush';
 import { TwoFactorCard } from '@/components/app/TwoFactorCard';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Download, FileDown, LogOut, MapPin, Monitor, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
@@ -26,6 +27,26 @@ function Row({ title, text, children }: { title: string; text?: string; children
   return <div className="flex items-center justify-between gap-4 py-3"><div className="min-w-0"><p className="font-semibold">{title}</p>{text && <p className="text-sm text-muted">{text}</p>}</div>{children}</div>;
 }
 
+/** Notifications push de cet appareil : interrupteur + essai ; explique clairement pourquoi c'est indisponible (navigateur, iPhone non installé, permission refusée, serveur pas prêt). */
+function PushRow() {
+  const t = useTranslations();
+  const toast = useUi((s) => s.toast);
+  const push = usePush();
+  const on = push.state === 'on';
+  const hint = push.state === 'unsupported' ? t('settings.notif.pushUnsupported') : push.state === 'ios-install' ? t('settings.notif.pushIos') : push.state === 'denied' ? t('settings.notif.pushDenied') : null;
+  return (
+    <Row title={t('settings.notif.push')} text={hint ?? t('settings.notif.pushText')}>
+      {push.state === 'loading' ? <Skeleton className="h-6 w-11" /> : push.state === 'not-ready' ? <Badge tone="neutral">{t('common.soon')}</Badge> : (
+        <div className="flex items-center gap-3">
+          {on && <Button size="sm" variant="outline" loading={push.test.isPending} onClick={() => push.test.mutate(undefined, { onSuccess: (r) => toast(r.sent ? 'success' : 'error', t(r.sent ? 'settings.notif.pushTested' : 'settings.notif.pushTestFailed')) })}>{t('settings.notif.pushTest')}</Button>}
+          <Switch checked={on} disabled={push.enable.isPending || push.disable.isPending || push.state === 'unsupported' || push.state === 'ios-install' || push.state === 'denied'} label={t('settings.notif.push')}
+            onChange={(v) => (v ? push.enable.mutate(undefined, { onError: (e) => toast('error', e instanceof Error && e.message === 'denied' ? t('settings.notif.pushDenied') : t('settings.notif.pushError')) }) : push.disable.mutate())} />
+        </div>
+      )}
+    </Row>
+  );
+}
+
 function NotificationsTab() {
   const t = useTranslations();
   const qc = useQueryClient();
@@ -39,7 +60,7 @@ function NotificationsTab() {
     <Card className="divide-y divide-line px-5">
       {NOTIF.map(([k, kind]) => <Row key={k} title={t(`settings.notif.${kind}`)} text={t(k.startsWith('email') ? 'settings.notif.byEmail' : 'settings.notif.inApp')}><Switch checked={!!q.data[k]} onChange={(v) => m.mutate({ [k]: v })} label={`${t(`settings.notif.${kind}`)} — ${t(k.startsWith('email') ? 'settings.notif.byEmail' : 'settings.notif.inApp')}`} /></Row>)}
       <Row title={t('settings.notif.newsletter')} text={t('settings.notif.newsletterText')}><Switch checked={!!nl.data?.subscribed} disabled={!nl.data || setNl.isPending} onChange={(v) => setNl.mutate(v)} label={t('settings.notif.newsletter')} /></Row>
-      <Row title={t('settings.notif.push')} text={t('settings.notif.pushText')}><Badge tone="neutral">{t('common.soon')}</Badge></Row>
+      <PushRow />
     </Card>
     <section aria-labelledby="rhythm-t"><h2 id="rhythm-t" className="mb-3 text-xl font-extrabold">{t('rhythm.title')}</h2><RhythmCard /></section>
     </div>

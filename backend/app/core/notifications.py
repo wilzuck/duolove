@@ -10,7 +10,7 @@ import hmac
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import appsettings, mail, realtime
+from app.core import appsettings, mail, push, realtime
 from app.core.config import get_settings
 from app.core.ids import utcnow
 from app.core.rhythm import in_quiet_hours, is_paused
@@ -79,6 +79,13 @@ async def create(db: AsyncSession, user_id: str, type_: str, data: dict | None =
         await db.commit()
         if not silent:
             await realtime.emit_to_user(user_id, "notification:new", {"id": n.id, "type": type_, "createdAt": n.createdAt.isoformat() + "Z", "data": {} if type_ == "LIKE" else n.data})
+    # Notification push sur les appareils abonnés : pas pendant la pause / le repos (sauf alertes essentielles), pas si le membre est déjà dans l'application,
+    # pas si ses réglages coupent ce type. Jamais bloquant.
+    if (in_app or essential) and (essential or not silent) and (essential or user_id not in set(realtime.online_ids())):
+        try:
+            await push.notify(db, user_id, type_, data)
+        except Exception:  # noqa: BLE001
+            pass
     copy = EMAIL_COPY.get(type_)
     if email and copy and not silent and await _email_allowed(db, user_id, essential, now):
         if n is not None and n.emailedAt and now - n.emailedAt < HOUR:
