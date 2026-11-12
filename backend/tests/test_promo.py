@@ -198,3 +198,31 @@ async def test_modifier_et_supprimer_un_code_promo(app, db):
     assert (await a.agent.delete(f"/api/admin/promos/{q['id']}")).status_code == 404
     async with session_maker()() as s:
         assert (await s.execute(select(AuditLog).where(AuditLog.action == "promo.delete", AuditLog.targetId == q["code"]))).scalars().first()
+
+
+async def test_rappel_de_fin_d_offre_une_seule_fois_notification_et_email_selon_consentement(app, db):
+    from sqlalchemy import func, update
+
+    from app.core import promo as promosvc
+    from app.models.models import EmailLog, Notification, PromoReminder, User
+    a = await admin(app, db)
+    # Délai de 720 h : la fenêtre « fin dans moins de 3 h » ne touche que les comptes créés il y a 717 à 720 h, donc seulement ceux de ce test.
+    p = await create_promo(a, code=new_code("RAP"), kind="PERCENT", percent=50, maxRedemptions=1000, featured=True, claimHours=720)
+    soon, quiet, early = await member(app, db), await member(app, db), await member(app, db)
+    now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+    async with session_maker()() as s:  # fin dans 2 h (avec / sans consentement aux offres) ; fin dans 20 h
+        for m, left, consent in ((soon, 2, True), (quiet, 2, False), (early, 20, True)):
+            await s.execute(update(User).where(User.id == m.id).values(createdAt=now - datetime.timedelta(hours=720 - left), marketingConsent=consent))
+        await s.commit()
+    for _ in range(3):  # deux balayages suffisent ; le troisième prouve qu'il n'y a pas de second rappel
+        async with session_maker()() as s:
+            await promosvc.remind_ending(s)
+    async with session_maker()() as s:
+        got = set((await s.execute(select(PromoReminder.userId).where(PromoReminder.promoId == p["id"]))).scalars().all())
+        notes = {r.userId: r.data for r in (await s.execute(select(Notification).where(Notification.type == "ANNOUNCEMENT", Notification.userId.in_([soon.id, quiet.id, early.id]), Notification.data["code"].astext == p["code"]))).scalars().all()}
+        count = (await s.execute(select(func.count()).select_from(Notification).where(Notification.userId == soon.id, Notification.type == "ANNOUNCEMENT", Notification.data["code"].astext == p["code"]))).scalar_one()
+        mailed = (await s.execute(select(EmailLog.toEmail).where(EmailLog.subject.like("Votre offre de bienvenue%"), EmailLog.toEmail.in_([soon.email, quiet.email, early.email])))).scalars().all()
+    await a.agent.patch(f"/api/admin/promos/{p['id']}", json={"active": False})  # ne pas laisser un code à fenêtre 720 h actif pour les exécutions suivantes
+    assert {soon.id, quiet.id} <= got and early.id not in got
+    assert count == 1 and notes[soon.id]["kind"] == "PROMO_ENDING" and notes[soon.id]["code"] == p["code"] and notes[soon.id]["percent"] == 50
+    assert soon.email in mailed and quiet.email not in mailed and early.email not in mailed  # e-mail réservé aux membres ayant accepté les offres

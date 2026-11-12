@@ -25,7 +25,7 @@ const META: Record<string, { icon: typeof Bell; href: (n: NotificationItem) => s
   DATE_UPDATE: { icon: CalendarHeart, href: (n) => (n.data.conversationId ? `/messages/${n.data.conversationId}` : '/messages') },
   SPEED_REMINDER: { icon: Hourglass, href: (n) => (n.data.eventId ? `/speed/${String(n.data.eventId)}` : '/speed') },
   CALL_MISSED: { icon: Phone, href: (n) => (n.data.conversationId ? `/messages/${n.data.conversationId}` : '/messages') },
-  ANNOUNCEMENT: { icon: Megaphone, href: () => '/discover' },
+  ANNOUNCEMENT: { icon: Megaphone, href: (n) => (n.data.kind === 'PROMO_ENDING' ? '/premium' : '/discover') },
   LIVE_EVENT: { icon: Radio, href: () => '/match' },
   DATE_REMINDER: { icon: CalendarHeart, href: (n) => (n.data.conversationId ? `/messages/${n.data.conversationId}` : '/messages') },
 };
@@ -38,7 +38,7 @@ export default function NotificationsPage() {
   const refresh = () => { void qc.invalidateQueries({ queryKey: keys.notifications }); void qc.invalidateQueries({ queryKey: keys.me }); };
   const readAll = useMutation({ mutationFn: () => post('/notifications/read-all'), onSuccess: refresh });
   const readOne = useMutation({ mutationFn: (id: string) => post(`/notifications/${id}/read`), onSuccess: refresh });
-  const body = (n: NotificationItem): ReactNode => (n.type === 'ANNOUNCEMENT' ? <><span className="block">{String(n.data.subject ?? '')}</span>{!!n.data.excerpt && <span className="block text-sm font-normal text-muted">{String(n.data.excerpt)}</span>}</> : bodyOf(n));
+  const body = (n: NotificationItem): ReactNode => (n.type === 'ANNOUNCEMENT' && n.data.kind === 'PROMO_ENDING' ? t('notifications.promoEnding', { code: String(n.data.code ?? ''), offer: n.data.promoKind === 'PERCENT' ? t('promo.offerPercent', { percent: Number(n.data.percent ?? 0) }) : t('promo.offerTokens', { n: Number(n.data.tokens ?? 0) }) }) : n.type === 'ANNOUNCEMENT' ? <><span className="block">{String(n.data.subject ?? '')}</span>{!!n.data.excerpt && <span className="block text-sm font-normal text-muted">{String(n.data.excerpt)}</span>}</> : bodyOf(n));
   const bodyOf = (n: NotificationItem): ReactNode => t(`notifications.types.${n.type}${n.type === 'SUBSCRIPTION_EXPIRING' && n.data.reason ? '_FAILED' : n.type === 'SUBSCRIPTION_EXPIRING' && n.data.daysLeft ? '_DAYS' : n.type === 'SUBSCRIPTION_ACTIVATED' && n.data.product ? '_PURCHASE' : n.type === 'REFUND_UPDATE' ? `_${String(n.data.status ?? 'COMPLETED')}` : n.type === 'LIVE_EVENT' && n.data.stage === 'start' ? '_START' : n.type === 'DATE_UPDATE' ? `_${String(n.data.status ?? '')}` : n.type === 'MESSAGE' && Number(n.data.count ?? 1) > 1 ? '_MANY' : ''}` as never, { count: String(n.data.count ?? 1), plan: String(n.data.plan ?? ''), event: String(n.data.event ?? n.data.title ?? ''), product: String(n.data.product ?? ''), n: String(n.data.daysLeft ?? '') } as never);
   return (
     <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-4">

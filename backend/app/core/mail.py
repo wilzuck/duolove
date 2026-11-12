@@ -200,6 +200,20 @@ async def send_live_event_reminder(to: str, name: str, title: str, starts_at: da
     return await send(to, f"{subject} — Crushduo", f"Bonjour {name},\n\nLa soirée « {title} »{where} commence le {when}.\n\nConnectez-vous à l'heure : {link}\n\nVous recevez ce rappel parce que vous vous êtes inscrit(e) à cette soirée.", html, kind="notification")
 
 
+async def send_promo_ending(to: str, name: str, code: str, kind: str, percent: int | None, tokens: int | None, ends_at: datetime.datetime) -> bool:
+    """Rappel commercial (réservé aux membres qui ont accepté les offres) : l'offre de bienvenue se termine bientôt. Heure affichée en UTC (le membre voit l'heure exacte dans l'application)."""
+    link = f"{get_settings().app_url}/premium"
+    offer = f"{percent} % de réduction sur votre premier paiement" if kind == "PERCENT" else f"{tokens} jetons Crush offerts"
+    subject = "Votre offre de bienvenue se termine bientôt"
+    html = render_email(subject, [
+        p(f"Bonjour {esc_(name)}, votre offre de bienvenue ({esc_(offer)}, code {esc_(code)}) se termine dans quelques heures."),
+        p("Elle s'applique en un clic depuis l'application, sans saisir le code."),
+        button("Voir mon offre", link),
+        note("Vous recevez ce message parce que vous avez accepté de recevoir nos offres. Vous pouvez vous désabonner à tout moment dans Paramètres › Notifications."),
+    ], preheader=offer)
+    return await send(to, f"{subject} — Crushduo", f"Bonjour {name},\n\nVotre offre de bienvenue ({offer}, code {code}) se termine dans quelques heures. Elle s'applique en un clic : {link}\n\nVous recevez ce message parce que vous avez accepté de recevoir nos offres.", html, kind="notification")
+
+
 def notification_html(title: str, body: str, unsub_url: str | None = None) -> str:
     """E-mail de notification (message, match, like…) : même carte, bouton vers l'application et, si la notification est facultative, un lien de désabonnement."""
     footer = (f'<p style="margin:8px 0 0;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;font-size:13px;color:#45434F;text-align:center;">'

@@ -4,17 +4,26 @@
 Un code ne s'utilise qu'une fois par membre ; le plafond global est vérifié sous verrou (aucun dépassement en concurrence)."""
 from __future__ import annotations
 
+import asyncio
 import datetime
+import logging
 from dataclasses import dataclass
 
 from sqlalchemy import func, or_, select, text
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import credits, flags
 from app.core.errors import AppError, bad_request, conflict
 from app.core.ids import utcnow
 from app.core.jsonfmt import iso
-from app.models.models import CreditTransaction, Payment, PromoCode, User
+from app.models.models import CreditTransaction, Payment, Profile, PromoCode, PromoReminder, User
+
+log = logging.getLogger("promo")
+
+# Rappel de fin d'offre : envoyé une fois, quand il reste au plus ce délai.
+REMINDER_LEAD = datetime.timedelta(hours=3)
+REMINDER_BATCH = 500
 
 # Un paiement en attente depuis moins d'une heure « réserve » le code ; au-delà il est considéré abandonné.
 PENDING_HOLD = datetime.timedelta(hours=1)
@@ -149,6 +158,62 @@ async def featured(db: AsyncSession, user_id: str) -> list[dict]:
                     "expiresAt": iso(p.expiresAt) if p.expiresAt else None,
                     "deadline": iso(end) if end else None})
     return out
+
+
+async def remind_ending(db: AsyncSession, now: datetime.datetime | None = None) -> int:
+    """Prévient les membres dont le délai d'un code proposé se termine dans moins de 3 h (une seule fois par membre et par code, réservée par une insertion).
+    Notification dans l'application pour tous ; e-mail seulement pour ceux qui ont accepté de recevoir des offres (c'est une communication commerciale)."""
+    from app.core import mail, notifications
+
+    if not await flags.is_on(db, "promo_codes"):
+        return 0
+    now = now or utcnow()
+    promos = (await db.execute(select(PromoCode).where(
+        PromoCode.featured.is_(True), PromoCode.active.is_(True), PromoCode.claimHours.is_not(None),
+        or_(PromoCode.startsAt.is_(None), PromoCode.startsAt <= now), or_(PromoCode.expiresAt.is_(None), PromoCode.expiresAt >= now)))).scalars().all()
+    sent = 0
+    used = await usage_map(db, list(promos))
+    for p in promos:
+        if p.maxRedemptions is not None and used[p.id] >= p.maxRedemptions:
+            continue
+        hours = datetime.timedelta(hours=p.claimHours or 0)
+        # fin = création + délai ∈ ]now, now + 3 h]  ⇔  création ∈ ]now − délai, now + 3 h − délai]
+        rows = (await db.execute(
+            select(User.id, User.email, User.createdAt, User.marketingConsent).where(
+                User.status == "ACTIVE", User.emailVerifiedAt.is_not(None), User.createdAt > now - hours, User.createdAt <= now + REMINDER_LEAD - hours,
+                ~select(PromoReminder.userId).where(PromoReminder.promoId == p.id, PromoReminder.userId == User.id).exists()).limit(REMINDER_BATCH))).all()
+        for uid, email, created, consent in rows:
+            try:
+                if p.kind.value == "PERCENT":
+                    mine = (await db.execute(select(func.count()).select_from(Payment).where(_usage_clause(p.id), Payment.userId == uid))).scalar_one()
+                else:
+                    mine = await _token_uses(db, f"promo:{p.id}", uid)
+                claim = await db.execute(pg_insert(PromoReminder).values(promoId=p.id, userId=uid).on_conflict_do_nothing())
+                await db.commit()
+                if mine or not claim.rowcount:
+                    continue
+                end = created + hours
+                data = {"kind": "PROMO_ENDING", "code": p.code, "promoKind": p.kind.value, "percent": p.percent, "tokens": p.tokens, "endsAt": iso(end)}
+                await notifications.create(db, uid, "ANNOUNCEMENT", data)
+                if consent:
+                    name = (await db.execute(select(Profile.displayName).where(Profile.userId == uid))).scalar_one_or_none() or ""
+                    await mail.send_promo_ending(email, name, p.code, p.kind.value, p.percent, p.tokens, end)
+                sent += 1
+            except Exception:  # noqa: BLE001 — un échec ne doit pas empêcher les autres membres
+                log.exception("Rappel de fin d'offre %s pour %s", p.code, uid)
+    return sent
+
+
+async def sweep_loop(maker, every: float = 600.0) -> None:
+    while True:
+        try:
+            async with maker() as db:
+                await remind_ending(db)
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001
+            log.exception("Balayage des rappels de fin d'offre")
+        await asyncio.sleep(every)
 
 
 async def usage(db: AsyncSession, promo: PromoCode) -> int:

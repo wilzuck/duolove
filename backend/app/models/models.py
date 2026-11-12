@@ -802,6 +802,36 @@ class LiveEventRsvp(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'))
 
 
+class PromoReminder(Base):
+    """Rappel « votre offre se termine bientôt » déjà envoyé à un membre pour un code : l'insertion sert de réservation (un seul rappel par membre et par code)."""
+    __tablename__ = 'PromoReminder'
+    __table_args__ = (
+        ForeignKeyConstraint(['promoId'], ['PromoCode.id'], ondelete='CASCADE', onupdate='CASCADE', name='PromoReminder_promoId_fkey'),
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='PromoReminder_userId_fkey'),
+        PrimaryKeyConstraint('promoId', 'userId', name='PromoReminder_pkey'),
+    )
+
+    promoId: Mapped[str] = mapped_column(Text, nullable=False)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+
+
+class WaitlistEntry(Base):
+    """Liste d'attente : personne qui veut s'inscrire depuis une ville pas encore ouverte (l'administration la prévient à l'ouverture)."""
+    __tablename__ = 'WaitlistEntry'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='WaitlistEntry_pkey'),
+        Index('WaitlistEntry_email_key', 'email', unique=True),
+        Index('WaitlistEntry_city_idx', 'country', 'city'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    email: Mapped[str] = mapped_column(Text, nullable=False)
+    country: Mapped[str] = mapped_column(Text, nullable=False)
+    city: Mapped[str] = mapped_column(Text, nullable=False)
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+
+
 class Broadcast(Base):
     """Envoi de l'administration (e-mail et/ou annonce dans l'application) à un public ciblé, immédiat ou planifié.
     Statut : SCHEDULED, SENDING, SENT, CANCELED, FAILED. `kind` : SERVICE (information du service) ou MARKETING (réservé aux membres ayant accepté)."""
