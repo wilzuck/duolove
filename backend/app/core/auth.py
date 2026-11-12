@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.config import get_settings
-from app.core.errors import forbidden, unauthorized
+from app.core.errors import AppError, forbidden, unauthorized
 from app.core.ids import utcnow
 from app.core.security import sha256
 from app.db.session import get_db
@@ -58,6 +58,11 @@ async def _authenticate(request: Request, db: AsyncSession, *, allow_suspended: 
     # Compte non confirmé : rien d'autre que confirmer son e-mail (ou se déconnecter / supprimer le compte). Appliqué ici, pour TOUTES les routes protégées.
     if not allow_unverified and get_settings().require_email_verification and not user.emailVerifiedAt:
         raise forbidden("EMAIL_NOT_VERIFIED")
+    # Accès payant (interrupteur d'administration) : un membre sans formule ne garde que son compte, son profil et le paiement.
+    from app.core import access
+
+    if not access.path_allowed(request.url.path) and (await access.status(db, user))["locked"]:
+        raise AppError(402, "ACCESS_PAYWALL", "Un abonnement est requis pour accéder à Crushduo.")
     # Activité : écriture au plus toutes les 5 min pour ne pas charger la base.
     if utcnow() - session.lastUsedAt > datetime.timedelta(minutes=5):
         now = utcnow()

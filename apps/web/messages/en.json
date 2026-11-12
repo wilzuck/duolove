@@ -1619,7 +1619,9 @@
     "AUDIENCE_CHANGED": "The number of recipients changed: check it before sending.",
     "INVALID_SCHEDULE": "Choose a future date, within 90 days.",
     "BROADCAST_NOT_FOUND": "Send not found.",
-    "BROADCAST_NOT_CANCELABLE": "Only a scheduled send can be canceled."
+    "BROADCAST_NOT_CANCELABLE": "Only a scheduled send can be canceled.",
+    "ACCESS_PAYWALL": "A plan is required to get in.",
+    "PAYMENT_NOT_READY": "Turn on a real payment first."
   },
   "app": {
     "nav": {
@@ -2204,7 +2206,8 @@
       "social": "Social networks",
       "backups": "Backups",
       "broadcasts": "Sends",
-      "payment": "Online payment"
+      "payment": "Online payment",
+      "access": "Paid access"
     },
     "storage": {
       "title": "File storage",
@@ -3505,6 +3508,39 @@
       "secretKey": "Secret key",
       "secretKeyHint": "KKiaPay's “Secret” (3rd value under API keys): KKiaPay requires it along with the private key to verify payments. It is not the webhook secret hash.",
       "keepSecretKey": "Leave empty to keep the saved secret key."
+    },
+    "access": {
+      "title": "Paid access",
+      "subtitle": "Charge for entry: signups build their profile for free, then pick a plan to see profiles, like and chat. Reversible at any time.",
+      "on": "Mandatory paid access: on",
+      "off": "Mandatory paid access: off",
+      "since": "Turned on {date}",
+      "offText": "All signups use the app for free with the free plan.",
+      "badgeOn": "Active",
+      "badgeOff": "Inactive",
+      "notReadyFlag": "The “payments” feature is turned off (Settings › Emergency switches): paid access cannot be turned on, and would stay suspended.",
+      "notReadyProvider": "No real payment provider is configured (Settings › Online payment): paid access is suspended so nobody gets locked out.",
+      "grace": "Grace period (days)",
+      "graceHint": "Members already registered when you turn it on keep access during this period, then need a plan. New signups get none.",
+      "switch": "Mandatory paid access",
+      "saveGrace": "Save the period",
+      "graceEnds": "Existing members without a plan will be locked from {date}.",
+      "count": {
+        "members": "Members",
+        "paying": "With a paid plan",
+        "free": "Without a paid plan"
+      },
+      "howTitle": "How it works",
+      "how1": "A member without a plan can build their profile, verify their e-mail and identity, change settings and pay.",
+      "how2": "They see no profiles, cannot like, write, or use any feature until they have a plan. The access page only shows numbers (profiles in their city), never photos or names.",
+      "how3": "Staff (moderation, administration) are never locked. To give a member access: Users › Give a plan.",
+      "how4": "If payment is not working (feature off, or no provider configured in production), the lock is suspended automatically.",
+      "how5": "To offer a cheap entry pass, lower the Premium plan price (Plans) and hide the free plan.",
+      "confirmTitle": "Turn on paid access?",
+      "confirmText": "From now on, every new signup must pick a plan to get in. Existing members keep access for {days} days. You can turn it off at any time.",
+      "confirm": "Turn on",
+      "nowOn": "Paid access turned on.",
+      "nowOff": "Paid access turned off: everyone can get in again."
     }
   },
   "pricingFaq": {
@@ -4406,5 +4442,17 @@
     "interruptedText": "The payment window was closed before the end. If the payment did go through, it will be taken into account automatically. Otherwise, you can try again.",
     "retry": "Try again",
     "cancel": "Cancel"
+  },
+  "access": {
+    "title": "Join your community",
+    "subtitle": "Your profile is ready. Pick a plan to see profiles, like and chat.",
+    "subtitleOpen": "Pick a plan to get every benefit.",
+    "inCity": "{n} active profiles in {city}",
+    "inCountry": "{n} active profiles in your country",
+    "activeWeek": "{n} online this week",
+    "profileReady": "Your profile is {n}% ready. It is waiting for you on the other side.",
+    "note": "One-off payment, no automatic renewal. Mobile Money and card accepted.",
+    "graceStrip": "Free access until {date}, then you will need to pick a plan.",
+    "graceCta": "See plans"
   }
 }

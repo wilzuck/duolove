@@ -1619,7 +1619,9 @@
     "AUDIENCE_CHANGED": "Le nombre de destinataires a changé : relisez-le avant d'envoyer.",
     "INVALID_SCHEDULE": "Choisissez une date future, dans les 90 jours.",
     "BROADCAST_NOT_FOUND": "Envoi introuvable.",
-    "BROADCAST_NOT_CANCELABLE": "Seul un envoi planifié peut être annulé."
+    "BROADCAST_NOT_CANCELABLE": "Seul un envoi planifié peut être annulé.",
+    "ACCESS_PAYWALL": "Un abonnement est requis pour entrer.",
+    "PAYMENT_NOT_READY": "Activez d'abord un vrai paiement."
   },
   "app": {
     "nav": {
@@ -2204,7 +2206,8 @@
       "social": "Réseaux sociaux",
       "backups": "Sauvegardes",
       "broadcasts": "Envois",
-      "payment": "Paiement en ligne"
+      "payment": "Paiement en ligne",
+      "access": "Accès payant"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -3505,6 +3508,39 @@
       "secretKey": "Clé secrète",
       "secretKeyHint": "La « Secret » de KKiaPay (3ᵉ valeur de API keys) : KKiaPay l'exige avec la clé privée pour vérifier les paiements. Ce n'est pas le secret hash du webhook.",
       "keepSecretKey": "Laisse vide pour garder la clé secrète enregistrée."
+    },
+    "access": {
+      "title": "Accès payant",
+      "subtitle": "Faire payer l'entrée : les inscrits créent leur profil gratuitement, puis choisissent une formule pour voir des profils, liker et discuter. Réversible à tout moment.",
+      "on": "Accès payant obligatoire : activé",
+      "off": "Accès payant obligatoire : désactivé",
+      "since": "Activé le {date}",
+      "offText": "Tous les inscrits utilisent l'application gratuitement avec la formule gratuite.",
+      "badgeOn": "Actif",
+      "badgeOff": "Inactif",
+      "notReadyFlag": "La fonction « paiements » est coupée (Réglages › Interrupteurs d'urgence) : l'accès payant ne peut pas être activé, et s'il l'était il resterait suspendu.",
+      "notReadyProvider": "Aucun vrai fournisseur de paiement n'est configuré (Réglages › Paiement en ligne) : l'accès payant est suspendu pour ne bloquer personne.",
+      "grace": "Délai de grâce (jours)",
+      "graceHint": "Les membres déjà inscrits à l'activation gardent l'accès pendant ce délai, puis doivent prendre une formule. Les nouveaux inscrits n'en ont pas.",
+      "switch": "Accès payant obligatoire",
+      "saveGrace": "Enregistrer le délai",
+      "graceEnds": "Les anciens membres sans formule seront bloqués à partir du {date}.",
+      "count": {
+        "members": "Membres",
+        "paying": "Avec une formule payante",
+        "free": "Sans formule payante"
+      },
+      "howTitle": "Comment ça marche",
+      "how1": "Un membre sans formule peut créer et soigner son profil, vérifier son e-mail et son identité, régler ses paramètres et payer.",
+      "how2": "Il ne voit aucun profil, ne like pas, n'écrit pas et ne rejoint aucune fonction tant qu'il n'a pas de formule. La page d'accès ne lui montre que des nombres (profils dans sa ville), jamais de photos ni de noms.",
+      "how3": "L'équipe (modération, administration) n'est jamais bloquée. Pour offrir l'accès à un membre : Utilisateurs › Offrir une formule.",
+      "how4": "Si le paiement n'est pas opérationnel (fonction coupée, ou fournisseur non configuré en production), le blocage est suspendu automatiquement.",
+      "how5": "Pour proposer un pass d'entrée à petit prix, baissez le tarif de la formule Premium (Formules) et masquez la formule gratuite.",
+      "confirmTitle": "Activer l'accès payant ?",
+      "confirmText": "À partir de maintenant, chaque nouvel inscrit devra prendre une formule pour entrer. Les membres déjà inscrits gardent l'accès {days} jours. Tu peux le désactiver à tout moment.",
+      "confirm": "Activer",
+      "nowOn": "Accès payant activé.",
+      "nowOff": "Accès payant désactivé : tout le monde peut de nouveau entrer."
     }
   },
   "pricingFaq": {
@@ -4406,5 +4442,17 @@
     "interruptedText": "La fenêtre de paiement a été fermée avant la fin. Si le paiement a tout de même abouti, il sera pris en compte automatiquement. Sinon, tu peux réessayer.",
     "retry": "Réessayer",
     "cancel": "Annuler"
+  },
+  "access": {
+    "title": "Rejoins ta communauté",
+    "subtitle": "Ton profil est créé. Choisis ta formule pour voir les profils, liker et discuter.",
+    "subtitleOpen": "Choisis ta formule pour profiter de tous les avantages.",
+    "inCity": "{n} profils actifs à {city}",
+    "inCountry": "{n} profils actifs dans ton pays",
+    "activeWeek": "{n} connectés cette semaine",
+    "profileReady": "Ton profil est prêt à {n} %. Il t'attend de l'autre côté.",
+    "note": "Paiement ponctuel, sans renouvellement automatique. Mobile Money et carte acceptés.",
+    "graceStrip": "Accès offert jusqu'au {date}, puis il faudra choisir une formule.",
+    "graceCta": "Voir les formules"
   }
 }

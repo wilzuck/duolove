@@ -17,6 +17,8 @@ export async function api<T>(path: string, { method = 'GET', body, form, signal 
   const data = await res.json().catch(() => null);
   if (!res.ok) {
     const e = (data as { error?: { code?: string; message?: string; details?: unknown } } | null)?.error;
+    // Accès payant : le serveur refuse tout sauf le profil et le paiement ; on ramène le membre sur la page d'abonnement (repli si son état était périmé).
+    if (res.status === 402 && e?.code === 'ACCESS_PAYWALL' && typeof window !== 'undefined' && !/\/access$/.test(window.location.pathname)) window.location.assign(window.location.pathname.startsWith('/en') ? '/en/access' : '/access');
     throw new ApiError(res.status, e?.code ?? 'ERROR', e?.message ?? res.statusText, e?.details);
   }
   return data as T;

@@ -42,12 +42,12 @@ function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) =>
  * Grille des offres avec choix de la durée (mensuel / 3 / 6 / 12 mois). `initial` vient du serveur ; le catalogue
  * est ensuite rafraîchi en continu : un changement de tarif dans l'administration apparaît sans rechargement.
  */
-export function PricingTable({ initial, current, action, defaultMonths = 1 }: { initial?: Catalog; current?: PlanCode; /** Absent = pages publiques : bouton « Créer mon compte » intégré (une fonction ne peut pas traverser serveur → client). */ action?: (plan: PlanView, months: number) => ReactNode; defaultMonths?: number }) {
+export function PricingTable({ initial, current, action, defaultMonths = 1, hideFree = false }: { initial?: Catalog; current?: PlanCode; /** Absent = pages publiques : bouton « Créer mon compte » intégré (une fonction ne peut pas traverser serveur → client). */ action?: (plan: PlanView, months: number) => ReactNode; defaultMonths?: number; /** Accès payant : la formule gratuite n'est pas proposée. */ hideFree?: boolean }) {
   const t = useTranslations();
   const locale = useLocale();
   const { data } = useCatalog(initial);
   const [months, setMonths] = useState(defaultMonths);
-  const plans = [...(data?.plans ?? [])].sort((a, b) => a.sortOrder - b.sortOrder);
+  const plans = [...(data?.plans ?? [])].filter((p) => !hideFree || p.code !== 'FREE').sort((a, b) => a.sortOrder - b.sortOrder);
   const durations = [...new Set(plans.flatMap((p) => p.prices.map((x) => x.months)))].sort((a, b) => a - b);
   const maxDiscount = (m: number) => Math.max(0, ...plans.map((p) => p.prices.find((x) => x.months === m)?.discountPercent ?? 0));
 

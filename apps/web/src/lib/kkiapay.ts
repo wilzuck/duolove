@@ -26,38 +26,52 @@ function loadScript(): Promise<void> {
   });
 }
 
-/** Fenêtre du widget encore affichée ? (cadre KKiaPay dans la page) : repli quand l'événement de fermeture n'est pas fourni par le script. */
-const widgetOpen = () => !!document.querySelector('iframe[src*="kkiapay"], kkiapay-widget iframe, #kkiapay-iframe');
+/** Le membre a relancé un paiement : l'attente précédente est abandonnée sans message. */
+export const SUPERSEDED = 'superseded';
+
+/** Éléments visibles ajoutés à la page depuis `before` (le widget KKiaPay se greffe sur le <body>), ou cadre KKiaPay encore affiché. */
+const widgetOpen = (before: Set<Element>) => {
+  const visible = (n: Element) => n.isConnected && n.getClientRects().length > 0 && getComputedStyle(n).visibility !== 'hidden';
+  return Array.from(document.body.children).some((n) => !before.has(n) && visible(n)) || !!document.querySelector('iframe[src*="kkiapay"]');
+};
+
+let current: { reject: (e: Error) => void } | null = null;
 
 /**
  * Ouvre le widget KKiaPay. Résout avec l'identifiant de transaction (à faire vérifier par le serveur),
  * rejette avec 'failed' si le paiement échoue et avec CANCELLED si la fenêtre est fermée sans payer. Le résultat du widget n'active jamais rien par lui-même.
+ * `onOpened` est appelé dès que la fenêtre est ouverte : l'appelant peut alors libérer son bouton (la fenêtre couvre l'écran ; fermée, le membre peut recommencer).
  */
-export async function payWithKkiapay(c: KkiapayWidgetConfig): Promise<string> {
+export async function payWithKkiapay(c: KkiapayWidgetConfig, onOpened?: () => void): Promise<string> {
   await loadScript();
   const k = g();
+  current?.reject(new Error(SUPERSEDED));  // un seul paiement à la fois : un nouveau clic abandonne l'attente du précédent
   let poll: ReturnType<typeof setInterval> | undefined;
   let stop: ReturnType<typeof setTimeout> | undefined;
   return new Promise<string>((resolve, reject) => {
     let settled = false;
     const finish = (fn: () => void) => { if (!settled) { settled = true; fn(); } };
+    current = { reject: (e) => finish(() => reject(e)) };
     const onSuccess = (r: { transactionId?: string }) => finish(() => (r.transactionId ? resolve(r.transactionId) : reject(new Error('failed'))));
     const onFailed = () => finish(() => reject(new Error('failed')));
     if (k.addKkiapayListener) { k.addKkiapayListener('success', onSuccess); k.addKkiapayListener('failed', onFailed); }
     else { k.addSuccessListener?.(onSuccess); k.addFailedListener?.(onFailed); }
-    // Fermeture sans paiement : l'événement du script s'il existe, sinon on surveille le cadre. Court délai avant de conclure : un succès peut arriver juste après la fermeture.
+    // Fermeture sans paiement : l'événement du script s'il existe, sinon on surveille ce que le widget ajoute à la page. Court délai avant de conclure : un succès peut arriver juste après la fermeture.
     const cancel = () => { setTimeout(() => finish(() => reject(new Error(CANCELLED))), 1500); };
     k.addKkiapayCloseListener?.(cancel);
+    const before = new Set<Element>(Array.from(document.body.children));
     let seen = false;
     poll = setInterval(() => {
-      if (widgetOpen()) seen = true;
+      if (widgetOpen(before)) seen = true;
       else if (seen) { clearInterval(poll); cancel(); }
-    }, 600);
+    }, 400);
     stop = setTimeout(() => clearInterval(poll), 30 * 60_000);
     k.openKkiapayWidget?.({ amount: c.amount, key: c.publicKey, sandbox: c.sandbox, partnerId: c.reference, paymentMethods: ['momo', 'card'], name: c.name, reason: c.reason ?? c.name, data: c.data, position: 'center' });
+    onOpened?.();
   }).finally(() => {
     clearInterval(poll);
     clearTimeout(stop);
+    current = null;
     g().removeKkiapayListener?.('success');
     g().removeKkiapayListener?.('failed');
     g().removeKkiapayCloseListener?.();

@@ -23,6 +23,8 @@ export interface Me {
   status: 'ACTIVE' | 'SUSPENDED' | 'BANNED' | 'DELETED'; suspendedUntil: string | null; marketingConsent: boolean;
   profile: { displayName: string; onboarded: boolean; completeness: number; verified?: boolean; thumbUrl: string | null; paused?: boolean; pauseEndsAt?: string | null } | null;
   entitlement: { plan: PlanCode; validUntil: string | null; credits: Record<CreditType, number>; limits: Limits };
+  /** Accès payant obligatoire : `locked` = bloqué (aucune formule) ; `graceEndsAt` = fin du délai de grâce d'un ancien membre. */
+  access?: { required: boolean; locked: boolean; graceEndsAt: string | null };
   unreadNotifications: number;
   moderation: { reason: string; appealStatus: 'NONE' | 'PENDING' | 'ACCEPTED' | 'REJECTED'; id: string } | null;
 }

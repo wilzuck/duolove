@@ -1,9 +1,10 @@
 'use client';
 import { BadgeCheck, Bell, ChevronLeft, Compass, Crown, Heart, Radio, MessageCircle, ShieldAlert, User } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import type { ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { useEffect, type ReactNode } from 'react';
 import { Avatar, Button, Logo, cn } from '@duomatch/ui';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
+import { formatDate } from '@/lib/format';
 import type { Me } from '@/lib/types';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { SiteLinks } from '../SiteLinks';
@@ -27,6 +28,7 @@ const MOBILE_NAV = [NAV[0], NAV[2], NAV[1], NAV[3], NAV[4]] as const;
 
 export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode; children: ReactNode }) {
   const t = useTranslations();
+  const locale = useLocale();
   const path = usePathname();
   const router = useRouter();
   const active = (href: string) => (GROUPS[href] ?? [href]).some((x) => path === x || path.startsWith(`${x}/`));
@@ -35,6 +37,11 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
   const topLevel = Object.values(GROUPS).flat().includes(path) || NAV.some((x) => x.href === path);
   const goBack = () => { if (window.history.length > 1) router.back(); else router.push('/discover'); };
   const inChat = /^\/messages\/.+/.test(path);
+  // Accès payant : un membre sans formule ne garde que ces pages (compte, profil, paiement). Le reste ramène à la page d'abonnement.
+  const lockedOk = ['/access', '/premium', '/checkout', '/profile', '/settings', '/referral', '/notifications', '/onboarding'].some((x) => path === x || path.startsWith(`${x}/`));
+  const blocked = !!me.access?.locked && !lockedOk;
+  useEffect(() => { if (blocked) router.replace('/access'); }, [blocked, router]);
+  if (blocked) return null;
 
   // Onboarding : parcours guidé sans navigation (on ne s'échappe pas d'un profil à moitié rempli).
   if (path === '/onboarding') {
@@ -100,6 +107,12 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
           </div>
         </header>
         {!inChat && <InstallBanner />}
+        {me.access?.graceEndsAt && !inChat && (
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-soft px-4 py-2 text-center text-sm text-brand-ink">
+            <span>{t('access.graceStrip', { date: formatDate(me.access.graceEndsAt, locale, { day: 'numeric', month: 'long' }) })}</span>
+            <Link href="/premium" className="font-bold underline">{t('access.graceCta')}</Link>
+          </div>
+        )}
         <main id="main" className={cn('flex min-w-0 flex-1 flex-col', !inChat && 'pb-24 lg:pb-0')}><div className={cn('min-w-0 flex-1', !inChat && 'lg:pb-8')}>{children}</div>{!inChat && <SiteLinks variant="app" className={path === '/profile' ? '' : 'max-lg:hidden'} />}</main>
       </div>
 

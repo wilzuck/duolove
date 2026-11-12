@@ -3,7 +3,7 @@ from sqlalchemy import delete, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.inspection import inspect
 
-from app.core import credits, entitlements, rhythm, storage
+from app.core import access, credits, entitlements, rhythm, storage
 from app.core.auth import AuthUser, current_user, current_user_allow_suspended, current_user_allow_unverified
 from app.core.errors import AppError, bad_request, unauthorized
 from app.core.ids import utcnow
@@ -46,6 +46,7 @@ async def me(u: AuthUser = Depends(current_user_allow_suspended), db: AsyncSessi
                                               "paused": rhythm.is_paused(profile), "pauseEndsAt": profile.pauseEndsAt if rhythm.is_paused(profile) else None,
                                               "thumbUrl": photo_url(thumb_key(photo_key)) if photo_key else None},
         "entitlement": {"plan": e["plan"], "validUntil": e["validUntil"], "limits": e["limits"], "credits": await credits.balances(db, u.id)},
+        "access": await access.status(db, user),
         "unreadNotifications": unread,
         "moderation": {"reason": moderation.reason, "appealStatus": moderation.appealStatus.value, "id": moderation.id} if suspended and moderation else None,
     }

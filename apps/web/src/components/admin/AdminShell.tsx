@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, BookOpen, MailCheck, Megaphone, ChartLine, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, BookOpen, LockKeyhole, MailCheck, Megaphone, ChartLine, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Undo2, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -46,6 +46,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/backups', key: 'backups', icon: DatabaseBackup, min: 'ADMIN' },
     { href: '/admin/storage', key: 'storage', icon: CloudUpload, min: 'SUPER_ADMIN' },
     { href: '/admin/payment', key: 'payment', icon: CreditCard, min: 'SUPER_ADMIN' },
+    { href: '/admin/access', key: 'access', icon: LockKeyhole, min: 'SUPER_ADMIN' },
   ] },
 ];
 
