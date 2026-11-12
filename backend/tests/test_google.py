@@ -139,3 +139,27 @@ async def test_unconfirmed_account_is_not_hijackable(app, google):
         assert u.emailVerifiedAt and u.passwordHash is None  # l'ancien mot de passe de l'attaquant ne marche plus
         assert (await s.execute(select(Session.id).where(Session.userId == uid_, Session.tokenHash == old_hash))).first() is None  # ses sessions sont révoquées
     assert (await new_agent_app.post("/api/auth/login", json={"email": email, "password": "Attaquant-2026!aa"}, headers=ORIGIN)).status_code == 401
+
+
+async def test_double_authentification_vaut_aussi_pour_google_et_se_desactive_sans_mot_de_passe(app, google, monkeypatch):
+    """Un compte Google n'a pas de mot de passe chez nous : le code seul suffit pour désactiver ; et une fois activée, la protection s'applique à la connexion Google."""
+    from app.core import totp
+    monkeypatch.setattr(get_settings(), "settings_encryption_key", "cle-de-test-2fa-google")
+    email = f"g2fa-{uid()}@example.com"
+    google["claims"] = claims(email)
+    first = new_agent(app)
+    r = await first.post("/api/auth/google", json=signup_body(), headers=ORIGIN)
+    assert r.status_code == 200 and "twoFactor" not in r.json()
+    secret = (await first.post("/api/auth/2fa/setup", headers=ORIGIN)).json()["secret"].replace(" ", "")
+    assert (await first.get("/api/auth/2fa")).json()["hasPassword"] is False
+    en = await first.post("/api/auth/2fa/enable", json={"code": totp.code_at(secret, totp.current_step())}, headers=ORIGIN)
+    assert en.status_code == 200
+    # Nouvelle connexion Google : pas de session avant le code.
+    again = new_agent(app)
+    r2 = await again.post("/api/auth/google", json=signup_body(), headers=ORIGIN)
+    assert r2.status_code == 200 and r2.json()["twoFactor"] is True and (await again.get("/api/users/me")).status_code == 401
+    ok = await again.post("/api/auth/2fa/login", json={"challenge": r2.json()["challenge"], "code": totp.code_at(secret, totp.current_step() + 1)}, headers=ORIGIN)
+    assert ok.status_code == 200 and (await again.get("/api/users/me")).status_code == 200
+    # Désactivation : sans mot de passe, avec un code de secours.
+    off = await again.post("/api/auth/2fa/disable", json={"code": en.json()["recoveryCodes"][0]}, headers=ORIGIN)
+    assert off.status_code == 200 and (await again.get("/api/auth/2fa")).json()["enabled"] is False

@@ -1422,7 +1422,14 @@
     ],
     "cityClosed": "Crushduo ouvre d’abord à {cities}. Nous ne pouvons pas encore créer de compte à {city} : laissez votre e-mail, nous vous prévenons dès l’ouverture.",
     "waitlistJoin": "Me prévenir",
-    "waitlistDone": "C’est noté. Nous vous écrirons dès que votre ville ouvre."
+    "waitlistDone": "C’est noté. Nous vous écrirons dès que votre ville ouvre.",
+    "twoFactor": {
+      "hint": "Pour protéger votre compte, saisissez le code à 6 chiffres affiché par votre application d’authentification.",
+      "label": "Code de vérification",
+      "recoveryHint": "Téléphone perdu ? Saisissez un de vos codes de secours (format ABCD-EFGH).",
+      "submit": "Valider",
+      "back": "Retour"
+    }
   },
   "gender": {
     "MAN": "Homme",
@@ -1631,7 +1638,11 @@
     "CITY_NOT_OPEN": "Crushduo n’est pas encore ouvert dans votre ville : rejoignez la liste d’attente.",
     "EVENT_OTHER_CITY": "Cette soirée est réservée aux membres de sa ville.",
     "NO_COUNTRY": "Gardez au moins un pays ouvert.",
-    "DATE_IN_FUTURE": "La date ne peut pas être dans le futur."
+    "DATE_IN_FUTURE": "La date ne peut pas être dans le futur.",
+    "INVALID_2FA_CODE": "Code incorrect. Vérifiez l’heure de votre téléphone ou utilisez un code de secours.",
+    "TWOFA_ALREADY_ON": "La double authentification est déjà activée.",
+    "TWOFA_NOT_ON": "La double authentification n’est pas activée.",
+    "TWOFA_NOT_SETUP": "Commencez par générer une clé de configuration."
   },
   "app": {
     "nav": {
@@ -2025,7 +2036,16 @@
       "LIVE_EVENT": "Soirée Duo : « {event} » commence dans une heure. Soyez là !",
       "LIVE_EVENT_START": "La soirée « {event} » commence : lancez votre recherche !"
     },
-    "promoEnding": "Votre offre de bienvenue se termine bientôt ({code}) : {offer}. Appliquez-la en un clic."
+    "promoEnding": "Votre offre de bienvenue se termine bientôt ({code}) : {offer}. Appliquez-la en un clic.",
+    "securityEvents": {
+      "new_country": "Nouvelle connexion à votre compte depuis un autre pays ({country}). Si ce n’est pas vous, changez votre mot de passe.",
+      "two_factor_on": "La double authentification vient d’être activée sur votre compte.",
+      "two_factor_off": "La double authentification vient d’être désactivée sur votre compte.",
+      "two_factor_reset": "Votre double authentification a été réinitialisée par notre équipe. Vous avez été déconnecté de tous vos appareils.",
+      "password_changed": "Votre mot de passe a été modifié.",
+      "password_reset": "Votre mot de passe a été réinitialisé.",
+      "suspended": "Votre compte a été suspendu."
+    }
   },
   "premium": {
     "title": "Choisissez votre formule",
@@ -3902,7 +3922,11 @@
         }
       }
     },
-    "reportOverdue": "En retard de {h} h"
+    "reportOverdue": "En retard de {h} h",
+    "twoFactorReset": "Réinitialiser la double authentification",
+    "twoFactorResetDone": "Double authentification réinitialisée : le membre est déconnecté de tous ses appareils.",
+    "twoFactorNone": "Ce membre n’avait pas la double authentification (ses appareils ont été déconnectés).",
+    "twoFactorResetHint": "À n’utiliser qu’après avoir vérifié l’identité du membre (téléphone et codes de secours perdus)."
   },
   "pricingFaq": {
     "renew": {
@@ -4867,5 +4891,30 @@
     "cancelRemind": "Annuler le rappel",
     "join": "Lancer ma recherche maintenant",
     "failed": "Impossible de mettre à jour votre inscription."
+  },
+  "twoFactor": {
+    "title": "Double authentification",
+    "text": "Un code à 6 chiffres, généré par une application sur votre téléphone, est demandé en plus du mot de passe (ou du lien reçu par e-mail, ou de Google). Même si quelqu’un connaît votre mot de passe, il ne peut pas entrer sans votre téléphone.",
+    "on": "Activée",
+    "off": "Désactivée",
+    "enable": "Activer la double authentification",
+    "step1": "Installez une application d’authentification (Google Authenticator, Microsoft Authenticator, Authy ou FreeOTP).",
+    "step2": "Ajoutez un compte avec cette clé (ou touchez le lien sur votre téléphone) :",
+    "step3": "Saisissez le code à 6 chiffres affiché par l’application pour confirmer.",
+    "copy": "Copier",
+    "copied": "Copié.",
+    "openApp": "Ouvrir dans mon application",
+    "codeLabel": "Code à 6 chiffres (ou code de secours)",
+    "codeHint": "Le code change toutes les 30 secondes.",
+    "confirm": "Confirmer et activer",
+    "codesTitle": "Activée. Notez vos codes de secours maintenant.",
+    "codesText": "Ils ne seront plus jamais affichés. Chacun ne sert qu’une fois si vous perdez votre téléphone. Gardez-les hors de votre téléphone (papier, gestionnaire de mots de passe).",
+    "copyAll": "Tout copier",
+    "saved": "J’ai noté mes codes",
+    "recoveryLeft": "{n, plural, =0 {Aucun code de secours restant.} one {# code de secours restant.} other {# codes de secours restants.}}",
+    "recoveryLow": "Générez-en de nouveaux.",
+    "newCodes": "Nouveaux codes de secours",
+    "disable": "Désactiver",
+    "disabled": "Double authentification désactivée."
   }
 }

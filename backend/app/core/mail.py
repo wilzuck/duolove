@@ -214,6 +214,23 @@ async def send_promo_ending(to: str, name: str, code: str, kind: str, percent: i
     return await send(to, f"{subject} — Crushduo", f"Bonjour {name},\n\nVotre offre de bienvenue ({offer}, code {code}) se termine dans quelques heures. Elle s'applique en un clic : {link}\n\nVous recevez ce message parce que vous avez accepté de recevoir nos offres.", html, kind="notification")
 
 
+async def send_login_alert(to: str, name: str, country_code: str) -> bool:
+    """Alerte de sécurité : connexion depuis un autre pays que la précédente. Essentiel (sans désabonnement) : c'est la protection du compte."""
+    from app.core.constants import COUNTRY_CODES  # noqa: F401  (codes connus ; le nom affiché reste le code ISO en secours)
+    names = {"BJ": "le Bénin", "CI": "la Côte d'Ivoire", "TG": "le Togo", "SN": "le Sénégal", "NE": "le Niger", "BF": "le Burkina Faso", "CM": "le Cameroun", "ML": "le Mali",
+             "GA": "le Gabon", "CD": "la RD Congo", "FR": "la France", "BE": "la Belgique", "CA": "le Canada"}
+    where = names.get(country_code, country_code)
+    link = f"{get_settings().app_url}/settings?tab=security"
+    subject = "Nouvelle connexion à votre compte Crushduo"
+    html = render_email(subject, [
+        p(f"Bonjour {esc_(name)}, votre compte vient d'être utilisé depuis {esc_(where)}, un autre pays que lors de votre dernière connexion."),
+        p("Si c'est vous (voyage, nouveau réseau), vous n'avez rien à faire. Sinon, changez votre mot de passe et déconnectez les autres appareils."),
+        button("Vérifier mon compte", link),
+        note("Pour renforcer la sécurité, vous pouvez activer la double authentification dans Paramètres › Sécurité. Nous ne conservons jamais votre adresse IP, seulement le pays."),
+    ], preheader=f"Connexion depuis {where}")
+    return await send(to, f"{subject}", f"Bonjour {name},\n\nVotre compte vient d'être utilisé depuis {where}, un autre pays que lors de votre dernière connexion.\n\nSi ce n'est pas vous, changez votre mot de passe : {link}", html, kind="notification")
+
+
 def notification_html(title: str, body: str, unsub_url: str | None = None) -> str:
     """E-mail de notification (message, match, like…) : même carte, bouton vers l'application et, si la notification est facultative, un lien de désabonnement."""
     footer = (f'<p style="margin:8px 0 0;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;font-size:13px;color:#45434F;text-align:center;">'

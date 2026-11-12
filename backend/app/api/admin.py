@@ -450,6 +450,18 @@ async def revoke_plan(user_id: str, body: ReasonOnly, a: AuthUser = ADM, db: Asy
 
 
 # ───────── Signalements ─────────
+@router.post("/users/{user_id}/two-factor/reset")
+async def reset_two_factor(user_id: str, body: ReasonOnly, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Membre qui a perdu son téléphone et ses codes de secours : à n'utiliser qu'après avoir vérifié son identité. Déconnecte tous ses appareils et le prévient."""
+    from app.core import twofactor
+    if not await db.get(User, user_id):
+        raise not_found("USER_NOT_FOUND")
+    was = await twofactor.admin_reset(db, user_id)
+    await audit(db, a.id, "user.two_factor.reset", "User", user_id, {"reason": body.reason, "wasEnabled": was})
+    await notifications.create(db, user_id, "SECURITY_ALERT", {"event": "two_factor_reset"})
+    return {"ok": True, "wasEnabled": was}
+
+
 @router.get("/reports")
 async def reports(status: str = "OPEN", cursor: str | None = None, limit: str | None = None, _: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
     take = page(limit)

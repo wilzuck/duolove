@@ -1,4 +1,5 @@
 'use client';
+import { TwoFactorCard } from '@/components/app/TwoFactorCard';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Download, FileDown, LogOut, MapPin, Monitor, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
@@ -107,6 +108,7 @@ function SecurityTab() {
   const label = (ua: string | null) => (ua ? (/Mobile|Android|iPhone/i.test(ua) ? t('settings.security.mobile') : t('settings.security.computer')) + (/Chrome/.test(ua) ? ' · Chrome' : /Safari/.test(ua) ? ' · Safari' : /Firefox/.test(ua) ? ' · Firefox' : '') : t('settings.security.unknown'));
   return (
     <div className="space-y-5">
+      <TwoFactorCard />
       <Card className="p-5"><h3 className="mb-4 font-bold">{t('settings.security.password')}</h3>
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); change.mutate(); }}>
           <Field label={t('settings.security.current')}>{(p) => <PasswordInput {...p} autoComplete="current-password" value={cur} onChange={(e) => setCur(e.target.value)} required />}</Field>

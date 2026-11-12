@@ -7,7 +7,7 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import appsettings, flags, mail, notifications
+from app.core import appsettings, flags, mail, notifications, twofactor
 from app.core.completeness import compute_completeness
 from app.core.config import get_settings
 from app.core.errors import AppError, bad_request, conflict, unauthorized
@@ -25,6 +25,14 @@ RESEND_COOLDOWN = datetime.timedelta(seconds=30)
 
 MAX_FAILED = 5
 LOCK_MINUTES = 15
+TWO_FACTOR_TTL = datetime.timedelta(minutes=5)
+
+
+class TwoFactorRequired(Exception):
+    """Mot de passe (ou lien magique) accepté, mais le compte a la double authentification : on renvoie un défi (jeton de 5 min) au lieu d'ouvrir une session."""
+
+    def __init__(self, challenge: str):
+        self.challenge = challenge
 
 
 @dataclass
@@ -48,10 +56,25 @@ async def create_session(db: AsyncSession, user_id: str, ctx: ReqCtx, remember: 
     token = random_token(32)
     expires = utcnow() + (datetime.timedelta(days=get_settings().session_ttl_days) if remember else SHORT_SESSION)
     db.add(Session(userId=user_id, tokenHash=sha256(token), expiresAt=expires, userAgent=(ctx.user_agent or None) and ctx.user_agent[:255], ipHash=hash_ip(ctx.ip)))
+    previous = (await db.execute(select(User.lastCountry, User.email).where(User.id == user_id))).first() if ctx.country else None
     if ctx.country:
         await db.execute(update(User).where(User.id == user_id).values(lastCountry=ctx.country))
     await db.commit()
+    if previous and previous[0] and previous[0] != ctx.country:
+        await _alert_new_country(db, user_id, previous[1], ctx.country)
     return token, expires
+
+
+async def _alert_new_country(db: AsyncSession, user_id: str, email: str | None, country: str) -> None:
+    """Connexion depuis un autre pays que la précédente : notification dans l'application + e-mail. Jamais bloquant : un échec d'envoi n'empêche pas la connexion.
+    Aucun blocage ni verrouillage : un membre en voyage ou de la diaspora reste un membre honnête (voir geo.py)."""
+    try:
+        await notifications.create(db, user_id, "SECURITY_ALERT", {"event": "new_country", "country": country})
+        if email:
+            name = (await db.execute(select(Profile.displayName).where(Profile.userId == user_id))).scalar_one_or_none() or ""
+            await mail.send_login_alert(email, name, country)
+    except Exception:  # noqa: BLE001
+        await db.rollback()
 
 
 async def _issue_token(db: AsyncSession, user_id: str, type_: str, ttl: datetime.timedelta) -> str:
@@ -113,9 +136,39 @@ async def login(db: AsyncSession, inp, ctx: ReqCtx):
                 user.failedLogins = failed
             await db.commit()
         raise unauthorized("INVALID_CREDENTIALS", "E-mail ou mot de passe incorrect")
-    user.failedLogins, user.lockedUntil, user.lastActiveAt = 0, None, utcnow()
+    user.failedLogins, user.lockedUntil = 0, None
+    await db.commit()
+    if user.totpEnabledAt:  # double authentification : pas de session avant le code
+        raise TwoFactorRequired(await _issue_token(db, user.id, "TWO_FACTOR", TWO_FACTOR_TTL))
+    user.lastActiveAt = utcnow()
     await db.commit()
     return user, await create_session(db, user.id, ctx, getattr(inp, "remember", True))
+
+
+async def complete_two_factor(db: AsyncSession, challenge: str, code: str, remember: bool, ctx: ReqCtx):
+    """Deuxième étape de la connexion : défi + code (TOTP ou de secours) → session. Les mauvais codes comptent comme des échecs de connexion (même verrouillage)."""
+    t = await _valid_token(db, challenge, "TWO_FACTOR")
+    user = await db.get(User, t.userId)
+    if not user or _st(user) in ("DELETED", "BANNED") or not user.totpEnabledAt:
+        raise bad_request("INVALID_TOKEN", "Lien invalide ou expiré")
+    if user.lockedUntil and user.lockedUntil > utcnow():
+        raise AppError(429, "ACCOUNT_LOCKED", "Trop de tentatives. Réessayez dans quelques minutes.")
+    if not await twofactor.check_code(db, user.id, code):
+        failed = user.failedLogins + 1
+        if failed >= MAX_FAILED:
+            user.failedLogins, user.lockedUntil = 0, utcnow() + datetime.timedelta(minutes=LOCK_MINUTES)
+            await db.execute(update(VerificationToken).where(VerificationToken.id == t.id).values(usedAt=utcnow()))  # le défi est brûlé
+        else:
+            user.failedLogins = failed
+        await db.commit()
+        raise AppError(401, "INVALID_2FA_CODE", "Code incorrect")
+    claimed = await db.execute(update(VerificationToken).where(VerificationToken.id == t.id, VerificationToken.usedAt.is_(None)).values(usedAt=utcnow()))
+    if claimed.rowcount == 0:  # défi déjà utilisé en parallèle
+        await db.rollback()
+        raise bad_request("INVALID_TOKEN", "Lien invalide ou expiré")
+    user.failedLogins, user.lockedUntil, user.lastActiveAt = 0, None, utcnow()
+    await db.commit()
+    return user, await create_session(db, user.id, ctx, remember)
 
 
 async def logout(db: AsyncSession, session_id: str) -> None:
@@ -330,6 +383,8 @@ async def google(db: AsyncSession, id_token: str, extra, ctx: ReqCtx):
             completeness=compute_completeness(bio="", occupation=None, interest_count=0, photo_count=0, intent="UNSURE")))
     if _st(user) in ("DELETED", "BANNED"):
         raise unauthorized("INVALID_CREDENTIALS")
+    if user.totpEnabledAt:  # le membre a choisi la double authentification : elle vaut pour TOUTES les méthodes de connexion, Google compris
+        raise TwoFactorRequired(await _issue_token(db, user.id, "TWO_FACTOR", TWO_FACTOR_TTL))
     return user, await create_session(db, user.id, ctx, extra.remember)
 
 
@@ -366,6 +421,8 @@ async def login_with_magic_link(db: AsyncSession, token: str, remember: bool, ct
         user.emailVerifiedAt = now
     user.lastActiveAt = now
     await db.commit()
+    if user.totpEnabledAt:  # le lien prouve la boîte e-mail, pas la possession du téléphone : le code reste demandé
+        raise TwoFactorRequired(await _issue_token(db, user.id, "TWO_FACTOR", TWO_FACTOR_TTL))
     if newly_verified:
         try:
             from app.core import gift

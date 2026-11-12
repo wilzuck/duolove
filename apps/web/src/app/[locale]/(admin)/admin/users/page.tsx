@@ -47,6 +47,7 @@ export default function AdminUsers() {
   const [grantPlan, setGrantPlan] = useState<'PREMIUM' | 'VIP'>('PREMIUM');
   const [grantDays, setGrantDays] = useState(30);
   const grant = useMutation({ mutationFn: () => post(`/admin/users/${sel}/grant-plan`, { plan: grantPlan, days: grantDays, reason }), onSuccess: () => { refresh(); toast('success', t('admin.done')); }, onError: (e) => toast('error', err(e)) });
+  const resetTf = useMutation({ mutationFn: () => post<{ wasEnabled: boolean }>(`/admin/users/${sel}/two-factor/reset`, { reason }), onSuccess: (r) => { refresh(); toast('success', r.wasEnabled ? t('admin.twoFactorResetDone') : t('admin.twoFactorNone')); }, onError: (e) => toast('error', err(e)) });
   const revoke = useMutation({ mutationFn: () => post(`/admin/users/${sel}/revoke-plan`, { reason }), onSuccess: () => { refresh(); toast('success', t('admin.done')); }, onError: (e) => toast('error', err(e)) });
   const d = detail.data;
 
@@ -133,6 +134,7 @@ export default function AdminUsers() {
                   <Button size="sm" variant="outline" disabled={reason.trim().length < 3} onClick={() => act.mutate({ kind: 'suspend' })} loading={act.isPending}>{t('admin.suspend')}</Button>
                   <Button size="sm" variant="danger" disabled={reason.trim().length < 3} onClick={() => act.mutate({ kind: 'ban' })}>{t('admin.ban')}</Button>
                   {(d.status === 'SUSPENDED' || d.status === 'BANNED') && <Button size="sm" variant="secondary" disabled={reason.trim().length < 3} onClick={() => act.mutate({ kind: 'unsuspend' })}>{t('admin.unsuspend')}</Button>}
+                  {isAdmin && <Button size="sm" variant="outline" disabled={reason.trim().length < 3} loading={resetTf.isPending} onClick={() => resetTf.mutate()}>{t('admin.twoFactorReset')}</Button>}
                 </div>
               </div>
             )}

@@ -6,7 +6,7 @@ import enum
 
 from app.core.ids import new_id, utcnow
 
-from sqlalchemy import ARRAY, Boolean, Column, Date, DateTime, Double, Enum, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Table, Text, text
+from sqlalchemy import ARRAY, BigInteger, Boolean, Column, Date, DateTime, Double, Enum, ForeignKeyConstraint, Index, Integer, PrimaryKeyConstraint, String, Table, Text, text
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -213,6 +213,7 @@ class TokenType(str, enum.Enum):
     EMAIL_VERIFY = 'EMAIL_VERIFY'
     PASSWORD_RESET = 'PASSWORD_RESET'
     MAGIC_LINK = 'MAGIC_LINK'
+    TWO_FACTOR = 'TWO_FACTOR'  # défi de connexion : mot de passe ou lien accepté, code de la double authentification attendu (5 min)
 
 
 class UserStatus(str, enum.Enum):
@@ -909,6 +910,11 @@ class User(Base):
     failedLogins: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
     lastActiveAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     lastCountry: Mapped[Optional[str]] = mapped_column(Text)
+    # Double authentification (TOTP). Secret chiffré (SETTINGS_ENCRYPTION_KEY) ; totpEnabledAt vide tant que l'activation n'est pas confirmée par un premier code valide.
+    totpSecretEnc: Mapped[Optional[str]] = mapped_column(Text)
+    totpEnabledAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    totpLastStep: Mapped[Optional[int]] = mapped_column(BigInteger)  # dernier pas accepté : un code ne sert qu'une fois
+    totpRecovery: Mapped[Optional[list]] = mapped_column(JSONB)  # empreintes (jamais les codes) des codes de secours encore valables
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
     emailVerifiedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))

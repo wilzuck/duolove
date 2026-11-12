@@ -36,7 +36,10 @@ async def register(body: RegisterIn, req: Request, res: Response, db: AsyncSessi
 
 @router.post("/login", status_code=200, dependencies=[limit(10)])
 async def login(body: LoginIn, req: Request, res: Response, db: AsyncSession = Depends(get_db)):
-    user, (token, expires) = await authsvc.login(db, body, ctx_of(req))
+    try:
+        user, (token, expires) = await authsvc.login(db, body, ctx_of(req))
+    except authsvc.TwoFactorRequired as e:  # étape 2 : le code de l'application d'authentification (voir /auth/2fa/login)
+        return {"twoFactor": True, "challenge": e.challenge}
     set_session_cookie(res, token, expires, body.remember)
     return {"id": user.id, "email": user.email, "role": user.role.value, "emailVerified": bool(user.emailVerifiedAt)}
 
@@ -49,14 +52,20 @@ async def magic_link(body: MagicLinkIn, db: AsyncSession = Depends(get_db)):
 
 @router.post("/magic-link/verify", status_code=200, dependencies=[limit(10)])
 async def magic_link_verify(body: MagicLinkVerifyIn, req: Request, res: Response, db: AsyncSession = Depends(get_db)):
-    user, (token, expires) = await authsvc.login_with_magic_link(db, body.token, body.remember, ctx_of(req))
+    try:
+        user, (token, expires) = await authsvc.login_with_magic_link(db, body.token, body.remember, ctx_of(req))
+    except authsvc.TwoFactorRequired as e:
+        return {"twoFactor": True, "challenge": e.challenge}
     set_session_cookie(res, token, expires, body.remember)
     return {"id": user.id, "email": user.email, "role": user.role.value, "emailVerified": True}
 
 
 @router.post("/google", status_code=200, dependencies=[limit(10)])
 async def google(body: GoogleIn, req: Request, res: Response, db: AsyncSession = Depends(get_db)):
-    user, (token, expires) = await authsvc.google(db, body.idToken, body, ctx_of(req))
+    try:
+        user, (token, expires) = await authsvc.google(db, body.idToken, body, ctx_of(req))
+    except authsvc.TwoFactorRequired as e:
+        return {"twoFactor": True, "challenge": e.challenge}
     set_session_cookie(res, token, expires, body.remember)
     return {"id": user.id, "email": user.email, "role": user.role.value, "emailVerified": True}
 
