@@ -1862,7 +1862,9 @@
     "boostActive": "Boost active: your profile is highlighted.",
     "boostCta": "Boost my profile",
     "boosted": "Boost activated for 1 hour!",
-    "boostShopText": "Highlight your profile with a boost (30 min, 2 h or 24 h)."
+    "boostShopText": "Highlight your profile with a boost (30 min, 2 h or 24 h).",
+    "memberSince": "Member since {date}",
+    "newMember": "New"
   },
   "profileView": {
     "about": "About",

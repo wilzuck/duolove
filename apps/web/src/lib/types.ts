@@ -11,6 +11,8 @@ export interface EngagementConfig { flags: { profile_prompts: boolean; like_comm
 export interface Card {
   id: string; displayName: string; age: number; city: string; country: string; bio: string; occupation: string | null;
   intent: Intent; verified: boolean; languages: string[]; interests: string[]; commonInterests: string[];
+  /** « AAAA-MM » du mois d'inscription (jamais le jour) ; isNew = inscrit depuis moins de 14 jours. */
+  memberSince?: string | null; isNew?: boolean;
   distanceKm: number | null; compatibility: number | null; photos: Photo[];
   dailyQuestion?: { optionKey: string; same: boolean } | null;
   superLike?: boolean; likedAt?: string; affinity?: Affinity | null; prompts?: PromptAnswer[];

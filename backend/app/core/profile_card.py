@@ -29,6 +29,7 @@ class CardProfile:
     photos: list[ProfilePhoto] = field(default_factory=list)
     interests: list[str] = field(default_factory=list)
     last_active_at: object = None
+    created_at: object = None  # date d'inscription : exposée au MOIS près seulement (« membre depuis »)
     prompts: list[dict] = field(default_factory=list)
 
 
@@ -69,18 +70,32 @@ async def load_cards(db: AsyncSession, profiles: list[Profile]) -> list[CardProf
     by_user: dict[str, list[str]] = {}
     for uid, slug in irows:
         by_user.setdefault(uid, []).append(slug)
-    actives = dict((await db.execute(select(User.id, User.lastActiveAt).where(User.id.in_(uids)))).all())
+    user_rows = (await db.execute(select(User.id, User.lastActiveAt, User.createdAt).where(User.id.in_(uids)))).all()
+    actives = {r[0]: r[1] for r in user_rows}
+    created = {r[0]: r[2] for r in user_rows}
     prompts = await promptsvc.answers_for(db, uids) if await flags.is_on(db, "profile_prompts") else {}
-    return [CardProfile(p, by_profile.get(p.id, []), by_user.get(p.userId, []), actives.get(p.userId), prompts.get(p.userId, [])) for p in profiles]
+    return [CardProfile(p, by_profile.get(p.id, []), by_user.get(p.userId, []), actives.get(p.userId), created.get(p.userId), prompts.get(p.userId, [])) for p in profiles]
 
 
 async def load_card(db: AsyncSession, profile: Profile) -> CardProfile:
     return (await load_cards(db, [profile]))[0]
 
 
+NEW_MEMBER_DAYS = 14  # « Nouveau » pendant les 14 premiers jours
+
+
+def member_since(created) -> tuple[str | None, bool]:
+    """(« AAAA-MM », est-il nouveau) : seul le MOIS d'inscription est exposé, jamais le jour ni l'heure."""
+    if not created:
+        return None, False
+    from app.core.ids import utcnow
+    return created.strftime("%Y-%m"), (utcnow() - created).days < NEW_MEMBER_DAYS
+
+
 def to_card(c: CardProfile, *, viewer_interests: list[str] | None = None, distance_km: int | None = None, score: int | float | None = None, affinity: dict | None = None) -> dict:
     p = c.profile
     mine = set(viewer_interests or [])
+    since, is_new = member_since(c.created_at)
     return {
         "id": p.userId, "displayName": p.displayName, "age": age_from_birth_date(p.birthDate), "city": p.city, "country": p.country,
         "bio": p.bio, "occupation": p.occupation, "intent": p.intent.value, "verified": p.verified, "languages": p.languages or [],
@@ -90,6 +105,6 @@ def to_card(c: CardProfile, *, viewer_interests: list[str] | None = None, distan
         "religion": p.religion if p.showReligion else None,  # donnée sensible : jamais montrée si la personne ne l'a pas rendue visible
         "zodiac": zodiac(p.birthDate), "values": list(p.lifeValues or []),
         "interests": c.interests, "commonInterests": [i for i in c.interests if i in mine],
-        "distanceKm": distance_km, "compatibility": score, "affinity": affinity, "prompts": c.prompts,
+        "memberSince": since, "isNew": is_new, "distanceKm": distance_km, "compatibility": score, "affinity": affinity, "prompts": c.prompts,
         "photos": [{"id": x.id, "url": photo_url(x.key), "thumbUrl": photo_url(thumb_key(x.key))} for x in c.photos],
     }
