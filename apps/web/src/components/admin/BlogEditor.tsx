@@ -16,6 +16,13 @@ import type { AdminBlogPost } from '@/lib/types';
 interface Uploaded { key: string; url: string; thumbUrl: string }
 const slugify = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
 
+/** ISO (UTC) → valeur d'un champ « date et heure » dans le fuseau du navigateur ; vide si absente. */
+const toLocal = (iso?: string | null) => {
+  if (!iso) return '';
+  const d = new Date(iso); const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+};
+
 /** Éditeur d'article : création (post absent) ou modification. Publier exige image de couverture + texte alternatif (contrôlé aussi côté API). */
 export function BlogEditor({ post }: { post?: AdminBlogPost }) {
   const t = useTranslations();
@@ -26,7 +33,9 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
   const [f, setF] = useState(() => ({
     locale: post?.locale ?? 'fr', title: post?.title ?? '', slug: post?.slug ?? '', excerpt: post?.excerpt ?? '', body: post?.body ?? '',
     coverKey: post?.coverKey ?? null as string | null, coverUrl: post?.coverUrl ?? null as string | null, coverAlt: post?.coverAlt ?? '', status: post?.status ?? 'DRAFT' as 'DRAFT' | 'PUBLISHED',
+    createdAt: toLocal(post?.createdAt), publishedAt: toLocal(post?.publishedAt),
   }));
+  const initial = { createdAt: toLocal(post?.createdAt), publishedAt: toLocal(post?.publishedAt) };
   const [slugTouched, setSlugTouched] = useState(!!post);
   const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -34,7 +43,12 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
 
   const send = useMutation({
     mutationFn: (status: 'DRAFT' | 'PUBLISHED') => {
-      const common = { slug: f.slug, title: f.title, excerpt: f.excerpt, body: f.body, coverKey: f.coverKey, coverAlt: f.coverAlt, status };
+      // Les dates ne sont envoyées que si elles ont changé (ou, à la création, si elles sont remplies) : le serveur refuse une date dans le futur.
+      const dates = {
+        ...(f.createdAt && f.createdAt !== initial.createdAt ? { createdAt: new Date(f.createdAt).toISOString() } : {}),
+        ...(f.publishedAt && f.publishedAt !== initial.publishedAt ? { publishedAt: new Date(f.publishedAt).toISOString() } : {}),
+      };
+      const common = { slug: f.slug, title: f.title, excerpt: f.excerpt, body: f.body, coverKey: f.coverKey, coverAlt: f.coverAlt, status, ...dates };
       return post ? patch<AdminBlogPost>(`/admin/blog/${post.id}`, common) : post_<AdminBlogPost>({ ...common, locale: f.locale });
     },
     onSuccess: async (saved, status) => {
@@ -78,6 +92,8 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
         <Card className="grid gap-4 p-5 sm:grid-cols-2">
           <Field label={t('admin.blog.locale')}>{(p) => <Select {...p} disabled={!!post} value={f.locale} onChange={(e) => set('locale', e.target.value)}><option value="fr">{t('admin.blog.localeFr')}</option><option value="en">{t('admin.blog.localeEn')}</option></Select>}</Field>
           <Field label={t('admin.blog.slug')} hint={t('admin.blog.slugHint')}>{(p) => <Input {...p} required minLength={3} maxLength={80} pattern="[a-z0-9]+(-[a-z0-9]+)*" value={f.slug} onChange={(e) => { setSlugTouched(true); set('slug', e.target.value); }} />}</Field>
+          <Field label={t('admin.blog.createdAt')} hint={t('admin.blog.createdAtHint')}>{(p) => <Input {...p} type="datetime-local" max={toLocal(new Date().toISOString())} value={f.createdAt} onChange={(e) => set('createdAt', e.target.value)} />}</Field>
+          <Field label={t('admin.blog.publishedAt')} hint={t('admin.blog.publishedAtHint')}>{(p) => <Input {...p} type="datetime-local" max={toLocal(new Date().toISOString())} value={f.publishedAt} onChange={(e) => set('publishedAt', e.target.value)} />}</Field>
           <div className="sm:col-span-2"><Field label={t('admin.blog.fieldTitle')}>{(p) => <Input {...p} required minLength={3} maxLength={140} value={f.title} onChange={(e) => { set('title', e.target.value); if (!slugTouched) set('slug', slugify(e.target.value)); }} />}</Field></div>
           <div className="sm:col-span-2"><Field label={t('admin.blog.excerpt')}>{(p) => <Textarea {...p} required minLength={10} maxLength={300} className="min-h-20" value={f.excerpt} onChange={(e) => set('excerpt', e.target.value)} />}</Field></div>
         </Card>

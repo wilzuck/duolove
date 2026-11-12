@@ -329,3 +329,8 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 ## Admin › Services (terminé, non commité)
 - Nouvelle page **Services** (menu Pilotage) : 27 services en cartes de trois étapes illustrées, avec l'**interrupteur** des 20 services qui ont un feature flag (même réglage que la page « Interrupteurs »), l'état du réglage dédié et le lien vers la page de réglage pour les autres (accès payant, pays, soirées, blog, envois, sauvegardes, stockage). Les textes « si désactivé » reprennent ceux des interrupteurs (aucun texte inventé). Essayé dans le navigateur : affichage, bascule d'un interrupteur (état enregistré côté serveur et rétabli).
+
+## Blog : 10 articles de plus et dates modifiables (terminé, non commité)
+- **10 nouveaux articles** en français (1 430 à 2 090 mots) dans `backend/app/assets/blog/11-*.md` à `20-*.md`, ajoutés par la migration `0030_blog_articles_2` : **brouillon, sans image, sans rien effacer** (les 10 premiers restent). Un lien (slug) déjà présent est ignoré. La migration `0029` ne lit plus que les articles 01 à 10 (déjà appliquée en production, sans effet là-bas ; elle évite un doublon sur une base neuve). Total : 20 articles, tous en brouillon.
+- **Dates modifiables** dans l'éditeur : « Date d'ajout » (administration seulement) et « Date de publication » (affichée sur le blog et qui sert à l'ordre de la liste). Vide à la publication : le moment de la publication. **Jamais dans le futur** (`DATE_IN_FUTURE`) : ce n'est pas une planification, un article publié apparaît tout de suite. 1 test backend ajouté.
+- Textes toujours en **français seulement** ; non relus par un humain ni par un juriste ; interface de l'éditeur non vue dans le navigateur.

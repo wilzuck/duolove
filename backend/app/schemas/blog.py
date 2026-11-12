@@ -1,6 +1,7 @@
 """Schémas d'entrée du blog (admin)."""
 from __future__ import annotations
 
+import datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -19,6 +20,8 @@ class PostIn(BaseModel):
     coverKey: str | None = None
     coverAlt: Trim(0, 200) | None = None
     status: Literal["DRAFT", "PUBLISHED"] = "DRAFT"
+    createdAt: datetime.datetime | None = None  # date d'ajout (modifiable, jamais dans le futur)
+    publishedAt: datetime.datetime | None = None  # date de publication affichée (modifiable, jamais dans le futur)
 
     @field_validator("slug")
     @classmethod
@@ -37,6 +40,8 @@ class PostPatch(BaseModel):
     coverKey: str | None = None
     coverAlt: Trim(0, 200) | None = None
     status: Literal["DRAFT", "PUBLISHED"] | None = None
+    createdAt: datetime.datetime | None = None
+    publishedAt: datetime.datetime | None = None
 
     @field_validator("slug")
     @classmethod

@@ -108,3 +108,30 @@ async def test_plan_taglines_editable(app, db):
         await admin.patch("/api/admin/plans/PREMIUM", json={"taglineFr": "", "taglineEn": ""})
     plan = next(p for p in (await anon.get("/api/plans")).json()["plans"] if p["code"] == "PREMIUM")
     assert plan["taglineFr"] is None  # vide = accroche par défaut du site
+
+
+async def test_dates_d_ajout_et_de_publication_modifiables(app, db):
+    admin = await _admin(app, db)
+    anon = new_agent(app)
+    slug = f"dates-{uid()}"
+    cover = await _cover(admin)
+    # À la création : date d'ajout choisie ; la publication prend la date donnée (passée), pas « maintenant ».
+    r = await admin.post("/api/admin/blog", json=_payload(slug, coverKey=cover["key"], coverAlt="Deux mains", status="PUBLISHED",
+                                                            createdAt="2026-01-05T10:00:00Z", publishedAt="2026-02-10T08:30:00Z"))
+    assert r.status_code == 201, r.text
+    row = r.json()
+    assert row["createdAt"].startswith("2026-01-05T10:00") and row["publishedAt"].startswith("2026-02-10T08:30")
+    pid = row["id"]
+    # Modification des deux dates ; le public voit la date de publication.
+    r = await admin.patch(f"/api/admin/blog/{pid}", json={"createdAt": "2025-12-24T09:00:00Z", "publishedAt": "2026-03-01T12:00:00Z"})
+    assert r.status_code == 200 and r.json()["createdAt"].startswith("2025-12-24") and r.json()["publishedAt"].startswith("2026-03-01T12:00")
+    item = next(p for p in (await anon.get("/api/blog", params={"locale": "fr"})).json()["items"] if p["slug"] == slug)
+    assert item["publishedAt"].startswith("2026-03-01T12:00")
+    # Jamais dans le futur.
+    far = "2099-01-01T00:00:00Z"
+    bad = await admin.patch(f"/api/admin/blog/{pid}", json={"publishedAt": far})
+    assert bad.status_code == 400 and bad.json()["error"]["code"] == "DATE_IN_FUTURE"
+    assert (await admin.patch(f"/api/admin/blog/{pid}", json={"createdAt": far})).status_code == 400
+    # Un brouillon n'a pas de date de publication : elle est ignorée, et repasser en brouillon l'efface.
+    r = await admin.patch(f"/api/admin/blog/{pid}", json={"status": "DRAFT", "publishedAt": "2026-03-02T12:00:00Z"})
+    assert r.status_code == 200 and r.json()["publishedAt"] is None

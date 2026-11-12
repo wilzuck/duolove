@@ -1620,7 +1620,8 @@
     "ACCESS_PAYWALL": "A plan is required to get in.",
     "PAYMENT_NOT_READY": "Turn on a real payment first.",
     "COUNTRY_NOT_OPEN": "Crushduo is not open in your country yet.",
-    "NO_COUNTRY": "Keep at least one country open."
+    "NO_COUNTRY": "Keep at least one country open.",
+    "DATE_IN_FUTURE": "The date cannot be in the future."
   },
   "app": {
     "nav": {
@@ -2742,7 +2743,11 @@
         "imageAlt": "Alt text",
         "imageAltHint": "Describe the image for people who can’t see it",
         "imageRemove": "Remove image"
-      }
+      },
+      "createdAt": "Date added",
+      "createdAtHint": "Shown in the admin only.",
+      "publishedAt": "Publication date",
+      "publishedAtHint": "Date shown on the blog. Empty: the moment you publish. Never in the future."
     },
     "eng": {
       "title": "Engagement and matching",

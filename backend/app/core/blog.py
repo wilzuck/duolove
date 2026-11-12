@@ -1,6 +1,7 @@
 """Blog : articles bilingues (une ligne par langue), image de couverture obligatoire pour publier, corps en Markdown restreint."""
 from __future__ import annotations
 
+import datetime
 import math
 import re
 import secrets
@@ -76,11 +77,23 @@ async def _check(db: AsyncSession, p: BlogPost) -> None:
         raise AppError(409, "SLUG_TAKEN", "Ce lien (slug) existe déjà dans cette langue")
 
 
+def _utc(d):
+    """Date reçue (avec ou sans fuseau) → heure UTC sans fuseau, comme en base ; jamais dans le futur (à 5 minutes près)."""
+    if d is None:
+        return None
+    d = d.astimezone(datetime.timezone.utc).replace(tzinfo=None) if d.tzinfo else d
+    if d > utcnow() + datetime.timedelta(minutes=5):
+        raise bad_request("DATE_IN_FUTURE", "La date ne peut pas être dans le futur")
+    return d
+
+
 async def create(db: AsyncSession, data: dict, author_id: str) -> BlogPost:
     p = BlogPost(**{k: data[k] for k in ("slug", "locale", "title", "excerpt", "body", "coverKey", "coverAlt", "status")}, authorId=author_id)
     p.id = secrets.token_hex(12)
     if p.status == "PUBLISHED":
-        p.publishedAt = utcnow()
+        p.publishedAt = _utc(data.get("publishedAt")) or utcnow()
+    if data.get("createdAt"):
+        p.createdAt = _utc(data["createdAt"])
     await _check(db, p)
     db.add(p)
     await db.commit()
@@ -92,6 +105,7 @@ async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
     if not p:
         raise not_found("POST_NOT_FOUND")
     old_cover = p.coverKey
+    created_at, published_at = _utc(data.pop("createdAt", None)), _utc(data.pop("publishedAt", None))
     for k, v in data.items():
         setattr(p, k, v)
     if "status" in data:
@@ -99,6 +113,10 @@ async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
             p.publishedAt = utcnow()
         elif p.status == "DRAFT":
             p.publishedAt = None
+    if created_at:
+        p.createdAt = created_at
+    if published_at and p.status == "PUBLISHED":  # la date de publication n'a de sens que pour un article publié
+        p.publishedAt = published_at
     await _check(db, p)
     await db.commit()
     if "coverKey" in data and old_cover and old_cover != p.coverKey:
