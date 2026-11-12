@@ -58,6 +58,8 @@ class PromoCreate(BaseModel):
     maxRedemptions: int | None = Field(None, ge=1, le=1_000_000)
     startsAt: datetime.datetime | None = None
     expiresAt: datetime.datetime | None = None
+    featured: bool = False
+    claimHours: int | None = Field(None, ge=1, le=720)
 
     @field_validator("startsAt", "expiresAt")
     @classmethod
@@ -76,6 +78,8 @@ class PromoCreate(BaseModel):
 
 class PromoPatch(BaseModel):
     active: bool | None = None
+    featured: bool | None = None
+    claimHours: int | None = Field(None, ge=1, le=720)
     maxRedemptions: int | None = Field(None, ge=1, le=1_000_000)
     expiresAt: datetime.datetime | None = None
 

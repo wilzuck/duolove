@@ -682,10 +682,10 @@ async def list_promos(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
 async def create_promo(body: PromoCreate, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     if (await db.execute(select(PromoCode.id).where(PromoCode.code == body.code))).first():
         raise AppError(409, "PROMO_CODE_EXISTS")
-    p = PromoCode(code=body.code, kind=body.kind, percent=body.percent, tokens=body.tokens, maxRedemptions=body.maxRedemptions, startsAt=body.startsAt, expiresAt=body.expiresAt)
+    p = PromoCode(code=body.code, kind=body.kind, percent=body.percent, tokens=body.tokens, maxRedemptions=body.maxRedemptions, startsAt=body.startsAt, expiresAt=body.expiresAt, featured=body.featured, claimHours=body.claimHours)
     db.add(p)
     await db.commit()
-    await audit(db, a.id, "promo.create", "PromoCode", p.code, {"kind": body.kind, "percent": p.percent, "tokens": p.tokens, "maxRedemptions": p.maxRedemptions})
+    await audit(db, a.id, "promo.create", "PromoCode", p.code, {"kind": body.kind, "percent": p.percent, "tokens": p.tokens, "maxRedemptions": p.maxRedemptions, "featured": p.featured, "claimHours": p.claimHours})
     return to_dict(p)
 
 
@@ -696,11 +696,27 @@ async def patch_promo(promo_id: str, body: PromoPatch, a: AuthUser = ADM, db: As
     if not p:
         raise not_found("PROMO_NOT_FOUND")
     sent = body.model_dump(exclude_unset=True)
+    if sent.get("maxRedemptions") is not None and sent["maxRedemptions"] < await promo.usage(db, p):
+        raise AppError(400, "PROMO_MAX_BELOW_USED")  # on ne descend pas sous les utilisations déjà faites
     for k, v in sent.items():
         setattr(p, k, v)
     await db.commit()
     await audit(db, a.id, "promo.update", "PromoCode", promo_id, body.model_dump(mode="json", exclude_unset=True))
     return {"ok": True}
+
+
+@router.delete("/promos/{promo_id}", status_code=204)
+async def delete_promo(promo_id: str, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """Suppression d'un code JAMAIS utilisé (erreur de saisie, test). Un code déjà utilisé reste dans l'historique : on le désactive."""
+    p = await db.get(PromoCode, promo_id)
+    if not p:
+        raise not_found("PROMO_NOT_FOUND")
+    if await promo.usage(db, p) or (await db.execute(select(func.count()).select_from(Payment).where(Payment.promoCodeId == p.id))).scalar_one():
+        raise AppError(409, "PROMO_IN_USE")
+    code = p.code
+    await db.delete(p)
+    await db.commit()
+    await audit(db, a.id, "promo.delete", "PromoCode", code, {})
 
 
 # ───────── Paramètres ─────────

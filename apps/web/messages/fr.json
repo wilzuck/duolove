@@ -353,7 +353,9 @@
     "perUnit": "soit {price} l’unité",
     "minutesShort": "{n} min",
     "hoursShort": "{n} h",
-    "order": "Commander"
+    "order": "Commander",
+    "showFeatures": "Afficher tous les avantages",
+    "hideFeatures": "Masquer les avantages"
   },
   "about": {
     "title": "À propos de Crushduo",
@@ -1546,6 +1548,8 @@
     "PROMO_INVALID": "Ce code n’est pas valable.",
     "PROMO_ALREADY_USED": "Vous avez déjà utilisé ce code.",
     "PROMO_EXHAUSTED": "Ce code n’est plus disponible.",
+    "PROMO_IN_USE": "Ce code a déjà été utilisé : désactivez-le plutôt que de le supprimer.",
+    "PROMO_MAX_BELOW_USED": "Le plafond ne peut pas être inférieur au nombre d’utilisations déjà faites.",
     "PROMO_NOT_APPLICABLE": "Ce code ne s’applique pas ici.",
     "PROMO_CODE_EXISTS": "Ce code existe déjà.",
     "invalid_promo": "Code invalide (3 à 32 lettres, chiffres, - ou _).",
@@ -1998,7 +2002,7 @@
       "MESSAGE_MANY": "{count} nouveaux messages.",
       "SPEED_REMINDER": "Rappel : votre session de speed dating approche.",
       "SUBSCRIPTION_EXPIRING_DAYS": "Votre abonnement se termine dans {n} jour(s). Prolongez-le : la durée s’ajoute à votre date de fin.",
-      "LIVE_EVENT": "Soirée Match en direct : « {event} » commence dans une heure. Soyez là !",
+      "LIVE_EVENT": "Soirée Duo : « {event} » commence dans une heure. Soyez là !",
       "LIVE_EVENT_START": "La soirée « {event} » commence : lancez votre recherche !"
     }
   },
@@ -2199,7 +2203,7 @@
       "payment": "Paiement en ligne",
       "access": "Accès payant",
       "billing": "Facturation",
-      "liveEvents": "Soirées Match",
+      "liveEvents": "Soirées Duo",
       "countries": "Pays de lancement",
       "services": "Services"
     },
@@ -2507,7 +2511,22 @@
       "disable": "Désactiver",
       "enable": "Réactiver",
       "empty": "Aucun code promo.",
-      "immutable": "Le type et la valeur d’un code ne changent pas : désactivez-le et créez-en un autre."
+      "immutable": "Le type et la valeur d’un code ne changent pas : désactivez-le et créez-en un autre.",
+      "featured": "Proposé",
+      "featuredLabel": "Proposer ce code à tous les membres",
+      "featuredHint": "Le code s’affiche tout seul sur Premium et la Boutique avec un bouton « Appliquer » : plus besoin de le saisir. Il disparaît quand il est épuisé, expiré ou déjà utilisé par le membre.",
+      "feature": "Proposer aux membres",
+      "unfeature": "Ne plus proposer",
+      "hours": "Valable (heures après l’inscription)",
+      "hoursHint": "Facultatif. Exemple : 24 = le membre a 24 h après la création de son compte. Le délai est fixé et vérifié par le serveur : il ne se prolonge pas.",
+      "hoursBadge": "{n} h après inscription",
+      "edit": "Modifier",
+      "editTitle": "Modifier le code",
+      "save": "Enregistrer",
+      "saved": "Code mis à jour.",
+      "delete": "Supprimer",
+      "deleted": "Code supprimé.",
+      "lockedHint": "Le code, le type et la valeur ne se modifient pas : désactivez ce code et créez-en un autre."
     },
     "ff": {
       "title": "Fonctionnalités",
@@ -3549,7 +3568,7 @@
     "menuSearch": "Aller à un menu…",
     "menuSearchEmpty": "Aucun menu ne correspond.",
     "liveEvents": {
-      "title": "Soirées Match en direct",
+      "title": "Soirées Duo",
       "subtitle": "Donnez rendez-vous à tout le monde en même temps : les recherches aboutissent quand beaucoup de monde est en ligne.",
       "new": "Nouvelle soirée",
       "create": "Créer la soirée",
@@ -3558,7 +3577,7 @@
       "cancel": "Annuler la soirée",
       "empty": "Aucune soirée pour le moment.",
       "name": "Nom de la soirée",
-      "namePh": "Soirée Match de Cotonou",
+      "namePh": "Soirée Duo de Cotonou",
       "when": "Quand",
       "rsvps": "Inscrits",
       "start": "Début",
@@ -3575,6 +3594,32 @@
         "live": "En cours",
         "ended": "Terminée",
         "canceled": "Annulée"
+      },
+      "country": "Pays",
+      "cityHint": "Indicatif : affichée sur l’annonce, elle ne limite l’accès à personne (la soirée se déroule en ligne).",
+      "descriptionPh": "Quelques mots pour donner envie de venir…",
+      "templates": "Messages types (cliquez pour ajouter ou retirer)",
+      "tpl": {
+        "welcome": {
+          "label": "Bienvenue",
+          "text": "Rejoignez la soirée pour des rencontres en direct, dans une ambiance bienveillante."
+        },
+        "profile": {
+          "label": "Profil à jour",
+          "text": "Mettez à jour votre profil et vos photos avant le début pour faire bonne impression."
+        },
+        "notifications": {
+          "label": "Notifications",
+          "text": "Activez les notifications pour être prévenu(e) dès l’ouverture."
+        },
+        "friend": {
+          "label": "Invitez un ami",
+          "text": "Invitez un(e) ami(e) : plus il y a de monde en ligne, plus les matchs sont nombreux."
+        },
+        "respect": {
+          "label": "Respect",
+          "text": "Restez respectueux(se) : une belle rencontre commence par un bon message."
+        }
       }
     },
     "edit": "Modifier",
@@ -3677,7 +3722,7 @@
             "Rappel 1 h avant",
             "Soirée en cours"
           ],
-          "name": "Soirées Match en direct",
+          "name": "Soirées Duo",
           "note": "Pas d’interrupteur : on crée ou on annule chaque soirée."
         },
         "speed_dating": {
@@ -4080,7 +4125,12 @@
     "tokensOffer": "{code} : {n} jetons Crush offerts.",
     "claim": "Récupérer mes jetons",
     "claimed": "{n} jetons ajoutés à votre solde.",
-    "discountBadge": "−{percent} %"
+    "discountBadge": "−{percent} %",
+    "offerPercent": "−{percent} % sur votre prochain paiement",
+    "offerTokens": "{n} jetons Crush offerts",
+    "remaining": "{n, plural, one {1 place restante} other {# places restantes}}",
+    "endsLabel": "Fin de l’offre dans",
+    "endsIn": "Fin de l’offre dans {time}"
   },
   "referral": {
     "title": "Parrainage",
@@ -4772,7 +4822,7 @@
     }
   },
   "liveEvents": {
-    "title": "Soirée Match en direct",
+    "title": "Soirée Duo",
     "live": "En cours",
     "when": "{date} · {start}–{end}",
     "online": "{n} personne(s) en ligne",

@@ -130,3 +130,71 @@ async def test_consultation_d_un_code_memes_refus_que_l_utilisation(app, db):
     assert (await u.agent.post("/api/promo/lookup", json={"code": new_code("NOPE")})).json()["error"]["code"] == "PROMO_INVALID"
     await u.agent.post("/api/promo/redeem", json={"code": tk["code"]})
     assert (await u.agent.post("/api/promo/lookup", json={"code": tk["code"]})).json()["error"]["code"] == "PROMO_ALREADY_USED"
+
+
+async def test_code_propose_aux_membres_affiche_avec_places_restantes_puis_masque(app, db):
+    a = await admin(app, db)
+    shown = await create_promo(a, code=new_code("FOND"), kind="TOKENS", tokens=2, maxRedemptions=1, featured=True)
+    hidden = await create_promo(a, code=new_code("CACHE"), kind="PERCENT", percent=10)
+    pct = await create_promo(a, code=new_code("PCT"), kind="PERCENT", percent=50, maxRedemptions=1000, featured=True)
+    u, v = await member(app, db), await member(app, db)
+    codes = lambda r: {x["code"]: x for x in r.json()["items"]}  # noqa: E731
+    mine = codes(await u.agent.get("/api/promo/featured"))
+    assert shown["code"] in mine and pct["code"] in mine and hidden["code"] not in mine  # un code non coché n'est jamais révélé
+    assert mine[pct["code"]]["percent"] == 50 and mine[pct["code"]]["remaining"] == 1000 and mine[shown["code"]]["tokens"] == 2
+    # Le membre le prend : il ne le voit plus ; la place est épuisée pour l'autre (plafond de 1).
+    assert (await u.agent.post("/api/promo/redeem", json={"code": shown["code"]})).status_code == 200
+    assert shown["code"] not in codes(await u.agent.get("/api/promo/featured"))
+    assert shown["code"] not in codes(await v.agent.get("/api/promo/featured"))
+    # L'administrateur peut retirer la proposition ou désactiver le code.
+    assert (await a.agent.patch(f"/api/admin/promos/{pct['id']}", json={"featured": False})).status_code == 200
+    assert pct["code"] not in codes(await v.agent.get("/api/promo/featured"))
+    assert (await a.agent.patch(f"/api/admin/promos/{pct['id']}", json={"featured": True, "active": False})).status_code == 200
+    assert pct["code"] not in codes(await v.agent.get("/api/promo/featured"))
+
+
+async def test_delai_reel_apres_inscription_applique_par_le_serveur(app, db):
+    from sqlalchemy import update
+
+    from app.models.models import User
+    a = await admin(app, db)
+    p = await create_promo(a, code=new_code("H24"), kind="PERCENT", percent=50, maxRedemptions=1000, featured=True, claimHours=24)
+    assert p["claimHours"] == 24
+    assert (await a.agent.post("/api/admin/promos", json={"code": new_code(), "kind": "PERCENT", "percent": 10, "claimHours": 0})).status_code == 400
+    fresh, old = await member(app, db), await member(app, db)
+    async with session_maker()() as s:  # compte créé il y a 25 h : le délai est écoulé
+        await s.execute(update(User).where(User.id == old.id).values(createdAt=datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None) - datetime.timedelta(hours=25)))
+        await s.commit()
+    seen = {x["code"]: x for x in (await fresh.agent.get("/api/promo/featured")).json()["items"]}
+    assert p["code"] in seen and seen[p["code"]]["deadline"].endswith("Z")
+    end = datetime.datetime.fromisoformat(seen[p["code"]]["deadline"].replace("Z", "+00:00"))
+    assert 23.9 * 3600 < (end - datetime.datetime.now(datetime.timezone.utc)).total_seconds() <= 24 * 3600  # 24 h après l'inscription
+    assert p["code"] not in {x["code"] for x in (await old.agent.get("/api/promo/featured")).json()["items"]}
+    # Même refus en saisissant le code à la main : le délai est vérifié côté serveur, pas seulement masqué.
+    assert (await fresh.agent.post("/api/promo/lookup", json={"code": p["code"]})).status_code == 200
+    r = await old.agent.post("/api/promo/lookup", json={"code": p["code"]})
+    assert r.status_code == 400 and r.json()["error"]["code"] == "PROMO_INVALID"
+
+
+async def test_modifier_et_supprimer_un_code_promo(app, db):
+    a = await admin(app, db)
+    u = await member(app, db)
+    p = await create_promo(a, code=new_code("ED"), kind="TOKENS", tokens=3, maxRedemptions=5)
+    assert (await u.agent.delete(f"/api/admin/promos/{p['id']}")).status_code == 403
+    # Modifier : plafond, délai et mise en avant ; le code, le type et la valeur ne changent pas.
+    r = await a.agent.patch(f"/api/admin/promos/{p['id']}", json={"maxRedemptions": 50, "claimHours": 48, "featured": True})
+    assert r.status_code == 200
+    row = next(x for x in (await a.agent.get("/api/admin/promos")).json() if x["id"] == p["id"])
+    assert row["maxRedemptions"] == 50 and row["claimHours"] == 48 and row["featured"] is True and row["tokens"] == 3
+    # Utilisé une fois : plus de suppression, et le plafond ne descend pas sous les utilisations faites.
+    assert (await u.agent.post("/api/promo/redeem", json={"code": p["code"]})).status_code == 200
+    d = await a.agent.delete(f"/api/admin/promos/{p['id']}")
+    assert d.status_code == 409 and d.json()["error"]["code"] == "PROMO_IN_USE"
+    assert (await a.agent.patch(f"/api/admin/promos/{p['id']}", json={"maxRedemptions": 0})).status_code == 400
+    # Jamais utilisé : suppression possible et tracée dans le journal.
+    q = await create_promo(a, code=new_code("DEL"), kind="PERCENT", percent=10)
+    assert (await a.agent.delete(f"/api/admin/promos/{q['id']}")).status_code == 204
+    assert q["code"] not in {x["code"] for x in (await a.agent.get("/api/admin/promos")).json()}
+    assert (await a.agent.delete(f"/api/admin/promos/{q['id']}")).status_code == 404
+    async with session_maker()() as s:
+        assert (await s.execute(select(AuditLog).where(AuditLog.action == "promo.delete", AuditLog.targetId == q["code"]))).scalars().first()

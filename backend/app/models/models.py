@@ -292,6 +292,10 @@ class PromoCode(Base):
     maxRedemptions: Mapped[Optional[int]] = mapped_column(Integer)
     startsAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
     expiresAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    # Proposé aux membres : le code s'affiche tout seul (Premium, Boutique) avec un bouton « Appliquer ».
+    featured: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'), default=False)
+    # Délai réel : le code ne vaut que ce nombre d'heures après l'inscription du membre (fin calculée côté serveur, jamais par le navigateur).
+    claimHours: Mapped[Optional[int]] = mapped_column(Integer)
 
     Payment: Mapped[list['Payment']] = relationship('Payment', back_populates='PromoCode_')
 
@@ -761,7 +765,7 @@ class NewsletterCampaign(Base):
 
 
 class LiveEvent(Base):
-    """Soirée Match en direct : créneau annoncé par l'administration pour que beaucoup de monde soit en ligne en même temps.
+    """Soirée Duo : créneau annoncé par l'administration pour que beaucoup de monde soit en ligne en même temps.
     Les membres s'inscrivent pour être rappelés (1 h avant, puis au début). `tzOffset` : décalage horaire d'affichage dans les e-mails, en minutes."""
     __tablename__ = 'LiveEvent'
     __table_args__ = (

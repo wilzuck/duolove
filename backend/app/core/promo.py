@@ -13,7 +13,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core import credits, flags
 from app.core.errors import AppError, bad_request, conflict
 from app.core.ids import utcnow
-from app.models.models import CreditTransaction, Payment, PromoCode
+from app.core.jsonfmt import iso
+from app.models.models import CreditTransaction, Payment, PromoCode, User
 
 # Un paiement en attente depuis moins d'une heure « réserve » le code ; au-delà il est considéré abandonné.
 PENDING_HOLD = datetime.timedelta(hours=1)
@@ -38,6 +39,20 @@ async def _load(db: AsyncSession, code: str) -> PromoCode:
     return promo
 
 
+async def _deadline(db: AsyncSession, promo: PromoCode, user_id: str) -> datetime.datetime | None:
+    """Fin du délai « N heures après l'inscription » pour CE membre (None = pas de délai). Calculée ici, à partir de la date de création du compte."""
+    if not promo.claimHours:
+        return None
+    created = (await db.execute(select(User.createdAt).where(User.id == user_id))).scalar_one_or_none()
+    return created + datetime.timedelta(hours=promo.claimHours) if created else None
+
+
+async def _assert_in_window(db: AsyncSession, promo: PromoCode, user_id: str) -> None:
+    end = await _deadline(db, promo, user_id)
+    if end and utcnow() > end:
+        raise bad_request("PROMO_INVALID")  # même réponse que « inconnu » : pas d'indice sur l'existence du code
+
+
 async def _lock(db: AsyncSession, promo_id: str) -> None:
     await db.execute(text("SELECT pg_advisory_xact_lock(hashtextextended(:k, 0))"), {"k": f"promo:{promo_id}"})
 
@@ -54,6 +69,7 @@ async def evaluate(db: AsyncSession, user_id: str, raw_code: str, amount_xof: in
     promo = await _load(db, raw_code)
     if promo.kind.value != "PERCENT" or not promo.percent:
         raise bad_request("PROMO_NOT_APPLICABLE")
+    await _assert_in_window(db, promo, user_id)
     if locked:
         await _lock(db, promo.id)
     if (await db.execute(select(func.count()).select_from(Payment).where(_usage_clause(promo.id), Payment.userId == user_id))).scalar_one():
@@ -76,6 +92,7 @@ async def redeem_tokens(db: AsyncSession, user_id: str, raw_code: str) -> dict:
     promo = await _load(db, raw_code)
     if promo.kind.value != "TOKENS" or not promo.tokens:
         raise bad_request("PROMO_NOT_APPLICABLE")
+    await _assert_in_window(db, promo, user_id)
     await _lock(db, promo.id)
     ref = f"promo:{promo.id}"
     if await _token_uses(db, ref, user_id):
@@ -94,12 +111,44 @@ async def lookup(db: AsyncSession, user_id: str, raw_code: str) -> dict:
     if promo.kind.value == "PERCENT":
         await evaluate(db, user_id, raw_code, 0)
         return {"code": promo.code, "kind": "PERCENT", "percent": promo.percent or 0}
+    await _assert_in_window(db, promo, user_id)
     ref = f"promo:{promo.id}"
     if await _token_uses(db, ref, user_id):
         raise conflict("PROMO_ALREADY_USED")
     if promo.maxRedemptions is not None and await _token_uses(db, ref) >= promo.maxRedemptions:
         raise conflict("PROMO_EXHAUSTED")
     return {"code": promo.code, "kind": "TOKENS", "tokens": promo.tokens or 0}
+
+
+async def featured(db: AsyncSession, user_id: str) -> list[dict]:
+    """Codes proposés aux membres (case « Proposer aux membres » côté admin) qui valent encore quelque chose POUR CE MEMBRE :
+    actifs, dans leur période, pas épuisés, pas déjà utilisés par lui. Aucun code caché n'est révélé : seuls les codes cochés apparaissent."""
+    if not await flags.is_on(db, "promo_codes"):
+        return []
+    now = utcnow()
+    rows = (await db.execute(
+        select(PromoCode).where(PromoCode.featured.is_(True), PromoCode.active.is_(True),
+                                or_(PromoCode.startsAt.is_(None), PromoCode.startsAt <= now), or_(PromoCode.expiresAt.is_(None), PromoCode.expiresAt >= now))
+        .order_by(PromoCode.createdAt.desc()).limit(5))).scalars().all()
+    used = await usage_map(db, list(rows))
+    out = []
+    for p in rows:
+        if p.maxRedemptions is not None and used[p.id] >= p.maxRedemptions:
+            continue
+        end = await _deadline(db, p, user_id)
+        if end and end <= now:
+            continue  # délai écoulé pour ce membre
+        if p.kind.value == "PERCENT":
+            mine = (await db.execute(select(func.count()).select_from(Payment).where(_usage_clause(p.id), Payment.userId == user_id))).scalar_one()
+        else:
+            mine = await _token_uses(db, f"promo:{p.id}", user_id)
+        if mine:
+            continue
+        out.append({"code": p.code, "kind": p.kind.value, "percent": p.percent, "tokens": p.tokens,
+                    "remaining": None if p.maxRedemptions is None else p.maxRedemptions - used[p.id],
+                    "expiresAt": iso(p.expiresAt) if p.expiresAt else None,
+                    "deadline": iso(end) if end else None})
+    return out
 
 
 async def usage(db: AsyncSession, promo: PromoCode) -> int:

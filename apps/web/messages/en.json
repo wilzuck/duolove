@@ -353,7 +353,9 @@
     "perUnit": "i.e. {price} each",
     "minutesShort": "{n} min",
     "hoursShort": "{n} h",
-    "order": "Order"
+    "order": "Order",
+    "showFeatures": "Show all benefits",
+    "hideFeatures": "Hide benefits"
   },
   "about": {
     "title": "About Crushduo",
@@ -1546,6 +1548,8 @@
     "PROMO_INVALID": "This code is not valid.",
     "PROMO_ALREADY_USED": "You have already used this code.",
     "PROMO_EXHAUSTED": "This code is no longer available.",
+    "PROMO_IN_USE": "This code has already been used: deactivate it instead of deleting it.",
+    "PROMO_MAX_BELOW_USED": "The limit can’t be lower than the number of uses so far.",
     "PROMO_NOT_APPLICABLE": "This code does not apply here.",
     "PROMO_CODE_EXISTS": "This code already exists.",
     "invalid_promo": "Invalid code (3–32 letters, digits, - or _).",
@@ -1998,7 +2002,7 @@
       "MESSAGE_MANY": "{count} new messages.",
       "SPEED_REMINDER": "Reminder: your speed-dating session is about to start.",
       "SUBSCRIPTION_EXPIRING_DAYS": "Your subscription ends in {n} day(s). Extend it: the duration is added to your end date.",
-      "LIVE_EVENT": "Live Match evening: “{event}” starts in one hour. Be there!",
+      "LIVE_EVENT": "Duo Night: “{event}” starts in one hour. Be there!",
       "LIVE_EVENT_START": "“{event}” is starting: launch your search!"
     }
   },
@@ -2199,7 +2203,7 @@
       "payment": "Online payment",
       "access": "Paid access",
       "billing": "Billing",
-      "liveEvents": "Match evenings",
+      "liveEvents": "Duo Nights",
       "countries": "Launch countries",
       "services": "Services"
     },
@@ -2507,7 +2511,22 @@
       "disable": "Disable",
       "enable": "Enable",
       "empty": "No promo codes.",
-      "immutable": "A code’s type and value never change: disable it and create a new one."
+      "immutable": "A code’s type and value never change: disable it and create a new one.",
+      "featured": "Offered",
+      "featuredLabel": "Offer this code to all members",
+      "featuredHint": "The code shows up on its own on Premium and the Shop with an “Apply” button: no need to type it. It disappears once exhausted, expired or already used by the member.",
+      "feature": "Offer to members",
+      "unfeature": "Stop offering",
+      "hours": "Valid for (hours after sign-up)",
+      "hoursHint": "Optional. Example: 24 = the member has 24 h after creating their account. The deadline is set and checked by the server: it can’t be extended.",
+      "hoursBadge": "{n} h after sign-up",
+      "edit": "Edit",
+      "editTitle": "Edit code",
+      "save": "Save",
+      "saved": "Code updated.",
+      "delete": "Delete",
+      "deleted": "Code deleted.",
+      "lockedHint": "The code, type and value can’t be changed: deactivate this code and create another."
     },
     "ff": {
       "title": "Features",
@@ -3549,7 +3568,7 @@
     "menuSearch": "Go to a menu…",
     "menuSearchEmpty": "No menu matches.",
     "liveEvents": {
-      "title": "Live Match evenings",
+      "title": "Duo Nights",
       "subtitle": "Give everyone a time to be online together: searches succeed when many people are connected.",
       "new": "New evening",
       "create": "Create the evening",
@@ -3558,7 +3577,7 @@
       "cancel": "Cancel the evening",
       "empty": "No evening yet.",
       "name": "Evening name",
-      "namePh": "Cotonou Match evening",
+      "namePh": "Cotonou Duo Night",
       "when": "When",
       "rsvps": "Signed up",
       "start": "Start",
@@ -3575,6 +3594,32 @@
         "live": "Live",
         "ended": "Ended",
         "canceled": "Canceled"
+      },
+      "country": "Country",
+      "cityHint": "Indicative: shown on the announcement, it doesn’t restrict access (the evening takes place online).",
+      "descriptionPh": "A few words to make people want to join…",
+      "templates": "Message templates (click to add or remove)",
+      "tpl": {
+        "welcome": {
+          "label": "Welcome",
+          "text": "Join the evening for live meetings in a friendly atmosphere."
+        },
+        "profile": {
+          "label": "Fresh profile",
+          "text": "Update your profile and photos before the start to make a good impression."
+        },
+        "notifications": {
+          "label": "Notifications",
+          "text": "Turn on notifications to be alerted as soon as it opens."
+        },
+        "friend": {
+          "label": "Invite a friend",
+          "text": "Invite a friend: the more people online, the more matches."
+        },
+        "respect": {
+          "label": "Respect",
+          "text": "Stay respectful: a great meeting starts with a good message."
+        }
       }
     },
     "edit": "Edit",
@@ -3677,7 +3722,7 @@
             "Reminder 1 h before",
             "Evening live"
           ],
-          "name": "Live Match evenings",
+          "name": "Duo Nights",
           "note": "No switch: create or cancel each evening."
         },
         "speed_dating": {
@@ -4080,7 +4125,12 @@
     "tokensOffer": "{code}: {n} free Crush tokens.",
     "claim": "Claim my tokens",
     "claimed": "{n} tokens added to your balance.",
-    "discountBadge": "−{percent}%"
+    "discountBadge": "−{percent}%",
+    "offerPercent": "−{percent}% on your next payment",
+    "offerTokens": "{n} free Crush tokens",
+    "remaining": "{n, plural, one {1 spot left} other {# spots left}}",
+    "endsLabel": "Offer ends in",
+    "endsIn": "Offer ends in {time}"
   },
   "referral": {
     "title": "Referral",
@@ -4772,7 +4822,7 @@
     }
   },
   "liveEvents": {
-    "title": "Live Match evening",
+    "title": "Duo Night",
     "live": "Happening now",
     "when": "{date} · {start}–{end}",
     "online": "{n} people online",

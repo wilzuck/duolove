@@ -43,6 +43,12 @@ async def checkout_any(body: Checkout, u: AuthUser = Depends(verified_user), db:
     return await payments.checkout_product(db, u.id, body.code, body.promoCode)
 
 
+@router.get("/promo/featured", dependencies=[limit(60)])
+async def promo_featured(u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    """Codes que l'administration propose à tous les membres, encore utilisables par moi : affichés avec un bouton « Appliquer »."""
+    return {"items": await promo.featured(db, u.id)}
+
+
 @router.post("/promo/lookup", dependencies=[limit(10)])
 async def promo_lookup(body: PromoRedeem, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
     """Que vaut ce code pour moi ? Limité en fréquence : pas de recherche de codes par force brute."""
