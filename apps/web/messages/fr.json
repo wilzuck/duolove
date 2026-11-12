@@ -1618,7 +1618,9 @@
     "BROADCAST_NOT_FOUND": "Envoi introuvable.",
     "BROADCAST_NOT_CANCELABLE": "Seul un envoi planifié peut être annulé.",
     "ACCESS_PAYWALL": "Un abonnement est requis pour entrer.",
-    "PAYMENT_NOT_READY": "Activez d'abord un vrai paiement."
+    "PAYMENT_NOT_READY": "Activez d'abord un vrai paiement.",
+    "COUNTRY_NOT_OPEN": "Crushduo n’est pas encore ouvert dans votre pays.",
+    "NO_COUNTRY": "Gardez au moins un pays ouvert."
   },
   "app": {
     "nav": {
@@ -1994,7 +1996,9 @@
       "DATE_REMINDER": "Rappel : votre rendez-vous approche.",
       "MESSAGE_MANY": "{count} nouveaux messages.",
       "SPEED_REMINDER": "Rappel : votre session de speed dating approche.",
-      "SUBSCRIPTION_EXPIRING_DAYS": "Votre abonnement se termine dans {n} jour(s). Prolongez-le : la durée s’ajoute à votre date de fin."
+      "SUBSCRIPTION_EXPIRING_DAYS": "Votre abonnement se termine dans {n} jour(s). Prolongez-le : la durée s’ajoute à votre date de fin.",
+      "LIVE_EVENT": "Soirée Match en direct : « {event} » commence dans une heure. Soyez là !",
+      "LIVE_EVENT_START": "La soirée « {event} » commence : lancez votre recherche !"
     }
   },
   "premium": {
@@ -2193,7 +2197,9 @@
       "broadcasts": "Envois",
       "payment": "Paiement en ligne",
       "access": "Accès payant",
-      "billing": "Facturation"
+      "billing": "Facturation",
+      "liveEvents": "Soirées Match",
+      "countries": "Pays de lancement"
     },
     "storage": {
       "title": "Stockage des fichiers",
@@ -3269,7 +3275,8 @@
       "whatsapp": "WhatsApp",
       "youtube": "YouTube",
       "x": "X (Twitter)",
-      "badUrl": "Adresse refusée : elle doit être sur {domain} (vérifiez l'orthographe). Les autres réseaux ne sont pas concernés."
+      "badUrl": "Adresse refusée : elle doit être sur {domain} (vérifiez l'orthographe). Les autres réseaux ne sont pas concernés.",
+      "sameAsFr": "Reprend l’adresse française"
     },
     "reports": null,
     "evidence": {
@@ -3524,7 +3531,9 @@
       "discountMonths": "Réduction : nombre de mois",
       "discountMonthsHint": "La réduction ne porte que sur les N premiers mois payés par membre (un forfait long n'y échappe pas). 0 = sans limite.",
       "discountCap": "Réduction : plafond de bénéficiaires",
-      "discountCapHint": "Nombre maximum de membres qui en profitent (les premiers servis). 0 = sans plafond."
+      "discountCapHint": "Nombre maximum de membres qui en profitent (les premiers servis). 0 = sans plafond.",
+      "days": "jours",
+      "months": "mois"
     },
     "users": {
       "mismatchFilter": "Pays de connexion différent du pays déclaré",
@@ -3532,7 +3541,64 @@
       "countryLine": "Dernière connexion depuis : {seen} (indice seulement : VPN et voyages possibles)."
     },
     "menuSearch": "Aller à un menu…",
-    "menuSearchEmpty": "Aucun menu ne correspond."
+    "menuSearchEmpty": "Aucun menu ne correspond.",
+    "liveEvents": {
+      "title": "Soirées Match en direct",
+      "subtitle": "Donnez rendez-vous à tout le monde en même temps : les recherches aboutissent quand beaucoup de monde est en ligne.",
+      "new": "Nouvelle soirée",
+      "create": "Créer la soirée",
+      "created": "Soirée créée.",
+      "canceled": "Soirée annulée.",
+      "cancel": "Annuler la soirée",
+      "empty": "Aucune soirée pour le moment.",
+      "name": "Nom de la soirée",
+      "namePh": "Soirée Match de Cotonou",
+      "when": "Quand",
+      "rsvps": "Inscrits",
+      "start": "Début",
+      "startHint": "Heure de votre appareil.",
+      "duration": "Durée",
+      "hours": "{n} h",
+      "tz": "Fuseau affiché dans les e-mails",
+      "tzHint": "Les membres voient l’heure de leur appareil ; ce réglage ne sert qu’aux e-mails de rappel.",
+      "city": "Ville (facultatif)",
+      "description": "Description (facultatif)",
+      "footnote": "Les inscrits reçoivent un rappel par e-mail et notification une heure avant, puis une notification au début. Pour inviter tout le monde, utilisez aussi « Envois » (e-mail ou annonce).",
+      "phase": {
+        "upcoming": "À venir",
+        "live": "En cours",
+        "ended": "Terminée",
+        "canceled": "Annulée"
+      }
+    },
+    "edit": "Modifier",
+    "countries": {
+      "title": "Pays de lancement",
+      "subtitle": "Choisissez les pays où Crushduo accepte de nouvelles inscriptions.",
+      "open": "Pays ouverts",
+      "help": "Seules les nouvelles inscriptions sont limitées : les membres déjà inscrits, quel que soit leur pays, ne sont jamais bloqués.",
+      "count": "{n} pays",
+      "saved": "Pays enregistrés.",
+      "atLeastOne": "Gardez au moins un pays ouvert."
+    },
+    "bulk": {
+      "delete": "Supprimer",
+      "message": "{count} compte(s) sélectionné(s). Les comptes du personnel et le vôtre sont ignorés.",
+      "deleteWarning": "La suppression est définitive : le profil est anonymisé, les photos effacées et les abonnements annulés.",
+      "result": "{done} compte(s) traité(s), {failed} ignoré(s).",
+      "title": {
+        "suspend": "Suspendre les comptes",
+        "unsuspend": "Lever la suspension",
+        "ban": "Bannir les comptes",
+        "delete": "Supprimer les comptes"
+      },
+      "confirm": {
+        "suspend": "Suspendre",
+        "unsuspend": "Lever la suspension",
+        "ban": "Bannir",
+        "delete": "Supprimer définitivement"
+      }
+    }
   },
   "pricingFaq": {
     "renew": {
@@ -4480,5 +4546,17 @@
       "switch": "Activer le mode privé",
       "upgrade": "Voir les formules"
     }
+  },
+  "liveEvents": {
+    "title": "Soirée Match en direct",
+    "live": "En cours",
+    "when": "{date} · {start}–{end}",
+    "online": "{n} personne(s) en ligne",
+    "going": "{n} inscrit(s)",
+    "remind": "Me prévenir",
+    "reminded": "Je serai là · rappel activé",
+    "cancelRemind": "Annuler le rappel",
+    "join": "Lancer ma recherche maintenant",
+    "failed": "Impossible de mettre à jour votre inscription."
   }
 }

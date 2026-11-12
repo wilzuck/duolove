@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, BookOpen, FileText, LockKeyhole, MailCheck, Megaphone, ChartLine, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldAlert, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, BookOpen, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -29,6 +29,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/broadcasts', key: 'broadcasts', icon: Send, min: 'ADMIN' },
     { href: '/admin/newsletter', key: 'newsletter', icon: Megaphone, min: 'ADMIN' },
     { href: '/admin/emails', key: 'emails', icon: MailCheck, min: 'ADMIN' },
+    { href: '/admin/live-events', key: 'liveEvents', icon: CalendarClock, min: 'ADMIN' },
   ] },
   { id: 'revenue', items: [
     { href: '/admin/subscriptions', key: 'subscriptions', icon: CreditCard, min: 'ADMIN' },
@@ -37,6 +38,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/payments', key: 'payments', icon: Wallet, min: 'ADMIN' },
   ] },
   { id: 'settings', items: [
+    { href: '/admin/countries', key: 'countries', icon: Globe2, min: 'ADMIN' },
     { href: '/admin/engagement', key: 'engagement', icon: HeartHandshake, min: 'ADMIN' },
     { href: '/admin/speed', key: 'speed', icon: Hourglass, min: 'ADMIN' },
     { href: '/admin/blog', key: 'blog', icon: Newspaper, min: 'ADMIN' },
@@ -139,7 +141,6 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <a href="#main" className="skip-link">{t('common.skipToContent')}</a>
       <aside className="hidden flex-col gap-3 bg-[#1b1a24] p-4 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-[16.5rem]">
         <Link href="/admin" className="px-2 pt-1" aria-label="Crushduo"><Logo variant="dark" /></Link>
-        <p className="mx-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white"><ShieldAlert className="size-3.5" aria-hidden />{t('admin.title')}</p>
         {search}{nav}{account}
       </aside>
       {open && <div className="fixed inset-0 z-50 lg:hidden"><button aria-label={t('common.close')} className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} /><aside className="absolute inset-y-0 left-0 flex w-72 flex-col gap-3 bg-[#1b1a24] p-4 shadow-pop"><div className="flex items-center justify-between px-2"><Logo variant="dark" /><button aria-label={t('common.close')} className="rounded-full p-2 text-white" onClick={() => setOpen(false)}><X className="size-5" /></button></div>{search}{nav}{account}</aside></div>}

@@ -296,3 +296,29 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 ## Admin : recherche dans le menu et courbes (terminé, non testé dans le navigateur)
 - Zone « Aller à un menu… » en haut du menu (ordinateur et mobile) : filtre sans accents ni majuscules, Entrée ouvre le premier résultat, Échap efface, Ctrl/Cmd + K donne le focus ; seuls les menus du rôle sont proposés.
 - Graphes de l'aperçu et des statistiques : courbe lissée avec dégradé, point et infobulle au survol, à la place des barres ; mini-courbes des indicateurs lissées aussi. Typecheck, lint et tests unitaires passés ; rendu non vérifié visuellement.
+
+## Super Likes toujours en violet (terminé, non commité, non vérifié visuellement)
+- Tout ce qui touche aux Super Likes passe en violet (`violet-700`, charte : un seul violet) : icône et pastille de la barre du haut (+ bouton « Acheter » de sa fenêtre), bouton d'envoi du Like quand « Super Like » est coché, étoile des Super Likes reçus, bouton sur les valeurs d'un profil, pack Super Likes de la boutique et de la page Tarifs (chiffre, prix, bouton, icône), animation du bouton (particules et halo). Auparavant ces éléments étaient bleu ciel ou roses.
+
+## Soirées Match en direct (terminé, non commité, non vu dans le navigateur)
+- **Admin › Soirées Match** : création (nom, début, durée, fuseau affiché dans les e-mails, ville facultative, description), liste avec nombre d'inscrits et état (à venir, en cours, terminée, annulée), annulation. Migration `0028_live_events` (tables `LiveEvent`, `LiveEventRsvp`, type de notification `LIVE_EVENT`).
+- **Membre** : bannière en haut de la page Match (date lue dans le fuseau de l'appareil, inscrits ou personnes en ligne, bouton « Me prévenir »). Les inscrits reçoivent **un e-mail et une notification une heure avant**, puis **une notification au début** ; chaque étape part une seule fois (réclamée par un UPDATE conditionnel, même avec plusieurs répliques). Boucle de balayage toutes les 60 s.
+- Ne change pas le fonctionnement du Match : elle donne rendez-vous. Pour inviter tout le monde, utiliser « Envois ». 6 tests backend ; **aucun e-mail réel envoyé, rendu de la bannière non vérifié visuellement**.
+
+## Pays de lancement (terminé, non commité)
+- **Admin › Pays de lancement** : cases à cocher (bloc « Modifier »). Par défaut : Bénin, Côte d'Ivoire, Togo, Sénégal, Niger, Burkina Faso. Le **Niger a été ajouté** à la liste des pays (villes et positions incluses).
+- Effet : seules les **nouvelles inscriptions** (e-mail et Google) sont limitées, côté serveur (`COUNTRY_NOT_OPEN`, 403) ; le formulaire d'inscription ne propose que les pays ouverts. **Les membres déjà inscrits ne sont jamais bloqués ni masqués**, la découverte et le Match ne filtrent pas par pays ouvert. Les autres formulaires (profil, critères) listent encore tous les pays.
+- 4 tests backend.
+
+## Pages d'administration en lecture seule + « Modifier » (terminé, non commité)
+- Composant partagé `SettingCard` (pastilles de valeurs, fenêtre d'édition) appliqué à **Accès payant** et **Réseaux sociaux** (une carte par réseau). Les autres pages de réglages (paiement, stockage, facturation, etc.) ne sont **pas** encore converties.
+
+## Actions groupées sur les comptes (terminé, non commité)
+- **Admin › Utilisateurs** : cases à cocher, puis suspendre, lever la suspension, bannir, **supprimer** (administrateurs seulement). Motif obligatoire demandé dans une fenêtre, durée pour la suspension. Chaque compte est traité à part (`POST /api/admin/users/bulk`, 100 comptes max) : le personnel, soi-même et les introuvables sont ignorés et comptés. La suppression anonymise le compte comme le fait le membre lui-même (code extrait dans `core/accountsvc.py`). 4 tests backend ; interface non vue dans le navigateur.
+
+## Blog : 10 articles prêts à publier (terminé, non commité, migration non appliquée en production)
+- 10 articles originaux en français (1 390 à 1 910 mots chacun) dans `backend/app/assets/blog/*.md`. La migration `0029_blog_articles` **supprime tous les articles existants** puis insère ces 10 en **brouillon, sans image**, avec la description d'image déjà remplie. Pour publier : Admin › Blog › ouvrir l'article › choisir l'image › « Publié ».
+- **Français seulement** : la version anglaise du blog reste vide. Les images des anciens articles restent dans le stockage (orphelines). Textes relus pour les fonctions citées, pas par un juriste ni un relecteur humain.
+
+## Menu admin
+- Le badge « Administration » du menu latéral est retiré (déjà dans l'en-tête).

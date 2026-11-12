@@ -4,6 +4,7 @@ import { LockKeyhole, Unlock } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Alert, Badge, Button, Card, Dialog, Field, Input, Skeleton, Switch } from '@duomatch/ui';
+import { SettingCard, Tile } from '@/components/admin/SettingCard';
 import { useApiError } from '@/hooks/useApiError';
 import { api, put } from '@/lib/api';
 import { formatDate } from '@/lib/format';
@@ -29,7 +30,6 @@ export default function AdminAccess() {
   const discountMonths = num(edit.discountMonths, v?.verifiedDiscountMonths ?? 3, 0, 24);
   const discountCap = num(edit.discountCap, v?.verifiedDiscountCap ?? 0, 0, 1_000_000);
   const threshold = num(edit.threshold, v?.womenThreshold ?? 200, 1, 1_000_000);
-  const dirty = Object.keys(edit).length > 0;
   const save = useMutation({
     mutationFn: (enabled: boolean) => put<AccessView>('/admin/access', { enabled, graceDays, trialDays, verifiedDiscountPercent: discount, verifiedDiscountMonths: discountMonths, verifiedDiscountCap: discountCap, womenThreshold: threshold }),
     onSuccess: (r) => { toast('success', t(r.enabled ? 'admin.access.nowOn' : 'admin.access.nowOff')); setConfirm(false); setEdit({}); void qc.invalidateQueries({ queryKey: ['admin', 'access'] }); void qc.invalidateQueries({ queryKey: ['me'] }); },
@@ -43,30 +43,39 @@ export default function AdminAccess() {
       {view.isLoading && <Skeleton className="h-64" />}
       {v && (
         <>
-          <Card className="space-y-4 p-5">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="grid size-10 place-items-center rounded-2xl bg-soft text-brand-ink">{v.enabled ? <LockKeyhole className="size-5" aria-hidden /> : <Unlock className="size-5" aria-hidden />}</span>
-              <div className="min-w-0 flex-1"><p className="font-semibold">{t(v.enabled ? 'admin.access.on' : 'admin.access.off')}</p>
-                <p className="text-sm text-muted">{v.enabled && v.activatedAt ? t('admin.access.since', { date: fmt(v.activatedAt) }) : t('admin.access.offText')}</p></div>
-              <Badge tone={v.enabled ? 'success' : 'neutral'}>{t(v.enabled ? 'admin.access.badgeOn' : 'admin.access.badgeOff')}</Badge>
-            </div>
-            {!v.ready && <Alert variant="text">{t(v.notReadyReason === 'PAYMENTS_OFF' ? 'admin.access.notReadyFlag' : 'admin.access.notReadyProvider')}</Alert>}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Field label={t('admin.access.trial')} hint={t('admin.access.trialHint')}>{(p) => <Input {...p} type="number" min={0} max={90} value={edit.trial ?? String(v.trialDays)} onChange={(e) => setEdit({ ...edit, trial: e.target.value })} />}</Field>
-              <Field label={t('admin.access.grace')} hint={t('admin.access.graceHint')}>{(p) => <Input {...p} type="number" min={0} max={365} value={edit.grace ?? String(v.graceDays)} onChange={(e) => setEdit({ ...edit, grace: e.target.value })} />}</Field>
-              <Field label={t('admin.access.discount')} hint={t('admin.access.discountHint')}>{(p) => <Input {...p} type="number" min={0} max={90} value={edit.discount ?? String(v.verifiedDiscountPercent)} onChange={(e) => setEdit({ ...edit, discount: e.target.value })} />}</Field>
-              <Field label={t('admin.access.discountMonths')} hint={t('admin.access.discountMonthsHint')}>{(p) => <Input {...p} type="number" min={0} max={24} value={edit.discountMonths ?? String(v.verifiedDiscountMonths)} onChange={(e) => setEdit({ ...edit, discountMonths: e.target.value })} />}</Field>
-              <Field label={t('admin.access.discountCap')} hint={t('admin.access.discountCapHint')}>{(p) => <Input {...p} type="number" min={0} value={edit.discountCap ?? String(v.verifiedDiscountCap)} onChange={(e) => setEdit({ ...edit, discountCap: e.target.value })} />}</Field>
-              <Field label={t('admin.access.threshold')} hint={t('admin.access.thresholdHint')}>{(p) => <Input {...p} type="number" min={1} value={edit.threshold ?? String(v.womenThreshold)} onChange={(e) => setEdit({ ...edit, threshold: e.target.value })} />}</Field>
-            </div>
-            <div className="flex flex-wrap items-center gap-4">
-              <label className="flex items-center gap-3 text-sm font-semibold">{t('admin.access.switch')}
-                <Switch checked={v.enabled} disabled={save.isPending || (!v.enabled && !v.ready)} label={t('admin.access.switch')} onChange={(on) => (on ? setConfirm(true) : save.mutate(false))} />
-              </label>
-              {dirty && <Button size="sm" variant="outline" loading={save.isPending} onClick={() => save.mutate(v.enabled)}>{t('admin.access.saveSettings')}</Button>}
-            </div>
-            {v.enabled && v.graceEndsAt && <p className="text-sm text-muted">{t('admin.access.graceEnds', { date: fmt(v.graceEndsAt) })}</p>}
-          </Card>
+          <SettingCard
+            title={t(v.enabled ? 'admin.access.on' : 'admin.access.off')} icon={v.enabled ? LockKeyhole : Unlock}
+            help={v.enabled && v.activatedAt ? t('admin.access.since', { date: fmt(v.activatedAt) }) : t('admin.access.offText')}
+            badge={<Badge tone={v.enabled ? 'success' : 'neutral'}>{t(v.enabled ? 'admin.access.badgeOn' : 'admin.access.badgeOff')}</Badge>}
+            onOpen={() => setEdit({})} onSave={() => save.mutateAsync(v.enabled)} saving={save.isPending} wide
+            view={(
+              <div className="space-y-4">
+                {!v.ready && <Alert variant="text">{t(v.notReadyReason === 'PAYMENTS_OFF' ? 'admin.access.notReadyFlag' : 'admin.access.notReadyProvider')}</Alert>}
+                <div className="flex flex-wrap gap-3">
+                  <Tile label={t('admin.access.trial')} value={v.trialDays} unit={t('admin.access.days')} />
+                  <Tile label={t('admin.access.grace')} value={v.graceDays} unit={t('admin.access.days')} />
+                  <Tile label={t('admin.access.discount')} value={v.verifiedDiscountPercent} unit="%" />
+                  <Tile label={t('admin.access.discountMonths')} value={v.verifiedDiscountMonths} unit={t('admin.access.months')} />
+                  <Tile label={t('admin.access.discountCap')} value={v.verifiedDiscountCap || '∞'} />
+                  <Tile label={t('admin.access.threshold')} value={v.womenThreshold} />
+                </div>
+                <label className="flex items-center gap-3 text-sm font-semibold">{t('admin.access.switch')}
+                  <Switch checked={v.enabled} disabled={save.isPending || (!v.enabled && !v.ready)} label={t('admin.access.switch')} onChange={(on) => (on ? setConfirm(true) : save.mutate(false))} />
+                </label>
+                {v.enabled && v.graceEndsAt && <p className="text-sm text-muted">{t('admin.access.graceEnds', { date: fmt(v.graceEndsAt) })}</p>}
+              </div>
+            )}
+            editor={(
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label={t('admin.access.trial')} hint={t('admin.access.trialHint')}>{(p) => <Input {...p} type="number" min={0} max={90} value={edit.trial ?? String(v.trialDays)} onChange={(e) => setEdit({ ...edit, trial: e.target.value })} />}</Field>
+                <Field label={t('admin.access.grace')} hint={t('admin.access.graceHint')}>{(p) => <Input {...p} type="number" min={0} max={365} value={edit.grace ?? String(v.graceDays)} onChange={(e) => setEdit({ ...edit, grace: e.target.value })} />}</Field>
+                <Field label={t('admin.access.discount')} hint={t('admin.access.discountHint')}>{(p) => <Input {...p} type="number" min={0} max={90} value={edit.discount ?? String(v.verifiedDiscountPercent)} onChange={(e) => setEdit({ ...edit, discount: e.target.value })} />}</Field>
+                <Field label={t('admin.access.discountMonths')} hint={t('admin.access.discountMonthsHint')}>{(p) => <Input {...p} type="number" min={0} max={24} value={edit.discountMonths ?? String(v.verifiedDiscountMonths)} onChange={(e) => setEdit({ ...edit, discountMonths: e.target.value })} />}</Field>
+                <Field label={t('admin.access.discountCap')} hint={t('admin.access.discountCapHint')}>{(p) => <Input {...p} type="number" min={0} value={edit.discountCap ?? String(v.verifiedDiscountCap)} onChange={(e) => setEdit({ ...edit, discountCap: e.target.value })} />}</Field>
+                <Field label={t('admin.access.threshold')} hint={t('admin.access.thresholdHint')}>{(p) => <Input {...p} type="number" min={1} value={edit.threshold ?? String(v.womenThreshold)} onChange={(e) => setEdit({ ...edit, threshold: e.target.value })} />}</Field>
+              </div>
+            )}
+          />
 
           <Card className="space-y-3 p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2"><h3 className="font-semibold">{t('admin.access.womenTitle')}</h3>
