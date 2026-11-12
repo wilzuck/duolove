@@ -3518,7 +3518,11 @@
       "womenTitle": "Femmes actives et vérifiées",
       "womenText": "Profil complet, vérifié, connectée depuis 14 jours. Villes les mieux fournies :",
       "womenReached": "Seuil atteint : tu peux décider de passer à l'accès payant.",
-      "womenNotified": "Alerte envoyée le {date}."
+      "womenNotified": "Alerte envoyée le {date}.",
+      "discountMonths": "Réduction : nombre de mois",
+      "discountMonthsHint": "La réduction ne porte que sur les N premiers mois payés par membre (un forfait long n'y échappe pas). 0 = sans limite.",
+      "discountCap": "Réduction : plafond de bénéficiaires",
+      "discountCapHint": "Nombre maximum de membres qui en profitent (les premiers servis). 0 = sans plafond."
     }
   },
   "pricingFaq": {
@@ -4435,6 +4439,9 @@
     "discountTitle": "−{percent} % avec un profil vérifié",
     "discountOk": "Réduction appliquée à ton paiement : profil vérifié et photos validées.",
     "discountTodo": "Fais vérifier ton profil (selfie) et fais valider au moins {n} photos pour obtenir cette réduction.",
-    "discountCta": "Compléter mon profil"
+    "discountCta": "Compléter mon profil",
+    "discountTitleMonths": "−{percent} % sur tes {n} premiers mois avec un profil vérifié",
+    "discountSpent": "Tu as déjà profité de cette réduction.",
+    "discountCap": "L'offre est complète : tous les profils vérifiés ont été servis."
   }
 }

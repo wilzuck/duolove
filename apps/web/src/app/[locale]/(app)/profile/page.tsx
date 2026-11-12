@@ -1,4 +1,5 @@
 'use client';
+import { VerifiedDiscountCard } from '@/components/app/VerifiedDiscountCard';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { BadgeCheck, Camera, Crown, Rocket } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -52,6 +53,7 @@ export default function ProfilePage() {
       <SectionTabs />
       <div className="flex items-center justify-between"><h1 className="text-2xl font-extrabold">{t('app.nav.profile')}</h1><Link href={`/profile/${p.id}`} className="hidden" aria-hidden /></div>
 
+      <VerifiedDiscountCard compact />
       <Card className={me.entitlement.plan === 'FREE' ? 'flex flex-wrap items-center justify-between gap-4 border-brand/30 bg-linear-to-br from-soft to-card p-5' : 'flex flex-wrap items-center justify-between gap-4 p-5'}>
         <div className="flex items-center gap-3"><span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-brand-strong to-brand-strong-2 text-white"><Crown className="size-5" aria-hidden /></span>
           <div><h2 className="font-bold">{t.rich('profile.planTitle', { plan: t(`plans.${me.entitlement.plan}.name`), p: (c) => <span className={me.entitlement.plan === 'VIP' ? 'text-gold-ink' : me.entitlement.plan === 'PREMIUM' ? 'text-brand-ink' : 'text-muted'}>{c}</span> })}</h2><p className="text-sm text-muted">{me.entitlement.plan === 'FREE' ? t('profile.planFreeText') : t('profile.planPaidText')}</p></div></div>

@@ -15,13 +15,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core import entitlements, flags, mail, payment_config
 from app.core.config import get_settings
 from app.core.ids import utcnow
-from app.models.models import Profile, ProfilePhoto, SystemSetting, User
+from app.models.models import Payment, Profile, ProfilePhoto, SystemSetting, User
 
 KEY = "access.config"
 TTL = 30.0
 DEFAULT_GRACE_DAYS = 30
 DEFAULT_TRIAL_DAYS = 14
 DEFAULT_WOMEN_THRESHOLD = 200
+DEFAULT_DISCOUNT_MONTHS = 3
 MIN_APPROVED_PHOTOS = 2  # photos validées par la modération pour la réduction « profil vérifié »
 # Chemins qui restent ouverts à un membre bloqué : compte, profil à soi, paiement, notifications, parrainage, pages publiques.
 ALLOWED_PREFIXES = ("/api/auth", "/api/users", "/api/profiles/me", "/api/subscriptions", "/api/checkout", "/api/payments", "/api/plans", "/api/access",
@@ -35,6 +36,8 @@ class Config:
     grace_days: int = DEFAULT_GRACE_DAYS          # anciens membres (inscrits avant l'activation)
     trial_days: int = DEFAULT_TRIAL_DAYS          # essai gratuit de chaque nouvel inscrit, à partir de son inscription
     verified_discount_percent: int = 0            # réduction à l'abonnement pour un profil vérifié avec photos validées (0 = aucune)
+    verified_discount_months: int = DEFAULT_DISCOUNT_MONTHS  # la réduction porte sur les N premiers mois payés (0 = sans limite)
+    verified_discount_cap: int = 0                # nombre maximum de membres bénéficiaires (0 = sans plafond)
     women_threshold: int = DEFAULT_WOMEN_THRESHOLD  # nombre de femmes actives et vérifiées qui déclenche l'alerte « on peut passer au payant »
     threshold_notified_at: datetime.datetime | None = None
 
@@ -56,7 +59,8 @@ def _parse(v: dict | None) -> Config:
     at, notified = v.get("activatedAt"), v.get("thresholdNotifiedAt")
     return Config(enabled=bool(v.get("enabled")), activated_at=datetime.datetime.fromisoformat(at) if at else None,
                   grace_days=int(v.get("graceDays", DEFAULT_GRACE_DAYS)), trial_days=int(v.get("trialDays", DEFAULT_TRIAL_DAYS)),
-                  verified_discount_percent=int(v.get("verifiedDiscountPercent", 0)), women_threshold=int(v.get("womenThreshold", DEFAULT_WOMEN_THRESHOLD)),
+                  verified_discount_percent=int(v.get("verifiedDiscountPercent", 0)), verified_discount_months=int(v.get("verifiedDiscountMonths", DEFAULT_DISCOUNT_MONTHS)),
+                  verified_discount_cap=int(v.get("verifiedDiscountCap", 0)), women_threshold=int(v.get("womenThreshold", DEFAULT_WOMEN_THRESHOLD)),
                   threshold_notified_at=datetime.datetime.fromisoformat(notified) if notified else None)
 
 
@@ -109,20 +113,37 @@ async def status(db: AsyncSession, user: User, cfg: Config | None = None) -> dic
     return out
 
 
+def _verified_payments(*extra):
+    """Paiements d'abonnement réussis qui ont bénéficié de la réduction « profil vérifiée » (remise sans code promo)."""
+    return (Payment.kind == "SUBSCRIPTION", Payment.status == "SUCCEEDED", Payment.discountXof > 0, Payment.promoCodeId.is_(None), *extra)
+
+
 async def verified_discount(db: AsyncSession, user_id: str, cfg: Config | None = None) -> dict:
     """Réduction « profil vérifié » : badge obtenu (selfie validé) ET au moins 2 photos approuvées par la modération. Ouverte à tous, sans condition de sexe.
-    Renvoie ce qu'il manque pour l'obtenir, afin que l'écran puisse le dire au membre."""
+    Limites réglables : N premiers mois payés par membre, et nombre maximum de bénéficiaires. Renvoie aussi ce qu'il manque, pour que l'écran le dise."""
     cfg = cfg or await config()
-    pct = cfg.verified_discount_percent
+    pct, limit_months = cfg.verified_discount_percent, cfg.verified_discount_months
     p = (await db.execute(select(Profile).where(Profile.userId == user_id))).scalar_one_or_none()
     photos = (await db.execute(select(func.count()).select_from(ProfilePhoto).where(ProfilePhoto.profileId == p.id, ProfilePhoto.moderationStatus == "APPROVED"))).scalar_one() if p else 0
     verified = bool(p and p.verified)
-    return {"percent": pct, "eligible": pct > 0 and verified and photos >= MIN_APPROVED_PHOTOS, "verified": verified, "approvedPhotos": photos, "photosNeeded": MIN_APPROVED_PHOTOS}
+    used = int((await db.execute(select(func.coalesce(func.sum(Payment.months), 0)).where(Payment.userId == user_id, *_verified_payments()))).scalar_one())
+    remaining = None if limit_months <= 0 else max(0, limit_months - used)
+    cap_reached = False
+    if pct > 0 and cfg.verified_discount_cap > 0 and used == 0:  # un bénéficiaire existant garde son droit : le plafond ne vise que les nouveaux
+        takers = (await db.execute(select(func.count(func.distinct(Payment.userId))).where(*_verified_payments()))).scalar_one()
+        cap_reached = takers >= cfg.verified_discount_cap
+    eligible = pct > 0 and verified and photos >= MIN_APPROVED_PHOTOS and remaining != 0 and not cap_reached
+    return {"percent": pct, "eligible": eligible, "verified": verified, "approvedPhotos": photos, "photosNeeded": MIN_APPROVED_PHOTOS,
+            "months": limit_months, "remainingMonths": remaining, "capReached": cap_reached}
 
 
-async def discount_xof(db: AsyncSession, user_id: str, amount_xof: int) -> int:
+async def discount_xof(db: AsyncSession, user_id: str, amount_xof: int, months: int = 1) -> int:
+    """Montant de la réduction sur un achat de `months` mois : seule la part des mois encore couverts par la réduction est remisée (un forfait de 12 mois ne contourne pas la limite)."""
     d = await verified_discount(db, user_id)
-    return amount_xof * d["percent"] // 100 if d["eligible"] else 0
+    if not d["eligible"]:
+        return 0
+    covered = months if d["remainingMonths"] is None else min(months, d["remainingMonths"])
+    return round(amount_xof * covered / max(1, months) * d["percent"] / 100)
 
 
 async def women_progress(db: AsyncSession, cfg: Config | None = None) -> dict:

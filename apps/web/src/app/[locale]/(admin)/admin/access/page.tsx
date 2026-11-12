@@ -9,7 +9,7 @@ import { api, put } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { useUi } from '@/lib/store';
 
-interface AccessView { enabled: boolean; activatedAt: string | null; graceDays: number; trialDays: number; verifiedDiscountPercent: number; womenThreshold: number; women: { count: number; threshold: number; reached: boolean; notifiedAt: string | null; cities: { city: string | null; country: string | null; count: number }[] }; graceEndsAt: string | null; ready: boolean; notReadyReason: string | null; counts: { members: number; paying: number; free: number } }
+interface AccessView { enabled: boolean; activatedAt: string | null; graceDays: number; trialDays: number; verifiedDiscountPercent: number; verifiedDiscountMonths: number; verifiedDiscountCap: number; womenThreshold: number; women: { count: number; threshold: number; reached: boolean; notifiedAt: string | null; cities: { city: string | null; country: string | null; count: number }[] }; graceEndsAt: string | null; ready: boolean; notReadyReason: string | null; counts: { members: number; paying: number; free: number } }
 
 /** Accès payant obligatoire (« modèle B ») : un interrupteur réversible. Réservé au super administrateur. */
 export default function AdminAccess() {
@@ -20,16 +20,18 @@ export default function AdminAccess() {
   const toast = useUi((s) => s.toast);
   const view = useQuery({ queryKey: ['admin', 'access'], queryFn: () => api<AccessView>('/admin/access') });
   const v = view.data;
-  const [edit, setEdit] = useState<{ grace?: string; trial?: string; discount?: string; threshold?: string }>({});
+  const [edit, setEdit] = useState<{ grace?: string; trial?: string; discount?: string; discountMonths?: string; discountCap?: string; threshold?: string }>({});
   const [confirm, setConfirm] = useState(false);
   const num = (x: string | undefined, def: number, min: number, max: number) => (x === undefined ? def : Math.min(max, Math.max(min, Math.round(Number(x)) || 0)));
   const graceDays = num(edit.grace, v?.graceDays ?? 30, 0, 365);
   const trialDays = num(edit.trial, v?.trialDays ?? 14, 0, 90);
   const discount = num(edit.discount, v?.verifiedDiscountPercent ?? 0, 0, 90);
+  const discountMonths = num(edit.discountMonths, v?.verifiedDiscountMonths ?? 3, 0, 24);
+  const discountCap = num(edit.discountCap, v?.verifiedDiscountCap ?? 0, 0, 1_000_000);
   const threshold = num(edit.threshold, v?.womenThreshold ?? 200, 1, 1_000_000);
   const dirty = Object.keys(edit).length > 0;
   const save = useMutation({
-    mutationFn: (enabled: boolean) => put<AccessView>('/admin/access', { enabled, graceDays, trialDays, verifiedDiscountPercent: discount, womenThreshold: threshold }),
+    mutationFn: (enabled: boolean) => put<AccessView>('/admin/access', { enabled, graceDays, trialDays, verifiedDiscountPercent: discount, verifiedDiscountMonths: discountMonths, verifiedDiscountCap: discountCap, womenThreshold: threshold }),
     onSuccess: (r) => { toast('success', t(r.enabled ? 'admin.access.nowOn' : 'admin.access.nowOff')); setConfirm(false); setEdit({}); void qc.invalidateQueries({ queryKey: ['admin', 'access'] }); void qc.invalidateQueries({ queryKey: ['me'] }); },
     onError: (e) => { toast('error', err(e)); setConfirm(false); },
   });
@@ -53,6 +55,8 @@ export default function AdminAccess() {
               <Field label={t('admin.access.trial')} hint={t('admin.access.trialHint')}>{(p) => <Input {...p} type="number" min={0} max={90} value={edit.trial ?? String(v.trialDays)} onChange={(e) => setEdit({ ...edit, trial: e.target.value })} />}</Field>
               <Field label={t('admin.access.grace')} hint={t('admin.access.graceHint')}>{(p) => <Input {...p} type="number" min={0} max={365} value={edit.grace ?? String(v.graceDays)} onChange={(e) => setEdit({ ...edit, grace: e.target.value })} />}</Field>
               <Field label={t('admin.access.discount')} hint={t('admin.access.discountHint')}>{(p) => <Input {...p} type="number" min={0} max={90} value={edit.discount ?? String(v.verifiedDiscountPercent)} onChange={(e) => setEdit({ ...edit, discount: e.target.value })} />}</Field>
+              <Field label={t('admin.access.discountMonths')} hint={t('admin.access.discountMonthsHint')}>{(p) => <Input {...p} type="number" min={0} max={24} value={edit.discountMonths ?? String(v.verifiedDiscountMonths)} onChange={(e) => setEdit({ ...edit, discountMonths: e.target.value })} />}</Field>
+              <Field label={t('admin.access.discountCap')} hint={t('admin.access.discountCapHint')}>{(p) => <Input {...p} type="number" min={0} value={edit.discountCap ?? String(v.verifiedDiscountCap)} onChange={(e) => setEdit({ ...edit, discountCap: e.target.value })} />}</Field>
               <Field label={t('admin.access.threshold')} hint={t('admin.access.thresholdHint')}>{(p) => <Input {...p} type="number" min={1} value={edit.threshold ?? String(v.womenThreshold)} onChange={(e) => setEdit({ ...edit, threshold: e.target.value })} />}</Field>
             </div>
             <div className="flex flex-wrap items-center gap-4">

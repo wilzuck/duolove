@@ -93,7 +93,7 @@ async def checkout(db: AsyncSession, user_id: str, code: str, months: int = 1, p
     amount = q.finalXof if q else price["totalXof"]
     promo_id, discount = (q.promoId, q.discountXof) if q else (None, 0)
     # Réduction « profil vérifié » (administration) : non cumulée avec un code promo, c'est la plus avantageuse des deux qui s'applique.
-    verified = await access.discount_xof(db, user_id, price["totalXof"])
+    verified = await access.discount_xof(db, user_id, price["totalXof"], months)
     if verified > discount:
         amount, promo_id, discount = price["totalXof"] - verified, None, verified
     sub = Subscription(userId=user_id, planId=plan_row.id, provider=prov.name, months=months)

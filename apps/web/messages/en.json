@@ -3518,7 +3518,11 @@
       "womenTitle": "Active verified women",
       "womenText": "Complete, verified profile, online in the last 14 days. Best-stocked cities:",
       "womenReached": "Threshold reached: you can decide to switch to paid access.",
-      "womenNotified": "Alert sent on {date}."
+      "womenNotified": "Alert sent on {date}.",
+      "discountMonths": "Discount: number of months",
+      "discountMonthsHint": "The discount only covers each member's first N paid months (a long plan does not escape it). 0 = unlimited.",
+      "discountCap": "Discount: beneficiary cap",
+      "discountCapHint": "Maximum number of members who get it (first come, first served). 0 = no cap."
     }
   },
   "pricingFaq": {
@@ -4435,6 +4439,9 @@
     "discountTitle": "{percent}% off with a verified profile",
     "discountOk": "Discount applied at checkout: verified profile and approved photos.",
     "discountTodo": "Get your profile verified (selfie) and at least {n} photos approved to unlock this discount.",
-    "discountCta": "Complete my profile"
+    "discountCta": "Complete my profile",
+    "discountTitleMonths": "{percent}% off your first {n} months with a verified profile",
+    "discountSpent": "You have already used this discount.",
+    "discountCap": "The offer is full: all verified-profile spots have been taken."
   }
 }

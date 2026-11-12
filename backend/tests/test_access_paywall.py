@@ -161,3 +161,54 @@ async def test_seuil_de_femmes_alerte_une_seule_fois(app, db, monkeypatch):
     assert await access.check_threshold() is True and len(sent) >= 1
     n = len(sent)
     assert await access.check_threshold() is False and len(sent) == n  # une seule alerte
+
+
+async def _verified(app, db):
+    from sqlalchemy import select
+
+    from app.models.models import Profile, ProfilePhoto
+
+    u = await member(app, db)
+    async with session_maker()() as s:
+        prof = (await s.execute(select(Profile).where(Profile.userId == u.id))).scalar_one()
+        prof.verified = True
+        for i in range(2):
+            s.add(ProfilePhoto(profileId=prof.id, key=f"photos/v-{u.id}-{i}.webp", position=90 + i, width=800, height=1000, moderationStatus="APPROVED"))
+        await s.commit()
+    return u
+
+
+async def _pay(u, months=1):
+    co = await u.agent.post("/api/checkout", json={"type": "subscription", "plan": "PREMIUM", "months": months})
+    assert co.status_code == 201, co.text
+    await u.agent.post(f"/api/payments/mock/{co.json()['providerRef']}/complete", json={"outcome": "success"})
+    return co.json()
+
+
+async def test_reduction_limitee_aux_premiers_mois_payes(app, db):
+    """Limite de 1 mois : un forfait de 3 mois n'est remisé que sur 1 mois ; ensuite plus de réduction (un forfait long ne contourne pas la limite)."""
+    ad, u = await super_admin(app, db), await _verified(app, db)
+    await ad.agent.put("/api/admin/access", json={"enabled": False, "verifiedDiscountPercent": 50, "verifiedDiscountMonths": 1})
+    full3 = (await (await member(app, db)).agent.post("/api/checkout", json={"type": "subscription", "plan": "PREMIUM", "months": 3})).json()["amountXof"]
+    co = await _pay(u, 3)
+    assert co["discountXof"] == round(full3 / 3 * 0.5) and co["amountXof"] == full3 - co["discountXof"]
+    d = (await u.agent.get("/api/access/discount")).json()
+    assert d["eligible"] is False and d["remainingMonths"] == 0 and d["months"] == 1
+    again = (await u.agent.post("/api/checkout", json={"type": "subscription", "plan": "PREMIUM", "months": 1})).json()
+    assert again["discountXof"] == 0  # plus de réduction
+
+
+async def test_reduction_plafonnee_au_nombre_de_beneficiaires(app, db):
+    from sqlalchemy import func, select
+
+    from app.models.models import Payment
+
+    ad, first, second = await super_admin(app, db), await _verified(app, db), await _verified(app, db)
+    async with session_maker()() as s:  # la base de test garde les bénéficiaires des exécutions précédentes : le plafond se règle sur leur nombre
+        takers = (await s.execute(select(func.count(func.distinct(Payment.userId))).where(*access._verified_payments()))).scalar_one()
+    await ad.agent.put("/api/admin/access", json={"enabled": False, "verifiedDiscountPercent": 30, "verifiedDiscountMonths": 0, "verifiedDiscountCap": takers + 1})
+    assert (await first.agent.get("/api/access/discount")).json()["eligible"] is True
+    await _pay(first)  # un bénéficiaire de plus : le plafond est atteint
+    d2 = (await second.agent.get("/api/access/discount")).json()
+    assert d2["capReached"] is True and d2["eligible"] is False
+    assert (await first.agent.get("/api/access/discount")).json()["eligible"] is True  # un bénéficiaire garde son droit

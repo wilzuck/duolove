@@ -23,6 +23,8 @@ class AccessIn(BaseModel):
     graceDays: int = Field(access.DEFAULT_GRACE_DAYS, ge=0, le=365)
     trialDays: int = Field(access.DEFAULT_TRIAL_DAYS, ge=0, le=90)
     verifiedDiscountPercent: int = Field(0, ge=0, le=90)
+    verifiedDiscountMonths: int = Field(access.DEFAULT_DISCOUNT_MONTHS, ge=0, le=24)
+    verifiedDiscountCap: int = Field(0, ge=0, le=1_000_000)
     womenThreshold: int = Field(access.DEFAULT_WOMEN_THRESHOLD, ge=1, le=1_000_000)
 
 
@@ -33,7 +35,7 @@ async def _view(db: AsyncSession) -> dict:
     members = select(func.count()).select_from(User).where(User.role == "USER", User.status != "DELETED")
     paying = select(func.count()).select_from(Entitlement).join(User, User.id == Entitlement.userId).where(User.role == "USER", User.status != "DELETED", Entitlement.plan != "FREE", Entitlement.validUntil > now)
     total, paid = (await db.execute(members)).scalar_one(), (await db.execute(paying)).scalar_one()
-    return {"enabled": cfg.enabled, "activatedAt": cfg.activated_at, "graceDays": cfg.grace_days, "trialDays": cfg.trial_days, "verifiedDiscountPercent": cfg.verified_discount_percent,
+    return {"enabled": cfg.enabled, "activatedAt": cfg.activated_at, "graceDays": cfg.grace_days, "trialDays": cfg.trial_days, "verifiedDiscountPercent": cfg.verified_discount_percent, "verifiedDiscountMonths": cfg.verified_discount_months, "verifiedDiscountCap": cfg.verified_discount_cap,
             "womenThreshold": cfg.women_threshold, "women": await access.women_progress(db, cfg), "ready": ready, "notReadyReason": why,
             "graceEndsAt": cfg.activated_at + datetime.timedelta(days=cfg.grace_days) if cfg.enabled and cfg.activated_at else None,
             "counts": {"members": total, "paying": paid, "free": max(total - paid, 0)}}
@@ -56,7 +58,8 @@ async def save(body: AccessIn, a: AuthUser = SUP, db: AsyncSession = Depends(get
     # Le seuil change : l'alerte peut se redéclencher ; sinon on garde la date de la dernière alerte.
     notified = before.threshold_notified_at if body.womenThreshold == before.women_threshold else None
     value = {"enabled": body.enabled, "activatedAt": activated.isoformat() if activated else None, "graceDays": body.graceDays, "trialDays": body.trialDays,
-             "verifiedDiscountPercent": body.verifiedDiscountPercent, "womenThreshold": body.womenThreshold, "thresholdNotifiedAt": notified.isoformat() if notified else None}
+             "verifiedDiscountPercent": body.verifiedDiscountPercent, "verifiedDiscountMonths": body.verifiedDiscountMonths, "verifiedDiscountCap": body.verifiedDiscountCap,
+             "womenThreshold": body.womenThreshold, "thresholdNotifiedAt": notified.isoformat() if notified else None}
     row = (await db.execute(select(SystemSetting).where(SystemSetting.key == access.KEY))).scalar_one_or_none()
     if row:
         row.value = value
