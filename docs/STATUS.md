@@ -275,3 +275,6 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 ## Réduction « profil vérifié » : limites et rappel (terminé, non commité)
 - Admin › Accès payant : durée en mois (3 par défaut, 0 = sans limite) — la remise ne porte que sur les N premiers mois payés par membre, un forfait long n'y échappe pas (seule la part des mois restants est remisée) — et plafond de bénéficiaires (0 = aucun ; un bénéficiaire garde son droit). Le pourcentage reste à 0 (désactivé) tant qu'on ne l'active pas. Rappel « −X % sur tes N premiers mois » aussi dans le profil (jusqu'à ce que le membre soit éligible). Tests : 10 dans `test_access_paywall`.
+
+## Pays de connexion et écart avec le pays déclaré (terminé, non commité)
+- À chaque connexion (et toutes les 5 min d'activité), le **code pays** donné par Cloudflare (en-tête `CF-IPCountry`) est gardé dans `User.lastCountry` (migration 0027) ; **l'adresse IP n'est jamais conservée**. Admin › Utilisateurs : badge « Déclaré Bénin · vu France », case « Pays de connexion différent du pays déclaré » (filtre) et ligne dans la fiche. C'est un **indice, pas un blocage** : VPN, voyages et diaspora donnent des faux écarts. Fonctionne seulement si le domaine passe par Cloudflare avec le proxy activé (nuage orange) ; sans l'en-tête, rien n'est enregistré. Tests : 8 (`test_geo_country`). Non vérifié en production.

@@ -278,11 +278,13 @@ async def summary(a: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
 
 # ───────── Utilisateurs ─────────
 @router.get("/users")
-async def users(a: AuthUser = MOD, q: str | None = None, status: str | None = None, cursor: str | None = None, limit: str | None = None, db: AsyncSession = Depends(get_db)):
+async def users(a: AuthUser = MOD, q: str | None = None, status: str | None = None, mismatch: bool = False, cursor: str | None = None, limit: str | None = None, db: AsyncSession = Depends(get_db)):
     take = page(limit)
     stmt = select(User).order_by(User.createdAt.desc(), User.id.desc())
     if status in ("ACTIVE", "SUSPENDED", "BANNED", "DELETED"):
         stmt = stmt.where(User.status == status)
+    if mismatch:  # pays déclaré différent du pays de la dernière connexion
+        stmt = stmt.join(Profile, Profile.userId == User.id).where(User.lastCountry.is_not(None), Profile.country.is_not(None), Profile.country != User.lastCountry)
     if q:
         conds = [User.id == q, User.id.in_(select(Profile.userId).where(Profile.displayName.ilike(f"%{q}%")))]
         if has_role(a.role, "ADMIN"):
@@ -298,7 +300,8 @@ async def users(a: AuthUser = MOD, q: str | None = None, status: str | None = No
     for u in rows[:take]:
         p = profiles.get(u.id)
         items.append({"id": u.id, "displayName": p.displayName if p else "—", "email": u.email if has_role(a.role, "ADMIN") else None, "role": ev(u.role), "status": ev(u.status),
-                      "city": p.city if p else None, "country": p.country if p else None, "verified": bool(p and p.verified), "plan": ev(plans.get(u.id, "FREE")),
+                      "city": p.city if p else None, "country": p.country if p else None, "lastCountry": u.lastCountry,
+                      "countryMismatch": bool(p and p.country and u.lastCountry and p.country != u.lastCountry), "verified": bool(p and p.verified), "plan": ev(plans.get(u.id, "FREE")),
                       "reports": reports.get(u.id, 0), "createdAt": u.createdAt, "lastActiveAt": u.lastActiveAt})
     return paged(rows, take, items)
 
@@ -315,7 +318,7 @@ async def user(user_id: str, a: AuthUser = MOD, db: AsyncSession = Depends(get_d
     ent = await entitlements.get(db, user_id)
     return {
         "id": u.id, "email": u.email if has_role(a.role, "ADMIN") else None, "role": ev(u.role), "status": ev(u.status), "suspendedUntil": u.suspendedUntil,
-        "createdAt": u.createdAt, "lastActiveAt": u.lastActiveAt, "emailVerified": bool(u.emailVerifiedAt), "plan": ent["plan"], "planValidUntil": ent["validUntil"],
+        "createdAt": u.createdAt, "lastActiveAt": u.lastActiveAt, "lastCountry": u.lastCountry, "emailVerified": bool(u.emailVerifiedAt), "plan": ent["plan"], "planValidUntil": ent["validUntil"],
         "profile": {"displayName": p.displayName, "bio": p.bio, "city": p.city, "country": p.country, "gender": ev(p.gender), "verified": p.verified, "completeness": p.completeness,
                     "photos": [{"id": x.id, "url": f"/api/media/{x.key}", "status": ev(x.moderationStatus)} for x in photos]} if p else None,
         "moderation": [to_dict(m) for m in mods], "reports": [to_dict(r) for r in reps],

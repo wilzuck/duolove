@@ -3523,6 +3523,11 @@
       "discountMonthsHint": "The discount only covers each member's first N paid months (a long plan does not escape it). 0 = unlimited.",
       "discountCap": "Discount: beneficiary cap",
       "discountCapHint": "Maximum number of members who get it (first come, first served). 0 = no cap."
+    },
+    "users": {
+      "mismatchFilter": "Connection country differs from declared country",
+      "mismatchBadge": "Declared {declared} · seen {seen}",
+      "countryLine": "Last connection from: {seen} (a hint only: VPNs and travel are possible)."
     }
   },
   "pricingFaq": {

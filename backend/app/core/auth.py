@@ -7,6 +7,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.core import geo
 from app.core.config import get_settings
 from app.core.errors import AppError, forbidden, unauthorized
 from app.core.ids import utcnow
@@ -67,7 +68,8 @@ async def _authenticate(request: Request, db: AsyncSession, *, allow_suspended: 
     if utcnow() - session.lastUsedAt > datetime.timedelta(minutes=5):
         now = utcnow()
         await db.execute(update(Session).where(Session.id == session.id).values(lastUsedAt=now))
-        await db.execute(update(User).where(User.id == user.id).values(lastActiveAt=now))
+        country = geo.country_from_headers(request.headers)
+        await db.execute(update(User).where(User.id == user.id).values(lastActiveAt=now, **({"lastCountry": country} if country else {})))
         await db.commit()
     return AuthUser(user.id, user.role.value, user.email, bool(user.emailVerifiedAt), session.id)
 

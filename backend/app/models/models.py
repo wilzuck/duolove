@@ -835,6 +835,7 @@ class User(Base):
     marketingConsent: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'))
     failedLogins: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
     lastActiveAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    lastCountry: Mapped[Optional[str]] = mapped_column(Text)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
     emailVerifiedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))

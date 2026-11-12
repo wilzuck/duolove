@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core import authsvc
+from app.core import authsvc, geo
 from app.core.auth import SESSION_COOKIE, AuthUser, resolve_session, current_user, current_user_allow_suspended, current_user_allow_unverified
 from app.core.config import get_settings
 from app.core.errors import AppError, not_found
@@ -24,7 +24,7 @@ def set_session_cookie(res: Response, token: str, expires, remember: bool = True
 
 
 def ctx_of(req: Request) -> authsvc.ReqCtx:
-    return authsvc.ReqCtx(ip=client_ip(req), user_agent=req.headers.get("user-agent"))
+    return authsvc.ReqCtx(ip=client_ip(req), user_agent=req.headers.get("user-agent"), country=geo.country_from_headers(req.headers))
 
 
 @router.post("/register", status_code=201, dependencies=[require_flag("registration_open"), limit(10)])

@@ -3523,6 +3523,11 @@
       "discountMonthsHint": "La réduction ne porte que sur les N premiers mois payés par membre (un forfait long n'y échappe pas). 0 = sans limite.",
       "discountCap": "Réduction : plafond de bénéficiaires",
       "discountCapHint": "Nombre maximum de membres qui en profitent (les premiers servis). 0 = sans plafond."
+    },
+    "users": {
+      "mismatchFilter": "Pays de connexion différent du pays déclaré",
+      "mismatchBadge": "Déclaré {declared} · vu {seen}",
+      "countryLine": "Dernière connexion depuis : {seen} (indice seulement : VPN et voyages possibles)."
     }
   },
   "pricingFaq": {

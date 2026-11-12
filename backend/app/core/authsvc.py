@@ -31,6 +31,7 @@ LOCK_MINUTES = 15
 class ReqCtx:
     ip: str | None = None
     user_agent: str | None = None
+    country: str | None = None  # code ISO du pays de connexion (jamais l'adresse IP)
 
 
 def _st(u: User) -> str:
@@ -47,6 +48,8 @@ async def create_session(db: AsyncSession, user_id: str, ctx: ReqCtx, remember: 
     token = random_token(32)
     expires = utcnow() + (datetime.timedelta(days=get_settings().session_ttl_days) if remember else SHORT_SESSION)
     db.add(Session(userId=user_id, tokenHash=sha256(token), expiresAt=expires, userAgent=(ctx.user_agent or None) and ctx.user_agent[:255], ipHash=hash_ip(ctx.ip)))
+    if ctx.country:
+        await db.execute(update(User).where(User.id == user_id).values(lastCountry=ctx.country))
     await db.commit()
     return token, expires
 
