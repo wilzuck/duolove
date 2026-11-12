@@ -1,4 +1,4 @@
-"""Soirées Match en direct : création, liste (avec inscrits), annulation par l'administration."""
+"""Soirées Duo : création, liste (avec inscrits), annulation par l'administration."""
 from __future__ import annotations
 
 import datetime

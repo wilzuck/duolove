@@ -24,7 +24,7 @@ class OptIn(BaseModel):
 
 @router.get("/events")
 async def events(u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
-    """Soirées Match en direct à venir ou en cours, avec mon inscription."""
+    """Soirées Duo à venir ou en cours, avec mon inscription."""
     return await live_events.upcoming(db, u.id)
 
 

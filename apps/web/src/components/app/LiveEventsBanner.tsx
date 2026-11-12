@@ -11,7 +11,7 @@ import { useUi } from '@/lib/store';
 interface LiveEventView { id: string; title: string; description: string; city: string | null; startsAt: string; endsAt: string; phase: 'upcoming' | 'live'; rsvps: number; rsvped: boolean }
 const KEY = ['live', 'events'];
 
-/** Prochaine soirée Match en direct : date, nombre d'inscrits, rappel en un clic ; « en cours » avec le nombre de personnes connectées. */
+/** Prochaine soirée Duo : date, nombre d'inscrits, rappel en un clic ; « en cours » avec le nombre de personnes connectées. */
 export function LiveEventsBanner() {
   const t = useTranslations();
   const locale = useLocale();

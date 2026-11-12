@@ -1,4 +1,4 @@
-"""Soirées Match en direct : créneaux annoncés par l'administration, inscription des membres, rappels (1 h avant, puis au début).
+"""Soirées Duo : créneaux annoncés par l'administration, inscription des membres, rappels (1 h avant, puis au début).
 
 Une soirée ne change pas le fonctionnement du Match : elle donne rendez-vous à tout le monde en même temps pour que les recherches aboutissent.
 Les rappels (notification + e-mail) ne partent qu'aux membres inscrits ; chaque étape n'est envoyée qu'une fois, même avec plusieurs répliques de l'API."""
@@ -120,5 +120,5 @@ async def sweep_loop(maker, every: float = 60.0) -> None:
         except asyncio.CancelledError:
             raise
         except Exception:  # noqa: BLE001
-            log.exception("Balayage des soirées Match en direct")
+            log.exception("Balayage des soirées Duo")
         await asyncio.sleep(every)

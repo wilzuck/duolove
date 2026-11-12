@@ -183,7 +183,7 @@ async def send_renewal_reminder(to: str, name: str, plan_name: str, ends_at: dat
 
 
 async def send_live_event_reminder(to: str, name: str, title: str, starts_at: datetime.datetime, tz_offset: int, city: str | None) -> bool:
-    """Rappel d'une soirée Match en direct (une heure avant) : envoyé uniquement aux membres qui se sont inscrits."""
+    """Rappel d'une soirée Duo (une heure avant) : envoyé uniquement aux membres qui se sont inscrits."""
     link = f"{get_settings().app_url}/match"
     local = starts_at + datetime.timedelta(minutes=tz_offset)
     sign = "+" if tz_offset >= 0 else "-"
@@ -194,7 +194,7 @@ async def send_live_event_reminder(to: str, name: str, title: str, starts_at: da
     html = render_email(subject, [
         p(f"Bonjour {esc_(name)}, la soirée « {esc_(title)} »{esc_(where)} commence le {when}."),
         p("Connectez-vous à l’heure : c’est quand tout le monde est en ligne que les recherches aboutissent le plus vite."),
-        button("Ouvrir le Match en direct", link),
+        button("Ouvrir la Soirée Duo", link),
         note("Vous recevez ce rappel parce que vous vous êtes inscrit(e) à cette soirée."),
     ], preheader=f"{title} : {when}")
     return await send(to, f"{subject} — Crushduo", f"Bonjour {name},\n\nLa soirée « {title} »{where} commence le {when}.\n\nConnectez-vous à l'heure : {link}\n\nVous recevez ce rappel parce que vous vous êtes inscrit(e) à cette soirée.", html, kind="notification")

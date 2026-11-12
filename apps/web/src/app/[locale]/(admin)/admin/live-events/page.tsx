@@ -3,7 +3,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ban } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, CrudTable, Field, Input, Select } from '@duomatch/ui';
+import { COUNTRIES, countryFlag } from '@duomatch/types';
+import { Badge, CrudTable, Field, Input, Select, Textarea, cn } from '@duomatch/ui';
+import { CityInput } from '@/components/CityInput';
 import { PageLoader } from '@/components/PageLoader';
 import { useApiError } from '@/hooks/useApiError';
 import { useTableLabels } from '@/hooks/useTableLabels';
@@ -12,7 +14,10 @@ import { formatDate, formatTime } from '@/lib/format';
 import { useUi } from '@/lib/store';
 
 interface EventRow { id: string; title: string; description: string; city: string | null; startsAt: string; endsAt: string; phase: 'upcoming' | 'live' | 'ended' | 'canceled'; rsvps: number; tzOffset: number }
-const blank = { title: '', description: '', city: '', start: '', minutes: '120', tz: '60' };
+const blank = { title: '', description: '', country: 'BJ', city: '', start: '', minutes: '120', tz: '60' };
+const MAX_DESC = 500;
+// Messages types : le libellé est affiché sur la pastille, le texte est ajouté à la description (modifiable ensuite).
+const TEMPLATES = ['welcome', 'profile', 'notifications', 'friend', 'respect'] as const;
 const TONE = { upcoming: 'brand', live: 'success', ended: 'neutral', canceled: 'neutral' } as const;
 
 export default function AdminLiveEvents() {
@@ -48,12 +53,31 @@ export default function AdminLiveEvents() {
         { key: 'status', header: t('admin.status'), value: (e) => e.phase, filter: { options: (['upcoming', 'live', 'ended', 'canceled'] as const).map((p) => ({ value: p, label: t(`admin.liveEvents.phase.${p}`) })) }, cell: (e) => <Badge tone={TONE[e.phase]}>{t(`admin.liveEvents.phase.${e.phase}` as never)}</Badge> },
       ]}
     >
-      <Field label={t('admin.liveEvents.name')}>{(p) => <Input {...p} required minLength={3} maxLength={100} placeholder={t('admin.liveEvents.namePh')} value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />}</Field>
+      <div className="sm:col-span-2"><Field label={t('admin.liveEvents.name')}>{(p) => <Input {...p} required minLength={3} maxLength={100} placeholder={t('admin.liveEvents.namePh')} value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />}</Field></div>
       <Field label={t('admin.liveEvents.start')} hint={t('admin.liveEvents.startHint')}>{(p) => <Input {...p} required type="datetime-local" value={f.start} onChange={(e) => setF({ ...f, start: e.target.value })} />}</Field>
       <Field label={t('admin.liveEvents.duration')}>{(p) => <Select {...p} value={f.minutes} onChange={(e) => setF({ ...f, minutes: e.target.value })}>{[60, 90, 120, 180, 240].map((m) => <option key={m} value={m}>{t('admin.liveEvents.hours', { n: m / 60 })}</option>)}</Select>}</Field>
-      <Field label={t('admin.liveEvents.tz')} hint={t('admin.liveEvents.tzHint')}>{(p) => <Select {...p} value={f.tz} onChange={(e) => setF({ ...f, tz: e.target.value })}><option value="0">UTC+0 · Abidjan, Dakar, Lomé, Ouagadougou</option><option value="60">UTC+1 · Cotonou, Niamey, Douala, Kinshasa</option><option value="120">UTC+2 · Lubumbashi, Kigali</option></Select>}</Field>
-      <Field label={t('admin.liveEvents.city')}>{(p) => <Input {...p} maxLength={80} value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} />}</Field>
-      <Field label={t('admin.liveEvents.description')}>{(p) => <Input {...p} maxLength={500} value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} />}</Field>
+      <div className="sm:col-span-2"><Field label={t('admin.liveEvents.tz')} hint={t('admin.liveEvents.tzHint')}>{(p) => <Select {...p} value={f.tz} onChange={(e) => setF({ ...f, tz: e.target.value })}><option value="0">UTC+0 · Abidjan, Dakar, Lomé, Ouagadougou</option><option value="60">UTC+1 · Cotonou, Niamey, Douala, Kinshasa</option><option value="120">UTC+2 · Lubumbashi, Kigali</option></Select>}</Field></div>
+      <Field label={t('admin.liveEvents.country')}>{(p) => <Select {...p} value={f.country} onChange={(e) => setF({ ...f, country: e.target.value, city: '' })}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+      <Field label={t('admin.liveEvents.city')} hint={t('admin.liveEvents.cityHint')}>{(p) => <CityInput {...p} country={f.country} value={f.city} onChange={(v) => setF({ ...f, city: v })} />}</Field>
+      <div className="space-y-2 sm:col-span-2">
+        <Field label={t('admin.liveEvents.description')} hint={`${f.description.length}/${MAX_DESC}`}>{(p) => <Textarea {...p} rows={4} maxLength={MAX_DESC} placeholder={t('admin.liveEvents.descriptionPh')} value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} />}</Field>
+        <div role="group" aria-label={t('admin.liveEvents.templates')}>
+          <p className="mb-1.5 text-sm text-muted">{t('admin.liveEvents.templates')}</p>
+          <ul className="flex flex-wrap gap-2">
+            {TEMPLATES.map((k) => {
+              const text = t(`admin.liveEvents.tpl.${k}.text` as never);
+              const used = f.description.includes(text);
+              const next = f.description.trim() ? `${f.description.trim()} ${text}` : text;
+              return (
+                <li key={k}>
+                  <button type="button" aria-pressed={used} disabled={!used && next.length > MAX_DESC} onClick={() => setF({ ...f, description: used ? f.description.replace(text, '').replace(/\s{2,}/g, ' ').trim() : next })}
+                    className={cn('inline-flex items-center rounded-full border px-3.5 py-1.5 text-sm transition disabled:opacity-50', used ? 'border-brand-strong bg-brand-strong text-white' : 'border-line bg-card hover:bg-soft')}>{t(`admin.liveEvents.tpl.${k}.label` as never)}</button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
     </CrudTable>
   );
 }
