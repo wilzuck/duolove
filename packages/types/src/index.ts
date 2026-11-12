@@ -32,6 +32,7 @@ export const COUNTRIES = [
   { code: 'CI', fr: "Côte d'Ivoire", en: 'Ivory Coast' },
   { code: 'TG', fr: 'Togo', en: 'Togo' },
   { code: 'SN', fr: 'Sénégal', en: 'Senegal' },
+  { code: 'NE', fr: 'Niger', en: 'Niger' },
   { code: 'CM', fr: 'Cameroun', en: 'Cameroon' },
   { code: 'BF', fr: 'Burkina Faso', en: 'Burkina Faso' },
   { code: 'ML', fr: 'Mali', en: 'Mali' },

@@ -11,6 +11,7 @@ _C: dict[str, dict[str, tuple[float, float]]] = {
            "Bassar": (9.3, 0.8), "Sansanné-Mango": (10.4, 0.5), "Tchamba": (9.0, 1.4)},
     "SN": {"Dakar": (14.7, -17.4), "Touba": (14.9, -15.9), "Thiès": (14.8, -16.9), "Rufisque": (14.7, -17.3), "Kaolack": (14.2, -16.1), "Saint-Louis": (16.0, -16.5), "Mbour": (14.4, -17.0), "Ziguinchor": (12.6, -16.3),
            "Diourbel": (14.7, -16.2), "Louga": (15.6, -16.2), "Tambacounda": (13.8, -13.7), "Kolda": (12.9, -14.9), "Pikine": (14.8, -17.4), "Guédiawaye": (14.8, -17.4), "Saly": (14.4, -17.0)},
+    "NE": {"Niamey": (13.5, 2.1), "Zinder": (13.8, 8.99), "Maradi": (13.5, 7.1), "Agadez": (16.97, 7.99), "Tahoua": (14.9, 5.3), "Dosso": (13.05, 3.2), "Tillabéri": (14.2, 1.45), "Arlit": (18.7, 7.4), "Diffa": (13.3, 12.6), "Birni N'Konni": (13.8, 5.25)},
     "CM": {"Douala": (4.1, 9.7), "Yaoundé": (3.9, 11.5), "Garoua": (9.3, 13.4), "Bamenda": (5.9, 10.2), "Maroua": (10.6, 14.3), "Bafoussam": (5.5, 10.4), "Ngaoundéré": (7.3, 13.6), "Bertoua": (4.6, 13.7),
            "Kribi": (2.9, 9.9), "Limbé": (4.0, 9.2), "Buea": (4.2, 9.2), "Ebolowa": (2.9, 11.2), "Edéa": (3.8, 10.1), "Kumba": (4.6, 9.4)},
     "BF": {"Ouagadougou": (12.4, -1.5), "Bobo-Dioulasso": (11.2, -4.3), "Koudougou": (12.3, -2.4), "Banfora": (10.6, -4.8), "Ouahigouya": (13.6, -2.4), "Pouytenga": (12.2, -0.4), "Dédougou": (12.5, -3.5),

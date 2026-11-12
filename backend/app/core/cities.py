@@ -7,6 +7,7 @@ POPULAR_CITIES: dict[str, tuple[str, ...]] = {
     "CI": ("Abidjan", "Yamoussoukro", "Bouaké", "Daloa", "San-Pédro", "Korhogo", "Man", "Divo", "Gagnoa", "Abengourou", "Grand-Bassam", "Anyama", "Bingerville", "Séguéla", "Odienné", "Ferkessédougou"),
     "TG": ("Lomé", "Sokodé", "Kara", "Kpalimé", "Atakpamé", "Dapaong", "Tsévié", "Aného", "Bassar", "Sansanné-Mango", "Tchamba"),
     "SN": ("Dakar", "Touba", "Thiès", "Rufisque", "Kaolack", "Saint-Louis", "Mbour", "Ziguinchor", "Diourbel", "Louga", "Tambacounda", "Kolda", "Pikine", "Guédiawaye", "Saly"),
+    "NE": ("Niamey", "Zinder", "Maradi", "Agadez", "Tahoua", "Dosso", "Tillabéri", "Arlit", "Diffa", "Birni N'Konni"),
     "CM": ("Douala", "Yaoundé", "Garoua", "Bamenda", "Maroua", "Bafoussam", "Ngaoundéré", "Bertoua", "Kribi", "Limbé", "Buea", "Ebolowa", "Edéa", "Kumba"),
     "BF": ("Ouagadougou", "Bobo-Dioulasso", "Koudougou", "Banfora", "Ouahigouya", "Pouytenga", "Dédougou", "Kaya", "Tenkodogo", "Fada N'Gourma", "Dori"),
     "ML": ("Bamako", "Sikasso", "Mopti", "Koutiala", "Kayes", "Ségou", "Gao", "Tombouctou", "Kati", "Kidal", "San", "Koulikoro"),

@@ -1,5 +1,5 @@
 'use client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
@@ -12,11 +12,12 @@ import { PasswordStrength } from '@/components/auth/PasswordStrength';
 import { CityInput } from '@/components/CityInput';
 import { useApiError } from '@/hooks/useApiError';
 import { Link, useRouter } from '@/i18n/navigation';
-import { ApiError, post } from '@/lib/api';
+import { ApiError, api, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import { useLocale } from 'next-intl';
 
 type Form = { displayName: string; email: string; password: string; birthDate: string; gender: string; country: string; city: string; acceptTerms: boolean; marketing: boolean; referralCode: string };
+const LAUNCH_DEFAULT = ['BJ', 'CI', 'TG', 'SN', 'NE', 'BF'];
 const empty: Form = { displayName: '', email: '', password: '', birthDate: '', gender: '', country: 'BJ', city: '', acceptTerms: false, marketing: false, referralCode: '' };
 
 export default function RegisterPage() {
@@ -36,6 +37,11 @@ function RegisterForm() {
   const [googleToken, setGoogleToken] = useState<string | null>(() => useUi.getState().googleToken);
   useEffect(() => { useUi.getState().setGoogleToken(null); }, []);  // le jeton ne reste pas en mémoire plus longtemps que nécessaire
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((s) => ({ ...s, [k]: v }));
+  // Seuls les pays ouverts par l'administration sont proposés ; tant que la liste n'est pas arrivée, les pays de lancement par défaut.
+  const launch = useQuery({ queryKey: ['launch-countries'], staleTime: 60_000, queryFn: () => api<{ countries: string[] }>('/launch-countries') });
+  const openCodes = launch.data?.countries ?? LAUNCH_DEFAULT;
+  const countries = COUNTRIES.filter((c) => openCodes.includes(c.code));
+  const country = countries.some((c) => c.code === f.country) ? f.country : (countries[0]?.code ?? f.country);
   // Lien d'invitation : /register?ref=CODE pré-remplit le code ; la saisie du membre prend le dessus (valeur dérivée, pas d'effet).
   const urlRef = (useSearchParams().get('ref') ?? '').trim().toUpperCase().slice(0, 32);
   const referralCode = f.referralCode || urlRef;
@@ -49,7 +55,7 @@ function RegisterForm() {
     router.replace(sentTo ? '/confirm-email' : '/onboarding'); // e-mail à confirmer d'abord ; un compte Google arrive déjà confirmé
   };
   const reg = useMutation({
-    mutationFn: () => post('/auth/register', { displayName: f.displayName, email: f.email, password: f.password, birthDate: f.birthDate, gender: f.gender, country: f.country, city: f.city, acceptTerms: f.acceptTerms, ...(referralCode.trim() ? { referralCode: referralCode.trim() } : {}) }),
+    mutationFn: () => post('/auth/register', { displayName: f.displayName, email: f.email, password: f.password, birthDate: f.birthDate, gender: f.gender, country, city: f.city, acceptTerms: f.acceptTerms, ...(referralCode.trim() ? { referralCode: referralCode.trim() } : {}) }),
     onSuccess: () => done(f.email),
     onError: (e) => {
       if (e instanceof ApiError && e.code === 'VALIDATION_ERROR' && Array.isArray(e.details)) {
@@ -68,7 +74,7 @@ function RegisterForm() {
     },
   });
   const google = useMutation({
-    mutationFn: () => post('/auth/google', { idToken: googleToken, birthDate: f.birthDate, gender: f.gender, country: f.country, city: f.city, acceptTerms: f.acceptTerms }),
+    mutationFn: () => post('/auth/google', { idToken: googleToken, birthDate: f.birthDate, gender: f.gender, country, city: f.city, acceptTerms: f.acceptTerms }),
     onSuccess: () => done(),
     onError: (e) => { if (e instanceof Error && 'code' in e && (e as { code: string }).code === 'INVALID_OAUTH_TOKEN') setGoogleToken(null); setFormError(err(e)); },  // jeton expiré : on redonne le bouton Google
   });
@@ -76,8 +82,8 @@ function RegisterForm() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
-    const base = googleToken ? { ...f, email: 'google@example.com', password: 'Aa1aaaaaaaaa', displayName: f.displayName || 'Google' } : f;
-    const parsed = registerSchema.safeParse(base);
+    const base = googleToken ? { ...f, country, email: 'google@example.com', password: 'Aa1aaaaaaaaa', displayName: f.displayName || 'Google' } : f;
+    const parsed = registerSchema.safeParse(googleToken ? base : { ...base, country });
     if (!parsed.success) {
       setErrors(Object.fromEntries(parsed.error.issues.map((i) => [String(i.path[0]), t.has(`errors.${i.message}` as never) ? t(`errors.${i.message}` as never) : t('errors.invalidField')])));
       return;
@@ -108,11 +114,11 @@ function RegisterForm() {
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t('auth.country')} error={errors.country}>{(p) => (
-            <Select {...p} value={f.country} onChange={(e) => set('country', e.target.value)}>
-              {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}
+            <Select {...p} value={country} onChange={(e) => set('country', e.target.value)}>
+              {countries.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}
             </Select>)}
           </Field>
-          <Field label={t('auth.city')} error={errors.city}>{(p) => <CityInput {...p} country={f.country} value={f.city} onChange={(v) => set('city', v)} />}</Field>
+          <Field label={t('auth.city')} error={errors.city}>{(p) => <CityInput {...p} country={country} value={f.city} onChange={(v) => set('city', v)} />}</Field>
         </div>
         {!googleToken && (showRef
           ? <Field label={t('referral.registerLabel')} hint={t('referral.registerHint')}>{(p) => <Input {...p} autoComplete="off" autoCapitalize="characters" maxLength={32} value={referralCode} onChange={(e) => set('referralCode', e.target.value.toUpperCase())} />}</Field>

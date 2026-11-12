@@ -11,7 +11,7 @@ SEEKING = ("MEN", "WOMEN", "EVERYONE")
 INTENTS = ("SERIOUS", "MARRIAGE", "DATING", "FRIENDSHIP", "UNSURE")
 PLAN_CODES = ("FREE", "PREMIUM", "VIP")
 REPORT_REASONS = ("FAKE_PROFILE", "SCAM", "HARASSMENT", "INAPPROPRIATE_CONTENT", "UNDERAGE", "SPAM", "OTHER")
-COUNTRY_CODES = ("BJ", "CI", "TG", "SN", "CM", "BF", "ML", "GA", "CD", "FR", "BE", "CA")
+COUNTRY_CODES = ("BJ", "CI", "TG", "SN", "NE", "CM", "BF", "ML", "GA", "CD", "FR", "BE", "CA")
 INTEREST_SLUGS = (
     "music", "cinema", "cooking", "travel", "sport", "reading", "dance", "faith",
     "fashion", "tech", "art", "nature", "photography", "gaming", "entrepreneurship", "family",
