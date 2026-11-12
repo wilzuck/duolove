@@ -1,9 +1,10 @@
 """Saisie semi-automatique des villes (publique : utilisée dès l'inscription)."""
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cities import POPULAR_CITIES, fold, suggest
+from app.core.geo import country_from_headers
 from app.core.ratelimit import limit
 from app.db.session import get_db
 from app.models.models import Profile, User
@@ -17,6 +18,13 @@ def _folded(col):
     """Même repli que `fold()` côté SQL (minuscules, sans accents courants, tirets et apostrophes en espaces) : le filtre se fait dans la requête,
     sinon les villes peu peuplées seraient écartées par la limite avant même d'être comparées à la saisie."""
     return func.replace(func.replace(func.translate(func.lower(col), _ACCENTS, _PLAIN), "-", " "), "'", " ")
+
+
+@router.get("/country", dependencies=[limit(60, 60)])
+async def detected_country(request: Request):
+    """Pays probable du visiteur (code ISO fourni par Cloudflare), pour PRÉSÉLECTIONNER le pays à l'inscription. Simple indice : le visiteur peut le changer.
+    Rien n'est conservé (ni adresse IP, ni ce code) ; None si inconnu (hors Cloudflare, Tor, réseau non localisé)."""
+    return {"country": country_from_headers(request.headers)}
 
 
 @router.get("/cities", dependencies=[limit(120, 60)])

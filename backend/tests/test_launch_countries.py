@@ -97,3 +97,11 @@ async def test_ouverture_par_ville_liste_d_attente_et_membres_existants(app, htt
     assert (await http.post("/api/auth/register", json=signup_city("Cotonou", f"c3-{uid()}@example.com"))).status_code in (200, 201)
     u = await member(app, db)
     assert (await u.agent.get("/api/auth/session")).status_code == 200  # un membre existant n'est pas touché
+
+
+async def test_pays_detecte_par_cloudflare_pour_presélection(app, http):
+    r = await http.get("/api/places/country", headers={"CF-IPCountry": "ci"})
+    assert r.status_code == 200 and r.json() == {"country": "CI"}
+    for unknown in ("XX", "T1", "", "ZZZ", "1"):  # inconnu, Tor, vide, invalide : aucune présélection
+        assert (await http.get("/api/places/country", headers={"CF-IPCountry": unknown})).json() == {"country": None}, unknown
+    assert (await http.get("/api/places/country")).json() == {"country": None}  # hors Cloudflare (développement)

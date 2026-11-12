@@ -19,7 +19,7 @@ import { useLocale } from 'next-intl';
 
 type Form = { displayName: string; email: string; password: string; birthDate: string; gender: string; country: string; city: string; acceptTerms: boolean; marketing: boolean; referralCode: string };
 const LAUNCH_DEFAULT = ['BJ', 'CI', 'TG', 'SN', 'NE', 'BF'];
-const empty: Form = { displayName: '', email: '', password: '', birthDate: '', gender: '', country: 'BJ', city: '', acceptTerms: false, marketing: false, referralCode: '' };
+const empty: Form = { displayName: '', email: '', password: '', birthDate: '', gender: '', country: '', city: '', acceptTerms: false, marketing: false, referralCode: '' };
 
 export default function RegisterPage() {
   return <Suspense><RegisterForm /></Suspense>;
@@ -44,7 +44,10 @@ function RegisterForm() {
   // Villes ouvertes : liste vide = pas de restriction. Le serveur reste seul juge (403 CITY_NOT_OPEN) ; ceci évite de remplir tout le formulaire pour rien.
   const openCities = launch.data?.cities ?? [];
   const countries = COUNTRIES.filter((c) => openCodes.includes(c.code));
-  const country = countries.some((c) => c.code === f.country) ? f.country : (countries[0]?.code ?? f.country);
+  // Pays PRÉSÉLECTIONNÉ d'après la connexion (indice Cloudflare, modifiable) ; sa propre sélection prend toujours le dessus ; sinon le premier pays ouvert.
+  const geo = useQuery({ queryKey: ['geo-country'], staleTime: Infinity, retry: false, queryFn: () => api<{ country: string | null }>('/places/country') });
+  const preferred = f.country || geo.data?.country || '';
+  const country = countries.some((c) => c.code === preferred) ? preferred : (countries[0]?.code ?? f.country);
   const cityClosed = openCities.length > 0 && f.city.trim().length >= 2 && !openCities.some((c) => foldCity(c) === foldCity(f.city));
   // Lien d'invitation : /register?ref=CODE pré-remplit le code ; la saisie du membre prend le dessus (valeur dérivée, pas d'effet).
   const urlRef = (useSearchParams().get('ref') ?? '').trim().toUpperCase().slice(0, 32);
