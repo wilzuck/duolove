@@ -676,7 +676,7 @@
     }
   },
   "blog": {
-    "title": "The Crushduo blog",
+    "title": "The Duos blog",
     "lead": "Tips for safe and successful dating.",
     "read": "Read the article",
     "views": "{n, plural, =0 {No visits} one {# visit} other {# visits}}",
