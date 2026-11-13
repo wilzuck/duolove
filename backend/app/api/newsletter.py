@@ -237,7 +237,7 @@ class ProviderIn(BaseModel):
 
 async def _provider_view() -> dict:
     ch = await mail_config.choice()
-    return {"choice": ch, "active": mail_config.resolve(ch), "configured": mail_config.configured()}
+    return {"choice": ch, "active": mail_config.resolve(ch), "configured": mail_config.configured(), "essentialOnly": await mail_config.essential_only()}
 
 
 @router.get("/admin/emails/provider")
@@ -262,6 +262,24 @@ async def provider_set(body: ProviderIn, a: AuthUser = SUP, db: AsyncSession = D
     await db.commit()
     mail_config.invalidate()
     await audit(db, a.id, "email.provider", "SystemSetting", mail_config.KEY, {"before": before, "after": body.provider})
+    return await _provider_view()
+
+
+class EssentialIn(BaseModel):
+    enabled: bool
+
+
+@router.put("/admin/emails/essential-only")
+async def essential_only_set(body: EssentialIn, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """« E-mails essentiels uniquement » : seuls partent les e-mails d'accès au compte, de sécurité et de paiement (quota à préserver)."""
+    row = await db.get(SystemSetting, mail_config.ESSENTIAL_KEY)
+    if row:
+        row.value = {"enabled": body.enabled}
+    else:
+        db.add(SystemSetting(key=mail_config.ESSENTIAL_KEY, value={"enabled": body.enabled}))
+    await db.commit()
+    mail_config.invalidate_essential()
+    await audit(db, a.id, "email.essential_only", "SystemSetting", mail_config.ESSENTIAL_KEY, {"enabled": body.enabled})
     return await _provider_view()
 
 

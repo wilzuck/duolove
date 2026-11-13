@@ -52,3 +52,43 @@ async def choice() -> str:
 
 async def active() -> str:
     return resolve(await choice())
+
+
+# ── Mode « e-mails essentiels uniquement » (quota d'envoi presque épuisé, fournisseur en attente…) ─────────────────────────────
+# Seuls partent les e-mails nécessaires à l'accès au compte, à la sécurité et aux paiements, ainsi que les tests de l'administration.
+# Les autres (notifications, rappels, newsletter, envois groupés) sont notés « ignoré » dans le journal ; les membres les voient
+# toujours dans l'application. Désactivé par défaut.
+ESSENTIAL_KEY = "email.essentialOnly"
+ESSENTIAL_KINDS = frozenset({
+    "verification", "password_reset", "magic_link",  # accès au compte
+    "security",  # alerte de connexion inhabituelle
+    "subscription",  # reçus et rappels liés à un paiement
+    "newsletter_confirm",  # lien de double confirmation demandé par la personne
+    "other",  # alertes ponctuelles envoyées à l'équipe
+    "admin_test", "broadcast_test", "newsletter_test",  # tests lancés depuis l'administration
+})
+_essential: dict = {"at": 0.0, "on": None}
+
+
+def invalidate_essential() -> None:
+    _essential["on"] = None
+
+
+async def essential_only() -> bool:
+    """Réglage relu en base au plus toutes les 30 s ; base injoignable : dernière valeur connue, sinon désactivé (on n'empêche jamais un e-mail par erreur)."""
+    if _essential["on"] is not None and time.monotonic() - _essential["at"] < TTL:
+        return _essential["on"]
+    from app.db.session import session_maker
+
+    try:
+        async with session_maker()() as db:
+            row = (await db.execute(select(SystemSetting.value).where(SystemSetting.key == ESSENTIAL_KEY))).scalar_one_or_none()
+    except Exception:
+        return bool(_essential["on"])
+    on = bool(row.get("enabled")) if isinstance(row, dict) else False
+    _essential["on"], _essential["at"] = on, time.monotonic()
+    return on
+
+
+def is_essential(kind: str) -> bool:
+    return kind in ESSENTIAL_KINDS

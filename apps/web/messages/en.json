@@ -3292,7 +3292,14 @@
         "BOUNCE": "Bounce",
         "COMPLAINT": "Complaint"
       },
-      "providerCol": "Provider"
+      "providerCol": "Provider",
+      "essential": {
+        "title": "Essential e-mails only",
+        "text": "Turn on when the sending quota is nearly used up or the provider is blocked. Only confirmation codes, password resets, sign-in links, security alerts, payment receipts and admin tests are sent. Notifications, reminders, newsletters and group sends are paused (logged as “skipped”); members still see them in the app.",
+        "active": "On: non-essential e-mails are no longer sent.",
+        "on": "Essential e-mails only: on",
+        "off": "All e-mails are sent again"
+      }
     },
     "guide": {
       "intro": "The essentials in pictures: where to click, in what order, and who is allowed to do what.",
@@ -4098,7 +4105,8 @@
       },
       "messageTitle": "Message to members",
       "preview": "See the members’ screen"
-    }
+    },
+    "back": "Back"
   },
   "pricingFaq": {
     "renew": {

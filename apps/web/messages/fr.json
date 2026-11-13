@@ -3292,7 +3292,14 @@
         "BOUNCE": "Rebond",
         "COMPLAINT": "Plainte"
       },
-      "providerCol": "Fournisseur"
+      "providerCol": "Fournisseur",
+      "essential": {
+        "title": "E-mails essentiels uniquement",
+        "text": "À activer quand le quota d’envoi est presque épuisé ou que le fournisseur est bloqué. Seuls partent les codes de confirmation, mots de passe oubliés, liens de connexion, alertes de sécurité, reçus de paiement et les tests de l’administration. Les notifications, rappels, newsletters et envois groupés sont suspendus (notés « ignoré » dans le journal) ; les membres les voient toujours dans l’application.",
+        "active": "Activé : les e-mails non essentiels ne partent plus.",
+        "on": "E-mails essentiels uniquement : activé",
+        "off": "Tous les e-mails sont de nouveau envoyés"
+      }
     },
     "guide": {
       "intro": "L’essentiel en images : où cliquer, dans quel ordre, et qui a le droit de quoi.",
@@ -4098,7 +4105,8 @@
       },
       "messageTitle": "Message aux membres",
       "preview": "Voir l’écran des membres"
-    }
+    },
+    "back": "Retour"
   },
   "pricingFaq": {
     "renew": {

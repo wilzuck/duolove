@@ -551,3 +551,13 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 - **Terminé** : 15 articles de plus adaptés en anglais (05, 10, 13, 14, 16, 18, 19, 25, 30, 31, 34, 37, 38, 40, 42 : valeurs, pause, présenter à sa famille, après une rupture, écrire comme on parle, speed dating en texte, chercher à 35-45 ans, découvertes et question du jour, parler de ses enfants, relation entre deux villes, bilan après un mois, jalousie et confiance, foi et religion, après cinquante ans, relancer une conversation). Migration `0049` : ajout en **brouillon, sans image**, liés à leur article français, conservés en production. Noms des fonctions alignés sur l'appli anglaise ; aucun prix ni chiffre ajouté (contrôle automatique : chaque nombre figure dans l'article français). Restent non traduits : 04 (ancien « Match en direct »), 17, 20, 39, 44.
 - **Vérifié** : migration aller-retour ; tests du blog ; en local, les 15 pages s'affichent sans Markdown brut, lien FR↔EN dans les deux sens ; liste anglaise de 40 articles sans débordement ni erreur.
 - **À faire (admin)** : image de couverture + texte alternatif, puis publier. Non relus par un anglophone.
+
+## E-mails essentiels uniquement (livré)
+
+- **Terminé** : interrupteur dans Admin › E-mails envoyés (ADMIN, journalisé, désactivé par défaut, `PUT /admin/emails/essential-only`, réglage `email.essentialOnly`). Activé, seuls partent les e-mails d'accès au compte (code de confirmation, mot de passe oublié, lien de connexion), l'alerte de connexion inhabituelle (désormais de type `security`), les reçus et rappels de paiement, la confirmation d'inscription à la newsletter, les alertes à l'équipe et les tests de l'administration ; notifications, rappels de soirée, offres, résumé hebdomadaire, newsletters et envois groupés sont notés « ignoré » dans le journal. Sert à préserver un quota d'envoi (Brevo) en attendant l'accès production d'Amazon SES.
+- **Vérifié** : test `test_emails_essentiels_uniquement` (désactivé par défaut, filtrage, journal « ignoré », test admin toujours envoyé, droits) ; navigateur : activation / désactivation, message et encadré.
+
+## Admin : bouton « Retour » en haut et en bas (livré)
+
+- **Terminé** : sur chaque page de l'administration (sauf la vue d'ensemble), « ← Retour » remplace « Administration » dans la barre du haut, et un second bouton figure en bas de page. Il revient à la page précédente de l'admin ; si l'on arrive directement sur une page, il mène à la page parente (ex. un article → la liste des articles).
+- **Vérifié** : navigateur (vue d'ensemble sans bouton ; E-mails → Retour → vue d'ensemble ; arrivée directe sur un article → Retour → liste des articles).

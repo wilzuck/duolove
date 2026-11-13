@@ -84,6 +84,11 @@ async def provider_name() -> str:
 async def send(to: str, subject: str, text: str, html: str | None = None, *, kind: str = "other", campaign_id: str | None = None, headers: dict | None = None) -> bool:
     """Un échec d'envoi est journalisé sans jamais faire échouer l'inscription ou la connexion de l'utilisateur. Retourne True si l'envoi a réussi."""
     try:
+        from app.core import mail_config
+
+        if not mail_config.is_essential(kind) and await mail_config.essential_only():  # quota à préserver : seuls les e-mails essentiels partent
+            await _record(to, subject, kind, "SKIPPED", await provider_name(), "E-mails essentiels uniquement : envoi non essentiel suspendu", campaign_id)
+            return False
         blocked = await _blocked(to, kind)
         if blocked:  # rebond définitif ou plainte : on n'écrit plus à cette adresse (protège la réputation de l'expéditeur)
             await _record(to, subject, kind, "SKIPPED", await provider_name(), "Adresse bloquée : " + ("rebond définitif" if blocked == "BOUNCE" else "plainte pour spam"), campaign_id)
@@ -228,7 +233,7 @@ async def send_login_alert(to: str, name: str, country_code: str) -> bool:
         button("Vérifier mon compte", link),
         note("Pour renforcer la sécurité, vous pouvez activer la double authentification dans Paramètres › Sécurité. Nous ne conservons jamais votre adresse IP, seulement le pays."),
     ], preheader=f"Connexion depuis {where}")
-    return await send(to, f"{subject}", f"Bonjour {name},\n\nVotre compte vient d'être utilisé depuis {where}, un autre pays que lors de votre dernière connexion.\n\nSi ce n'est pas vous, changez votre mot de passe : {link}", html, kind="notification")
+    return await send(to, f"{subject}", f"Bonjour {name},\n\nVotre compte vient d'être utilisé depuis {where}, un autre pays que lors de votre dernière connexion.\n\nSi ce n'est pas vous, changez votre mot de passe : {link}", html, kind="security")
 
 
 def _plural(n: int, one: str, many: str) -> str:

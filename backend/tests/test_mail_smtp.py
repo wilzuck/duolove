@@ -118,3 +118,49 @@ def test_nom_du_fournisseur_dans_le_journal(monkeypatch):
     assert mail.log_provider("smtp") == "ses" and mail.log_provider("brevo") == "brevo" and mail.log_provider("dev") == "dev"
     monkeypatch.setattr(st, "smtp_url", "smtp://u:p@smtp.example.com:587")
     assert mail.log_provider("smtp") == "smtp"
+
+
+async def test_emails_essentiels_uniquement(app, db, monkeypatch):
+    """Interrupteur « e-mails essentiels uniquement » : désactivé par défaut ; activé, les notifications sont ignorées et journalisées,
+    les codes, alertes de sécurité et tests partent toujours ; réservé à l'administration."""
+    from sqlalchemy import select
+
+    from app.core import mail_config
+    from app.models.models import EmailLog
+    from tests.helpers import uid
+    from tests.support_c import member, set_role
+
+    st = get_settings()
+    monkeypatch.setattr(st, "brevo_api_key", "xkeysib-test")
+    calls = []
+
+    async def fake_brevo(to, subject, text, html=None, headers=None):
+        calls.append((to, subject))
+    monkeypatch.setattr(mail, "_send_brevo", fake_brevo)
+    mail_config.invalidate()
+    mail_config.invalidate_essential()
+    adm = await member(app, db)
+    await set_role(adm.id, "ADMIN")
+    assert (await adm.agent.get("/api/admin/emails/provider")).json()["essentialOnly"] is False
+    to = f"essentiel-{uid()}@duo.test"
+    assert await mail.send(to, "Nouveau message", "x", kind="notification")  # désactivé : tout part
+
+    r = await adm.agent.put("/api/admin/emails/essential-only", json={"enabled": True})
+    assert r.status_code == 200 and r.json()["essentialOnly"] is True
+    calls.clear()
+    assert await mail.send(to, "Nouveau duo", "x", kind="notification") is False
+    assert await mail.send(to, "Newsletter", "x", kind="newsletter") is False
+    assert await mail.send(to, "Code", "x", kind="verification")
+    assert await mail.send(to, "Connexion inhabituelle", "x", kind="security")
+    assert [s for _, s in calls] == ["Code", "Connexion inhabituelle"]
+    skipped = (await db.execute(select(EmailLog.subject, EmailLog.status).where(EmailLog.toEmail == to, EmailLog.status == "SKIPPED"))).all()
+    assert sorted(s for s, _ in skipped) == ["Newsletter", "Nouveau duo"]
+    t = (await adm.agent.post("/api/admin/emails/provider/test")).json()
+    assert t["ok"] is True  # le test de l'administration part toujours
+
+    assert (await adm.agent.put("/api/admin/emails/essential-only", json={"enabled": False})).json()["essentialOnly"] is False
+    assert await mail.send(to, "Nouveau duo", "x", kind="notification")
+    u = await member(app, db)
+    assert (await u.agent.put("/api/admin/emails/essential-only", json={"enabled": True})).status_code == 403
+    mail_config.invalidate()
+    mail_config.invalidate_essential()

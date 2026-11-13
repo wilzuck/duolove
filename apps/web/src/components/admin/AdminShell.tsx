@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, BookOpen, Bug, Construction, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, ImageOff, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LayoutGrid, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
 import { useMe } from '@/hooks/useQueries';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
@@ -67,6 +67,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const allowed = !!me && RANK[me.role] >= 1;
+  // Pages de l'admin visitées pendant cette session : « Retour » revient à la précédente, ou à la page parente si on arrive directement.
+  const visited = useRef<string[]>([]);
+  useEffect(() => { if (visited.current.at(-1) !== path) visited.current.push(path); }, [path]);
+  const goBack = () => {
+    if (visited.current.length > 1) { visited.current.pop(); router.back(); return; }
+    const parent = path.replace(/\/[^/]+$/, '');
+    router.push(parent.startsWith('/admin') ? parent : '/admin');
+  };
   const badges = useQuery({ queryKey: ['admin', 'badges'], enabled: allowed, refetchInterval: 60_000, queryFn: () => api<{ reports: number; moderation: number; errors?: number }>('/admin/badges') });
 
   useEffect(() => { if (error instanceof ApiError && error.status === 401) router.replace(`/login?next=${encodeURIComponent(path)}`); }, [error, path, router]);
@@ -153,10 +161,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <div className="flex min-w-0 flex-col lg:col-start-2">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-line bg-bg/90 px-4 backdrop-blur lg:px-8">
           <IconButton label={t('nav.menu')} tone="plain" className="lg:hidden" aria-expanded={open} onClick={() => setOpen(true)}><Menu className="size-5" /></IconButton>
-          <p className="hidden text-sm font-semibold text-muted lg:block">{t('admin.title')}</p>
+          {path === '/admin'
+            ? <p className="hidden text-sm font-semibold text-muted lg:block">{t('admin.title')}</p>
+            : <button type="button" onClick={goBack} className="mr-auto inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold text-brand-ink hover:bg-soft lg:-ml-2"><ArrowLeft className="size-4" aria-hidden />{t('admin.back')}</button>}
           <div className="flex items-center gap-1"><LocaleSwitcher /><ThemeToggle /></div>
         </header>
-        <main id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-5 px-4 py-6 lg:px-8">{forbidden ? <Alert variant="text">{t('admin.forbidden')}</Alert> : children}</main>
+        <main id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-5 px-4 py-6 lg:px-8">
+          {forbidden ? <Alert variant="text">{t('admin.forbidden')}</Alert> : children}
+          {path !== '/admin' && <div className="border-t border-line pt-4"><button type="button" onClick={goBack} className="inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold text-brand-ink hover:bg-soft"><ArrowLeft className="size-4" aria-hidden />{t('admin.back')}</button></div>}
+        </main>
       </div>
     </div>
   );

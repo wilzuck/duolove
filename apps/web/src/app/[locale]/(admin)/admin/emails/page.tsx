@@ -3,7 +3,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { AlertTriangle, MailCheck, MailWarning, Percent, Send, ShieldOff, Unlock, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, DataTableView, Skeleton, cn } from '@duomatch/ui';
+import { Badge, Button, Card, DataTableView, Skeleton, Switch, cn } from '@duomatch/ui';
 import { KpiCard, type SeriesPoint } from '@/components/admin/DashboardParts';
 import { PeriodPicker, periodQuery, type Period } from '@/components/admin/PeriodPicker';
 import { PageHeader, StatusTabs } from '@/components/admin/PageParts';
@@ -36,7 +36,7 @@ function Banner({ tone, title, children, onClose, closeLabel }: { tone: 'warning
   );
 }
 
-interface ProviderView { choice: 'auto' | 'brevo' | 'smtp'; active: 'brevo' | 'smtp' | 'dev'; configured: { brevo: boolean; smtp: boolean } }
+interface ProviderView { choice: 'auto' | 'brevo' | 'smtp'; active: 'brevo' | 'smtp' | 'dev'; configured: { brevo: boolean; smtp: boolean }; essentialOnly?: boolean }
 
 /** Choix du fournisseur d'envoi. Les identifiants restent dans les variables du serveur ; ici on ne choisit que celui qui est actif. */
 function ProviderCard() {
@@ -51,6 +51,7 @@ function ProviderCard() {
   const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin', 'emails'] }); };
   const save = useMutation({ mutationFn: () => put<ProviderView>('/admin/emails/provider', { provider: value }), onSuccess: () => { setPick(null); toast('success', t('admin.em.provider.saved')); refresh(); }, onError: (e) => toast('error', err(e)) });
   const test = useMutation({ mutationFn: () => post<{ ok: boolean; to: string }>('/admin/emails/provider/test'), onSuccess: (r) => { toast(r.ok ? 'success' : 'error', t(r.ok ? 'admin.em.provider.testOk' : 'admin.em.provider.testFail', { to: r.to })); refresh(); }, onError: (e) => toast('error', err(e)) });
+  const essential = useMutation({ mutationFn: (enabled: boolean) => put<ProviderView>('/admin/emails/essential-only', { enabled }), onSuccess: (r) => { toast('success', t(r.essentialOnly ? 'admin.em.essential.on' : 'admin.em.essential.off')); refresh(); }, onError: (e) => toast('error', err(e)) });
   if (!v) return <Skeleton className="h-40" />;
   const options = [
     { key: 'auto' as const, label: t('admin.em.provider.auto'), ok: true },
@@ -78,6 +79,14 @@ function ProviderCard() {
         <Button size="sm" loading={save.isPending} disabled={pick === null || pick === v.choice} onClick={() => save.mutate()}>{t('admin.em.provider.save')}</Button>
         <Button size="sm" variant="secondary" loading={test.isPending} onClick={() => test.mutate()}><Send className="size-4" aria-hidden />{t('admin.em.provider.test')}</Button>
         <span className="text-xs text-muted">{t('admin.em.provider.superOnly')}</span>
+      </div>
+      <div className={cn('flex items-start justify-between gap-4 rounded-2xl border p-4', v.essentialOnly ? 'border-gold bg-gold/10' : 'border-line')}>
+        <div>
+          <h3 className="font-semibold">{t('admin.em.essential.title')}</h3>
+          <p className="mt-1 text-sm text-muted">{t('admin.em.essential.text')}</p>
+          {v.essentialOnly && <p className="mt-2 text-sm font-semibold">{t('admin.em.essential.active')}</p>}
+        </div>
+        <Switch checked={!!v.essentialOnly} disabled={essential.isPending} onChange={(on) => essential.mutate(on)} label={t('admin.em.essential.title')} />
       </div>
     </Card>
   );
