@@ -1,5 +1,5 @@
 'use client';
-import { Check, ChevronDown, Crown, Gem, Sparkles, Star } from 'lucide-react';
+import { Check, ChevronDown, Crown, Gem, Sparkles, Star, type LucideIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 import type { PlanCode } from '@duomatch/types';
@@ -11,7 +11,9 @@ import { Link } from '@/i18n/navigation';
 import type { Catalog, PlanView } from '@/lib/types';
 import { useScrollToHash } from '@/hooks/useScrollToHash';
 
-const ICON = { FREE: Star, PREMIUM: Sparkles, VIP: Crown, GOLD: Gem } as const;
+/** Icône par formule. Le catalogue est rechargé en continu : une formule ajoutée après le chargement de la page (code encore inconnu
+ *  de cette version du site) reçoit l'icône par défaut au lieu de faire planter la page. */
+const ICON: Partial<Record<string, LucideIcon>> = { FREE: Star, PREMIUM: Sparkles, VIP: Crown, GOLD: Gem };
 /** Avantages phares, par ordre d'importance : les trois premiers présents dans la formule sont mis en avant. */
 const STARS = ['likesUnlimited', 'seeLikers', 'superLikesWeekly', 'boostsMonthly', 'chatSuggestions', 'liveMatch', 'incognito'] as const;
 /** Gold : ses trois avantages phares sont ceux qui le distinguent du VIP. */
@@ -74,7 +76,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
       )}
       <div className={cn('grid justify-items-center gap-5', plans.length === 2 ? 'mx-auto max-w-[52rem] lg:grid-cols-2' : plans.length === 1 ? '' : plans.length >= 4 ? 'md:grid-cols-2 xl:grid-cols-4' : 'lg:grid-cols-3')}>
         {plans.map((p) => {
-          const Icon = ICON[p.code];
+          const Icon = ICON[p.code] ?? Sparkles;
           const price = p.prices.find((x) => x.months === months); // pas de repli : une formule qui n'a pas cette durée (ex. 7 jours seulement sur Premium) ne l'affiche pas
           const all = [...(p.code === 'FREE' ? BASE.map((k) => ({ id: k, text: t(k) })) : []), ...featureLines(p, t as never, plans.some((x) => x.code === 'FREE'))];
           // Trois avantages phares par formule payante (les plus marquants d'abord), le reste suit sous « Aussi inclus ».

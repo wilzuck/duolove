@@ -530,4 +530,8 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 - **Corrigé** : « Le menu en un coup d'œil » affichait des clés brutes (`admin.guide.what.errors`, `…maintenance`, `…services`, `…broadcasts`, `…liveEvents`, etc.) pour 12 entrées ajoutées au menu sans leur description. Descriptions ajoutées en FR et EN ; nouveau test `adminGuide.test.ts` qui échoue si une entrée du menu n'a pas sa description dans les deux langues. Vérifié dans le navigateur.
 - **Test corrigé** : `test_monetization` attendait encore trois formules (sans Gold).
-- **Non résolu** : erreur React #130 signalée en production (composant indéfini). Non reproduite en local (Tarifs, Découvrir, admin vérifiés) ; la page exacte figure dans Admin › Erreurs système.
+
+## Erreur React #130 sur /pricing (corrigé)
+
+- **Cause** : la grille des tarifs recharge le catalogue toutes les minutes. Un onglet ouvert avant la mise en ligne de Gold (code du site sans icône pour « GOLD ») recevait la formule Gold et tentait d'afficher une icône inexistante → « Minified React error #130 » (une occurrence, 13/11 13:43).
+- **Corrigé** : une formule inconnue de la version chargée reçoit une icône par défaut au lieu de faire planter la page (même protection pour les interrupteurs de Admin › Fonctionnalités). **Vérifié dans le navigateur** : en injectant une formule inconnue dans le catalogue rechargé, la page l'affiche avec l'icône par défaut, sans erreur.

@@ -41,7 +41,7 @@ export default function AdminFlags() {
             <h3 id={`cat-${cat}`} className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">{t(`admin.ff.cat.${cat}` as never)}</h3>
             <Card className="divide-y divide-line px-5">
               {items.map((f) => {
-                const Icon = ICONS[f.key];
+                const Icon = ICONS[f.key] ?? Sparkles;  // interrupteur ajouté côté serveur, encore inconnu de cette version du site
                 const name = t(`admin.ff.items.${f.key}.name` as never);
                 const isOpen = open === f.key;
                 return (
