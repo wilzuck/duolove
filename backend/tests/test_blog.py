@@ -135,3 +135,50 @@ async def test_dates_d_ajout_et_de_publication_modifiables(app, db):
     # Un brouillon n'a pas de date de publication : elle est ignorée, et repasser en brouillon l'efface.
     r = await admin.patch(f"/api/admin/blog/{pid}", json={"status": "DRAFT", "publishedAt": "2026-03-02T12:00:00Z"})
     assert r.status_code == 200 and r.json()["publishedAt"] is None
+
+
+async def test_featured_article_is_exclusive_and_published_only(app, db):
+    admin = await _admin(app, db)
+    anon = new_agent(app)
+    cover = await _cover(admin)
+    mk = lambda s, **o: admin.post("/api/admin/blog", json=_payload(f"{s}-{uid()}", coverKey=cover["key"], coverAlt="Une image", **o))  # noqa: E731
+    a = (await mk("fa", status="PUBLISHED", featured=True)).json()
+    assert a["featured"] is True
+    b = (await mk("fb", status="PUBLISHED")).json()
+    assert b["featured"] is False
+    r = await admin.patch(f"/api/admin/blog/{b['id']}", json={"featured": True})
+    assert r.json()["featured"] is True
+    assert (await admin.get(f"/api/admin/blog/{a['id']}")).json()["featured"] is False  # un seul par langue
+    # Un brouillon ne peut pas être à la une ; dépublier retire la mise à la une.
+    d = (await mk("fd", featured=True)).json()
+    assert d["status"] == "DRAFT" and d["featured"] is False
+    assert (await admin.patch(f"/api/admin/blog/{b['id']}", json={"status": "DRAFT"})).json()["featured"] is False
+    # Public : le champ est exposé sur les cartes.
+    await admin.patch(f"/api/admin/blog/{a['id']}", json={"featured": True})
+    items = (await anon.get("/api/blog", params={"locale": "fr"})).json()["items"]
+    assert [i["slug"] for i in items if i["featured"]] == [a["slug"]]
+    await admin.patch(f"/api/admin/blog/{a['id']}", json={"featured": False})
+
+
+async def test_view_counter_and_public_visibility_setting(app, db):
+    admin = await _admin(app, db)
+    anon = new_agent(app)
+    cover = await _cover(admin)
+    p = (await admin.post("/api/admin/blog", json=_payload(f"vw-{uid()}", coverKey=cover["key"], coverAlt="Une image", status="PUBLISHED"))).json()
+    assert p["views"] == 0
+    for _ in range(3):
+        assert (await anon.post(f"/api/blog/{p['slug']}/view", params={"locale": "fr"})).status_code == 204
+    assert (await anon.post("/api/blog/inconnu-xyz/view", params={"locale": "fr"})).status_code == 204  # sans effet
+    assert (await admin.get(f"/api/admin/blog/{p['id']}")).json()["views"] == 3  # l'administration le voit toujours
+    # Masqué au public par défaut ; l'admin peut l'afficher.
+    assert (await admin.put("/api/admin/blog/settings", json={"showViews": False})).status_code == 200
+    detail = (await anon.get(f"/api/blog/{p['slug']}", params={"locale": "fr"})).json()
+    assert "views" not in detail and all("views" not in i for i in (await anon.get("/api/blog", params={"locale": "fr"})).json()["items"])
+    assert (await admin.put("/api/admin/blog/settings", json={"showViews": True})).json() == {"showViews": True}
+    assert (await anon.get(f"/api/blog/{p['slug']}", params={"locale": "fr"})).json()["views"] == 3
+    assert (await anon.put("/api/admin/blog/settings", json={"showViews": True})).status_code == 401
+    await admin.put("/api/admin/blog/settings", json={"showViews": False})
+    # Un brouillon n'est jamais compté.
+    d = (await admin.post("/api/admin/blog", json=_payload(f"vd-{uid()}"))).json()
+    await anon.post(f"/api/blog/{d['slug']}/view", params={"locale": "fr"})
+    assert (await admin.get(f"/api/admin/blog/{d['id']}")).json()["views"] == 0

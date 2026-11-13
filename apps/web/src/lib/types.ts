@@ -78,7 +78,7 @@ export interface LiveState {
 export interface LiveIncoming extends Card { inviteId: string; expiresAt: string }
 export interface LiveInvitesView { items: LiveIncoming[]; waiting: LiveIncoming[] }
 
-export interface BlogCard { id: string; slug: string; locale: string; title: string; excerpt: string; coverUrl: string | null; coverThumbUrl: string | null; coverAlt: string | null; publishedAt: string | null; readMinutes: number }
+export interface BlogCard { id: string; slug: string; locale: string; title: string; excerpt: string; coverUrl: string | null; coverThumbUrl: string | null; coverAlt: string | null; publishedAt: string | null; readMinutes: number; featured?: boolean; views?: number }
 export interface BlogPostFull extends BlogCard { body: string }
 export interface AdminBlogRow extends BlogCard { status: 'DRAFT' | 'PUBLISHED'; coverKey: string | null; createdAt: string; updatedAt: string }
 export interface AdminBlogPost extends AdminBlogRow { body: string }

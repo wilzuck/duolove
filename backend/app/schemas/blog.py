@@ -20,6 +20,7 @@ class PostIn(BaseModel):
     coverKey: str | None = None
     coverAlt: Trim(0, 200) | None = None
     status: Literal["DRAFT", "PUBLISHED"] = "DRAFT"
+    featured: bool | None = None
     createdAt: datetime.datetime | None = None  # date d'ajout (modifiable, jamais dans le futur)
     publishedAt: datetime.datetime | None = None  # date de publication affichée (modifiable, jamais dans le futur)
 
@@ -40,6 +41,7 @@ class PostPatch(BaseModel):
     coverKey: str | None = None
     coverAlt: Trim(0, 200) | None = None
     status: Literal["DRAFT", "PUBLISHED"] | None = None
+    featured: bool | None = None
     createdAt: datetime.datetime | None = None
     publishedAt: datetime.datetime | None = None
 

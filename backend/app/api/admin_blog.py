@@ -1,5 +1,6 @@
 """Administration du blog : brouillons, publication, images. Réservé aux ADMIN."""
 from fastapi import APIRouter, Depends, File, Response, UploadFile
+from pydantic import BaseModel
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,6 +20,22 @@ router = APIRouter(prefix="/admin/blog", tags=["admin"])
 async def list_all(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     rows = (await db.execute(select(BlogPost).order_by(desc(BlogPost.updatedAt)).limit(200))).scalars().all()
     return {"items": [blog.admin_row(p) for p in rows]}
+
+
+class ViewsSettingIn(BaseModel):
+    showViews: bool
+
+
+@router.get("/settings")
+async def get_settings_(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    return {"showViews": await blog.show_views(db)}
+
+
+@router.put("/settings")
+async def put_settings(body: ViewsSettingIn, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    await blog.set_show_views(db, body.showViews)
+    await audit(db, a.id, "blog.settings", "Setting", blog.SHOW_VIEWS_KEY, {"showViews": body.showViews})
+    return {"showViews": body.showViews}
 
 
 @router.post("/images", status_code=201)

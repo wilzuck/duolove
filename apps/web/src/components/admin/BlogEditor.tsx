@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ImagePlus, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, Dialog, Field, Input, Select, Spinner, Tabs, Textarea } from '@duomatch/ui';
+import { Badge, Button, Card, Dialog, Field, Input, Select, Spinner, Switch, Tabs, Textarea } from '@duomatch/ui';
 import { refreshBlogCache } from '@/app/actions/blog';
 import { RichTextEditor } from '@/components/admin/RichTextEditor';
 import { Markdown } from '@/components/marketing/Markdown';
@@ -32,7 +32,7 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
   const toast = useUi((s) => s.toast);
   const [f, setF] = useState(() => ({
     locale: post?.locale ?? 'fr', title: post?.title ?? '', slug: post?.slug ?? '', excerpt: post?.excerpt ?? '', body: post?.body ?? '',
-    coverKey: post?.coverKey ?? null as string | null, coverUrl: post?.coverUrl ?? null as string | null, coverAlt: post?.coverAlt ?? '', status: post?.status ?? 'DRAFT' as 'DRAFT' | 'PUBLISHED',
+    coverKey: post?.coverKey ?? null as string | null, coverUrl: post?.coverUrl ?? null as string | null, coverAlt: post?.coverAlt ?? '', status: post?.status ?? 'DRAFT' as 'DRAFT' | 'PUBLISHED', featured: post?.featured ?? false,
     createdAt: toLocal(post?.createdAt), publishedAt: toLocal(post?.publishedAt),
   }));
   const initial = { createdAt: toLocal(post?.createdAt), publishedAt: toLocal(post?.publishedAt) };
@@ -48,7 +48,7 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
         ...(f.createdAt && f.createdAt !== initial.createdAt ? { createdAt: new Date(f.createdAt).toISOString() } : {}),
         ...(f.publishedAt && f.publishedAt !== initial.publishedAt ? { publishedAt: new Date(f.publishedAt).toISOString() } : {}),
       };
-      const common = { slug: f.slug, title: f.title, excerpt: f.excerpt, body: f.body, coverKey: f.coverKey, coverAlt: f.coverAlt, status, ...dates };
+      const common = { slug: f.slug, title: f.title, excerpt: f.excerpt, body: f.body, coverKey: f.coverKey, coverAlt: f.coverAlt, status, featured: status === 'PUBLISHED' && f.featured, ...dates };
       return post ? patch<AdminBlogPost>(`/admin/blog/${post.id}`, common) : post_<AdminBlogPost>({ ...common, locale: f.locale });
     },
     onSuccess: async (saved, status) => {
@@ -56,7 +56,7 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
       await refreshBlogCache();
       toast('success', t(status === 'PUBLISHED' ? (post?.status === 'PUBLISHED' ? 'admin.blog.saved' : 'admin.blog.publishedOk') : post?.status === 'PUBLISHED' ? 'admin.blog.unpublishedOk' : 'admin.blog.saved'));
       if (!post) router.replace(`/admin/blog/${saved.id}`);
-      else set('status', saved.status);
+      else { set('status', saved.status); set('featured', !!saved.featured); }
     },
     onError: (e) => toast('error', err(e)),
   });
@@ -88,6 +88,7 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
         <Link href="/admin/blog" className="text-sm font-semibold text-brand-ink">← {t('admin.blog.back')}</Link>
         <div className="flex items-center gap-2">
           <Badge tone={published ? 'success' : 'neutral'}>{t(`admin.blog.${f.status}`)}</Badge>
+          {post && <Badge tone="neutral">{t('admin.blog.views')} : {post.views ?? 0}</Badge>}
           {post && published && <Link href={`/blog/${post.slug}`} target="_blank" className="text-sm font-semibold text-brand-ink underline">{t('admin.blog.view')}</Link>}
         </div>
       </div>
@@ -129,6 +130,11 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
           ) : (
             <div role="tabpanel" className="rounded-2xl border border-line p-5">{f.body.trim() ? <Markdown source={f.body} /> : <p className="text-muted">{t('admin.blog.previewEmpty')}</p>}</div>
           )}
+        </Card>
+
+        <Card className="flex items-center justify-between gap-4 p-5">
+          <div><h3 className="font-semibold">{t('admin.blog.featured')}</h3><p className="text-sm text-muted">{t(published ? 'admin.blog.featuredHint' : 'admin.blog.featuredDraft')}</p></div>
+          <Switch checked={f.featured && published} disabled={!published} onChange={(v) => set('featured', v)} label={t('admin.blog.featured')} />
         </Card>
 
         {!published && !f.coverUrl && <p className="text-sm text-muted">{t('errors.COVER_REQUIRED')}</p>}

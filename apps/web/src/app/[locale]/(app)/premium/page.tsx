@@ -38,7 +38,7 @@ export default function PremiumPage() {
       <PricingTable promo={promo} current={data.plan} action={(p, months) => p.code === 'FREE'
         ? <Button variant="outline" size="lg" disabled className="w-full">{data.plan === 'FREE' ? t('plans.current') : t('plans.included')}</Button>
         : <Button size="lg" className="w-full" variant={p.featured ? 'primary' : 'dark'} loading={pending && variables?.key === `${p.code}-${months}`}
-            onClick={() => pay({ key: `${p.code}-${months}`, body: { type: 'subscription', plan: p.code, months, promoCode: promo?.code } })}>{data.plan === p.code ? t('premium.extend') : t('premium.choose', { plan: p.name })}{promo ? ` · ${t('promo.discountBadge', { percent: promo.percent })}` : ''}</Button>} />
+            onClick={() => pay({ key: `${p.code}-${months}`, body: { type: 'subscription', plan: p.code, months, promoCode: promo?.code } })}>{data.plan === p.code ? t('premium.extend', { duration: months === 0 ? t('plans.week') : t('plans.months', { n: months }) }) : t('premium.choose', { plan: p.name })}{promo ? ` · ${t('promo.discountBadge', { percent: promo.percent })}` : ''}</Button>} />
       {data.subscription?.cancelAtPeriodEnd && <p className="text-center"><Button variant="secondary" onClick={() => resume.mutate()}>{t('premium.resume')}</Button></p>}
       <p className="text-center"><Link href="/shop" className="inline-flex items-center gap-2 font-semibold text-brand-ink underline"><ShoppingBag className="size-4" aria-hidden />{t('shop.linkFromPremium')}</Link></p>
     </div>

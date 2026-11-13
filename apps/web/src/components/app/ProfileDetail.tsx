@@ -11,6 +11,7 @@ import { Link } from '@/i18n/navigation';
 import { post } from '@/lib/api';
 import { useUi } from '@/lib/store';
 import { formatHeight } from '@/lib/format';
+import { interestIcon } from '@/lib/interestIcons';
 import { isCatalogValue, valueIcon } from '@/lib/lifeValues';
 import { ZODIAC, zodiacRange } from '@/lib/zodiac';
 import type { Card, SwipeResult } from '@/lib/types';
@@ -122,7 +123,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
           <section><h3 className="mb-3 text-xl font-bold">{t('profile.interests')}</h3>
             <ul className="flex flex-wrap gap-2">{[...card.interests].sort((a, b) => Number(card.commonInterests.includes(b)) - Number(card.commonInterests.includes(a))).map((s) => {
               const common = card.commonInterests.includes(s);
-              return <li key={s}><Badge tone={common ? 'brand' : 'neutral'} className={cn(CHIP, common && 'border border-brand-strong/70')}>{t(`interest.${s}` as never)}</Badge></li>;
+              return <li key={s}><Badge tone={common ? 'brand' : 'neutral'} className={cn(CHIP, common && 'border border-brand-strong/70')}>{(() => { const Icon = interestIcon(s); return <Icon aria-hidden />; })()}{t(`interest.${s}` as never)}</Badge></li>;
             })}</ul>
           </section>
         )}

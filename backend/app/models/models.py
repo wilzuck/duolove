@@ -345,6 +345,8 @@ class BlogPost(Base):
     coverAlt: Mapped[Optional[str]] = mapped_column(Text)
     status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'DRAFT'::text"))
     publishedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    featured: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'), default=False)
+    views: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'), default=0)
     authorId: Mapped[Optional[str]] = mapped_column(Text)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)

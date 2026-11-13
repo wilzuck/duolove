@@ -177,7 +177,7 @@ export function useDirty<T>(initial: T | undefined) {
   return { value: (draft ?? initial) as T, set: setDraft, dirty: draft !== undefined, reset: () => setDraft(undefined) };
 }
 export const SaveBar = ({ dirty, loading, label, onSave }: { dirty: boolean; loading: boolean; label: string; onSave: () => void }) => (
-  <div className="sticky bottom-20 z-20 flex justify-end lg:bottom-4">{dirty && <Button size="lg" loading={loading} onClick={onSave} className="shadow-pop">{label}</Button>}</div>
+  <div className="sticky bottom-20 z-30 flex justify-end lg:bottom-20">{dirty && <Button size="lg" loading={loading} onClick={onSave} className="shadow-pop">{label}</Button>}</div>
 );
 
 /** « Ce qui compte le plus pour moi » : 3 valeurs au plus, du catalogue ou écrites par la personne. */

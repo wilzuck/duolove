@@ -1,8 +1,9 @@
-import { Clock } from 'lucide-react';
+import { Clock, Eye } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button } from '@duomatch/ui';
 import { Markdown } from '@/components/marketing/Markdown';
+import { ViewBeacon } from '@/components/marketing/ViewBeacon';
 import { Link } from '@/i18n/navigation';
 import { fetchPost } from '@/lib/blog';
 import { formatDate } from '@/lib/format';
@@ -25,11 +26,13 @@ export default async function Post({ params }: { params: Promise<{ locale: strin
   if (!post) notFound();
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 md:py-16">
+      <ViewBeacon slug={post.slug} locale={locale} />
       <Link href="/blog" className="text-sm font-semibold text-brand-ink">← {t('blog.back')}</Link>
       <h1 className="mt-4 text-balance text-4xl font-extrabold md:text-5xl">{post.title}</h1>
       <p className="mt-3 flex flex-wrap items-center gap-x-3 text-sm text-muted">
         {post.publishedAt && <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>}
         <span className="inline-flex items-center gap-1"><Clock className="size-3.5" aria-hidden />{t('blog.minutes', { n: post.readMinutes })}</span>
+        {post.views !== undefined && <span className="inline-flex items-center gap-1"><Eye className="size-3.5" aria-hidden />{t('blog.views', { n: post.views })}</span>}
       </p>
       {post.coverUrl && <img src={post.coverUrl} alt={post.coverAlt ?? ''} width={1600} height={900} className="mt-8 aspect-video w-full rounded-3xl object-cover shadow-soft" />}
       <p className="mt-8 text-xl text-muted">{post.excerpt}</p>

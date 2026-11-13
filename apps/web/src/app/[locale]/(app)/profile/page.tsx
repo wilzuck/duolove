@@ -92,6 +92,10 @@ function ProfileEditor() {
         <div><h2 className="flex items-center gap-2 font-bold"><Rocket className="size-5 text-brand" aria-hidden />{t('profile.boost')}</h2><p className="text-sm text-muted">{boosted ? t('profile.boostActive') : t('profile.boostShopText')}</p></div>
         <Link href="/shop"><Button variant="outline">{t('profile.boostCta')}</Button></Link>
       </Card>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link href="/profile"><Button variant="outline" size="sm"><Eye className="size-4" aria-hidden />{t('profile.previewCta')}</Button></Link>
+        {(about || life || pref) && <Button variant="ghost" onClick={() => { setAbout(null); setLife(null); setPref(null); }}>{t('profile.cancelChanges')}</Button>}
+      </div>
       <SaveBar dirty={!!about || !!life || !!pref} loading={save.isPending} label={t('common.save')} onSave={() => save.mutate()} />
     </div>
   );

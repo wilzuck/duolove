@@ -7,7 +7,7 @@ import re
 import secrets
 import unicodedata
 
-from sqlalchemy import select
+from sqlalchemy import select, update as sql_update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import storage
@@ -47,13 +47,40 @@ def iso(d):
     return d.isoformat(timespec="milliseconds") + "Z" if d else None
 
 
-def card(p: BlogPost) -> dict:
+SHOW_VIEWS_KEY = "blog.showViews"
+
+
+async def show_views(db: AsyncSession) -> bool:
+    """Affichage public du nombre de visites : désactivé par défaut, activable par l'administration."""
+    from app.models.models import SystemSetting
+
+    v = (await db.execute(select(SystemSetting.value).where(SystemSetting.key == SHOW_VIEWS_KEY))).scalar_one_or_none()
+    return bool(v.get("enabled")) if isinstance(v, dict) else False
+
+
+async def set_show_views(db: AsyncSession, enabled: bool) -> bool:
+    from app.models.models import SystemSetting
+
+    row = await db.get(SystemSetting, SHOW_VIEWS_KEY)
+    if row:
+        row.value = {"enabled": enabled}
+    else:
+        db.add(SystemSetting(key=SHOW_VIEWS_KEY, value={"enabled": enabled}))
+    await db.commit()
+    return enabled
+
+
+def card(p: BlogPost, views: bool = False) -> dict:
+    return {**_card(p), **({"views": p.views or 0} if views else {})}
+
+
+def _card(p: BlogPost) -> dict:
     return {"id": p.id, "slug": p.slug, "locale": p.locale, "title": p.title, "excerpt": p.excerpt, "coverUrl": url_of(p.coverKey),
-            "coverThumbUrl": thumb_url_of(p.coverKey), "coverAlt": p.coverAlt, "publishedAt": iso(p.publishedAt), "readMinutes": read_minutes(p.body)}
+            "coverThumbUrl": thumb_url_of(p.coverKey), "coverAlt": p.coverAlt, "publishedAt": iso(p.publishedAt), "readMinutes": read_minutes(p.body), "featured": bool(p.featured)}
 
 
 def admin_row(p: BlogPost) -> dict:
-    return {**card(p), "status": p.status, "coverKey": p.coverKey, "createdAt": iso(p.createdAt), "updatedAt": iso(p.updatedAt)}
+    return {**card(p, views=True), "status": p.status, "coverKey": p.coverKey, "createdAt": iso(p.createdAt), "updatedAt": iso(p.updatedAt)}
 
 
 async def upload_image(data: bytes) -> dict:
@@ -98,14 +125,27 @@ def _utc(d):
     return d
 
 
+async def _apply_featured(db: AsyncSession, p: BlogPost, wanted: bool | None) -> None:
+    """Un seul article « à la une » par langue, et seulement parmi les publiés ; dépublier retire la mise à la une."""
+    if p.status != "PUBLISHED":
+        p.featured = False
+        return
+    if wanted is not None:
+        p.featured = wanted
+    if p.featured:
+        await db.execute(sql_update(BlogPost).where(BlogPost.locale == p.locale, BlogPost.id != p.id, BlogPost.featured.is_(True)).values(featured=False))
+
+
 async def create(db: AsyncSession, data: dict, author_id: str) -> BlogPost:
     p = BlogPost(**{k: data[k] for k in ("slug", "locale", "title", "excerpt", "body", "coverKey", "coverAlt", "status")}, authorId=author_id)
     p.id = secrets.token_hex(12)
+    p.featured = False
     if p.status == "PUBLISHED":
         p.publishedAt = _utc(data.get("publishedAt")) or utcnow()
     if data.get("createdAt"):
         p.createdAt = _utc(data["createdAt"])
     await _check(db, p)
+    await _apply_featured(db, p, data.get("featured"))
     db.add(p)
     await db.commit()
     return p
@@ -117,6 +157,7 @@ async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
         raise not_found("POST_NOT_FOUND")
     old_cover = p.coverKey
     created_at, published_at = _utc(data.pop("createdAt", None)), _utc(data.pop("publishedAt", None))
+    wanted_featured = data.pop("featured", None)
     for k, v in data.items():
         setattr(p, k, v)
     if "status" in data:
@@ -129,6 +170,7 @@ async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
     if published_at and p.status == "PUBLISHED":  # la date de publication n'a de sens que pour un article publié
         p.publishedAt = published_at
     await _check(db, p)
+    await _apply_featured(db, p, wanted_featured)
     await db.commit()
     if "coverKey" in data and old_cover and old_cover != p.coverKey:
         await delete_cover_files(db, old_cover)

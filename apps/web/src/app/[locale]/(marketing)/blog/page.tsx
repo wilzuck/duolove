@@ -1,4 +1,4 @@
-import { ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight, Clock, Eye } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Card } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
@@ -14,11 +14,13 @@ export default async function Blog({ params }: { params: Promise<{ locale: strin
   const { locale } = await params;
   setRequestLocale(locale);
   const [t, posts] = await Promise.all([getTranslations(), fetchPosts(locale)]);
-  const [first, ...rest] = posts;
-  const meta = (p: { publishedAt: string | null; readMinutes: number }) => (
+  const first = posts.find((p) => p.featured) ?? posts[0];  // l'article « à la une » choisi par l'administration, sinon le plus récent
+  const rest = posts.filter((p) => p !== first);
+  const meta = (p: { publishedAt: string | null; readMinutes: number; views?: number }) => (
     <p className="flex flex-wrap items-center gap-x-3 text-sm text-muted">
       {p.publishedAt && <time dateTime={p.publishedAt}>{formatDate(p.publishedAt, locale)}</time>}
       <span className="inline-flex items-center gap-1"><Clock className="size-3.5" aria-hidden />{t('blog.minutes', { n: p.readMinutes })}</span>
+      {p.views !== undefined && <span className="inline-flex items-center gap-1"><Eye className="size-3.5" aria-hidden />{t('blog.views', { n: p.views })}</span>}
     </p>
   );
   return (
