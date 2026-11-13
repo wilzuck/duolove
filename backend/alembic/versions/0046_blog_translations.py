@@ -21,13 +21,15 @@ branch_labels = None
 depends_on = None
 
 DIR = os.path.join(os.path.dirname(__file__), "..", "..", "app", "assets", "blog", "en")
+# Les 15 premières traductions ; les suivantes sont ajoutées par leurs propres migrations (0048…).
+FIRST = {"01", "02", "03", "07", "08", "09", "12", "21", "22", "26", "27", "28", "33", "41", "43"}
 HEAD = re.compile(r"\A---\n(.*?)\n---\n(.*)\Z", re.S)
 
 
 def _articles() -> list[dict]:
     out = []
     for name in sorted(os.listdir(DIR)):
-        if not name.endswith(".md"):
+        if not name.endswith(".md") or name[:2] not in FIRST:
             continue
         m = HEAD.match(open(os.path.join(DIR, name), encoding="utf-8").read().replace("\r\n", "\n"))
         if not m:

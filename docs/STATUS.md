@@ -539,3 +539,9 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 ## Blog : « mode privé » remplacé par « mode discret » (livré)
 
 - **Terminé** : l'ancien nom « mode privé » restait dans 9 articles français (02, 03, 06, 10, 14, 16, 17, 18, 19 ; 12 occurrences). Fichiers corrigés et migration `0047` qui remplace seulement l'expression en base (titre, résumé, corps), sans écraser les autres modifications faites dans l'admin ; deux phrases ajustées pour éviter la répétition de « discret ». Vérifié en local : plus aucune occurrence, texte en base identique aux fichiers pour les 45 articles.
+
+## Blog : 10 traductions anglaises de plus (livré)
+
+- **Terminé** : 10 articles de plus adaptés en anglais (`backend/app/assets/blog/en/`) : bien terminer une conversation, les 48 premières heures après un match, réussir un premier appel, questions du profil, filtres de découverte, rencontrer quand on est timide, photos et appels dans la conversation, dire non gentiment, idées de premier rendez-vous, qui paie au premier rendez-vous. Migration `0048` : ajout en **brouillon, sans image**, liés à leur article français, conservés en production (la `0046` est désormais limitée à ses 15 articles). Noms des fonctions alignés sur l'appli anglaise ; aucun prix ajouté (seuls chiffres : ceux des articles français).
+- **Vérifié** : migration aller-retour ; tests du blog ; en local, les 10 pages anglaises s'affichent sans Markdown brut, lien FR↔EN dans les deux sens (hreflang), changement de langue dans le navigateur vers l'article correspondant. 25 articles anglais au total.
+- **À faire (admin)** : image de couverture + texte alternatif, puis publier. Non relus par un anglophone.
