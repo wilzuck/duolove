@@ -81,7 +81,7 @@ export function MaintenanceScreen({ onRetry, retrying }: { onRetry: () => void; 
           <div aria-hidden className="mt-3 flex gap-1.5">{Array.from({ length: DOTS }, (_, i) => <span key={i} className={`h-1.5 rounded-full transition-all ${i === tip % DOTS ? 'w-6 bg-brand-strong' : 'w-1.5 bg-line'}`} />)}</div>
         </div>
         <p className="flex max-w-xs items-start gap-2 text-left text-sm text-muted sm:max-w-none sm:items-center">
-          <span aria-hidden className="relative mt-[0.4em] flex size-2.5 shrink-0 sm:mt-0"><span className="absolute inline-flex size-full rounded-full bg-success-ink/60 motion-safe:animate-ping" /><span className="relative inline-flex size-2.5 rounded-full bg-success-ink" /></span>
+          <span aria-hidden className="relative mt-[0.4em] flex size-2.5 shrink-0 sm:mt-0"><span className="absolute inline-flex size-full rounded-full bg-green-400 opacity-75 motion-safe:animate-ping" /><span className="relative inline-flex size-2.5 rounded-full bg-green-500" /></span>
           {t('maintenance.auto')}
         </p>
         <div className="flex flex-col items-stretch gap-3 pt-1 sm:flex-row">
