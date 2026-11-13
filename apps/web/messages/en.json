@@ -4996,5 +4996,14 @@
     "newCodes": "New recovery codes",
     "disable": "Turn off",
     "disabled": "Two-step verification turned off."
+  },
+  "errorPage": {
+    "title": "This page could not be displayed",
+    "text": "A small technical issue on our side. Try again: if it continues, reload the page.",
+    "updating": "Updating Crushduo…",
+    "updatingText": "A new version has just been released: the page is reloading.",
+    "retry": "Try again",
+    "reload": "Reload the page",
+    "home": "Home"
   }
 }

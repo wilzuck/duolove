@@ -20,6 +20,8 @@ FROM base AS run
 ENV NODE_ENV=production
 COPY --from=build /app /app
 WORKDIR /app/apps/web
+# Le serveur tourne en « node » : il doit pouvoir écrire son cache (pages et requêtes mises en cache, sinon EACCES à chaque revalidation).
+RUN mkdir -p .next/cache && chown -R node:node .next
 EXPOSE 3000
 USER node
 CMD ["pnpm", "exec", "next", "start", "-p", "3000"]

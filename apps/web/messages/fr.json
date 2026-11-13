@@ -4996,5 +4996,14 @@
     "newCodes": "Nouveaux codes de secours",
     "disable": "Désactiver",
     "disabled": "Double authentification désactivée."
+  },
+  "errorPage": {
+    "title": "Cette page n’a pas pu s’afficher",
+    "text": "Un petit souci technique de notre côté. Réessayez : si cela continue, rechargez la page.",
+    "updating": "Mise à jour de Crushduo…",
+    "updatingText": "Une nouvelle version vient d’être mise en ligne : la page se recharge.",
+    "retry": "Réessayer",
+    "reload": "Recharger la page",
+    "home": "Accueil"
   }
 }
