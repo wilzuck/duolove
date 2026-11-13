@@ -60,7 +60,7 @@ async def send(conversation_id: str, body: MessageIn, u: AuthUser = Depends(veri
 async def image(conversation_id: str, file: UploadFile | None = File(None), u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     # Photos dans les messages : réservées aux formules qui l'incluent (fonctionnalité `chat_images_enabled`, réglable en administration).
     if not (await entitlements.get(db, u.id))["limits"]["chatImages"]:
-        raise forbidden("PLAN_REQUIRED", "L’envoi de photos est réservé aux abonnés Premium et VIP")
+        raise forbidden("PLAN_REQUIRED", "L’envoi de photos est réservé aux abonnés Premium, VIP et Gold")
     if file is None:
         raise bad_request("FILE_REQUIRED")
     data = await file.read(MAX_IMAGE + 1)
@@ -93,7 +93,7 @@ async def icebreakers_for(conversation_id: str, seed: int = Query(0, ge=0, le=10
                           u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     """« Besoin d'une idée pour commencer ? » : sujets déduits des éléments communs. Rien n'est envoyé : le membre choisit et édite le texte."""
     if not (await entitlements.get(db, u.id))["limits"]["chatSuggestions"]:
-        raise forbidden("PLAN_REQUIRED", "Les idées pour briser la glace sont réservées aux abonnés Premium et VIP")
+        raise forbidden("PLAN_REQUIRED", "Les idées pour briser la glace sont réservées aux abonnés Premium, VIP et Gold")
     return await icebreakers.suggestions(db, u.id, conversation_id, seed, locale)
 
 
@@ -102,7 +102,7 @@ async def coach_for(conversation_id: str, seed: int = Query(0, ge=0, le=1000), l
                     u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     """Coach de premier message : idées tirées de ce que l'autre personne a écrit sur elle. Mêmes droits que les brise-glace ; rien n'est envoyé."""
     if not (await entitlements.get(db, u.id))["limits"]["chatSuggestions"]:
-        raise forbidden("PLAN_REQUIRED", "Les idées pour briser la glace sont réservées aux abonnés Premium et VIP")
+        raise forbidden("PLAN_REQUIRED", "Les idées pour briser la glace sont réservées aux abonnés Premium, VIP et Gold")
     return await icebreakers.coach(db, u.id, conversation_id, seed, locale)
 
 

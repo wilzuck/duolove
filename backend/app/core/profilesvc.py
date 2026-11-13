@@ -113,7 +113,7 @@ async def set_visibility(db: AsyncSession, user_id: str, visibility: str) -> Non
 async def set_incognito(db: AsyncSession, user_id: str, incognito: bool) -> None:
     e = await entitlements.get(db, user_id)
     if incognito and not e["limits"]["incognito"]:
-        raise forbidden("PLAN_REQUIRED", "Le mode discret est réservé à la formule VIP")
+        raise forbidden("PLAN_REQUIRED", "Le mode discret est réservé aux formules VIP et Gold")
     await db.execute(update(Profile).where(Profile.userId == user_id).values(incognito=incognito))
     await db.commit()
 
@@ -121,7 +121,7 @@ async def set_incognito(db: AsyncSession, user_id: str, incognito: bool) -> None
 async def set_read_receipts(db: AsyncSession, user_id: str, value: bool) -> None:
     """Désactiver les accusés de lecture est une option de formule (`read_receipts_control`, réglable par l'administration)."""
     if value is False and not (await entitlements.get(db, user_id))["limits"]["readReceiptsControl"]:
-        raise forbidden("PLAN_REQUIRED", "La gestion des accusés de lecture est réservée aux abonnés Premium et VIP")
+        raise forbidden("PLAN_REQUIRED", "La gestion des accusés de lecture est réservée aux abonnés Premium, VIP et Gold")
     await db.execute(update(Profile).where(Profile.userId == user_id).values(readReceipts=value))
     await db.commit()
 

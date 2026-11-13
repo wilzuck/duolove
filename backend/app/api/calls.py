@@ -21,7 +21,7 @@ class CallIn(BaseModel):
 async def start(conversation_id: str, body: CallIn, u: AuthUser = U, db: AsyncSession = Depends(get_db)):
     # Lancer un appel est réservé aux formules qui l'incluent ; répondre à un appel reste possible pour tous.
     if not (await entitlements.get(db, u.id))["limits"]["calls"]:
-        raise forbidden("PLAN_REQUIRED", "Les appels sont réservés aux abonnés Premium et VIP")
+        raise forbidden("PLAN_REQUIRED", "Les appels sont réservés aux abonnés Premium, VIP et Gold")
     return await callsvc.start(db, u.id, conversation_id, body.kind)
 
 

@@ -79,7 +79,7 @@ Une offre qui vous respecte se reconnaît à des détails, et vous pouvez les ch
 
 Autant être direct : voici comment cela fonctionne chez nous, pour que vous puissiez comparer avec le reste.
 
-Vous commencez par un **essai gratuit**, pour regarder de l'intérieur. Ensuite, trois formules existent : **Gratuit**, **Premium** et **VIP**. Les deux dernières se paient **en une fois, pour une durée que vous choisissez**. Il n'y a **jamais de prélèvement automatique** : à la fin de la période, l'accès s'arrête de lui-même, et si vous voulez continuer, vous renouvelez volontairement.
+Vous commencez par un **essai gratuit**, pour regarder de l'intérieur. Ensuite, quatre formules existent : **Gratuit**, **Premium**, **VIP** et **Gold**. Les trois formules payantes se paient **en une fois, pour une durée que vous choisissez**. Il n'y a **jamais de prélèvement automatique** : à la fin de la période, l'accès s'arrête de lui-même, et si vous voulez continuer, vous renouvelez volontairement.
 
 Avant l'échéance, vous recevez des **rappels**. Ils sont là pour que la fin ne soit jamais une surprise, ni dans un sens ni dans l'autre. Les profils dont l'identité est confirmée, avec le badge « profil vérifié », peuvent bénéficier d'une **réduction**, selon les conditions affichées sur la page des offres : lisez-les, ce sont elles qui font foi.
 

@@ -470,3 +470,8 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 - **Gold (navigateur, base de test)** : page Tarifs à 4 colonnes, Gold à 10 000 FCFA avec ses 3 avantages phares ; achat simulé → Gold actif 30 jours, 30 Super Likes/semaine, 6 boosts et 30 jetons crédités, mode discret, visibilité prioritaire ; facture « Gold · 1 mois · 10 000 FCFA » ; badge Gold (diamant doré) à côté du nom ; Gold visible et réglable dans Admin › Offres. **Bug corrigé** : la traduction « Visibilité prioritaire… » avait été insérée dans une autre section (le libellé brut s'affichait) ; clés FR/EN vérifiées identiques.
 - **Thème et langue** : changer de langue recréait la balise `<html>` sans l'attribut de thème (le script initial ne tourne qu'au premier chargement) : un thème sombre ou clair choisi était perdu. Corrigé par `components/ThemeSync.tsx` ; vérifié dans les deux sens (sombre FR→EN→FR, clair FR→EN).
+
+## Textes à jour avec Gold (livré)
+
+- **Terminé** : tous les textes visibles qui parlaient de « Premium et VIP » ou de « trois formules » mentionnent Gold (FR/EN : accueil, FAQ, centre d'aide, page « De quoi ai-je besoin ? », messagerie, paramètres, verrous de fonctions, admin) ; mode discret « VIP et Gold » ; messages d'erreur du serveur (photos, idées, appels, rendez-vous, accusés de lecture, mode discret). Articles de blog 04, 09 et 20 corrigés dans les fichiers source et en base par la migration `0042` (remplacement exact de la phrase d'origine ; un texte modifié par l'administration n'est pas touché) ; au passage, « Gratuit … se paie » corrigé en « formules payantes ».
+- **Non modifié** : documents internes (`docs/*.md`) qui décrivent l'historique.

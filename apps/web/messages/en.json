@@ -117,7 +117,7 @@
     "benefitsTitle": "Everything for a meeting that matters",
     "howTitle": "How it works",
     "plansTitle": "Simple, transparent plans",
-    "plansSubtitle": "Start for free. Upgrade to Premium or VIP whenever you like, no commitment.",
+    "plansSubtitle": "Start for free. Upgrade to Premium, VIP or Gold whenever you like, no commitment.",
     "faqTitle": "Frequently asked questions",
     "finalTitle": "Ready to meet someone great?",
     "finalText": "Create your profile in a few minutes. Signing up is free.",
@@ -196,7 +196,7 @@
         "text": "Suggest a date in a public place, pick the time, set a reminder and share the details with someone you trust, only if you decide to."
       },
       "premium": {
-        "title": "Go further with Premium / VIP (optional)",
+        "title": "Go further with Premium, VIP or Gold (optional)",
         "text": "More visibility and tools, never a guaranteed duo. Blocking, reporting and safety stay free for everyone."
       }
     },
@@ -232,11 +232,11 @@
       ]
     },
     "plansPaid": {
-      "h": "Premium and VIP",
+      "h": "Premium, VIP and Gold",
       "items": [
         "More likes, see who liked you, advanced filters",
         "Go back to a passed profile, photos in messages, control of “seen” receipts",
-        "Boosts and incognito mode with VIP. Details and prices on the Pricing page"
+        "Boosts and incognito mode with VIP and Gold. Details and prices on the Pricing page"
       ]
     },
     "plansCta": "See pricing",
@@ -252,7 +252,7 @@
     },
     "free": {
       "q": "Is Crushduo free?",
-      "a": "Yes: profile, discovery, duos and post-duo messaging are free, with a daily like limit. Premium and VIP unlock more features."
+      "a": "Yes: profile, discovery, duos and post-duo messaging are free, with a daily like limit. Premium, VIP and Gold unlock more features."
     },
     "safety": {
       "q": "How are you protected?",
@@ -530,7 +530,7 @@
         },
         {
           "q": "Is Crushduo free?",
-          "a": "Yes to get started: profile, discovery, daily picks, duos and messaging are free, with a daily number of likes. Premium and VIP add features, without ever guaranteeing a duo."
+          "a": "Yes to get started: profile, discovery, daily picks, duos and messaging are free, with a daily number of likes. Premium, VIP and Gold add features, without ever guaranteeing a duo."
         },
         {
           "q": "I did not receive the confirmation email",
@@ -578,7 +578,7 @@
         },
         {
           "q": "What are read receipts?",
-          "a": "The “seen” indicator shows that a message was read. Premium and VIP members can turn off sending their receipts in Settings → Privacy; the typing indicator can be turned off by everyone."
+          "a": "The “seen” indicator shows that a message was read. Premium, VIP and Gold members can turn off sending their receipts in Settings → Privacy; the typing indicator can be turned off by everyone."
         },
         {
           "q": "How do I suggest a date?",
@@ -660,7 +660,7 @@
         },
         {
           "q": "How do I hide my profile or take a break?",
-          "a": "Settings → Privacy → turn off “Visible profile”. Come back whenever you like. Incognito mode is reserved for VIP."
+          "a": "Settings → Privacy → turn off “Visible profile”. Come back whenever you like. Incognito mode is reserved for VIP and Gold."
         },
         {
           "q": "Can I get my data or delete my account?",
@@ -1724,7 +1724,7 @@
     "limitTitle": "Like limit reached",
     "limitText": "You’ve used all your likes for today. Come back tomorrow or go Premium for more.",
     "planTitle": "Premium feature",
-    "planText": "This feature is part of the Premium and VIP plans.",
+    "planText": "This feature is part of the Premium, VIP and Gold plans.",
     "noSuperTitle": "No Super Like available",
     "noSuperText": "You have no Super Like available. Buy a pack or go Premium to get some every week.",
     "buyPack": "Buy a pack",
@@ -1778,21 +1778,21 @@
     "boostText": "Put your profile at the top of the list for the length of the boost and get more visibility."
   },
   "chat": {
-    "callsLocked": "Calls: Premium and VIP only",
-    "datesLocked": "Dates: Premium and VIP only",
-    "ideasLocked": "Conversation ideas: Premium and VIP only",
+    "callsLocked": "Calls: Premium, VIP and Gold only",
+    "datesLocked": "Dates: Premium, VIP and Gold only",
+    "ideasLocked": "Conversation ideas: Premium, VIP and Gold only",
     "planGate": {
       "ideas": {
         "title": "Ideas to break the ice",
-        "text": "Topic ideas drawn from what you have in common are reserved for Premium and VIP members."
+        "text": "Topic ideas drawn from what you have in common are reserved for Premium, VIP and Gold members."
       },
       "calls": {
         "title": "Audio and video calls",
-        "text": "Starting a call is reserved for Premium and VIP members. You can still answer a call you receive."
+        "text": "Starting a call is reserved for Premium, VIP and Gold members. You can still answer a call you receive."
       },
       "dates": {
         "title": "Propose a date",
-        "text": "Proposing a date is reserved for Premium and VIP members. You can still reply to a proposal you receive."
+        "text": "Proposing a date is reserved for Premium, VIP and Gold members. You can still reply to a proposal you receive."
       }
     },
     "imagePreview": "Photo ready to send",
@@ -1832,7 +1832,7 @@
     "scamWarning": "Never send money or share a number, code or bank details with someone you don’t know. Report any suspicious request from the ⋮ menu.",
     "attachLocked": "Send a photo (subscribers only)",
     "imagePlanTitle": "Photos are for subscribers",
-    "imagePlanText": "Sending photos in messages is included in the Premium and VIP plans. You can still write for free and receive photos.",
+    "imagePlanText": "Sending photos in messages is included in the Premium, VIP and Gold plans. You can still write for free and receive photos.",
     "seePlans": "See plans",
     "react": "React",
     "reply": "Reply",
@@ -2134,9 +2134,9 @@
       "visibleText": "Turn off to stop appearing in discovery.",
       "receipts": "Read receipts",
       "receiptsText": "Lets others see that you read their messages.",
-      "incognito": "Incognito mode (VIP)",
+      "incognito": "Incognito mode (VIP and Gold)",
       "incognitoText": "Visible only to people you liked.",
-      "incognitoLocked": "Reserved for the VIP plan.",
+      "incognitoLocked": "Reserved for the VIP and Gold plans.",
       "marketing": "Marketing communications",
       "marketingText": "Receive our news and offers. Never required.",
       "location": "Approximate location",
@@ -2157,7 +2157,7 @@
       "deleteFinal": "Delete permanently",
       "typing": "Typing indicator",
       "typingText": "Shows when you are typing and lets you see when the other person is. When off, nobody sees the other typing.",
-      "receiptsLocked": "Managing read receipts is reserved for Premium and VIP members: your receipts stay on.",
+      "receiptsLocked": "Managing read receipts is reserved for Premium, VIP and Gold members: your receipts stay on.",
       "receiptsUpgrade": "Go Premium",
       "activity": "Show my activity",
       "activityText": "Shows “online” or “active today” to people you have a duo with. When off, you do not see theirs either, unless you have discreet mode."
@@ -3148,7 +3148,7 @@
       "reports": "Reports sent by members: review them, then resolve or dismiss.",
       "contact": "Messages received from the Contact page: reply, sort, archive.",
       "payments": "All payments of the last 30 days.",
-      "subscriptions": "Premium and VIP subscriptions, their status and end date.",
+      "subscriptions": "Premium, VIP and Gold subscriptions, their status and end date.",
       "audit": "Who did what in the administration, and when: useful to understand a change.",
       "moderation": "Selfies to verify, appeals from sanctioned members and published photos.",
       "stats": "Evolution over time: members, likes, duos, Crush, subscriptions and revenue, compared with the previous period.",
@@ -3316,7 +3316,7 @@
         "contact": "Messages from the Contact form",
         "newsletter": "Write and send",
         "emails": "Emails sent, failed",
-        "subscriptions": "Premium and VIP subscribers",
+        "subscriptions": "Premium, VIP and Gold subscribers",
         "plans": "Plans, prices, features",
         "promos": "Discount codes",
         "payments": "Payments",
@@ -3346,7 +3346,7 @@
         "s2": "Open their profile",
         "h2": "Current plan shown",
         "s3": "Gift a plan",
-        "h3": "Premium or VIP + duration",
+        "h3": "Premium, VIP or Gold + duration",
         "s4": "Ends automatically",
         "h4": "Back to Free at the end date"
       },
@@ -4715,8 +4715,8 @@
     "title": "What do I need?",
     "lead": "Start from what you want to do: we tell you which plan allows it.",
     "free": "Free",
-    "premium": "Premium or VIP",
-    "vip": "VIP",
+    "premium": "Premium, VIP or Gold",
+    "vip": "VIP or Gold",
     "shop": "Shop",
     "items": {
       "liked": {
@@ -4736,7 +4736,7 @@
       },
       "visible": {
         "h": "Be more visible",
-        "p": "Boosts one at a time in the shop, and discreet mode with VIP.",
+        "p": "Boosts one at a time in the shop, and discreet mode with VIP and Gold.",
         "who": "vip"
       },
       "safe": {

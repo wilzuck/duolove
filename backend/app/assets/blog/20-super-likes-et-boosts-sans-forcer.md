@@ -82,7 +82,7 @@ Il faut aussi accepter l'inverse : une réponse ne vient pas toujours d'un geste
 
 ## Un budget raisonnable
 
-Les formules Gratuit, Premium et VIP se paient en une fois, par paiement mobile money, sans renouvellement automatique : vous gardez la main sur ce que vous dépensez. Pour les options de mise en avant, la règle utile est celle d'un plafond fixé à l'avance.
+Les formules payantes, Premium, VIP et Gold, se paient en une fois, par paiement mobile money, sans renouvellement automatique : vous gardez la main sur ce que vous dépensez. Pour les options de mise en avant, la règle utile est celle d'un plafond fixé à l'avance.
 
 Un bon réflexe : décidez, avant d'ouvrir l'application, de la somme que vous êtes prêt à consacrer ce mois-ci à ces options. Si vous l'avez atteinte, c'est terminé, sans culpabilité et sans « juste une dernière fois ». Cette limite protège votre budget, mais surtout votre humeur.
 

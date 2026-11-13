@@ -117,7 +117,7 @@
     "benefitsTitle": "Tout pour une rencontre qui compte",
     "howTitle": "Comment ça marche",
     "plansTitle": "Des formules simples et transparentes",
-    "plansSubtitle": "Commencez gratuitement. Passez à Premium ou VIP quand vous le souhaitez, sans engagement.",
+    "plansSubtitle": "Commencez gratuitement. Passez à Premium, VIP ou Gold quand vous le souhaitez, sans engagement.",
     "faqTitle": "Questions fréquentes",
     "finalTitle": "Prêt(e) à rencontrer quelqu’un de bien ?",
     "finalText": "Créez votre profil en quelques minutes. L’inscription est gratuite.",
@@ -196,7 +196,7 @@
         "text": "Proposez un rendez-vous dans un lieu public, choisissez l’horaire, réglez un rappel et partagez les détails avec une personne de confiance, uniquement si vous le décidez."
       },
       "premium": {
-        "title": "Allez plus loin avec Premium / VIP (facultatif)",
+        "title": "Allez plus loin avec Premium, VIP ou Gold (facultatif)",
         "text": "Plus de visibilité et d’outils, sans jamais garantir un duo. Le blocage, le signalement et la sécurité restent gratuits pour tous."
       }
     },
@@ -232,11 +232,11 @@
       ]
     },
     "plansPaid": {
-      "h": "Premium et VIP",
+      "h": "Premium, VIP et Gold",
       "items": [
         "Plus de likes, voir qui vous a liké, filtres avancés",
         "Retour sur un profil passé, photos dans les messages, gestion des accusés « vu »",
-        "Boosts et mode discret avec VIP. Détails et tarifs sur la page Tarifs"
+        "Boosts et mode discret avec VIP et Gold. Détails et tarifs sur la page Tarifs"
       ]
     },
     "plansCta": "Voir les tarifs",
@@ -252,7 +252,7 @@
     },
     "free": {
       "q": "Crushduo est-il gratuit ?",
-      "a": "Oui : profil, découverte, duos et messagerie après un duo sont gratuits, avec un nombre de likes quotidien. Premium et VIP débloquent plus de fonctions."
+      "a": "Oui : profil, découverte, duos et messagerie après un duo sont gratuits, avec un nombre de likes quotidien. Premium, VIP et Gold débloquent plus de fonctions."
     },
     "safety": {
       "q": "Comment êtes-vous protégé(e) ?",
@@ -530,7 +530,7 @@
         },
         {
           "q": "Crushduo est-il gratuit ?",
-          "a": "Oui pour commencer : profil, découverte, découvertes du jour, duos et messagerie sont gratuits, avec un nombre de likes quotidien. Premium et VIP ajoutent des fonctions, sans jamais garantir un duo."
+          "a": "Oui pour commencer : profil, découverte, découvertes du jour, duos et messagerie sont gratuits, avec un nombre de likes quotidien. Premium, VIP et Gold ajoutent des fonctions, sans jamais garantir un duo."
         },
         {
           "q": "Je n’ai pas reçu l’e-mail de confirmation",
@@ -578,7 +578,7 @@
         },
         {
           "q": "Que sont les accusés de lecture ?",
-          "a": "L’indicateur « vu » montre qu’un message a été lu. Les abonnés Premium et VIP peuvent désactiver l’envoi de leurs accusés dans Paramètres → Confidentialité ; l’indicateur de saisie se désactive pour tous."
+          "a": "L’indicateur « vu » montre qu’un message a été lu. Les abonnés Premium, VIP et Gold peuvent désactiver l’envoi de leurs accusés dans Paramètres → Confidentialité ; l’indicateur de saisie se désactive pour tous."
         },
         {
           "q": "Comment proposer un rendez-vous ?",
@@ -660,7 +660,7 @@
         },
         {
           "q": "Comment masquer mon profil ou faire une pause ?",
-          "a": "Paramètres → Confidentialité → désactivez « Profil visible ». Vous revenez quand vous voulez. Le mode discret est réservé à VIP."
+          "a": "Paramètres → Confidentialité → désactivez « Profil visible ». Vous revenez quand vous voulez. Le mode discret est réservé à VIP et Gold."
         },
         {
           "q": "Puis-je récupérer mes données ou supprimer mon compte ?",
@@ -1724,7 +1724,7 @@
     "limitTitle": "Limite de likes atteinte",
     "limitText": "Vous avez utilisé tous vos likes du jour. Revenez demain ou passez Premium pour en avoir davantage.",
     "planTitle": "Fonction Premium",
-    "planText": "Cette fonction fait partie des formules Premium et VIP.",
+    "planText": "Cette fonction fait partie des formules Premium, VIP et Gold.",
     "noSuperTitle": "Pas de Super Like disponible",
     "noSuperText": "Vous n’avez aucun Super Like disponible. Achetez un pack ou passez Premium pour en recevoir chaque semaine.",
     "buyPack": "Acheter un pack",
@@ -1778,21 +1778,21 @@
     "boostText": "Mettez votre profil en tête de liste pendant la durée du boost et gagnez en visibilité."
   },
   "chat": {
-    "callsLocked": "Appels : réservés à Premium et VIP",
-    "datesLocked": "Rendez-vous : réservés à Premium et VIP",
-    "ideasLocked": "Idées pour commencer : réservées à Premium et VIP",
+    "callsLocked": "Appels : réservés à Premium, VIP et Gold",
+    "datesLocked": "Rendez-vous : réservés à Premium, VIP et Gold",
+    "ideasLocked": "Idées pour commencer : réservées à Premium, VIP et Gold",
     "planGate": {
       "ideas": {
         "title": "Des idées pour briser la glace",
-        "text": "Les idées de sujets, tirées de ce que vous avez en commun, sont réservées aux abonnés Premium et VIP."
+        "text": "Les idées de sujets, tirées de ce que vous avez en commun, sont réservées aux abonnés Premium, VIP et Gold."
       },
       "calls": {
         "title": "Appels audio et vidéo",
-        "text": "Lancer un appel est réservé aux abonnés Premium et VIP. Vous pouvez toujours répondre à un appel reçu."
+        "text": "Lancer un appel est réservé aux abonnés Premium, VIP et Gold. Vous pouvez toujours répondre à un appel reçu."
       },
       "dates": {
         "title": "Proposer un rendez-vous",
-        "text": "Proposer un rendez-vous est réservé aux abonnés Premium et VIP. Vous pouvez toujours répondre à une proposition reçue."
+        "text": "Proposer un rendez-vous est réservé aux abonnés Premium, VIP et Gold. Vous pouvez toujours répondre à une proposition reçue."
       }
     },
     "imagePreview": "Photo prête à envoyer",
@@ -1832,7 +1832,7 @@
     "scamWarning": "Ne versez jamais d’argent et ne donnez ni numéro, ni code, ni coordonnées bancaires à quelqu’un que vous ne connaissez pas. Signalez toute demande suspecte via le menu ⋮.",
     "attachLocked": "Envoyer une photo (réservé aux abonnés)",
     "imagePlanTitle": "Photos réservées aux abonnés",
-    "imagePlanText": "L’envoi de photos dans les messages est inclus dans les formules Premium et VIP. Vous pouvez continuer à écrire gratuitement et à recevoir des photos.",
+    "imagePlanText": "L’envoi de photos dans les messages est inclus dans les formules Premium, VIP et Gold. Vous pouvez continuer à écrire gratuitement et à recevoir des photos.",
     "seePlans": "Voir les formules",
     "react": "Réagir",
     "reply": "Répondre",
@@ -2134,9 +2134,9 @@
       "visibleText": "Désactivez pour ne plus apparaître dans la découverte.",
       "receipts": "Accusés de lecture",
       "receiptsText": "Permet aux autres de voir que vous avez lu leurs messages.",
-      "incognito": "Mode discret (VIP)",
+      "incognito": "Mode discret (VIP et Gold)",
       "incognitoText": "Visible uniquement des personnes que vous avez likées.",
-      "incognitoLocked": "Réservé à la formule VIP.",
+      "incognitoLocked": "Réservé aux formules VIP et Gold.",
       "marketing": "Communications marketing",
       "marketingText": "Recevoir nos actualités et offres. Jamais obligatoire.",
       "location": "Localisation approximative",
@@ -2157,7 +2157,7 @@
       "deleteFinal": "Supprimer définitivement",
       "typing": "Indicateur de saisie",
       "typingText": "Montre quand vous écrivez, et vous permet de voir quand l’autre écrit. Désactivé, personne ne voit l’autre écrire.",
-      "receiptsLocked": "La gestion des accusés de lecture est réservée aux abonnés Premium et VIP : vos accusés restent actifs.",
+      "receiptsLocked": "La gestion des accusés de lecture est réservée aux abonnés Premium, VIP et Gold : vos accusés restent actifs.",
       "receiptsUpgrade": "Passer Premium",
       "activity": "Afficher mon activité",
       "activityText": "Montre « en ligne » ou « actif aujourd’hui » aux personnes avec qui vous avez un duo. Désactivé, vous ne voyez pas non plus celui des autres, sauf avec le mode discret."
@@ -3148,7 +3148,7 @@
       "reports": "Les signalements envoyés par les membres : examinez-les, puis résolvez ou rejetez.",
       "contact": "Les messages reçus depuis la page Contact : répondez, classez, archivez.",
       "payments": "Tous les paiements des 30 derniers jours.",
-      "subscriptions": "Les abonnements Premium et VIP, leur état et leur date de fin.",
+      "subscriptions": "Les abonnements Premium, VIP et Gold, leur état et leur date de fin.",
       "audit": "Qui a fait quoi dans l’administration, avec la date : utile pour comprendre un changement.",
       "moderation": "Les selfies à vérifier, les recours des membres sanctionnés et les photos publiées.",
       "stats": "L’évolution dans le temps : membres, likes, duos, Crush, abonnements et revenus, comparés à la période précédente.",
@@ -3316,7 +3316,7 @@
         "contact": "Messages du formulaire Contact",
         "newsletter": "Rédiger et envoyer",
         "emails": "E-mails envoyés, en échec",
-        "subscriptions": "Abonnés Premium et VIP",
+        "subscriptions": "Abonnés Premium, VIP et Gold",
         "plans": "Formules, prix, fonctionnalités",
         "promos": "Codes de réduction",
         "payments": "Paiements",
@@ -3346,7 +3346,7 @@
         "s2": "Ouvrir sa fiche",
         "h2": "Plan actuel affiché",
         "s3": "Offrir une formule",
-        "h3": "Premium ou VIP + durée",
+        "h3": "Premium, VIP ou Gold + durée",
         "s4": "Fin automatique",
         "h4": "Retour à Gratuit à l’échéance"
       },
@@ -4715,8 +4715,8 @@
     "title": "De quoi ai-je besoin ?",
     "lead": "Partez de ce que vous voulez faire : nous vous disons quelle formule le permet.",
     "free": "Gratuit",
-    "premium": "Premium ou VIP",
-    "vip": "VIP",
+    "premium": "Premium, VIP ou Gold",
+    "vip": "VIP ou Gold",
     "shop": "Boutique",
     "items": {
       "liked": {
@@ -4736,7 +4736,7 @@
       },
       "visible": {
         "h": "Être plus visible",
-        "p": "Des boosts à l’unité dans la boutique, et le mode discret avec VIP.",
+        "p": "Des boosts à l’unité dans la boutique, et le mode discret avec VIP et Gold.",
         "who": "vip"
       },
       "safe": {

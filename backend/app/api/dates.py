@@ -30,7 +30,7 @@ async def list_dates(conversation_id: str, u: AuthUser = U, db: AsyncSession = D
 async def propose(conversation_id: str, body: DateIn, u: AuthUser = U, db: AsyncSession = Depends(get_db)):
     # Proposer un rendez-vous est réservé aux formules qui l'incluent ; répondre à une proposition reste possible pour tous.
     if not (await entitlements.get(db, u.id))["limits"]["dates"]:
-        raise forbidden("PLAN_REQUIRED", "Les rendez-vous sont réservés aux abonnés Premium et VIP")
+        raise forbidden("PLAN_REQUIRED", "Les rendez-vous sont réservés aux abonnés Premium, VIP et Gold")
     return await datesvc.propose(db, u.id, conversation_id, body.model_dump())
 
 

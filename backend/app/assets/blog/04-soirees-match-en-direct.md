@@ -83,7 +83,7 @@ Et si vous avez besoin de souffler, la pause du compte existe pour cela. Prendre
 
 Pendant une soirée, certains outils peuvent donner un peu plus de visibilité : un Boost met votre profil en avant, un Super Like dit à quelqu'un qu'il compte vraiment pour vous, un Like avec un petit mot montre que vous avez lu autre chose que la photo. Ils ne remplacent ni la sincérité ni la patience. Ce sont des coups de coude amicaux, pas des raccourcis.
 
-Quant aux formules, Gratuit, Premium et VIP, elles se paient en une fois, sans renouvellement automatique, par mobile money. Vous savez ce que vous dépensez, et quand cela s'arrête.
+Quant aux formules payantes, Premium, VIP et Gold, elles se paient en une fois, sans renouvellement automatique, par mobile money. Vous savez ce que vous dépensez, et quand cela s'arrête.
 
 ## Ce qu'on garde au matin
 
