@@ -115,3 +115,41 @@ async def test_super_like_can_carry_a_message(app, db):
     assert r.status_code == 200, r.text
     row = (await db.execute(select(Swipe).where(Swipe.giverId == a.id, Swipe.targetId == b.id))).scalar_one()
     assert row.action.value == "SUPER_LIKE" and row.comment == "Ton sourire m'a arrêté net."
+
+
+async def test_gold_plan_catalog_priority_and_badge(app, db):
+    from app.core import entitlements, plan_config, profile_card
+
+    gold = await seed_member(db, gender="WOMAN", seeking="MEN", city="Lomé")
+    prem = await seed_member(db, gender="WOMAN", seeking="MEN", city="Lomé")
+    free = await seed_member(db, gender="WOMAN", seeking="MEN", city="Lomé")
+    await entitlements.set_(db, gold["id"], "GOLD", utcnow() + datetime.timedelta(days=30))
+    await make_premium(prem["id"])
+    await db.commit()
+    assert await plan_config.priority_visibility_ids(db, [gold["id"], prem["id"], free["id"]]) == {gold["id"]}
+    # Une formule Gold expirée n'a plus la priorité.
+    await entitlements.set_(db, free["id"], "GOLD", utcnow() - datetime.timedelta(days=1))
+    await db.commit()
+    assert gold["id"] in await plan_config.priority_visibility_ids(db, [gold["id"], free["id"]]) and free["id"] not in await plan_config.priority_visibility_ids(db, [free["id"]])
+    # Catalogue public : Gold à 10 000 FCFA par mois par défaut, les quatre durées de base.
+    viewer = await member(app, db)
+    plans = {p["code"]: p for p in (await viewer.agent.get("/api/plans")).json()["plans"]}
+    g = plans["GOLD"]
+    assert g["features"]["priority_visibility"] is True and g["features"]["boosts_monthly"] == 6 and g["features"]["super_likes_weekly"] == 30
+    assert next(p for p in g["prices"] if p["months"] == 1)["totalXof"] == g["priceXof"]
+    assert {p["months"] for p in g["prices"]} >= {1, 3, 6, 12}
+    # Badge Gold sur la fiche, jamais pour les autres formules.
+    prof = (await db.execute(select(Profile).where(Profile.userId.in_([gold["id"], prem["id"]])))).scalars().all()
+    cards = {c.profile.userId: profile_card.to_card(c)["gold"] for c in await profile_card.load_cards(db, list(prof))}
+    assert cards == {gold["id"]: True, prem["id"]: False}
+
+
+async def test_gold_purchase_activates_the_plan(app, db):
+    from tests.support_c import buy, plan_of
+
+    u = await member(app, db)
+    res = await buy(u, {"type": "subscription", "plan": "GOLD", "months": 1})
+    assert res is not None
+    assert await plan_of(u) == "GOLD"
+    lim = (await u.agent.get("/api/subscriptions/me")).json()["limits"]
+    assert lim["priorityVisibility"] is True and lim["incognito"] is True and lim["superLikesWeekly"] == 30

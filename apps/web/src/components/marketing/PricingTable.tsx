@@ -1,5 +1,5 @@
 'use client';
-import { Check, ChevronDown, Crown, Sparkles, Star } from 'lucide-react';
+import { Check, ChevronDown, Crown, Gem, Sparkles, Star } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 import type { PlanCode } from '@duomatch/types';
@@ -10,9 +10,11 @@ import { Button } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Catalog, PlanView } from '@/lib/types';
 
-const ICON = { FREE: Star, PREMIUM: Sparkles, VIP: Crown } as const;
+const ICON = { FREE: Star, PREMIUM: Sparkles, VIP: Crown, GOLD: Gem } as const;
 /** Avantages phares, par ordre d'importance : les trois premiers présents dans la formule sont mis en avant. */
 const STARS = ['likesUnlimited', 'seeLikers', 'superLikesWeekly', 'boostsMonthly', 'chatSuggestions', 'liveMatch', 'incognito'] as const;
+/** Gold : ses trois avantages phares sont ceux qui le distinguent du VIP. */
+const GOLD_STARS = ['priorityVisibility', 'boostsMonthly', 'superLikesWeekly'] as const;
 const BASE = ['plans.feat.signup', 'plans.feat.discover', 'plans.feat.matches', 'plans.feat.chat', 'plans.feat.safety'] as const;
 
 /** Les avantages affichés sont LUS dans la configuration de l'offre (jamais codés par formule). */
@@ -31,6 +33,7 @@ function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) =>
   if (f.chat_suggestions_enabled) out.push({ id: 'chatSuggestions', text: t('plans.feat.chatSuggestions') });
   if (f.calls_enabled) out.push({ id: 'calls', text: t('plans.feat.calls') });
   if (f.dates_enabled) out.push({ id: 'dates', text: t('plans.feat.dates') });
+  if (f.priority_visibility) out.push({ id: 'priorityVisibility', text: t('plans.feat.priorityVisibility') });
   out.push({ id: 'dailyPicks', text: t('plans.feat.dailyPicks', { n: f.daily_picks_count }) });
   if (f.read_receipts_control) out.push({ id: 'readReceipts', text: t('plans.feat.readReceipts') });
   if (f.live_match_enabled) out.push({ id: 'liveMatch', text: t('plans.feat.liveMatch') });
@@ -67,13 +70,13 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
           ))}
         </div>
       )}
-      <div className={cn('grid justify-items-center gap-5', plans.length === 2 ? 'mx-auto max-w-[52rem] lg:grid-cols-2' : plans.length === 1 ? '' : 'lg:grid-cols-3')}>
+      <div className={cn('grid justify-items-center gap-5', plans.length === 2 ? 'mx-auto max-w-[52rem] lg:grid-cols-2' : plans.length === 1 ? '' : plans.length >= 4 ? 'md:grid-cols-2 xl:grid-cols-4' : 'lg:grid-cols-3')}>
         {plans.map((p) => {
           const Icon = ICON[p.code];
           const price = p.prices.find((x) => x.months === months); // pas de repli : une formule qui n'a pas cette durée (ex. 7 jours seulement sur Premium) ne l'affiche pas
           const all = [...(p.code === 'FREE' ? BASE.map((k) => ({ id: k, text: t(k) })) : []), ...featureLines(p, t as never, plans.some((x) => x.code === 'FREE'))];
           // Trois avantages phares par formule payante (les plus marquants d'abord), le reste suit sous « Aussi inclus ».
-          const stars = p.code === 'FREE' ? [] : STARS.map((id) => all.find((l) => l.id === id)).filter((l): l is { id: string; text: string } => !!l).slice(0, 3);
+          const stars = p.code === 'FREE' ? [] : (p.code === 'GOLD' ? GOLD_STARS : STARS).map((id) => all.find((l) => l.id === id)).filter((l): l is { id: string; text: string } => !!l).slice(0, 3);
           const lines = all.filter((l) => !stars.includes(l));
           return (
             <Card key={p.code} className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>

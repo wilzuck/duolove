@@ -135,6 +135,7 @@ class PlanCode(str, enum.Enum):
     FREE = 'FREE'
     PREMIUM = 'PREMIUM'
     VIP = 'VIP'
+    GOLD = 'GOLD'
 
 
 class ProductKind(str, enum.Enum):

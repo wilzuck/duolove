@@ -10,7 +10,7 @@ export interface PromptDef { id: string; slug: string; textFr: string; textEn: s
 export interface EngagementConfig { flags: { profile_prompts: boolean; like_comments: boolean; daily_picks: boolean; message_reactions: boolean; message_replies: boolean; icebreakers: boolean; date_proposals: boolean; pause_mode: boolean; profile_tips: boolean; calls: boolean; speed_dating: boolean; daily_question: boolean; payments_enabled: boolean; promo_codes: boolean; boosts: boolean; live_match: boolean }; calls: { enabled: boolean; simulated: boolean; ringSeconds: number; maxMinutes: number }; prompts: { min: number; max: number; answerMax: number }; commentMax: number; reactionEmojis: string[]; dates: { minNoticeHours: number; maxDaysAhead: number } }
 export interface Card {
   id: string; displayName: string; age: number; city: string; country: string; bio: string; occupation: string | null;
-  intent: Intent; verified: boolean; languages: string[]; interests: string[]; commonInterests: string[];
+  intent: Intent; verified: boolean; gold?: boolean; languages: string[]; interests: string[]; commonInterests: string[];
   /** « AAAA-MM » du mois d'inscription (jamais le jour) ; isNew = inscrit depuis moins de 14 jours. */
   memberSince?: string | null; isNew?: boolean;
   distanceKm: number | null; compatibility: number | null; photos: Photo[];

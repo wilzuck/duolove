@@ -41,7 +41,7 @@ class Review(BaseModel):
 
 
 class PlanGrant(BaseModel):
-    plan: Literal["PREMIUM", "VIP"]
+    plan: Literal["PREMIUM", "VIP", "GOLD"]
     days: int = Field(ge=1, le=365)
     reason: Trim(3, 300)
 
@@ -109,6 +109,7 @@ class PlanFeatures(BaseModel):
     chat_suggestions_enabled: bool = Field(False, strict=True)
     calls_enabled: bool = Field(False, strict=True)
     dates_enabled: bool = Field(False, strict=True)
+    priority_visibility: bool = Field(False, strict=True)
 
 
 class PriceIn(BaseModel):

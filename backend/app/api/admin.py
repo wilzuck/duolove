@@ -645,7 +645,7 @@ async def plans(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
 
 @router.patch("/plans/{code}")
 async def patch_plan(code: str, body: PlanPatch, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
-    plan = (await db.execute(select(SubscriptionPlan).where(SubscriptionPlan.code == code))).scalar_one_or_none() if code in ("FREE", "PREMIUM", "VIP") else None
+    plan = (await db.execute(select(SubscriptionPlan).where(SubscriptionPlan.code == code))).scalar_one_or_none() if code in ("FREE", "PREMIUM", "VIP", "GOLD") else None
     if not plan:
         raise not_found("PLAN_NOT_FOUND")
     # La formule gratuite reste le niveau de départ de tout membre (ses droits ne changent pas) : on peut la retirer de l'offre affichée (`active` = faux), pas la rendre payante.

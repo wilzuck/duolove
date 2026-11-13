@@ -36,6 +36,7 @@ INT_SPECS = {  # clé → (défaut, min, max)
     "notifications.max_emails_per_day": (5, 0, 50),
     # Garantie Duo (désactivée par défaut) : un abonné sans aucun duo après `window_days` jours, profil complet et au moins `min_likes` likes envoyés, reçoit `days` jours.
     "guarantee.enabled": (0, 0, 1), "guarantee.days": (7, 1, 60), "guarantee.window_days": (30, 7, 90), "guarantee.min_likes": (15, 1, 200),
+    "gold.priority_bonus": (10, 0, 40),  # points de classement des formules à « visibilité prioritaire » (Gold), en permanence dans la découverte
     "live.priority_bonus": (15, 0, 40),  # points de classement ajoutés aux abonnés payants dans la découverte PENDANT une soirée Duo (0 = désactivé)
     "moderation.sla_hours": (24, 1, 168),  # délai annoncé pour traiter un signalement (et seuil du badge « en retard » en administration)
 }

@@ -9,7 +9,7 @@ MIN_AGE = 18
 GENDERS = ("MAN", "WOMAN", "NON_BINARY", "OTHER")
 SEEKING = ("MEN", "WOMEN", "EVERYONE")
 INTENTS = ("SERIOUS", "MARRIAGE", "DATING", "FRIENDSHIP", "UNSURE")
-PLAN_CODES = ("FREE", "PREMIUM", "VIP")
+PLAN_CODES = ("FREE", "PREMIUM", "VIP", "GOLD")
 REPORT_REASONS = ("FAKE_PROFILE", "SCAM", "HARASSMENT", "INAPPROPRIATE_CONTENT", "UNDERAGE", "SPAM", "OTHER")
 COUNTRY_CODES = ("BJ", "CI", "TG", "SN", "NE", "CM", "BF", "ML", "GA", "CD", "FR", "BE", "CA")
 INTEREST_SLUGS = (
@@ -35,6 +35,8 @@ PLAN_FEATURE_DEFAULTS: dict = {
     # Messagerie : idées pour briser la glace, appels audio / vidéo, rendez-vous. Réservés aux formules qui les incluent (réglable en administration).
     # Appels coupés par défaut tant qu'aucun fournisseur réel (LiveKit) n'est branché : l'administrateur les active par formule une fois les appels réels testés.
     "chat_suggestions_enabled": False, "calls_enabled": False, "dates_enabled": False,
+    # Gold : visibilité prioritaire permanente dans la découverte (bonus réglé par `gold.priority_bonus`) et badge Gold sur le profil.
+    "priority_visibility": False,
 }
 
 DEFAULT_PLANS = {
@@ -44,12 +46,18 @@ DEFAULT_PLANS = {
                 "features": {"daily_likes_limit": -1, "super_likes_weekly": 5, "can_see_likes": True, "advanced_filters": True,
                              "boosts_monthly": 0, "incognito_mode": False, "rewind_enabled": True, "ads_enabled": False,
                              "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 5, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 10,
-                             "chat_suggestions_enabled": True, "calls_enabled": False, "dates_enabled": True}},
+                             "chat_suggestions_enabled": True, "calls_enabled": False, "dates_enabled": True, "priority_visibility": False}},
     "VIP": {"name": "VIP", "priceXof": 5000, "featured": False, "sortOrder": 2,
             "features": {"daily_likes_limit": -1, "super_likes_weekly": 15, "can_see_likes": True, "advanced_filters": True,
                          "boosts_monthly": 2, "incognito_mode": True, "rewind_enabled": True, "ads_enabled": False,
                          "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 15, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 10,
-                         "chat_suggestions_enabled": True, "calls_enabled": False, "dates_enabled": True}},
+                         "chat_suggestions_enabled": True, "calls_enabled": False, "dates_enabled": True, "priority_visibility": False}},
+    # Gold : 10 000 FCFA / mois (deux fois le VIP), pour celles et ceux qui veulent le maximum de visibilité et de contacts.
+    "GOLD": {"name": "Gold", "priceXof": 10000, "featured": False, "sortOrder": 3,
+             "features": {"daily_likes_limit": -1, "super_likes_weekly": 30, "can_see_likes": True, "advanced_filters": True,
+                          "boosts_monthly": 6, "incognito_mode": True, "rewind_enabled": True, "ads_enabled": False,
+                          "live_match_enabled": True, "live_match_trials": 0, "match_tokens_monthly": 30, "chat_images_enabled": True, "read_receipts_control": True, "daily_picks_count": 15,
+                          "chat_suggestions_enabled": True, "calls_enabled": False, "dates_enabled": True, "priority_visibility": True}},
 }
 
 DEFAULT_PRODUCTS = (
@@ -135,6 +143,7 @@ def limits_from_features(f: dict) -> dict:
         "rewind": f["rewind_enabled"], "boostsMonthly": f["boosts_monthly"], "incognito": f["incognito_mode"], "ads": f["ads_enabled"],
         "liveMatch": f["live_match_enabled"], "liveMatchTrials": f["live_match_trials"], "matchTokensMonthly": f["match_tokens_monthly"], "chatImages": f.get("chat_images_enabled", False), "readReceiptsControl": f.get("read_receipts_control", False), "dailyPicksCount": f.get("daily_picks_count", 5),
         "chatSuggestions": f.get("chat_suggestions_enabled", False), "calls": f.get("calls_enabled", False), "dates": f.get("dates_enabled", False),
+        "priorityVisibility": f.get("priority_visibility", False),
     }
 
 

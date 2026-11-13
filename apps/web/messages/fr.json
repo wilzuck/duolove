@@ -167,6 +167,7 @@
     "ctaHelp": "Une question ? Le Centre d’aide",
     "stepsTitle": "Votre parcours en huit étapes",
     "steps": {
+      "priorityVisibility": "Visibilité prioritaire dans la découverte et badge Gold",
       "signup": {
         "title": "Créez votre compte",
         "text": "Avec votre e-mail (ou Google) et un mot de passe, ou simplement un lien magique. Vous confirmez votre adresse et votre majorité : Crushduo est réservé aux adultes de 18 ans et plus."
@@ -283,6 +284,10 @@
     "VIP": {
       "name": "VIP",
       "tagline": "L’expérience complète"
+    },
+    "GOLD": {
+      "name": "Gold",
+      "tagline": "Visibilité maximale, plus de contacts"
     },
     "popular": "Le plus choisi",
     "current": "Formule actuelle",
@@ -724,7 +729,7 @@
           "id": "compte",
           "h": "Votre compte",
           "paras": [
-            "Vous êtes responsable de la confidentialité de vos identifiants et de l’activité de votre compte. Vous pouvez voir et déconnecter vos appareils dans Paramètres → Sécurité, et nous vous conseillons de choisir un mot de passe unique.",
+            "Vous êtes responsable de la confidentialité de vos identifiants et de l’activité de votre compte. Dans Paramètres → Sécurité, vous pouvez activer la double authentification, voir et déconnecter vos appareils ; nous vous prévenons aussi par e-mail d’une connexion depuis un nouveau pays. Nous vous conseillons de choisir un mot de passe unique.",
             "Prévenez-nous sans attendre si vous pensez que votre compte a été utilisé à votre insu."
           ]
         },
@@ -756,16 +761,17 @@
           "id": "offres",
           "h": "Offres gratuites et payantes",
           "paras": [
-            "Crushduo est gratuit pour commencer. Des formules payantes (Premium, VIP) et des achats à l’unité (boosts, Super Likes, jetons Crush) donnent accès à des fonctions supplémentaires. Les prix, durées et avantages sont indiqués sur la page Tarifs avant tout paiement."
+            "Crushduo est gratuit pour commencer. Des formules payantes (Premium, VIP, Gold) et des achats à l’unité (boosts, Super Likes, jetons Crush) donnent accès à des fonctions supplémentaires. Les prix, durées et avantages en vigueur sont indiqués sur la page Tarifs avant tout paiement. Ils peuvent évoluer, mais le prix d’une période déjà payée ne change jamais."
           ],
           "lists": [
             {
               "kind": "info",
               "items": [
-                "Les formules existent pour 1, 3, 6 ou 12 mois. Chaque période est un paiement ponctuel : l’abonnement ne se renouvelle pas automatiquement et nous vous prévenons avant l’échéance.",
+                "Selon les offres proposées, une formule peut être prise pour 7 jours, 1, 3, 6 ou 12 mois. Chaque période est un paiement ponctuel : l’abonnement ne se renouvelle pas automatiquement et nous vous prévenons avant l’échéance. Reprendre la même formule avant la fin ajoute la nouvelle période à votre date de fin.",
                 "Vous pouvez annuler à tout moment : vous gardez vos avantages jusqu’à la fin de la période payée.",
                 "Les crédits achetés (boosts, Super Likes, jetons) restent sur votre compte jusqu’à leur utilisation.",
-                "Aucune offre ne garantit un duo ni une relation : elle donne plus de visibilité et d’outils.",
+                "Les codes promotionnels s’utilisent une seule fois par compte, selon les conditions et la date limite indiquées avec le code.",
+                "Aucune offre ne garantit un duo ni une relation : elle donne plus de visibilité et d’outils. Lorsque la « Garantie Duo » est proposée, elle ajoute des jours d’abonnement, selon les conditions affichées, à un abonné qui n’a obtenu aucun duo ; elle ne donne lieu à aucun remboursement.",
                 "Le blocage, le signalement et les fonctions de sécurité restent gratuits pour tous."
               ]
             }
@@ -784,7 +790,7 @@
           "h": "Modération et sanctions",
           "paras": [
             "Nous pouvons retirer un contenu, suspendre temporairement un compte ou l’exclure lorsque les règles ne sont pas respectées, en proportion de la gravité. Le motif de la décision vous est communiqué et vous pouvez la contester depuis votre compte : votre message est examiné par l’équipe.",
-            "Vos conversations ne sont pas parcourues par l’équipe : un signalement s’appuie sur la description du membre et sur le profil signalé."
+            "L’équipe ne lit pas vos conversations. Lorsqu’un membre signale quelqu’un depuis une conversation, il peut choisir de joindre les derniers messages échangés comme preuve ; sans son accord, aucun message n’est transmis. Un avertissement peut s’afficher automatiquement sous un message qui ressemble à une demande d’argent : il est calculé par l’application et ne transmet rien à l’équipe."
           ]
         },
         {
@@ -827,7 +833,7 @@
           "id": "droit",
           "h": "Droit applicable et litiges",
           "paras": [
-            "Le droit applicable et la juridiction compétente seront précisés ici avant la mise en production, après validation juridique de ce document. En cas de désaccord, écrivez-nous d’abord : nous cherchons toujours une solution amiable."
+            "Les présentes conditions sont régies par le droit béninois, y compris les Actes uniformes de l’OHADA applicables. En cas de désaccord, écrivez-nous d’abord : nous cherchons toujours une solution amiable. À défaut d’accord, le litige sera porté devant les juridictions compétentes de Cotonou, sans préjudice des droits que la loi de votre pays de résidence vous garantit en tant que consommateur."
           ]
         },
         {
@@ -1688,6 +1694,7 @@
   },
   "card": {
     "verified": "Profil vérifié",
+    "gold": "Membre Gold",
     "compat": "{n} % compatible",
     "distance": "à {km} km",
     "prevPhoto": "Photo précédente",
@@ -2287,7 +2294,13 @@
       "deleteSelected": "Supprimer la sélection ({count})",
       "select": "Sélectionner {key}",
       "private": "Image privée (aperçu masqué)",
-      "kind": { "blog": "Blog", "photo": "Photo de profil", "verification": "Vérification", "chat": "Messagerie", "other": "Autre" },
+      "kind": {
+        "blog": "Blog",
+        "photo": "Photo de profil",
+        "verification": "Vérification",
+        "chat": "Messagerie",
+        "other": "Autre"
+      },
       "thumb": "miniature",
       "confirmTitle": "Supprimer définitivement ?",
       "confirmText": "{count, plural, one {# fichier sera supprimé} other {# fichiers seront supprimés}} du stockage. Cette action est irréversible ; les fichiers sont revérifiés avant suppression.",
@@ -2570,6 +2583,7 @@
         "live_match_enabled": "Menu Crush en direct",
         "live_match_trials": "Essais gratuits du menu Crush",
         "match_tokens_monthly": "Jetons Crush par mois",
+        "priority_visibility": "Visibilité prioritaire (Gold)",
         "chat_images_enabled": "Photos dans les messages",
         "read_receipts_control": "Choisir d’afficher les accusés de lecture",
         "chat_suggestions_enabled": "Idées pour briser la glace",

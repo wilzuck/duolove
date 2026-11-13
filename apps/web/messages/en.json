@@ -167,6 +167,7 @@
     "ctaHelp": "A question? The Help centre",
     "stepsTitle": "Your journey in eight steps",
     "steps": {
+      "priorityVisibility": "Priority visibility in discovery and a Gold badge",
       "signup": {
         "title": "Create your account",
         "text": "With your email (or Google) and a password, or simply a magic link. You confirm your address and that you are an adult: Crushduo is for people aged 18 and over."
@@ -283,6 +284,10 @@
     "VIP": {
       "name": "VIP",
       "tagline": "The complete experience"
+    },
+    "GOLD": {
+      "name": "Gold",
+      "tagline": "Maximum visibility, more connections"
     },
     "popular": "Most popular",
     "current": "Current plan",
@@ -724,7 +729,7 @@
           "id": "compte",
           "h": "Your account",
           "paras": [
-            "You are responsible for keeping your credentials confidential and for the activity of your account. You can see and sign out your devices in Settings → Security, and we advise choosing a unique password.",
+            "You are responsible for keeping your login details confidential and for the activity on your account. In Settings → Security you can turn on two-step verification and see and sign out your devices; we also warn you by e-mail when someone signs in from a new country. We recommend a unique password.",
             "Tell us without delay if you think your account has been used without your knowledge."
           ]
         },
@@ -756,16 +761,17 @@
           "id": "offres",
           "h": "Free and paid offers",
           "paras": [
-            "Crushduo is free to start. Paid plans (Premium, VIP) and one-off purchases (boosts, Super Likes, Crush tokens) unlock extra features. Prices, durations and benefits are shown on the Pricing page before any payment."
+            "Crushduo is free to start. Paid plans (Premium, VIP, Gold) and one-off purchases (boosts, Super Likes, Crush tokens) unlock extra features. Current prices, durations and benefits are shown on the Pricing page before any payment. They may change, but the price of a period you have already paid never changes."
           ],
           "lists": [
             {
               "kind": "info",
               "items": [
-                "Plans exist for 1, 3, 6 or 12 months. Each period is a one-off payment: the subscription does not renew automatically and we warn you before it ends.",
+                "Depending on the offers available, a plan can be taken for 7 days or 1, 3, 6 or 12 months. Each period is a one-off payment: it does not renew automatically and we remind you before it ends. Buying the same plan again before it ends adds the new period to your end date.",
                 "You can cancel at any time: you keep your benefits until the end of the paid period.",
                 "Purchased credits (boosts, Super Likes, tokens) stay on your account until used.",
-                "No offer guarantees a duo or a relationship: it gives more visibility and tools.",
+                "Promo codes can be used once per account, under the conditions and deadline shown with the code.",
+                "No offer guarantees a duo or a relationship: it gives more visibility and tools. When the “Duo Guarantee” is offered, it adds subscription days, under the conditions shown, to a subscriber who has had no duo; it never leads to a refund.",
                 "Blocking, reporting and safety features stay free for everyone."
               ]
             }
@@ -784,7 +790,7 @@
           "h": "Moderation and sanctions",
           "paras": [
             "We may remove content, temporarily suspend an account or exclude it when the rules are not respected, in proportion to severity. The reason for the decision is shared with you and you can appeal from your account: your message is reviewed by the team.",
-            "Your conversations are not browsed by the team: a report relies on the member’s description and the reported profile."
+            "The team does not read your conversations. When a member reports someone from a conversation, they can choose to attach the latest messages as evidence; without their consent, no message is shared. A warning may appear automatically under a message that looks like a request for money: it is computed by the app and sends nothing to the team."
           ]
         },
         {
@@ -827,7 +833,7 @@
           "id": "droit",
           "h": "Governing law and disputes",
           "paras": [
-            "The governing law and competent jurisdiction will be specified here before launch, after legal review of this document. In case of disagreement, write to us first: we always look for an amicable solution."
+            "These terms are governed by the law of Benin, including the applicable OHADA Uniform Acts. If there is a disagreement, please write to us first: we always look for an amicable solution. Failing that, the dispute will be brought before the competent courts of Cotonou, without prejudice to the consumer rights granted to you by the law of your country of residence."
           ]
         },
         {
@@ -1688,6 +1694,7 @@
   },
   "card": {
     "verified": "Verified profile",
+    "gold": "Gold member",
     "compat": "{n}% compatible",
     "distance": "{km} km away",
     "prevPhoto": "Previous photo",
@@ -2287,7 +2294,13 @@
       "deleteSelected": "Delete selection ({count})",
       "select": "Select {key}",
       "private": "Private image (preview hidden)",
-      "kind": { "blog": "Blog", "photo": "Profile photo", "verification": "Verification", "chat": "Messaging", "other": "Other" },
+      "kind": {
+        "blog": "Blog",
+        "photo": "Profile photo",
+        "verification": "Verification",
+        "chat": "Messaging",
+        "other": "Other"
+      },
       "thumb": "thumbnail",
       "confirmTitle": "Delete permanently?",
       "confirmText": "{count, plural, one {# file will be} other {# files will be}} removed from storage. This cannot be undone; files are re-checked before deletion.",
@@ -2570,6 +2583,7 @@
         "live_match_enabled": "Live Crush menu",
         "live_match_trials": "Free Crush menu trials",
         "match_tokens_monthly": "Crush tokens per month",
+        "priority_visibility": "Priority visibility (Gold)",
         "chat_images_enabled": "Photos in messages",
         "read_receipts_control": "Choose to show read receipts",
         "chat_suggestions_enabled": "Ice-breaker ideas",

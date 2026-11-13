@@ -115,7 +115,16 @@ async def ranked(db: AsyncSession, user_id: str, *, exclude: set[str] | None = N
             r.rank = r.compatibility  # sélection du jour : aucune mise en avant payante
         scored.append((c, dist, r))
     if boost and scored:
-        bonus = (await appsettings.all_values(db))["live.priority_bonus"]
+        cfg = (await appsettings.all_values(db))
+        gold_bonus = cfg["gold.priority_bonus"]
+        if gold_bonus:
+            from app.core import plan_config
+
+            gold = await plan_config.priority_visibility_ids(db, [c.profile.userId for c, _, _ in scored])
+            for c, _, r in scored:
+                if c.profile.userId in gold:
+                    r.rank += gold_bonus  # Gold : visibilité prioritaire permanente, sans toucher à la compatibilité affichée
+        bonus = cfg["live.priority_bonus"]
         if bonus:
             from app.core import live_events
 

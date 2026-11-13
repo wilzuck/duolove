@@ -25,7 +25,7 @@ def valid_features(raw: object) -> dict | None:
         return None
     out = {}
     for k, default in PLAN_FEATURE_DEFAULTS.items():
-        v = raw.get(k, default if k in ("live_match_enabled", "live_match_trials", "match_tokens_monthly", "chat_images_enabled", "read_receipts_control", "daily_picks_count", "chat_suggestions_enabled", "calls_enabled", "dates_enabled") else None)
+        v = raw.get(k, default if k in ("live_match_enabled", "live_match_trials", "match_tokens_monthly", "chat_images_enabled", "read_receipts_control", "daily_picks_count", "chat_suggestions_enabled", "calls_enabled", "dates_enabled", "priority_visibility") else None)
         if isinstance(default, bool):
             if not isinstance(v, bool):
                 return None
@@ -127,3 +127,18 @@ async def quote(db: AsyncSession, code: str, months: int) -> tuple[dict, dict]:
 
 async def products(db: AsyncSession):
     return (await db.execute(select(Product).where(Product.active.is_(True)).order_by(Product.sortOrder))).scalars().all()
+
+
+async def priority_visibility_ids(db: AsyncSession, user_ids: list[str]) -> set[str]:
+    """Membres dont la formule active inclut la « visibilité prioritaire » (Gold) : utilisé pour le classement et le badge."""
+    from app.models.models import Entitlement
+
+    if not user_ids:
+        return set()
+    rows = (await db.execute(select(Entitlement.userId, Entitlement.plan).where(Entitlement.userId.in_(user_ids), Entitlement.validUntil > utcnow()))).all()
+    out: set[str] = set()
+    for uid, plan in rows:
+        code = getattr(plan, "value", plan)
+        if code != "FREE" and (await features_of(db, code)).get("priority_visibility"):
+            out.add(uid)
+    return out

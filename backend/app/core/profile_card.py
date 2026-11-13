@@ -31,6 +31,7 @@ class CardProfile:
     last_active_at: object = None
     created_at: object = None  # date d'inscription : exposée au MOIS près seulement (« membre depuis »)
     prompts: list[dict] = field(default_factory=list)
+    gold: bool = False  # formule Gold active (badge visible sur le profil)
 
 
 def approx_position(p) -> tuple[float, float] | None:
@@ -74,7 +75,10 @@ async def load_cards(db: AsyncSession, profiles: list[Profile]) -> list[CardProf
     actives = {r[0]: r[1] for r in user_rows}
     created = {r[0]: r[2] for r in user_rows}
     prompts = await promptsvc.answers_for(db, uids) if await flags.is_on(db, "profile_prompts") else {}
-    return [CardProfile(p, by_profile.get(p.id, []), by_user.get(p.userId, []), actives.get(p.userId), created.get(p.userId), prompts.get(p.userId, [])) for p in profiles]
+    from app.core import plan_config
+
+    gold = await plan_config.priority_visibility_ids(db, uids)
+    return [CardProfile(p, by_profile.get(p.id, []), by_user.get(p.userId, []), actives.get(p.userId), created.get(p.userId), prompts.get(p.userId, []), p.userId in gold) for p in profiles]
 
 
 async def load_card(db: AsyncSession, profile: Profile) -> CardProfile:
@@ -98,7 +102,7 @@ def to_card(c: CardProfile, *, viewer_interests: list[str] | None = None, distan
     since, is_new = member_since(c.created_at)
     return {
         "id": p.userId, "displayName": p.displayName, "age": age_from_birth_date(p.birthDate), "city": p.city, "country": p.country,
-        "bio": p.bio, "occupation": p.occupation, "intent": p.intent.value, "verified": p.verified, "languages": p.languages or [],
+        "bio": p.bio, "occupation": p.occupation, "intent": p.intent.value, "verified": p.verified, "gold": c.gold, "languages": p.languages or [],
         "hasChildren": p.hasChildren, "likesPets": p.likesPets, "living": p.living.value if p.living else None,
         "heightCm": p.heightCm, "originCountry": p.originCountry,
         "maritalStatus": p.maritalStatus, "education": p.education, "smoking": p.smoking, "alcohol": p.alcohol,

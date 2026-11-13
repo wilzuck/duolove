@@ -33,7 +33,7 @@ async def test_desactivee_par_defaut_puis_activee_par_l_admin_avec_prix_par_defa
     ad, u = await admin(app, db), await member(app, db)
     async with session_maker()() as s:  # les lignes existent pour chaque formule payante, inactives
         rows = (await s.execute(select(PlanPrice).where(PlanPrice.months == 0))).scalars().all()
-        assert len(rows) == 2 and not any(r.active for r in rows)
+        assert len(rows) == 3 and not any(r.active for r in rows)  # Premium, VIP et Gold
     assert not any(p["months"] == 0 for p in (await plans_of(u))["PREMIUM"]["prices"])
     off = await u.agent.post("/api/checkout", json={"type": "subscription", "plan": "PREMIUM", "months": 0})
     assert off.status_code == 400 and off.json()["error"]["code"] == "PRICE_NOT_AVAILABLE"

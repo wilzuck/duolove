@@ -38,7 +38,7 @@ export default function AdminSubscriptions() {
           hasMore={subs.hasNextPage} onLoadMore={() => void subs.fetchNextPage()} loadingMore={subs.isFetchingNextPage}
           columns={[
             { key: 'name', header: t('admin.cols.name'), value: (s) => s.displayName, cellClassName: 'font-medium', cell: (s) => s.displayName },
-            { key: 'plan', header: t('admin.cols.plan'), value: (s) => s.plan, filter: { options: ['PREMIUM', 'VIP'].map((p) => ({ value: p, label: p })) }, cell: (s) => s.plan },
+            { key: 'plan', header: t('admin.cols.plan'), value: (s) => s.plan, filter: { options: ['PREMIUM', 'VIP', 'GOLD'].map((p) => ({ value: p, label: p })) }, cell: (s) => s.plan },
             { key: 'status', header: t('admin.cols.status'), value: (s) => s.status, filter: { options: ['PENDING', 'ACTIVE', 'PAST_DUE', 'CANCELED', 'EXPIRED'].map((x) => ({ value: x, label: x })) }, cell: (s) => <Badge tone={s.status === 'ACTIVE' ? 'success' : 'neutral'}>{s.status}</Badge> },
             { key: 'ends', header: t('admin.cols.ends'), value: (s) => s.currentPeriodEnd ?? '', cellClassName: 'text-muted', cell: (s) => `${s.currentPeriodEnd ? d(s.currentPeriodEnd) : '—'}${s.cancelAtPeriodEnd ? ` (${t('admin.cancelling')})` : ''}` },
           ]}

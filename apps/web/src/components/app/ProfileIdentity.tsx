@@ -7,6 +7,7 @@ import type { Card } from '@/lib/types';
 import { useActivityLabel } from './Activity';
 import { countryName } from './ProfileCard';
 import { VerifiedBadge } from './VerifiedBadge';
+import { GoldBadge } from './GoldBadge';
 
 /** Nom, âge, lieu, dernière activité (Premium / VIP, palier arrondi, jamais si la personne la masque), intention et compatibilité. */
 export function ProfileIdentity({ card, titleId }: { card: Card; titleId?: string }) {
@@ -16,7 +17,7 @@ export function ProfileIdentity({ card, titleId }: { card: Card; titleId?: strin
   const activityText = useActivityLabel()(activity);
   return (
     <div className="space-y-2">
-      <h2 id={titleId} className="flex items-center gap-2 font-display text-3xl leading-none font-extrabold">{card.displayName}, {card.age}{card.verified && <VerifiedBadge size="lg" />}</h2>
+      <h2 id={titleId} className="flex items-center gap-2 font-display text-3xl leading-none font-extrabold">{card.displayName}, {card.age}{card.verified && <VerifiedBadge size="lg" />}{card.gold && <GoldBadge size="lg" />}</h2>
       <p className="flex items-center gap-1.5 text-muted"><MapPin className="size-4" aria-hidden />{card.city}, {countryName(card.country, locale)}{card.distanceKm != null && ` · ${(card.distanceKm === 0 ? t('card.distanceNear') : t('card.distance', { km: card.distanceKm }))}`}</p>
       {card.memberSince && (
         <p className="flex items-center gap-1.5 text-sm text-muted">

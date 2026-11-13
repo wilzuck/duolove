@@ -44,7 +44,7 @@ export default function AdminUsers() {
   const refresh = () => { void qc.invalidateQueries({ queryKey: ['admin'] }); setReason(''); };
   const act = useMutation({ mutationFn: ({ kind }: { kind: 'suspend' | 'ban' | 'unsuspend' }) => post(`/admin/users/${sel}/${kind}`, kind === 'suspend' ? { reason, days } : { reason }), onSuccess: () => { refresh(); toast('success', t('admin.done')); }, onError: (e) => toast('error', err(e)) });
   const role = useMutation({ mutationFn: (r: string) => patch(`/admin/users/${sel}/role`, { role: r }), onSuccess: refresh, onError: (e) => toast('error', err(e)) });
-  const [grantPlan, setGrantPlan] = useState<'PREMIUM' | 'VIP'>('PREMIUM');
+  const [grantPlan, setGrantPlan] = useState<'PREMIUM' | 'VIP' | 'GOLD'>('PREMIUM');
   const [grantDays, setGrantDays] = useState(30);
   const grant = useMutation({ mutationFn: () => post(`/admin/users/${sel}/grant-plan`, { plan: grantPlan, days: grantDays, reason }), onSuccess: () => { refresh(); toast('success', t('admin.done')); }, onError: (e) => toast('error', err(e)) });
   const resetTf = useMutation({ mutationFn: () => post<{ wasEnabled: boolean }>(`/admin/users/${sel}/two-factor/reset`, { reason }), onSuccess: (r) => { refresh(); toast('success', r.wasEnabled ? t('admin.twoFactorResetDone') : t('admin.twoFactorNone')); }, onError: (e) => toast('error', err(e)) });
@@ -94,7 +94,7 @@ export default function AdminUsers() {
           columns={[
             { key: 'name', header: t('admin.cols.name'), value: (u) => `${u.displayName} ${u.email ?? ''}`, cell: (u) => <><button className="text-left font-semibold text-brand-ink underline-offset-2 hover:underline" onClick={() => setSel(u.id)}>{u.displayName}</button><span className="block text-xs text-muted">{u.email ?? u.id.slice(0, 8)} · {u.role}</span></> },
             { key: 'status', header: t('admin.cols.status'), value: (u) => u.status, filter: { options: ['ACTIVE', 'SUSPENDED', 'BANNED', 'DELETED'].map((s) => ({ value: s, label: t(`admin.userStatus.${s}`) })) }, cell: (u) => <><Badge tone={tone(u.status)}>{t(`admin.userStatus.${u.status}`)}</Badge>{u.countryMismatch && <Badge tone="gold" className="ml-1">{t('admin.users.mismatchBadge', { declared: countryName(u.country, locale), seen: countryName(u.lastCountry, locale) })}</Badge>}</> },
-            { key: 'plan', header: t('admin.cols.plan'), value: (u) => u.plan, filter: { options: ['FREE', 'PREMIUM', 'VIP'].map((p) => ({ value: p, label: p })) }, cell: (u) => u.plan },
+            { key: 'plan', header: t('admin.cols.plan'), value: (u) => u.plan, filter: { options: ['FREE', 'PREMIUM', 'VIP', 'GOLD'].map((p) => ({ value: p, label: p })) }, cell: (u) => u.plan },
             { key: 'reports', mobileHidden: true, header: t('admin.cols.reports'), value: (u) => u.reports, cell: (u) => u.reports },
             { key: 'joined', mobileHidden: true, header: t('admin.cols.joined'), value: (u) => u.createdAt, cellClassName: 'text-muted', cell: (u) => formatDate(u.createdAt, locale, { day: 'numeric', month: 'short', year: 'numeric' }) },
           ]}
@@ -142,7 +142,7 @@ export default function AdminUsers() {
               <div className="space-y-3 rounded-2xl bg-soft p-4">
                 <h3 className="font-bold">{t('admin.grant.title')}</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label={t('admin.grant.plan')}>{(p) => <Select {...p} value={grantPlan} onChange={(e) => setGrantPlan(e.target.value as 'PREMIUM' | 'VIP')}>{['PREMIUM', 'VIP'].map((x) => <option key={x}>{x}</option>)}</Select>}</Field>
+                  <Field label={t('admin.grant.plan')}>{(p) => <Select {...p} value={grantPlan} onChange={(e) => setGrantPlan(e.target.value as 'PREMIUM' | 'VIP' | 'GOLD')}>{['PREMIUM', 'VIP', 'GOLD'].map((x) => <option key={x}>{x}</option>)}</Select>}</Field>
                   <Field label={t('admin.days')}>{(p) => <Input {...p} type="number" min={1} max={365} value={grantDays} onChange={(e) => setGrantDays(Math.min(365, Math.max(1, Number(e.target.value) || 30)))} />}</Field>
                 </div>
                 <Field label={t('admin.grant.reason')}>{(p) => <Input {...p} value={reason} onChange={(e) => setReason(e.target.value)} />}</Field>

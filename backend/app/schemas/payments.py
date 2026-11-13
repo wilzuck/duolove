@@ -21,13 +21,13 @@ Months = Literal[0, 1, 3, 6, 12]  # 0 = formule de 7 jours
 
 
 class LegacyCheckout(BaseModel):
-    plan: Literal["PREMIUM", "VIP"]
+    plan: Literal["PREMIUM", "VIP", "GOLD"]
     months: Months = 1
 
 
 class SubscriptionCheckout(BaseModel):
     type: Literal["subscription"]
-    plan: Literal["PREMIUM", "VIP"]
+    plan: Literal["PREMIUM", "VIP", "GOLD"]
     months: Months = 1
     promoCode: PromoCode | None = None
 
