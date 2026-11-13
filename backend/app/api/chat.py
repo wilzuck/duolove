@@ -97,6 +97,15 @@ async def icebreakers_for(conversation_id: str, seed: int = Query(0, ge=0, le=10
     return await icebreakers.suggestions(db, u.id, conversation_id, seed, locale)
 
 
+@router.get("/conversations/{conversation_id}/coach", dependencies=[require_flag("icebreakers")])
+async def coach_for(conversation_id: str, seed: int = Query(0, ge=0, le=1000), locale: str = Query("fr", pattern="^(fr|en)$"),
+                    u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
+    """Coach de premier message : idées tirées de ce que l'autre personne a écrit sur elle. Mêmes droits que les brise-glace ; rien n'est envoyé."""
+    if not (await entitlements.get(db, u.id))["limits"]["chatSuggestions"]:
+        raise forbidden("PLAN_REQUIRED", "Les idées pour briser la glace sont réservées aux abonnés Premium et VIP")
+    return await icebreakers.coach(db, u.id, conversation_id, seed, locale)
+
+
 @router.delete("/messages/{message_id}")
 async def remove(message_id: str, u: AuthUser = Depends(verified_user), db: AsyncSession = Depends(get_db)):
     return await chat.delete_message(db, u.id, message_id)

@@ -114,6 +114,15 @@ async def ranked(db: AsyncSession, user_id: str, *, exclude: set[str] | None = N
         if not boost:
             r.rank = r.compatibility  # sélection du jour : aucune mise en avant payante
         scored.append((c, dist, r))
+    if boost and scored:
+        bonus = (await appsettings.all_values(db))["live.priority_bonus"]
+        if bonus:
+            from app.core import live_events
+
+            prio = await live_events.priority_ids(db, [c.profile.userId for c, _, _ in scored], me.city)
+            for c, _, r in scored:
+                if c.profile.userId in prio:
+                    r.rank += bonus  # soirée Duo en cours : les abonnés payants passent devant, sans toucher à la compatibilité affichée
     scored.sort(key=lambda x: x[2].rank, reverse=True)  # tri stable
     return scored
 

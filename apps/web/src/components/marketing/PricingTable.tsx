@@ -11,30 +11,32 @@ import { Link } from '@/i18n/navigation';
 import type { Catalog, PlanView } from '@/lib/types';
 
 const ICON = { FREE: Star, PREMIUM: Sparkles, VIP: Crown } as const;
+/** Avantages phares, par ordre d'importance : les trois premiers présents dans la formule sont mis en avant. */
+const STARS = ['likesUnlimited', 'seeLikers', 'superLikesWeekly', 'boostsMonthly', 'chatSuggestions', 'liveMatch', 'incognito'] as const;
 const BASE = ['plans.feat.signup', 'plans.feat.discover', 'plans.feat.matches', 'plans.feat.chat', 'plans.feat.safety'] as const;
 
 /** Les avantages affichés sont LUS dans la configuration de l'offre (jamais codés par formule). */
-function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) => string, freeShown: boolean): string[] {
+function featureLines(p: PlanView, t: (k: string, v?: Record<string, number>) => string, freeShown: boolean): { id: string; text: string }[] {
   const f = p.features;
-  const out: string[] = [];
-  if (p.code !== 'FREE' && freeShown) out.push(t('plans.feat.allFree'));  // « Tout Gratuit » n'a de sens que si l'offre gratuite est affichée
-  out.push(f.daily_likes_limit < 0 ? t('plans.feat.likesUnlimited') : t('plans.feat.likes', { n: f.daily_likes_limit }));
-  if (f.super_likes_weekly > 0) out.push(t('plans.feat.superLikesWeekly', { n: f.super_likes_weekly }));
-  if (f.can_see_likes) out.push(t('plans.feat.seeLikers'));
-  if (f.advanced_filters) out.push(t('plans.feat.advancedFilters'));
-  if (f.rewind_enabled) out.push(t('plans.feat.rewind'));
-  if (f.boosts_monthly > 0) out.push(t('plans.feat.boostsMonthly', { n: f.boosts_monthly }));
-  if (f.incognito_mode) out.push(t('plans.feat.incognito'));
-  if (f.chat_images_enabled) out.push(t('plans.feat.chatImages'));
-  if (f.chat_suggestions_enabled) out.push(t('plans.feat.chatSuggestions'));
-  if (f.calls_enabled) out.push(t('plans.feat.calls'));
-  if (f.dates_enabled) out.push(t('plans.feat.dates'));
-  out.push(t('plans.feat.dailyPicks', { n: f.daily_picks_count }));
-  if (f.read_receipts_control) out.push(t('plans.feat.readReceipts'));
-  if (f.live_match_enabled) out.push(t('plans.feat.liveMatch'));
-  else if (f.live_match_trials > 0) out.push(t('plans.feat.liveMatchTrials', { n: f.live_match_trials }));
-  if (f.match_tokens_monthly > 0) out.push(t('plans.feat.matchTokensMonthly', { n: f.match_tokens_monthly }));
-  if (!f.ads_enabled && p.code !== 'FREE') out.push(t('plans.feat.noAds'));
+  const out: { id: string; text: string }[] = [];
+  if (p.code !== 'FREE' && freeShown) out.push({ id: 'allFree', text: t('plans.feat.allFree') });  // « Tout Gratuit » n'a de sens que si l'offre gratuite est affichée
+  out.push(f.daily_likes_limit < 0 ? { id: 'likesUnlimited', text: t('plans.feat.likesUnlimited') } : { id: 'likes', text: t('plans.feat.likes', { n: f.daily_likes_limit }) });
+  if (f.super_likes_weekly > 0) out.push({ id: 'superLikesWeekly', text: t('plans.feat.superLikesWeekly', { n: f.super_likes_weekly }) });
+  if (f.can_see_likes) out.push({ id: 'seeLikers', text: t('plans.feat.seeLikers') });
+  if (f.advanced_filters) out.push({ id: 'advancedFilters', text: t('plans.feat.advancedFilters') });
+  if (f.rewind_enabled) out.push({ id: 'rewind', text: t('plans.feat.rewind') });
+  if (f.boosts_monthly > 0) out.push({ id: 'boostsMonthly', text: t('plans.feat.boostsMonthly', { n: f.boosts_monthly }) });
+  if (f.incognito_mode) out.push({ id: 'incognito', text: t('plans.feat.incognito') });
+  if (f.chat_images_enabled) out.push({ id: 'chatImages', text: t('plans.feat.chatImages') });
+  if (f.chat_suggestions_enabled) out.push({ id: 'chatSuggestions', text: t('plans.feat.chatSuggestions') });
+  if (f.calls_enabled) out.push({ id: 'calls', text: t('plans.feat.calls') });
+  if (f.dates_enabled) out.push({ id: 'dates', text: t('plans.feat.dates') });
+  out.push({ id: 'dailyPicks', text: t('plans.feat.dailyPicks', { n: f.daily_picks_count }) });
+  if (f.read_receipts_control) out.push({ id: 'readReceipts', text: t('plans.feat.readReceipts') });
+  if (f.live_match_enabled) out.push({ id: 'liveMatch', text: t('plans.feat.liveMatch') });
+  else if (f.live_match_trials > 0) out.push({ id: 'liveMatchTrials', text: t('plans.feat.liveMatchTrials', { n: f.live_match_trials }) });
+  if (f.match_tokens_monthly > 0) out.push({ id: 'matchTokensMonthly', text: t('plans.feat.matchTokensMonthly', { n: f.match_tokens_monthly }) });
+  if (!f.ads_enabled && p.code !== 'FREE') out.push({ id: 'noAds', text: t('plans.feat.noAds') });
   return out;
 }
 
@@ -69,7 +71,10 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
         {plans.map((p) => {
           const Icon = ICON[p.code];
           const price = p.prices.find((x) => x.months === months); // pas de repli : une formule qui n'a pas cette durée (ex. 7 jours seulement sur Premium) ne l'affiche pas
-          const lines = [...(p.code === 'FREE' ? BASE.map((k) => t(k)) : []), ...featureLines(p, t as never, plans.some((x) => x.code === 'FREE'))];
+          const all = [...(p.code === 'FREE' ? BASE.map((k) => ({ id: k, text: t(k) })) : []), ...featureLines(p, t as never, plans.some((x) => x.code === 'FREE'))];
+          // Trois avantages phares par formule payante (les plus marquants d'abord), le reste suit sous « Aussi inclus ».
+          const stars = p.code === 'FREE' ? [] : STARS.map((id) => all.find((l) => l.id === id)).filter((l): l is { id: string; text: string } => !!l).slice(0, 3);
+          const lines = all.filter((l) => !stars.includes(l));
           return (
             <Card key={p.code} className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
               {p.featured && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-linear-to-br from-brand-strong to-brand-strong-2 text-white">{t('plans.popular')}</Badge>}
@@ -108,8 +113,14 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
                   </p>
                 </div>
               )}
+              {stars.length > 0 && (
+                <ul aria-label={t('plans.starsLabel')} className="space-y-2 rounded-2xl bg-soft p-4 text-sm font-semibold">
+                  {stars.map((l) => <li key={l.id} className="flex gap-3"><Sparkles className="mt-0.5 size-4 shrink-0 text-brand-ink" aria-hidden /><span>{l.text}</span></li>)}
+                </ul>
+              )}
               {showAll ? <ul id="plan-features" className="flex-1 space-y-3 text-sm">
-                {lines.map((l) => <li key={l} className="flex gap-3"><Check className="mt-0.5 size-4 shrink-0 text-success-ink" aria-hidden /><span>{l}</span></li>)}
+                {stars.length > 0 && <li className="text-xs font-semibold tracking-wide text-muted uppercase">{t('plans.alsoIncluded')}</li>}
+                {lines.map((l) => <li key={l.id} className="flex gap-3"><Check className="mt-0.5 size-4 shrink-0 text-success-ink" aria-hidden /><span>{l.text}</span></li>)}
               </ul> : <div className="flex-1" />}
               {!price && p.code !== 'FREE' ? null : action ? action(p, months) : (
                 <Link href="/register"><Button className="w-full" size="lg" variant={p.featured ? 'primary' : 'outline'}>{t(p.code === 'FREE' ? 'plans.ctaFree' : 'plans.ctaPaid')}</Button></Link>

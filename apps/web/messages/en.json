@@ -361,6 +361,8 @@
     "perWeek": "/ 7 days",
     "billedWeek": "Valid for 7 days, no renewal",
     "promoTotalWeek": "With {code} (−{percent}%): {total} on your next payment, for 7 days.",
+    "starsLabel": "Key benefits",
+    "alsoIncluded": "Also included",
     "durationUnavailable": "Not offered for this duration: pick another duration."
   },
   "about": {
@@ -1831,6 +1833,7 @@
     "messageActions": "Message actions",
     "iceTitle": "Need an idea to get started?",
     "iceHint": "Ideas based on what you have in common. Nothing is sent: pick one, edit it, then send.",
+    "coachTitle": "From their profile",
     "iceMore": "More ideas",
     "iceEmpty": "No idea right now.",
     "iceOpen": "Ideas to get started",
@@ -2045,6 +2048,7 @@
       "DATE_REMINDER": "Reminder: your date is coming up.",
       "MESSAGE_MANY": "{count} new messages.",
       "SPEED_REMINDER": "Reminder: your speed-dating session is about to start.",
+      "DUO_GUARANTEE": "Duo Guarantee: no duo this month, so we are adding {n} day(s) to your plan. Keep your profile complete and keep liking!",
       "SUBSCRIPTION_EXPIRING_DAYS": "Your subscription ends in {n} day(s). Extend it: the duration is added to your end date.",
       "LIVE_EVENT": "Duo Night: “{event}” starts in one hour. Be there!",
       "LIVE_EVENT_START": "“{event}” is starting: launch your search!"
@@ -2948,6 +2952,11 @@
         "realMeetings": "Real meetings (only from voluntary declarations)"
       },
       "unavailableNote": "These will arrive with the matching features; they are never inferred.",
+      "guaranteeEnabled": "Duo Guarantee (0 = off, 1 = on)",
+      "guaranteeDays": "Days added by the guarantee (days)",
+      "guaranteeWindow": "Period without a duo before the guarantee (days)",
+      "guaranteeMinLikes": "Minimum likes sent to qualify",
+      "livePriority": "Subscriber priority during a Duo evening (ranking points, 0 = none)",
       "icebreakersCount": "Ideas offered at a time",
       "tabIcebreakers": "Icebreakers",
       "ice": {
@@ -3009,7 +3018,8 @@
         "dates": "Dates",
         "account": "Account and notifications",
         "meet": "Live meetings",
-        "calls": "Calls"
+        "calls": "Calls",
+        "premium": "Premium value"
       }
     },
     "speed": {

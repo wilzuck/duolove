@@ -136,3 +136,21 @@ async def sweep_loop(maker, every: float = 60.0) -> None:
         except Exception:  # noqa: BLE001
             log.exception("Balayage des soirées Duo")
         await asyncio.sleep(every)
+
+
+async def priority_ids(db: AsyncSession, user_ids: list[str], viewer_city: str | None = None, now: datetime.datetime | None = None) -> set[str]:
+    """Abonnés payants mis en avant dans la découverte PENDANT une soirée Duo en cours (réglage `live.priority_bonus` > 0).
+    Si la soirée est limitée à une ville, seuls les membres de cette ville en profitent."""
+    from app.models.models import Entitlement
+
+    now = now or utcnow()
+    if not user_ids:
+        return set()
+    live = (await db.execute(select(LiveEvent).where(LiveEvent.status == "ACTIVE", LiveEvent.startsAt <= now, LiveEvent.endsAt > now))).scalars().all()
+    if not live:
+        return set()
+    cities = {e.city for e in live}
+    if None not in cities and not any(c for c in cities if viewer_city and c.lower() == viewer_city.lower()):
+        return set()
+    rows = (await db.execute(select(Entitlement.userId).where(Entitlement.userId.in_(user_ids), Entitlement.plan != "FREE", Entitlement.validUntil > now))).scalars().all()
+    return set(rows)

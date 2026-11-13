@@ -105,6 +105,7 @@ class NotificationType(str, enum.Enum):
     PROFILE_VERIFIED = 'PROFILE_VERIFIED'
     SUBSCRIPTION_ACTIVATED = 'SUBSCRIPTION_ACTIVATED'
     SUBSCRIPTION_EXPIRING = 'SUBSCRIPTION_EXPIRING'
+    DUO_GUARANTEE = 'DUO_GUARANTEE'
     SECURITY_ALERT = 'SECURITY_ALERT'
     REFUND_UPDATE = 'REFUND_UPDATE'
     LIVE_INVITE = 'LIVE_INVITE'
@@ -386,6 +387,24 @@ class ProfilePromptAnswer(Base):
     position: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
+
+
+class DuoGuaranteeGrant(Base):
+    """Garantie Duo : jours ajoutés automatiquement à un abonné qui n'a obtenu aucun duo malgré un profil complet et des likes réguliers."""
+    __tablename__ = 'DuoGuaranteeGrant'
+    __table_args__ = (
+        ForeignKeyConstraint(['userId'], ['User.id'], ondelete='CASCADE', onupdate='CASCADE', name='DuoGuaranteeGrant_userId_fkey'),
+        ForeignKeyConstraint(['subscriptionId'], ['Subscription.id'], ondelete='CASCADE', onupdate='CASCADE', name='DuoGuaranteeGrant_subscriptionId_fkey'),
+        PrimaryKeyConstraint('id', name='DuoGuaranteeGrant_pkey'),
+        Index('DuoGuaranteeGrant_userId_createdAt_idx', 'userId', 'createdAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    userId: Mapped[str] = mapped_column(Text, nullable=False)
+    subscriptionId: Mapped[str] = mapped_column(Text, nullable=False)
+    days: Mapped[int] = mapped_column(Integer, nullable=False)
+    likesSent: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
 class DailyRecommendation(Base):

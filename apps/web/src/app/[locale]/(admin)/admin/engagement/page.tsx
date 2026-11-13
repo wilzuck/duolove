@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CalendarClock, Hourglass, MessageSquareHeart, Pencil, Phone, Power, PowerOff, Scale, ShieldCheck, Sparkles, Trash2, type LucideIcon } from 'lucide-react';
+import { CalendarClock, Crown, Hourglass, MessageSquareHeart, Pencil, Phone, Power, PowerOff, Scale, ShieldCheck, Sparkles, Trash2, type LucideIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 import { INTENTS, INTEREST_SLUGS } from '@duomatch/types';
@@ -30,7 +30,7 @@ interface Metrics {
   dates: { proposed: number; accepted: number; declined: number; canceled: number; completed: number; acceptRate: number | null; feedbackCount: number; feedbackAverage: number | null };
 }
 const WEIGHT_KEYS = ['intent', 'mutual', 'interests', 'location', 'other'] as const;
-const INT_KEYS = [['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount'], ['dates.min_notice_hours', 'dateMinNotice'], ['dates.max_days_ahead', 'dateMaxDays'], ['dates.max_open', 'dateMaxOpen'], ['dates.max_per_day', 'dateMaxPerDay'], ['dates.share_hours_after', 'dateShareHours'], ['pause.max_days', 'pauseMaxDays'], ['signup.code_ttl_minutes', 'codeTtl'], ['signup.unverified_ttl_hours', 'unverifiedTtl'], ['notifications.max_emails_per_day', 'emailCap'], ['live.search_hours', 'liveHours'], ['speed.reminder_minutes', 'speedReminder'], ['calls.ring_seconds', 'callRing'], ['calls.max_minutes', 'callMax'], ['calls.max_per_day', 'callPerDay']] as const;
+const INT_KEYS = [['daily.cooldown_days', 'cooldown'], ['daily.retention_days', 'retention'], ['prompts.min', 'promptsMin'], ['prompts.max', 'promptsMax'], ['likes.comment_max', 'commentMax'], ['icebreakers.count', 'icebreakersCount'], ['dates.min_notice_hours', 'dateMinNotice'], ['dates.max_days_ahead', 'dateMaxDays'], ['dates.max_open', 'dateMaxOpen'], ['dates.max_per_day', 'dateMaxPerDay'], ['dates.share_hours_after', 'dateShareHours'], ['pause.max_days', 'pauseMaxDays'], ['signup.code_ttl_minutes', 'codeTtl'], ['signup.unverified_ttl_hours', 'unverifiedTtl'], ['notifications.max_emails_per_day', 'emailCap'], ['live.search_hours', 'liveHours'], ['speed.reminder_minutes', 'speedReminder'], ['calls.ring_seconds', 'callRing'], ['calls.max_minutes', 'callMax'], ['calls.max_per_day', 'callPerDay'], ['guarantee.enabled', 'guaranteeEnabled'], ['guarantee.days', 'guaranteeDays'], ['guarantee.window_days', 'guaranteeWindow'], ['guarantee.min_likes', 'guaranteeMinLikes'], ['live.priority_bonus', 'livePriority']] as const;
 const num = (v: string, fb = 0) => (v === '' || Number.isNaN(Number(v)) ? fb : Math.round(Number(v)));
 
 /** Libellé « Durée (heures) » → { name: « Durée », unit: « heures » } : la parenthèse devient l'unité affichée à côté de la valeur. */
@@ -41,8 +41,9 @@ const BLOCKS: { id: string; icon: LucideIcon; keys: readonly (readonly [string, 
   { id: 'profiles', icon: MessageSquareHeart, keys: INT_KEYS.filter(([k]) => /^(prompts|likes|icebreakers)\./.test(k)) },
   { id: 'dates', icon: CalendarClock, keys: INT_KEYS.filter(([k]) => k.startsWith('dates.')) },
   { id: 'account', icon: ShieldCheck, keys: INT_KEYS.filter(([k]) => /^(pause|signup|notifications)\./.test(k)) },
-  { id: 'meet', icon: Hourglass, keys: INT_KEYS.filter(([k]) => /^(live|speed)\./.test(k)) },
+  { id: 'meet', icon: Hourglass, keys: INT_KEYS.filter(([k]) => /^(live\.search|speed)/.test(k)) },
   { id: 'calls', icon: Phone, keys: INT_KEYS.filter(([k]) => k.startsWith('calls.')) },
+  { id: 'premium', icon: Crown, keys: INT_KEYS.filter(([k]) => /^(guarantee|live\.priority)/.test(k)) },
 ];
 
 /** Bloc de réglages : lecture seule par défaut, un bouton Modifier ouvre l'édition de ce bloc uniquement. */

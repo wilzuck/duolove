@@ -361,6 +361,8 @@
     "perWeek": "/ 7 jours",
     "billedWeek": "Valable 7 jours, sans renouvellement",
     "promoTotalWeek": "Avec {code} (−{percent} %) : {total} au prochain paiement, pour 7 jours.",
+    "starsLabel": "Avantages phares",
+    "alsoIncluded": "Aussi inclus",
     "durationUnavailable": "Pas proposée pour cette durée : choisissez une autre durée."
   },
   "about": {
@@ -1831,6 +1833,7 @@
     "messageActions": "Actions sur le message",
     "iceTitle": "Besoin d’une idée pour commencer ?",
     "iceHint": "Des idées fondées sur ce que vous avez en commun. Rien n’est envoyé : choisissez, modifiez, puis envoyez.",
+    "coachTitle": "Tirées de son profil",
     "iceMore": "Autres idées",
     "iceEmpty": "Pas d’idée pour le moment.",
     "iceOpen": "Idées pour commencer",
@@ -2045,6 +2048,7 @@
       "DATE_REMINDER": "Rappel : votre rendez-vous approche.",
       "MESSAGE_MANY": "{count} nouveaux messages.",
       "SPEED_REMINDER": "Rappel : votre session de speed dating approche.",
+      "DUO_GUARANTEE": "Garantie Duo : pas encore de duo ce mois-ci, alors nous ajoutons {n} jour(s) à votre abonnement. Complétez votre profil et continuez à liker !",
       "SUBSCRIPTION_EXPIRING_DAYS": "Votre abonnement se termine dans {n} jour(s). Prolongez-le : la durée s’ajoute à votre date de fin.",
       "LIVE_EVENT": "Soirée Duo : « {event} » commence dans une heure. Soyez là !",
       "LIVE_EVENT_START": "La soirée « {event} » commence : lancez votre recherche !"
@@ -2948,6 +2952,11 @@
         "realMeetings": "Rencontres réelles (uniquement sur déclaration volontaire)"
       },
       "unavailableNote": "Ces indicateurs arriveront avec les fonctionnalités correspondantes ; ils ne sont jamais déduits.",
+      "guaranteeEnabled": "Garantie Duo (0 = désactivée, 1 = activée)",
+      "guaranteeDays": "Jours ajoutés par la garantie (jours)",
+      "guaranteeWindow": "Période sans duo avant la garantie (jours)",
+      "guaranteeMinLikes": "Likes minimum envoyés pour y avoir droit",
+      "livePriority": "Priorité des abonnés pendant une soirée Duo (points de classement, 0 = aucune)",
       "icebreakersCount": "Idées proposées à la fois",
       "tabIcebreakers": "Brise-glace",
       "ice": {
@@ -3009,7 +3018,8 @@
         "dates": "Rendez-vous",
         "account": "Compte et notifications",
         "meet": "Rencontres en direct",
-        "calls": "Appels"
+        "calls": "Appels",
+        "premium": "Valeur Premium"
       }
     },
     "speed": {

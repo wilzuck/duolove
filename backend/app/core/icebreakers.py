@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import appsettings, chat_service
-from app.models.models import IcebreakerTemplate, Interest, Profile, t_UserInterest
+from app.models.models import IcebreakerTemplate, Interest, Profile, ProfilePrompt, ProfilePromptAnswer, t_UserInterest
 
 DEFAULTS = [  # (slug, kind, key, français, anglais)
     ("music", "INTEREST", "music", "Vous aimez tous les deux la musique. Quel artiste me recommanderais-tu ?", "You both love music. Which artist would you recommend me?"),
@@ -55,6 +55,39 @@ async def _profile_facts(db: AsyncSession, user_id: str) -> tuple[str, set[str]]
     return getattr(intent, "value", intent), slugs
 
 
+async def coach(db: AsyncSession, user_id: str, conversation_id: str, seed: int = 0, locale: str = "fr") -> dict:
+    """Coach de premier message : jusqu'à 3 idées tirées du profil de l'AUTRE personne (distinct des brise-glace, qui reposent sur ce que vous avez en commun)."""
+    _, other_id, _ = await chat_service.membership(db, user_id, conversation_id)
+    ideas = await personal_ideas(db, other_id, locale)
+    random.Random(f"coach:{conversation_id}:{seed}").shuffle(ideas)
+    return {"items": ideas[:3]}
+
+
+async def personal_ideas(db: AsyncSession, other_id: str, locale: str) -> list[dict]:
+    """Coach de premier message : idées tirées de ce que l'AUTRE personne a écrit sur elle (métier, réponse à une question, ville).
+    Toujours des questions ouvertes qui montrent qu'on a lu le profil ; jamais envoyées automatiquement."""
+    en = locale == "en"
+    prof = (await db.execute(select(Profile).where(Profile.userId == other_id))).scalar_one_or_none()
+    if not prof:
+        return []
+    out: list[dict] = []
+    ans = (await db.execute(select(ProfilePromptAnswer, ProfilePrompt).join(ProfilePrompt, ProfilePrompt.id == ProfilePromptAnswer.promptId)
+                            .where(ProfilePromptAnswer.userId == other_id).order_by(ProfilePromptAnswer.position).limit(2))).all()
+    for a, q in ans:
+        question = (q.textEn if en else q.textFr).strip()
+        out.append({"id": f"personal-prompt-{a.id}", "kind": "PERSONAL",
+                    "text": (f"Your answer to “{question}” made me curious. Can you tell me more?" if en else f"Ta réponse à « {question} » m’a donné envie d’en savoir plus. Tu peux m’en dire plus ?")})
+    job = (prof.occupation or "").strip()
+    if job:
+        out.append({"id": "personal-job", "kind": "PERSONAL",
+                    "text": (f"I saw you work in “{job}”. What do you enjoy most about it?" if en else f"J’ai vu que tu travailles dans « {job} ». Qu’est-ce qui te plaît le plus là-dedans ?")})
+    city = (prof.city or "").strip()
+    if city:
+        out.append({"id": "personal-city", "kind": "PERSONAL",
+                    "text": (f"What’s your favourite place to go out in {city}?" if en else f"C’est quoi ton endroit préféré pour sortir à {city} ?")})
+    return out
+
+
 async def suggestions(db: AsyncSession, user_id: str, conversation_id: str, seed: int = 0, locale: str = "fr") -> dict:
     """Quelques sujets (nombre = réglage `icebreakers.count`), toujours déduits d'éléments communs ; `seed` varie la sélection (« autres idées »)."""
     conv, other_id, _ = await chat_service.membership(db, user_id, conversation_id)
@@ -70,4 +103,5 @@ async def suggestions(db: AsyncSession, user_id: str, conversation_id: str, seed
     rng.shuffle(generic)
     picked = (specific + generic)[:n]  # les sujets communs d'abord, complétés par des sujets neutres
     text = (lambda t: t.textEn) if locale == "en" else (lambda t: t.textFr)
-    return {"items": [{"id": t.id, "kind": t.kind, "text": text(t)} for t in picked], "basedOn": {"commonInterests": sorted(common), "sameIntent": mine_intent == their_intent}}
+    items = [{"id": t.id, "kind": t.kind, "text": text(t)} for t in picked]
+    return {"items": items, "basedOn": {"commonInterests": sorted(common), "sameIntent": mine_intent == their_intent}}
