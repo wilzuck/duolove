@@ -75,6 +75,18 @@ export function AdminShell({ children }: { children: ReactNode }) {
     const parent = path.replace(/\/[^/]+$/, '');
     router.push(parent.startsWith('/admin') ? parent : '/admin');
   };
+  // Le « Retour » du bas ne sert que sur les pages longues (ex. l'édition d'un article), où celui du haut n'est plus à portée.
+  const mainRef = useRef<HTMLElement>(null);
+  const [long, setLong] = useState(false);
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+    const check = () => setLong(el.offsetHeight > window.innerHeight * 1.5);
+    const ro = new ResizeObserver(check); // appelé aussi à l'observation : mesure initiale
+    ro.observe(el);
+    window.addEventListener('resize', check);
+    return () => { ro.disconnect(); window.removeEventListener('resize', check); };
+  }, [allowed]);
   const badges = useQuery({ queryKey: ['admin', 'badges'], enabled: allowed, refetchInterval: 60_000, queryFn: () => api<{ reports: number; moderation: number; errors?: number }>('/admin/badges') });
 
   useEffect(() => { if (error instanceof ApiError && error.status === 401) router.replace(`/login?next=${encodeURIComponent(path)}`); }, [error, path, router]);
@@ -166,9 +178,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
             : <button type="button" onClick={goBack} className="mr-auto inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold text-brand-ink hover:bg-soft lg:-ml-2"><ArrowLeft className="size-4" aria-hidden />{t('admin.back')}</button>}
           <div className="flex items-center gap-1"><LocaleSwitcher /><ThemeToggle /></div>
         </header>
-        <main id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-5 px-4 py-6 lg:px-8">
+        <main ref={mainRef} id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-5 px-4 py-6 lg:px-8">
           {forbidden ? <Alert variant="text">{t('admin.forbidden')}</Alert> : children}
-          {path !== '/admin' && <div className="border-t border-line pt-4"><button type="button" onClick={goBack} className="inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold text-brand-ink hover:bg-soft"><ArrowLeft className="size-4" aria-hidden />{t('admin.back')}</button></div>}
+          {path !== '/admin' && long && <div className="border-t border-line pt-4"><button type="button" onClick={goBack} className="inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-semibold text-brand-ink hover:bg-soft"><ArrowLeft className="size-4" aria-hidden />{t('admin.back')}</button></div>}
         </main>
       </div>
     </div>
