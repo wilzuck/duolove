@@ -73,11 +73,11 @@ class KkiapayProvider:
     def __init__(self, cfg: Effective):
         self.cfg = cfg
 
-    async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None) -> dict:
+    async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None, customer: dict | None = None) -> dict:
         # Un même compte KKiaPay peut servir plusieurs applications (ex. WaMarket) : tout ce qui part de Crushduo est marqué, côté KKiaPay, par la
         # référence (partnerId) qui commence par « crushduo_ », le motif « Crushduo · Premium » et le champ `data`.
         ref = f"{REF_PREFIX}{random_token(12)}"
         site = get_settings().site_name
         reason = f"{site} · {plan.replace('_', ' ').title()}" if plan else site
-        return {"providerRef": ref, "widget": {"publicKey": self.cfg.public_key, "sandbox": self.cfg.sandbox, "amount": amount_xof, "reference": ref, "name": site, "reason": reason,
+        return {"providerRef": ref, "widget": {"publicKey": self.cfg.public_key, "sandbox": self.cfg.sandbox, "amount": amount_xof, "reference": ref, "name": (customer or {}).get("name") or site, "email": (customer or {}).get("email"), "reason": reason,
                                                "data": json.dumps({"app": "crushduo", "paymentId": payment_id}, separators=(",", ":"))}}

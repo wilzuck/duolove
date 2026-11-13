@@ -260,7 +260,10 @@ async def badges(_: AuthUser = MOD, db: AsyncSession = Depends(get_db)):
     reports, verifs, appeals = await c(Report, Report.status == "OPEN"), await c(VerificationRequest, VerificationRequest.status == "PENDING"), await c(ModerationAction, ModerationAction.appealStatus == "PENDING")
     sla = await appsettings.get(db, "moderation.sla_hours")
     overdue = await c(Report, Report.status.in_(["OPEN", "REVIEWING"]), Report.createdAt < utcnow() - datetime.timedelta(hours=sla))
-    return {"reports": reports, "reportsOverdue": overdue, "moderation": verifs + appeals, "verifications": verifs, "appeals": appeals}
+    from app.models.models import SystemError as SysError
+
+    errors = await c(SysError, SysError.resolvedAt.is_(None))
+    return {"reports": reports, "reportsOverdue": overdue, "moderation": verifs + appeals, "verifications": verifs, "appeals": appeals, "errors": errors}
 
 
 @router.get("/summary")

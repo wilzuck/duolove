@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { EyeOff, Star, Zap } from 'lucide-react';
+import { HatGlasses, Star, Zap } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRef, useState, type ReactNode, type RefObject } from 'react';
 import { BOOST_MINUTES } from '@duomatch/types';
@@ -89,14 +89,14 @@ export function TopBarActions({ me }: { me: Me }) {
           </div>
         )}
       </TopAction>
-      <TopAction icon={<EyeOff className="size-5" aria-hidden />} label={t('topbar.private.title')} active={!!profile?.incognito}>
+      <TopAction icon={<HatGlasses className="size-5" aria-hidden />} label={t('topbar.private.title')} active={!!profile?.incognito}>
         {(close) => (
           <div>
             <h3 className="font-bold">{t('topbar.private.title')}</h3>
             <p className="mt-1 text-sm text-muted">{t(me.entitlement.limits.incognito ? 'topbar.private.text' : 'topbar.private.locked')}</p>
             {me.entitlement.limits.incognito
               ? <label className="mt-3 flex items-center justify-between gap-3 text-sm font-semibold">{t('topbar.private.switch')}<Switch checked={!!profile?.incognito} disabled={!profile || incognito.isPending} label={t('topbar.private.switch')} onChange={(v) => incognito.mutate(v)} /></label>
-              : <Link href="/premium" onClick={close} className={cn(buttonVariants({ size: 'sm' }), 'mt-3 w-full')}>{t('topbar.private.upgrade')}</Link>}
+              : <Link href="/premium#plan-VIP" onClick={close} className={cn(buttonVariants({ size: 'sm' }), 'mt-3 w-full')}>{t('topbar.private.upgrade')}</Link>}
           </div>
         )}
       </TopAction>

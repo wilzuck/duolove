@@ -5,12 +5,13 @@ import { useEffect, useState } from 'react';
 import { Button } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import { reloadOnceForChunkError } from '@/lib/chunkError';
+import { reportError } from '@/lib/reportError';
 
 /** Erreur dans une page : message Crushduo (au lieu de l'écran anglais par défaut), « Réessayer », et rechargement automatique après un déploiement. */
 export default function PageError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const t = useTranslations();
   const [reloading] = useState(() => reloadOnceForChunkError(error));
-  useEffect(() => { console.error(error); }, [error]);
+  useEffect(() => { console.error(error); reportError(error, { digest: error.digest }); }, [error]);
   return (
     <main className="mx-auto grid min-h-[60dvh] max-w-md place-items-center px-4 py-16 text-center">
       <div className="space-y-4">

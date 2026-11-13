@@ -9,6 +9,7 @@ import { formatXof } from '@/lib/format';
 import { Button } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Catalog, PlanView } from '@/lib/types';
+import { useScrollToHash } from '@/hooks/useScrollToHash';
 
 const ICON = { FREE: Star, PREMIUM: Sparkles, VIP: Crown, GOLD: Gem } as const;
 /** Avantages phares, par ordre d'importance : les trois premiers présents dans la formule sont mis en avant. */
@@ -51,6 +52,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
   const t = useTranslations();
   const locale = useLocale();
   const { data } = useCatalog(initial);
+  useScrollToHash(!!data);
   const [months, setMonths] = useState(defaultMonths);
   const [showAll, setShowAll] = useState(!collapseFeatures);
   const plans = [...(data?.plans ?? [])].filter((p) => !hideFree || p.code !== 'FREE').sort((a, b) => a.sortOrder - b.sortOrder);
@@ -79,7 +81,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
           const stars = p.code === 'FREE' ? [] : (p.code === 'GOLD' ? GOLD_STARS : STARS).map((id) => all.find((l) => l.id === id)).filter((l): l is { id: string; text: string } => !!l).slice(0, 3);
           const lines = all.filter((l) => !stars.includes(l));
           return (
-            <Card key={p.code} className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
+            <Card key={p.code} id={`plan-${p.code}`} data-anchor-box className={cn('relative flex w-full max-w-[25rem] flex-col gap-5 p-7', p.featured && 'border-2 border-brand shadow-pop')}>
               {p.featured && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-linear-to-br from-brand-strong to-brand-strong-2 text-white">{t('plans.popular')}</Badge>}
               <div className="flex items-center gap-3">
                 <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-soft text-brand"><Icon className="size-5" aria-hidden /></span>

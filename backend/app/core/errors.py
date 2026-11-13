@@ -62,8 +62,12 @@ def install_error_handlers(app: FastAPI) -> None:
         return JSONResponse(_body(code, str(e.detail) if e.detail else code), status_code=e.status_code)
 
     @app.exception_handler(Exception)
-    async def _any(_: Request, e: Exception):
-        log.error("erreur non gérée : %s", type(e).__name__)  # aucun détail ni trace renvoyés au client
+    async def _any(request: Request, e: Exception):
+        log.error("erreur non gérée : %s", type(e).__name__, extra={"skip_tracking": True})  # aucun détail ni trace renvoyés au client
+        from app.core import errortrack
+
+        await errortrack.record_safe(source="api", path=request.url.path, method=request.method, status=500,
+                                     user_agent=request.headers.get("user-agent"), **errortrack.exception_fields(e))
         return JSONResponse(_body("INTERNAL_ERROR", "Erreur interne"), status_code=500)
 
 

@@ -123,7 +123,7 @@ export function ProfileDetail({ card, onBlocked, onLiked, hero, layout = 'split'
           <section><h3 className="mb-3 text-xl font-bold">{t('profile.interests')}</h3>
             <ul className="flex flex-wrap gap-2">{[...card.interests].sort((a, b) => Number(card.commonInterests.includes(b)) - Number(card.commonInterests.includes(a))).map((s) => {
               const common = card.commonInterests.includes(s);
-              return <li key={s}><Badge tone={common ? 'brand' : 'neutral'} className={cn(CHIP, common && 'border border-brand-strong/70')}>{(() => { const Icon = interestIcon(s); return <Icon aria-hidden />; })()}{t(`interest.${s}` as never)}</Badge></li>;
+              return <li key={s}><Badge tone={common ? 'brand' : 'neutral'} className={cn(CHIP, 'border bg-transparent', common ? 'border-brand-strong/70 text-brand-ink' : 'border-line')}>{(() => { const Icon = interestIcon(s); return <Icon aria-hidden />; })()}{t(`interest.${s}` as never)}</Badge></li>;
             })}</ul>
           </section>
         )}

@@ -408,6 +408,36 @@ class DuoGuaranteeGrant(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class SystemError(Base):
+    """Erreur système regroupée par empreinte (même type, même message normalisé, même endroit) : compteur et dates, résolution par l'administration."""
+    __tablename__ = 'SystemError'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='SystemError_pkey'),
+        Index('SystemError_fingerprint_key', 'fingerprint', unique=True),
+        Index('SystemError_resolvedAt_lastSeenAt_idx', 'resolvedAt', 'lastSeenAt'),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
+    fingerprint: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    kind: Mapped[str] = mapped_column(Text, nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    path: Mapped[Optional[str]] = mapped_column(Text)
+    method: Mapped[Optional[str]] = mapped_column(Text)
+    status: Mapped[Optional[int]] = mapped_column(Integer)
+    stack: Mapped[Optional[str]] = mapped_column(Text)
+    userAgent: Mapped[Optional[str]] = mapped_column(Text)
+    lastUserId: Mapped[Optional[str]] = mapped_column(Text)
+    release: Mapped[Optional[str]] = mapped_column(Text)
+    count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('1'), default=1)
+    regressed: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'), default=False)
+    firstSeenAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    lastSeenAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
+    resolvedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
+    resolvedById: Mapped[Optional[str]] = mapped_column(Text)
+    note: Mapped[Optional[str]] = mapped_column(Text)
+
+
 class DailyRecommendation(Base):
     """Sélection du jour : uniquement de vrais comptes éligibles au moment du calcul ; l'historique est purgé après `daily.retention_days`."""
     __tablename__ = 'DailyRecommendation'

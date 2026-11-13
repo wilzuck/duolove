@@ -2285,7 +2285,8 @@
       "billing": "Facturation",
       "liveEvents": "Soirées Duo",
       "countries": "Pays de lancement",
-      "services": "Services"
+      "services": "Services",
+      "errors": "Erreurs système"
     },
     "orphans": {
       "title": "Images orphelines",
@@ -4005,7 +4006,47 @@
     "twoFactorReset": "Réinitialiser la double authentification",
     "twoFactorResetDone": "Double authentification réinitialisée : le membre est déconnecté de tous ses appareils.",
     "twoFactorNone": "Ce membre n’avait pas la double authentification (ses appareils ont été déconnectés).",
-    "twoFactorResetHint": "À n’utiliser qu’après avoir vérifié l’identité du membre (téléphone et codes de secours perdus)."
+    "twoFactorResetHint": "À n’utiliser qu’après avoir vérifié l’identité du membre (téléphone et codes de secours perdus).",
+    "errors": {
+      "title": "Erreurs système",
+      "subtitle": "Toutes les pannes repérées automatiquement : erreurs de l’API, des tâches de fond, du site dans le navigateur et du rendu des pages. Une ligne par erreur distincte, avec le nombre de fois où elle s’est produite. Une erreur résolue qui revient est rouverte et marquée « revenue ».",
+      "open": "À traiter",
+      "resolved": "Résolues",
+      "all": "Toutes",
+      "allSources": "Toutes les sources",
+      "sourceFilter": "Filtrer par source",
+      "search": "Rechercher (message, type, page)",
+      "source": {
+        "api": "Serveur (API)",
+        "job": "Tâches de fond",
+        "web": "Site (navigateur)",
+        "web-server": "Site (rendu serveur)"
+      },
+      "regressed": "Revenue",
+      "resolvedBadge": "Résolue",
+      "count": "{n, plural, one {# fois} other {# fois}}",
+      "lastSeen": "dernière fois le {date}",
+      "emptyOpen": "Aucune erreur à traiter. Tout fonctionne.",
+      "empty": "Aucune erreur dans cette liste.",
+      "where": "Endroit",
+      "sourceLabel": "Source",
+      "occurrences": "Occurrences",
+      "release": "Version",
+      "browser": "Navigateur",
+      "howToFix": "Pour corriger : copiez le rapport et transmettez-le à la personne qui développe (ou collez-le à Claude). Une fois la correction en ligne, marquez l’erreur comme résolue : si elle revient, elle réapparaîtra ici.",
+      "copy": "Copier le rapport",
+      "copied": "Rapport copié.",
+      "note": "Note (facultatif) : ce qui a été corrigé",
+      "noteLabel": "Note :",
+      "resolve": "Marquer comme résolue",
+      "reopen": "Rouvrir",
+      "delete": "Supprimer",
+      "done": {
+        "resolve": "Erreur marquée comme résolue.",
+        "reopen": "Erreur rouverte.",
+        "delete": "Erreur supprimée."
+      }
+    }
   },
   "pricingFaq": {
     "renew": {
@@ -4953,10 +4994,10 @@
       "activate": "Activer {duration} ({n} disponible(s))"
     },
     "private": {
-      "title": "Mode privé",
+      "title": "Mode discret",
       "text": "Parcourez les profils sans apparaître dans les visiteurs. Vos messages et vos matches restent normaux.",
-      "locked": "Le mode privé est inclus dans les formules payantes.",
-      "switch": "Activer le mode privé",
+      "locked": "Le mode discret est inclus dans les formules VIP et Gold.",
+      "switch": "Activer le mode discret",
       "upgrade": "Voir les formules"
     }
   },

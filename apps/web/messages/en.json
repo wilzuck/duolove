@@ -2160,7 +2160,7 @@
       "receiptsLocked": "Managing read receipts is reserved for Premium, VIP and Gold members: your receipts stay on.",
       "receiptsUpgrade": "Go Premium",
       "activity": "Show my activity",
-      "activityText": "Shows “online” or “active today” to people you have a duo with. When off, you do not see theirs either, unless you have discreet mode."
+      "activityText": "Shows “online” or “active today” to people you have a duo with. When off, you do not see theirs either, unless you have incognito mode."
     },
     "security": {
       "password": "Change password",
@@ -2285,7 +2285,8 @@
       "billing": "Billing",
       "liveEvents": "Duo Nights",
       "countries": "Launch countries",
-      "services": "Services"
+      "services": "Services",
+      "errors": "System errors"
     },
     "orphans": {
       "title": "Orphan images",
@@ -4005,7 +4006,47 @@
     "twoFactorReset": "Reset two-step verification",
     "twoFactorResetDone": "Two-step verification reset: the member was signed out of all devices.",
     "twoFactorNone": "This member didn’t have two-step verification (their devices were signed out).",
-    "twoFactorResetHint": "Only after verifying the member’s identity (phone and recovery codes lost)."
+    "twoFactorResetHint": "Only after verifying the member’s identity (phone and recovery codes lost).",
+    "errors": {
+      "title": "System errors",
+      "subtitle": "Every failure detected automatically: API errors, background tasks, the site in the browser and page rendering. One line per distinct error, with how many times it happened. A resolved error that comes back is reopened and marked “returned”.",
+      "open": "To handle",
+      "resolved": "Resolved",
+      "all": "All",
+      "allSources": "All sources",
+      "sourceFilter": "Filter by source",
+      "search": "Search (message, type, page)",
+      "source": {
+        "api": "Server (API)",
+        "job": "Background tasks",
+        "web": "Site (browser)",
+        "web-server": "Site (server rendering)"
+      },
+      "regressed": "Returned",
+      "resolvedBadge": "Resolved",
+      "count": "{n, plural, one {# time} other {# times}}",
+      "lastSeen": "last seen {date}",
+      "emptyOpen": "No errors to handle. Everything works.",
+      "empty": "No errors in this list.",
+      "where": "Where",
+      "sourceLabel": "Source",
+      "occurrences": "Occurrences",
+      "release": "Version",
+      "browser": "Browser",
+      "howToFix": "To fix it: copy the report and send it to whoever develops the app (or paste it to Claude). Once the fix is live, mark the error as resolved: if it comes back, it will show up here again.",
+      "copy": "Copy the report",
+      "copied": "Report copied.",
+      "note": "Note (optional): what was fixed",
+      "noteLabel": "Note:",
+      "resolve": "Mark as resolved",
+      "reopen": "Reopen",
+      "delete": "Delete",
+      "done": {
+        "resolve": "Error marked as resolved.",
+        "reopen": "Error reopened.",
+        "delete": "Error deleted."
+      }
+    }
   },
   "pricingFaq": {
     "renew": {
@@ -4736,7 +4777,7 @@
       },
       "visible": {
         "h": "Be more visible",
-        "p": "Boosts one at a time in the shop, and discreet mode with VIP and Gold.",
+        "p": "Boosts one at a time in the shop, and incognito mode with VIP and Gold.",
         "who": "vip"
       },
       "safe": {
@@ -4953,10 +4994,10 @@
       "activate": "Activate {duration} ({n} available)"
     },
     "private": {
-      "title": "Private mode",
+      "title": "Incognito mode",
       "text": "Browse profiles without appearing in visitors. Your messages and matches stay normal.",
-      "locked": "Private mode is included in paid plans.",
-      "switch": "Turn on private mode",
+      "locked": "Incognito mode is included in the VIP and Gold plans.",
+      "switch": "Turn on incognito mode",
       "upgrade": "See plans"
     }
   },

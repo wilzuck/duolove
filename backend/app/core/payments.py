@@ -56,13 +56,22 @@ class MockProvider:
 
     name = "mock"
 
-    async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None) -> dict:
+    async def create_checkout(self, payment_id: str, amount_xof: int, plan: str | None = None, customer: dict | None = None) -> dict:
         ref = f"mock_{random_token(12)}"
         return {"providerRef": ref, "checkoutUrl": f"{get_settings().app_url}/checkout/mock?ref={ref}"}
 
 
 def provider(cfg: payment_config.Effective):
     return kkiapay.KkiapayProvider(cfg) if cfg.provider == "kkiapay" else MockProvider()
+
+
+async def _customer(db: AsyncSession, user_id: str) -> dict:
+    """Nom et e-mail du membre connecté, pour préremplir la fenêtre de paiement (le membre peut les modifier chez le prestataire)."""
+    from app.models.models import Profile, User
+
+    email = (await db.execute(select(User.email).where(User.id == user_id))).scalar_one_or_none()
+    name = (await db.execute(select(Profile.displayName).where(Profile.userId == user_id))).scalar_one_or_none()
+    return {"name": (name or "").strip()[:80] or None, "email": email if email and not email.endswith(".invalid") else None}
 
 
 async def checkout_provider():
@@ -115,7 +124,7 @@ async def checkout(db: AsyncSession, user_id: str, code: str, months: int = 1, p
                       providerRef=f"pending_{random_token(8)}")
     db.add(payment)
     await db.commit()
-    out = await prov.create_checkout(payment.id, amount, plan["code"])
+    out = await prov.create_checkout(payment.id, amount, plan["code"], await _customer(db, user_id))
     payment.providerRef = out["providerRef"]
     sub.providerRef = out["providerRef"]
     await db.commit()
@@ -135,7 +144,7 @@ async def checkout_product(db: AsyncSession, user_id: str, code: str, promo_code
                       discountXof=q.discountXof if q else 0, provider=prov.name, providerRef=f"pending_{random_token(8)}")
     db.add(payment)
     await db.commit()
-    out = await prov.create_checkout(payment.id, payment.amountXof)
+    out = await prov.create_checkout(payment.id, payment.amountXof, customer=await _customer(db, user_id))
     payment.providerRef = out["providerRef"]
     await db.commit()
     return {"checkoutUrl": out.get("checkoutUrl"), "widget": out.get("widget"), "paymentId": payment.id, "providerRef": out["providerRef"],

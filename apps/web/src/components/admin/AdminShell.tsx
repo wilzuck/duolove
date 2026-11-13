@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, BookOpen, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, ImageOff, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LayoutGrid, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, BookOpen, Bug, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, ImageOff, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LayoutGrid, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -12,7 +12,7 @@ import { ThemeToggle } from '../ThemeToggle';
 import { ServiceUnavailable } from '@/components/ServiceUnavailable';
 
 const RANK = { USER: 0, MODERATOR: 1, ADMIN: 2, SUPER_ADMIN: 3 } as const;
-export type Item = { href: string; key: string; icon: LucideIcon; min: 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN'; badge?: 'reports' | 'moderation' };
+export type Item = { href: string; key: string; icon: LucideIcon; min: 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN'; badge?: 'reports' | 'moderation' | 'errors' };
 
 /** Rubriques de la console (même logique que WaMarcket : on cherche d'abord un domaine, puis la page). */
 export const SECTIONS: { id: string; items: Item[] }[] = [
@@ -21,6 +21,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin/moderation', key: 'moderation', icon: ShieldCheck, min: 'MODERATOR', badge: 'moderation' },
     { href: '/admin/stats', key: 'stats', icon: ChartLine, min: 'ADMIN' },
     { href: '/admin/audit-log', key: 'audit', icon: History, min: 'ADMIN' },
+    { href: '/admin/errors', key: 'errors', icon: Bug, min: 'ADMIN', badge: 'errors' },
     { href: '/admin/guide', key: 'guide', icon: BookOpen, min: 'MODERATOR' },
     { href: '/admin/services', key: 'services', icon: LayoutGrid, min: 'ADMIN' },
   ] },
@@ -65,7 +66,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const allowed = !!me && RANK[me.role] >= 1;
-  const badges = useQuery({ queryKey: ['admin', 'badges'], enabled: allowed, refetchInterval: 60_000, queryFn: () => api<{ reports: number; moderation: number }>('/admin/badges') });
+  const badges = useQuery({ queryKey: ['admin', 'badges'], enabled: allowed, refetchInterval: 60_000, queryFn: () => api<{ reports: number; moderation: number; errors?: number }>('/admin/badges') });
 
   useEffect(() => { if (error instanceof ApiError && error.status === 401) router.replace(`/login?next=${encodeURIComponent(path)}`); }, [error, path, router]);
   useEffect(() => { if (me && !allowed) router.replace('/discover'); }, [me, allowed, router]);

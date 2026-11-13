@@ -15,6 +15,7 @@ import { useUi } from '@/lib/store';
 import { useState } from 'react';
 import { FeatureOffDialog } from '@/components/app/FeatureOffDialog';
 import { SectionTabs } from '@/components/app/SectionTabs';
+import { useScrollToHash } from '@/hooks/useScrollToHash';
 
 const BOOSTS = ['BOOST_30', 'BOOST_120', 'BOOST_1440'] as const;
 
@@ -35,6 +36,7 @@ export default function ShopPage() {
     onSuccess: () => { toast('success', t('shop.boostActivated')); void qc.invalidateQueries({ queryKey: ['credits'] }); void qc.invalidateQueries({ queryKey: keys.profile }); void qc.invalidateQueries({ queryKey: keys.me }); },
     onError: (e) => toast('error', err(e)),
   });
+  useScrollToHash(!!catalog && !!wallet.data && !!me);  // « Acheter » depuis la barre du haut : arrive directement sur la bonne section
   if (!catalog || !wallet.data || !me) return <div className="mx-auto max-w-4xl space-y-4 p-4"><Skeleton className="h-32" /><Skeleton className="h-64" /></div>;
   const b = wallet.data.balances;
   // Trois familles d'achat distinctes : jetons Crush, boosts de visibilité, Super Likes.

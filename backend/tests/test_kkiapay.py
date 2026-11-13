@@ -50,8 +50,14 @@ async def test_checkout_renvoie_la_config_du_widget_et_n_active_rien(app, db, fa
     assert r.status_code == 201
     b = r.json()
     assert b["checkoutUrl"] is None
-    assert b["widget"]["publicKey"] == "pk_test_fake" and b["widget"]["sandbox"] is True and b["widget"]["amount"] == 2500 and b["widget"]["name"] == "Crushduo"
+    assert b["widget"]["publicKey"] == "pk_test_fake" and b["widget"]["sandbox"] is True and b["widget"]["amount"] == 2500
     assert b["widget"]["reference"].startswith("crushduo_") and "Premium" in b["widget"]["reason"] and "crushduo" in b["widget"]["data"]
+    # Fenêtre de paiement préremplie avec le membre connecté (et non le nom du site) ; le motif reste « Crushduo · Premium ».
+    from sqlalchemy import select
+
+    from app.models.models import Profile
+    name = (await db.execute(select(Profile.displayName).where(Profile.userId == a.id))).scalar_one()
+    assert b["widget"]["name"] == name and b["widget"]["email"] == a.email and b["widget"]["reason"].startswith("Crushduo")
     assert await plan_of(a) == "FREE"
     assert "private_fake" not in r.text  # les clés privées ne sortent jamais
 

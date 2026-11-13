@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { reloadOnceForChunkError } from '@/lib/chunkError';
+import { reportError } from '@/lib/reportError';
 
 const TEXT = {
   fr: { title: 'Cette page n’a pas pu s’afficher', text: 'Un petit souci technique. Rechargez la page : tout devrait rentrer dans l’ordre.', updating: 'Mise à jour de Crushduo…', reload: 'Recharger', home: 'Accueil' },
@@ -12,7 +13,7 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
   const [reloading] = useState(() => reloadOnceForChunkError(error));
   const en = typeof window !== 'undefined' && window.location.pathname.startsWith('/en');
   const x = TEXT[en ? 'en' : 'fr'];
-  useEffect(() => { console.error(error); }, [error]);
+  useEffect(() => { console.error(error); reportError(error, { digest: error.digest }); }, [error]);
   return (
     <html lang={en ? 'en' : 'fr'}>
       <body style={{ margin: 0, minHeight: '100dvh', display: 'grid', placeItems: 'center', fontFamily: 'system-ui, sans-serif', background: '#fff5f8', color: '#1f1a24', textAlign: 'center', padding: 16 }}>
