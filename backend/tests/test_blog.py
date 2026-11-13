@@ -214,3 +214,30 @@ async def test_translation_link(app, db):
     assert (await anon.get(f"/api/blog/{fr['slug']}", params={"locale": "fr"})).json()["translations"] == {}
     for p in (fr, en, fr2):
         await admin.delete(f"/api/admin/blog/{p['id']}")
+
+
+async def test_image_partagee_entre_versions(app, db):
+    """Case « Utiliser l'image de la version … » : les deux versions pointent vers le même fichier ; le remplacer d'un côté le remplace de l'autre,
+    et le fichier n'est jamais supprimé tant qu'une version l'utilise."""
+    admin = await _admin(app, db)
+    anon = new_agent(app)
+    c1, c2 = await _cover(admin), await _cover(admin)
+    fr = (await admin.post("/api/admin/blog", json=_payload(f"fr-{uid()}", coverKey=c1["key"], coverAlt="Une image", status="PUBLISHED"))).json()
+    en = (await admin.post("/api/admin/blog", json=_payload(f"en-{uid()}", locale="en", translationOf=fr["id"], coverKey=c1["key"], coverAlt="An image", status="PUBLISHED"))).json()
+    assert en["coverKey"] == fr["coverKey"] == c1["key"]
+    # Remplacer l'image de la version française : l'anglaise suit, l'ancien fichier (plus utilisé) est supprimé.
+    r = await admin.patch(f"/api/admin/blog/{fr['id']}", json={"coverKey": c2["key"]})
+    assert r.status_code == 200 and r.json()["coverKey"] == c2["key"]
+    assert (await admin.get(f"/api/admin/blog/{en['id']}")).json()["coverKey"] == c2["key"]
+    assert (await anon.get(c1["url"])).status_code == 404
+    # Décocher côté anglais (plus d'image) : le fichier reste, la version française l'utilise toujours.
+    r = await admin.patch(f"/api/admin/blog/{en['id']}", json={"coverKey": None, "status": "DRAFT"})
+    assert r.status_code == 200 and r.json()["coverKey"] is None
+    assert (await anon.get(c2["url"])).status_code == 200
+    assert (await admin.get(f"/api/admin/blog/{fr['id']}")).json()["coverKey"] == c2["key"]
+    # Une image propre à l'anglais ne touche plus la version française.
+    c3 = await _cover(admin)
+    await admin.patch(f"/api/admin/blog/{en['id']}", json={"coverKey": c3["key"]})
+    assert (await admin.get(f"/api/admin/blog/{fr['id']}")).json()["coverKey"] == c2["key"]
+    for p in (fr, en):
+        await admin.delete(f"/api/admin/blog/{p['id']}")

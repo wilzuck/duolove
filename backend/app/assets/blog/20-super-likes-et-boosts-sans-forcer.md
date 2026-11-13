@@ -53,7 +53,7 @@ Cette visibilité ne vous change pas. Si votre profil est vide, flou ou pressé,
 
 Deux moments s'y prêtent vraiment.
 
-**Pendant une soirée Match en direct.** Ces soirées rassemblent des personnes connectées en même temps, avec l'envie de discuter sur le moment. C'est le contexte où une visibilité accrue sert directement : plus de personnes présentes, plus de chances de croiser quelqu'un qui n'aurait pas vu votre profil autrement. Cela ne garantit pas que l'on vous écrive, mais votre profil est dans la salle.
+**Pendant une Soirée Crush.** Ces soirées rassemblent des personnes connectées en même temps, avec l'envie de discuter sur le moment. C'est le contexte où une visibilité accrue sert directement : plus de personnes présentes, plus de chances de croiser quelqu'un qui n'aurait pas vu votre profil autrement. Cela ne garantit pas que l'on vous écrive, mais votre profil est dans la salle.
 
 **Avec un nouveau profil complet.** Vous venez de terminer votre inscription : photos validées par la modération, questions de personnalité remplies, valeurs choisies, peut-être le badge « profil vérifié » obtenu. Vous avez soigné votre présentation, autant qu'elle soit vue au moment où elle est la plus fraîche.
 
@@ -93,7 +93,7 @@ Demandez-vous aussi : est-ce que cet argent me rapproche d'une rencontre, ou d'u
 Posez-vous trois questions avant chaque option.
 
 1. **Est-ce que je sais pourquoi cette personne m'intéresse ?** Si oui, Super Like ou Like avec petit mot. Si non, attendez.
-2. **Est-ce que mon profil est prêt à être vu ?** Si oui, un Boost peut avoir du sens, surtout lors d'une soirée Match en direct. Sinon, complétez d'abord.
+2. **Est-ce que mon profil est prêt à être vu ?** Si oui, un Boost peut avoir du sens, surtout lors d'une Soirée Crush. Sinon, complétez d'abord.
 3. **Suis-je capable de laisser faire ?** Si vous savez que l'attente va vous ronger, gardez l'option pour un autre jour.
 
 Se démarquer, au fond, c'est d'abord être lisible : un profil qui ressemble à quelqu'un, un mot qui n'aurait pu être écrit que pour une seule personne. Les options viennent après, comme une lumière posée sur quelque chose qui existe déjà.

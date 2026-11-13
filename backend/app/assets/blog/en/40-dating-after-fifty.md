@@ -79,7 +79,7 @@ The rule is simple and has no exceptions: **never send money to someone you have
 
 ## Going out and meeting people differently
 
-On Crushduo, **Duo Nights** are time slots announced in advance, when many members in your city are online at the same time: ideal for chatting without waiting days for a reply. But apps are not the only way in: your usual activities (a community group, a choir, gentle exercise, neighbourhood life) remain excellent opportunities to meet people.
+On Crushduo, **Crush Nights** are time slots announced in advance, when many members in your city are online at the same time: ideal for chatting without waiting days for a reply. But apps are not the only way in: your usual activities (a community group, a choir, gentle exercise, neighbourhood life) remain excellent opportunities to meet people.
 
 > Love doesn't ask how old you are; it only asks that you be ready to welcome it.
 

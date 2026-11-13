@@ -98,7 +98,7 @@ Deux précisions importantes, pour être honnête avec vos amis comme avec vous-
 - les conditions exactes, ce qui déclenche la récompense et son montant, sont celles que l'application vous montre au moment où vous consultez la page de parrainage. Elles peuvent évoluer, et c'est cette page qui fait foi, pas ce texte ni votre mémoire ;
 - la récompense va au parrain. Ne promettez donc rien à votre ami à la place de l'application.
 
-Les jetons servent ensuite aux fonctions qui en utilisent, par exemple ouvrir une conversation depuis le menu « Match en direct ». Rien d'obligatoire, rien de caché : c'est un petit remerciement pour avoir fait connaître l'application.
+Les jetons servent ensuite aux fonctions qui en utilisent, par exemple ouvrir une conversation depuis le menu « Crush en direct ». Rien d'obligatoire, rien de caché : c'est un petit remerciement pour avoir fait connaître l'application.
 
 ## Le présenter honnêtement, y compris sans mise en scène
 

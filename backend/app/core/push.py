@@ -38,7 +38,7 @@ COPY = {
     "SUBSCRIPTION_EXPIRING": {"fr": ("Votre abonnement se termine bientôt", "Prolongez-le en un clic.", "/premium"), "en": ("Your plan ends soon", "Extend it in one click.", "/premium")},
     "SECURITY_ALERT": {"fr": ("Alerte de sécurité", "Une activité inhabituelle a été détectée sur votre compte.", "/settings?tab=security"), "en": ("Security alert", "Unusual activity was detected on your account.", "/settings?tab=security")},
 }
-LIVE_EVENT = {"reminder": {"fr": "commence dans une heure.", "en": "starts in one hour."}, "start": {"fr": "vient de commencer !", "en": "just started!"}}
+LIVE_EVENT = {"reminder": {"fr": "commence dans une heure, dans l’onglet Crush.", "en": "starts in one hour in the Crush tab."}, "start": {"fr": "vient de commencer dans l’onglet Crush !", "en": "just started in the Crush tab!"}}
 PROMO_ENDING = {"fr": ("Votre offre de bienvenue se termine bientôt", "Appliquez-la en un clic.", "/premium"), "en": ("Your welcome offer ends soon", "Apply it in one click.", "/premium")}
 
 _tasks: set[asyncio.Task] = set()  # références fortes : une tâche sans référence peut être ramassée avant la fin
@@ -65,8 +65,8 @@ def payload_for(type_: str, data: dict, lang: str) -> dict | None:
     """Texte générique du type de notification, ou None s'il n'y a pas de push pour ce type."""
     lg = "en" if lang == "en" else "fr"
     if type_ == "LIVE_EVENT":
-        title = str(data.get("title") or "Soirée Duo")[:80]
-        return {"title": "Soirée Duo" if lg == "fr" else "Duo Night", "body": f"{title} {LIVE_EVENT.get(data.get('stage'), LIVE_EVENT['reminder'])[lg]}", "url": "/match", "tag": f"live-{data.get('eventId', '')}"}
+        title = str(data.get("title") or "Soirée Crush")[:80]
+        return {"title": "Soirée Crush" if lg == "fr" else "Crush Night", "body": f"{title} {LIVE_EVENT.get(data.get('stage'), LIVE_EVENT['reminder'])[lg]}", "url": "/match", "tag": f"live-{data.get('eventId', '')}"}
     if type_ == "ANNOUNCEMENT":
         if data.get("kind") != "PROMO_ENDING":
             return None  # les annonces de l'administration passent par l'application et l'e-mail, pas par le push

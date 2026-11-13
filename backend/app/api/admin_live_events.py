@@ -1,4 +1,4 @@
-"""Soirées Duo : création, liste (avec inscrits), annulation par l'administration."""
+"""Soirées Crush : création, liste (avec inscrits), annulation par l'administration."""
 from __future__ import annotations
 
 import datetime

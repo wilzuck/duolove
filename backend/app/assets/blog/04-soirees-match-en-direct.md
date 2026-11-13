@@ -1,7 +1,7 @@
 ---
 slug: soirees-match-en-direct-le-temps-comme-monnaie
-title: Se retrouver au même moment : pourquoi une soirée Match en direct change la rencontre
-excerpt: Ce qui manque souvent aux rencontres en ligne, ce n'est pas le choix, c'est le même instant. Voici comment fonctionnent les soirées Match en direct, comment s'y préparer, s'y comporter et garder ensuite un rythme sain.
+title: Se retrouver au même moment : pourquoi une Soirée Crush change la rencontre
+excerpt: Ce qui manque souvent aux rencontres en ligne, ce n'est pas le choix, c'est le même instant. Voici comment fonctionnent les Soirées Crush, comment s'y préparer, s'y comporter et garder ensuite un rythme sain.
 coverAlt: Une table de salon à la tombée de la nuit, un téléphone allumé près d'un verre de bissap et d'une lampe chaude
 ---
 
@@ -15,19 +15,19 @@ On parle souvent des photos, des mots, des profils. On parle moins du temps, qui
 
 Pensez à un marché de quartier à Cotonou. Ce qui fait sa vie, ce n'est pas la quantité d'étals, c'est qu'à sept heures du matin tout le monde est là. On marchande, on se croise, on s'arrête devant la même vendeuse de piment. Si les étals étaient ouverts à des heures différentes, chacun passerait seul entre des tables vides.
 
-C'est cette idée que Crushduo met derrière les soirées Match en direct : se retrouver réellement au même moment.
+C'est cette idée que Crushduo met derrière les Soirées Crush : se retrouver réellement au même moment.
 
-## Ce que sont les soirées Match en direct
+## Ce que sont les Soirées Crush
 
 Le principe est simple. L'équipe annonce une soirée à une heure fixe. Les personnes inscrites reçoivent un rappel, pour ne pas oublier. Le moment venu, tout le monde est connecté en même temps, et c'est cela qui change tout : les recherches aboutissent plus vite, parce que les gens que vous croisez sont là, maintenant, disponibles, au lieu d'avoir quitté l'application depuis trois jours.
 
-Concrètement, cela passe par le menu « Match en direct ». Vous lancez une recherche selon vos critères. L'application vous propose des personnes en ligne et compatibles, vous pouvez les inviter, et lorsqu'une invitation est acceptée en direct, la conversation s'ouvre. Cette ouverture coûte 1 jeton. Pour démarrer, trois jetons vous sont offerts une fois, dès que votre profil est rempli à 100 % et votre e-mail vérifié.
+Concrètement, cela passe par le menu « Crush en direct ». Vous lancez une recherche selon vos critères. L'application vous propose des personnes en ligne et compatibles, vous pouvez les inviter, et lorsqu'une invitation est acceptée en direct, la conversation s'ouvre. Cette ouverture coûte 1 jeton. Pour démarrer, trois jetons vous sont offerts une fois, dès que votre profil est rempli à 100 % et votre e-mail vérifié.
 
 Rien de magique, donc : une salle commune, une heure, et des gens qui ont tous décidé de venir.
 
 ## Se préparer : quatre gestes avant l'heure
 
-Une soirée en direct se prépare un peu comme un dîner chez des amis. On ne débarque pas les mains vides.
+Une Soirée Crush se prépare un peu comme un dîner chez des amis. On ne débarque pas les mains vides.
 
 ### Choisir ses critères avec calme
 
@@ -51,7 +51,7 @@ Et si vous préférez qu'on vous aide à rompre la glace, la messagerie propose 
 
 ## Pendant la soirée : l'art de la patience
 
-La tentation est grande de tout faire en même temps : lancer dix invitations, écrire à cinq personnes, ne rien lire vraiment. C'est un piège. Une soirée en direct n'est pas un concours de vitesse.
+La tentation est grande de tout faire en même temps : lancer dix invitations, écrire à cinq personnes, ne rien lire vraiment. C'est un piège. Une Soirée Crush n'est pas un concours de vitesse.
 
 Invitez avec parcimonie. Attendez la réponse. Pendant ce temps, relisez un profil, buvez une gorgée, respirez. Une invitation restée sans réponse ne dit rien de vous : l'autre est peut-être en train de dîner, d'aider un enfant, de chercher son chargeur.
 
@@ -87,6 +87,6 @@ Quant aux formules payantes, Premium, VIP et Gold, elles se paient en une fois, 
 
 ## Ce qu'on garde au matin
 
-Une soirée Match en direct réussie ne se mesure pas au nombre de conversations. Elle se mesure à ce qu'il en reste le lendemain : un échange qui vous a fait sourire, une personne dont vous avez envie d'entendre la voix, ou simplement le plaisir d'avoir été présent, vraiment, pendant deux heures.
+Une Soirée Crush réussie ne se mesure pas au nombre de conversations. Elle se mesure à ce qu'il en reste le lendemain : un échange qui vous a fait sourire, une personne dont vous avez envie d'entendre la voix, ou simplement le plaisir d'avoir été présent, vraiment, pendant deux heures.
 
 Alors la prochaine fois qu'une soirée est annoncée, notez l'heure, préparez deux critères, une lampe, un verre d'eau et une première phrase. Le reste se joue sur place, au même moment que quelqu'un d'autre.

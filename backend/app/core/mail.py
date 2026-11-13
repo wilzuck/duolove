@@ -208,7 +208,7 @@ async def send_renewal_reminder(to: str, name: str, plan_name: str, ends_at: dat
 
 
 async def send_live_event_reminder(to: str, name: str, title: str, starts_at: datetime.datetime, tz_offset: int, city: str | None) -> bool:
-    """Rappel d'une soirée Duo (une heure avant) : envoyé uniquement aux membres qui se sont inscrits."""
+    """Rappel d'une soirée Crush (une heure avant) : envoyé uniquement aux membres qui se sont inscrits."""
     link = f"{get_settings().app_url}/match"
     local = starts_at + datetime.timedelta(minutes=tz_offset)
     sign = "+" if tz_offset >= 0 else "-"
@@ -218,11 +218,11 @@ async def send_live_event_reminder(to: str, name: str, title: str, starts_at: da
     subject = f"{title} commence dans une heure"
     html = render_email(subject, [
         p(f"Bonjour {esc_(name)}, la soirée « {esc_(title)} »{esc_(where)} commence le {when}."),
-        p("Connectez-vous à l’heure : c’est quand tout le monde est en ligne que les recherches aboutissent le plus vite."),
-        button("Ouvrir la Soirée Duo", link),
+        p("Rendez-vous dans l’onglet Crush à l’heure dite : c’est quand tout le monde est en ligne que les recherches aboutissent le plus vite."),
+        button("Ouvrir l’onglet Crush", link),
         note("Vous recevez ce rappel parce que vous vous êtes inscrit(e) à cette soirée."),
     ], preheader=f"{title} : {when}")
-    return await send(to, f"{subject} — Crushduo", f"Bonjour {name},\n\nLa soirée « {title} »{where} commence le {when}.\n\nConnectez-vous à l'heure : {link}\n\nVous recevez ce rappel parce que vous vous êtes inscrit(e) à cette soirée.", html, kind="notification")
+    return await send(to, f"{subject} — Crushduo", f"Bonjour {name},\n\nLa soirée « {title} »{where} commence le {when}.\n\nRendez-vous dans l'onglet Crush à l'heure dite : {link}\n\nVous recevez ce rappel parce que vous vous êtes inscrit(e) à cette soirée.", html, kind="notification")
 
 
 async def send_promo_ending(to: str, name: str, code: str, kind: str, percent: int | None, tokens: int | None, ends_at: datetime.datetime) -> bool:

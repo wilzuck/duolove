@@ -93,7 +93,7 @@ A few simple steps:
 
 Some people come across better in the moment than on paper. The Live Crush menu is made for this: you search using your own criteria, invite people who are online right now, and the conversation opens for 1 Crush token. Someone who replies straight away because they're there changes the energy.
 
-There are also Duo Nights, at set times. For shy people, they're precious: everyone is there for the same reason at the same moment, so nobody has to justify their first word.
+There are also Crush Nights, at set times. For shy people, they're precious: everyone is there for the same reason at the same moment, so nobody has to justify their first word.
 
 Once the conversation is open in your messages, icebreakers help out when inspiration runs dry. They don't replace your voice, but they spare you the blank first line, and you can carry on in your own words afterwards.
 

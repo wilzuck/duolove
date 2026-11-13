@@ -568,3 +568,28 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 - **Terminé** : 4e choix dans Admin › E-mails envoyés › Fournisseur d'envoi, par l'API HTTP de ZeptoMail (`ZEPTOMAIL_TOKEN`, centre européen par défaut, `ZEPTOMAIL_API` pour un autre). ZeptoMail n'acceptant que le transactionnel, newsletters et envois groupés passent par Brevo s'il est configuré, sinon ne partent pas (échec journalisé). Ordre automatique : Brevo, puis ZeptoMail, puis SMTP. Journal et statistiques affichent « ZeptoMail ».
 - **Vérifié** : tests `test_zeptomail_api_et_marketing_par_brevo` (format de l'appel, en-tête `Zoho-enczapikey`, choix admin, marketing jamais par ZeptoMail) ; suite complète du serveur verte ; typecheck et lint. **Non vérifié dans le navigateur** ; envoi réel non testé (à faire après ajout du jeton).
 - **À faire (toi)** : vérifier `crushduo.com` dans ZeptoMail (DKIM + CNAME de rebond dans Cloudflare, « DNS only »), relier l'agent, ajouter `ZEPTOMAIL_TOKEN` dans Railway, choisir ZeptoMail dans l'admin et lancer un test. Compte Zoho en cours d'examen : 100 e-mails/jour d'ici là (garder « E-mails essentiels uniquement » activé).
+
+## Blog : les 45 articles ont leur version anglaise (livré)
+
+- **Terminé** : les 5 derniers articles traduits (04 Soirées « Match en direct » → « Crush Nights » / menu « Live Crush », 17 parrainer un ami, 20 Super Likes et boosts, 39 parler mariage et projets, 44 humour et séduction). Migration `0050` : brouillons sans image, liés à leur article français, conservés en production. Chiffres vérifiés dans le code (1 jeton par conversation ouverte, 3 jetons offerts une fois au profil complet avec e-mail vérifié). **45/45 articles traduits.**
+- **Vérifié** : migration aller-retour ; tests du blog ; en local, les 5 pages s'affichent sans Markdown brut, lien FR↔EN dans les deux sens ; liste anglaise de 45 articles.
+
+## « Soirées Duo » renommées « Soirées Crush » / « Crush Nights » (terminé, non commité)
+
+- **Pourquoi** : « Duo » désigne aussi un match (« C'est un Duo ! », Garantie Duo) et les soirées ont lieu dans l'onglet Crush ; le nom les rattache à cet onglet.
+- **Terminé** : appli FR/EN (bannière de l'onglet Crush, avec le nom « Soirée Crush » au-dessus du titre ; notifications ; menu et page d'admin ; réglages ; guide de l'admin), notification push, e-mail de rappel (« Rendez-vous dans l'onglet Crush à l'heure dite », bouton « Ouvrir l'onglet Crush »), commentaires du code. Les rappels (1 h avant et au début) disent « dans l'onglet Crush ». Inchangés : « Duo » au sens de match et « Garantie Duo ».
+- **Blog** : fichiers et migration `0051` qui remplace seulement l'expression en base (titre, résumé, corps) : « soirée Duo », « soirée Match en direct », « soirée en direct » → « Soirée Crush » ; ancien nom du menu « Match en direct » → « Crush en direct » ; « Duo Night » → « Crush Night ». L'article anglais 04 (pas encore en production) prend le lien `crush-nights-meeting-at-the-same-moment`.
+- **Vérifié en local** : migrations jusqu'à `0051` (une seule tête) ; texte en base identique aux fichiers pour les 90 articles, aucun ancien nom restant, 45 liens FR↔EN ; navigateur : article 04 FR puis passage en anglais (nouveau lien, « Crush Night », aucun ancien nom) ; texte du push et de l'e-mail de rappel générés par le code ; pytest complet, tests web 14/14, lint, typecheck.
+- **Non vu dans le navigateur** : la bannière de l'onglet Crush et la page admin des soirées (connexion nécessaire).
+
+## Blog : image partagée entre les deux langues, glisser-déposer (terminé, non commité)
+
+- **Terminé** : dans l'éditeur d'article, sous l'image, case « Utiliser l'image de la version française / anglaise » (visible quand la version liée a une image). Les deux articles pointent vers le même fichier, rien n'est copié ; remplacer l'image dans l'une la remplace dans l'autre ; décocher retire l'image de cet article seulement ; le fichier n'est supprimé que lorsque plus aucun article ne l'utilise. La description de l'image reste propre à chaque langue.
+- **Terminé** : le bloc image accepte le glisser-déposer (JPEG, PNG, WebP ; autre format refusé avec un message) et un clic dans le bloc pointillé ou sur l'image pour choisir / remplacer ; le bouton séparé a disparu.
+- **Vérifié** : pytest `test_blog.py` 10/10 (dont `test_image_partagee_entre_versions`), lint et typecheck. **Non vu dans le navigateur** (connexion admin nécessaire).
+
+## Blog : interrupteur « En ligne » sur chaque article (terminé, non commité)
+
+- **Terminé** : colonne « En ligne » dans Administration › Blog, avec un interrupteur par article. Article seul : dépublier, ou publier s'il a déjà image et description, se fait directement. Sinon (article lié à sa version dans l'autre langue, ou informations manquantes) un dialogue s'ouvre : les deux versions (FR d'abord) avec une case pour chacune (une version déjà dans l'état voulu est grisée), et pour publier, ce qui manque à compléter sur place (image par glisser-déposer ou clic, case « Utiliser l'image de la version … », description de l'image). Le bouton est inactif tant qu'il manque une information. Les versions sont enregistrées l'une après l'autre ; une image téléversée puis abandonnée est supprimée.
+- Bloc image commun (`CoverDrop`) à l'éditeur et au dialogue.
+- **Vérifié** : lint, typecheck, tests web 14/14 (catalogue FR/EN aligné). **Non vu dans le navigateur** (connexion admin nécessaire).

@@ -34,7 +34,7 @@ Beaucoup de malentendus à distance naissent d'attentes qui ne se sont pas renco
 
 Le plus sain est de nommer sa direction dès que la confiance s'installe, sans ultimatum : « Moi, je pense à m'installer à nouveau au pays dans quelques années, et toi ? » La réponse ne doit pas vous faire fuir. Elle vous renseigne. Les questions de personnalité et les valeurs affichées sur les profils servent justement de point de départ : elles disent quelque chose de la manière de vivre, avant d'en parler en détail.
 
-Si vous cherchez une personne dans un pays précis, ou au contraire dans plusieurs, le menu « Match en direct » permet d'affiner la recherche selon des critères, dont le pays, et d'inviter des personnes en ligne au même moment que vous. Cela ne remplace pas la conversation : cela aide à trouver quelqu'un qui est là quand vous l'êtes.
+Si vous cherchez une personne dans un pays précis, ou au contraire dans plusieurs, le menu « Crush en direct » permet d'affiner la recherche selon des critères, dont le pays, et d'inviter des personnes en ligne au même moment que vous. Cela ne remplace pas la conversation : cela aide à trouver quelqu'un qui est là quand vous l'êtes.
 
 ## L'argent : le sujet qui change de poids avec la distance
 

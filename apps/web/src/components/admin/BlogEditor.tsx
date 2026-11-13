@@ -1,10 +1,11 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ImagePlus, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, Dialog, Field, Input, Select, Spinner, Switch, Tabs, Textarea } from '@duomatch/ui';
+import { Badge, Button, Card, Checkbox, Dialog, Field, Input, Select, Switch, Tabs, Textarea } from '@duomatch/ui';
 import { refreshBlogCache } from '@/app/actions/blog';
+import { CoverDrop } from '@/components/admin/CoverDrop';
 import { RichTextEditor } from '@/components/admin/RichTextEditor';
 import { Markdown } from '@/components/marketing/Markdown';
 import { useApiError } from '@/hooks/useApiError';
@@ -84,6 +85,16 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
     onSuccess: async () => { void qc.invalidateQueries({ queryKey: ['admin', 'blog'] }); await refreshBlogCache(); toast('success', t('admin.blog.deleted')); router.replace('/admin/blog'); },
     onError: (e) => toast('error', err(e)),
   });
+  // Version liée dans l'autre langue, si elle a une image : on peut réutiliser la même (même fichier, rien n'est copié).
+  const linked = (all.data?.items ?? []).find((p) => p.id === f.translationOf);
+  const otherCover = linked?.coverKey && linked.coverUrl ? { locale: linked.locale, key: linked.coverKey, url: linked.coverUrl } : null;
+  const sharing = !!otherCover && f.coverKey === otherCover.key;
+  const toggleShared = (on: boolean) => {
+    if (!otherCover) return;
+    // Une image téléversée mais pas encore enregistrée n'est plus utile : on la supprime (sans effet si un article l'utilise).
+    if (on && f.coverKey && f.coverKey !== post?.coverKey) void del(`/admin/blog/images?key=${encodeURIComponent(f.coverKey)}`).catch(() => undefined);
+    setF((s) => (on ? { ...s, coverKey: otherCover.key, coverUrl: otherCover.url } : { ...s, coverKey: null, coverUrl: null }));
+  };
   const published = f.status === 'PUBLISHED';
   const canSubmit = f.title.trim().length >= 3 && f.slug.length >= 3 && f.excerpt.trim().length >= 10 && f.body.trim().length >= 20;
 
@@ -118,13 +129,15 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
         <Card className="space-y-4 p-5">
           <h3 className="font-semibold">{t('admin.blog.cover')}</h3>
           <p className="text-sm text-muted">{t('admin.blog.coverHint')}</p>
-          {f.coverUrl
-            ? <img src={f.coverUrl} alt={f.coverAlt || ''} className="aspect-video w-full max-w-xl rounded-2xl object-cover" />
-            : <div className="grid aspect-video w-full max-w-xl place-items-center rounded-2xl border-2 border-dashed border-line text-sm text-muted">{t('admin.blog.coverNone')}</div>}
-          <label className="inline-flex">
-            <input type="file" accept="image/jpeg,image/png,image/webp" disabled={cover.isPending} className="sr-only" aria-label={t(f.coverUrl ? 'admin.blog.coverReplace' : 'admin.blog.coverUpload')} onChange={(e) => { const file = e.target.files?.[0]; if (file) cover.mutate(file); e.target.value = ''; }} />
-            <span className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-line px-5 text-sm font-semibold hover:bg-soft has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand">{cover.isPending ? <Spinner size="sm" label={t('common.loading')} /> : <ImagePlus className="size-4" aria-hidden />}{cover.isPending ? t('admin.blog.uploading') : t(f.coverUrl ? 'admin.blog.coverReplace' : 'admin.blog.coverUpload')}</span>
-          </label>
+          <CoverDrop url={f.coverUrl} alt={f.coverAlt} locked={sharing} pending={cover.isPending} onFile={(file) => cover.mutate(file)} />
+          {!sharing && f.coverUrl && <p className="text-sm text-muted">{t('admin.blog.coverDropHint')}</p>}
+          {otherCover && (
+            <Checkbox
+              checked={sharing} onChange={(e) => toggleShared(e.target.checked)}
+              label={t(otherCover.locale === 'fr' ? 'admin.blog.coverUseFr' : 'admin.blog.coverUseEn')}
+              hint={t('admin.blog.coverUseHint')}
+            />
+          )}
           <div className="max-w-xl"><Field label={t('admin.blog.coverAlt')}>{(p) => <Input {...p} maxLength={200} value={f.coverAlt} onChange={(e) => set('coverAlt', e.target.value)} />}</Field></div>
         </Card>
 

@@ -75,7 +75,7 @@ Au bout d'un ou deux jours, il arrive qu'un message soit trop court pour tout ce
 
 Les indices que le terrain est prêt : les réponses s'allongent, vous vous surprenez à sourire à l'écran, il y a des questions qui reviennent des deux côtés, et le rythme est devenu naturel. Vous pouvez alors proposer un appel audio, simplement : « Je préfère la voix quand ça devient long à écrire, ça te dirait un petit appel audio un soir cette semaine ? » Les appels audio et vidéo existent entre deux personnes d'un duo actif, et la voix ou le visage coupent court à bien des malentendus.
 
-Proposez-le comme une option, jamais comme un test. Si l'autre répond « pas tout de suite », ce n'est pas un rejet : c'est parfois un besoin de temps, parfois une question de confort. Acceptez ce rythme, vous n'avez rien perdu. Et si l'envie vient plutôt de parler en direct à des personnes disponibles maintenant, le menu « Match en direct » permet d'inviter ceux qui sont en ligne : c'est une autre porte, pas une obligation.
+Proposez-le comme une option, jamais comme un test. Si l'autre répond « pas tout de suite », ce n'est pas un rejet : c'est parfois un besoin de temps, parfois une question de confort. Acceptez ce rythme, vous n'avez rien perdu. Et si l'envie vient plutôt de parler en direct à des personnes disponibles maintenant, le menu « Crush en direct » permet d'inviter ceux qui sont en ligne : c'est une autre porte, pas une obligation.
 
 ## Et si l'autre répond lentement ?
 

@@ -68,11 +68,11 @@ Quelques aménagements permettent de garder le contrôle :
 - **Arrivez un peu en avance**, pour vous installer et respirer.
 - **Dites-le si vous êtes nerveux.** « Je suis un peu stressé, je me présente mal quand je ne connais pas » : cet aveu détend souvent l'atmosphère des deux côtés.
 
-## Les soirées en direct et le speed dating : des cadres rassurants
+## Les Soirées Crush et le speed dating : des cadres rassurants
 
 Contrairement à ce qu'on croit, les formats encadrés conviennent souvent bien aux personnes timides :
 
-- Dans une **soirée Duo** en ligne, tout le monde est connecté pour la même raison, au même moment : personne n'a à justifier sa présence.
+- Dans une **Soirée Crush** en ligne, tout le monde est connecté pour la même raison, au même moment : personne n'a à justifier sa présence.
 - Dans un **speed dating en texte**, les échanges sont courts, cadrés, et vous écrivez à votre rythme.
 
 Dans ces formats, c'est le cadre qui porte la conversation, pas votre charisme.

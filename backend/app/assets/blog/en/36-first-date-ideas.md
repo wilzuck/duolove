@@ -80,7 +80,7 @@ To help you choose quickly:
 - **If you're shy**: an activity that keeps your hands and eyes busy (an exhibition, a market, a walk) makes talking easier.
 - **If you're very chatty**: a quiet cafe will give you time to listen as much as you talk.
 
-And if you'd rather get to know people before settling on a place, Crushduo's **Duo Nights**, time slots when many members from your city are online at the same moment, let you chat with several people in one evening, then propose a date to the one you like.
+And if you'd rather get to know people before settling on a place, Crushduo's **Crush Nights**, time slots when many members from your city are online at the same moment, let you chat with several people in one evening, then propose a date to the one you like.
 
 ## What's best avoided at first
 

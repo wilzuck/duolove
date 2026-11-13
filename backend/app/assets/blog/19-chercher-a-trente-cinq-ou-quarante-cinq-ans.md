@@ -64,7 +64,7 @@ Pour les photos, préférez le naturel : une image nette de vous, de jour, sans 
 
 ## Parler de la différence d'âge sans la dramatiser
 
-Elle arrive tôt ou tard : la personne qui vous plaît est un peu plus jeune, ou nettement plus âgée. Le paramètre de recherche du menu « Match en direct » permet de choisir une tranche d'âge, mais il ne dit rien de ce qui se passe dans une vraie conversation.
+Elle arrive tôt ou tard : la personne qui vous plaît est un peu plus jeune, ou nettement plus âgée. Le paramètre de recherche du menu « Crush en direct » permet de choisir une tranche d'âge, mais il ne dit rien de ce qui se passe dans une vraie conversation.
 
 Trois pistes, sans prétention :
 

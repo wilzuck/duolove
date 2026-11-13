@@ -90,9 +90,9 @@ Quelques gestes simples :
 
 ## Quand l'écrit est trop froid
 
-Certaines personnes se révèlent mieux dans le mouvement que sur le papier. Le menu « Match en direct » est fait pour cela : vous cherchez selon vos critères, vous invitez des personnes qui sont en ligne en ce moment, et la conversation s'ouvre avec 1 jeton. Quelqu'un qui répond tout de suite parce qu'il est là : ça change l'énergie.
+Certaines personnes se révèlent mieux dans le mouvement que sur le papier. Le menu « Crush en direct » est fait pour cela : vous cherchez selon vos critères, vous invitez des personnes qui sont en ligne en ce moment, et la conversation s'ouvre avec 1 jeton. Quelqu'un qui répond tout de suite parce qu'il est là : ça change l'énergie.
 
-Il y a aussi les soirées Match en direct, à heure fixe. Pour les timides, c'est précieux : tout le monde est là pour la même raison, au même moment, donc personne n'a besoin de justifier son premier mot.
+Il y a aussi les Soirées Crush, à heure fixe. Pour les timides, c'est précieux : tout le monde est là pour la même raison, au même moment, donc personne n'a besoin de justifier son premier mot.
 
 Une fois la conversation ouverte dans la messagerie, les brise-glaces vous dépannent quand l'inspiration manque. Ils ne remplacent pas votre voix, mais ils vous évitent le blanc de la première ligne, et vous pouvez ensuite continuer avec vos propres mots.
 

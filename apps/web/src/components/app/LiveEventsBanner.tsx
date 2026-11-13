@@ -11,7 +11,7 @@ import { useUi } from '@/lib/store';
 interface LiveEventView { id: string; title: string; description: string; city: string | null; startsAt: string; endsAt: string; phase: 'upcoming' | 'live'; rsvps: number; rsvped: boolean }
 const KEY = ['live', 'events'];
 
-/** Prochaine soirée Duo : date, nombre d'inscrits, rappel en un clic ; « en cours » avec le nombre de personnes connectées. */
+/** Prochaine soirée Crush : date, nombre d'inscrits, rappel en un clic ; « en cours » avec le nombre de personnes connectées. */
 export function LiveEventsBanner() {
   const t = useTranslations();
   const locale = useLocale();
@@ -31,6 +31,7 @@ export function LiveEventsBanner() {
     <Card className="flex flex-wrap items-center gap-4 border-brand/30 bg-soft p-4 sm:p-5">
       <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-strong text-white" aria-hidden>{live ? <Radio className="size-5" /> : <CalendarClock className="size-5" />}</span>
       <div className="min-w-0 flex-1">
+        <p className="text-xs font-semibold uppercase tracking-wide text-brand-strong">{t('liveEvents.title')}</p>
         <p className="flex flex-wrap items-center gap-2 font-bold">{ev.title}{live && <Badge tone="success">{t('liveEvents.live')}</Badge>}</p>
         <p className="text-sm text-muted">
           {t('liveEvents.when', { date: formatDate(ev.startsAt, locale), start: formatTime(ev.startsAt, locale), end: formatTime(ev.endsAt, locale) })}{ev.city ? ` · ${ev.city}` : ''}

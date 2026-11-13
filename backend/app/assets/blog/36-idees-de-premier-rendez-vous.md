@@ -79,7 +79,7 @@ Pour vous aider à choisir rapidement :
 - **Si vous êtes timide** : une activité qui occupe les mains et les yeux (exposition, marché, balade) facilite la parole.
 - **Si vous êtes très bavard** : un café calme vous laissera le temps d’écouter autant que de raconter.
 
-Et si vous préférez faire connaissance avant de fixer un lieu, les **Soirées Duo** de Crushduo, ces créneaux où beaucoup de membres de votre ville sont connectés en même temps, permettent d’échanger avec plusieurs personnes le même soir, puis de proposer un rendez-vous à celle qui vous plaît.
+Et si vous préférez faire connaissance avant de fixer un lieu, les **Soirées Crush** de Crushduo, ces créneaux où beaucoup de membres de votre ville sont connectés en même temps, permettent d’échanger avec plusieurs personnes le même soir, puis de proposer un rendez-vous à celle qui vous plaît.
 
 ## Ce qu’il vaut mieux éviter au début
 

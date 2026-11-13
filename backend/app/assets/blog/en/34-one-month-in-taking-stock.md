@@ -35,7 +35,7 @@ Set aside half an hour, grab a notebook and answer honestly:
 
 1. **What went well?** A pleasant conversation, someone you met, a moment you enjoyed.
 2. **What weighed on me?** The time spent, the disappointment of a silence, someone who was too pushy, the feeling of repeating myself.
-3. **What have I not tried yet?** A call, a Like with a short note, a Duo Night, a different set of photos.
+3. **What have I not tried yet?** A call, a Like with a short note, a Crush Night, a different set of photos.
 4. **What do I really want for next month?** To meet people, to chat, to take a break, to try something else.
 
 Your answers will often hand you the decision before you even start analysing them.

@@ -78,7 +78,7 @@ La règle est simple et sans exception : **n’envoyez jamais d’argent à quel
 
 ## Sortir et rencontrer autrement
 
-Sur Crushduo, les **Soirées Duo** sont des créneaux annoncés à l’avance, où beaucoup de membres de votre ville sont connectés en même temps : idéal pour échanger sans attendre des jours une réponse. Mais les applications ne sont pas la seule porte : vos activités habituelles (association, chorale, sport doux, vie de quartier) restent d’excellentes occasions de faire des connaissances.
+Sur Crushduo, les **Soirées Crush** sont des créneaux annoncés à l’avance, où beaucoup de membres de votre ville sont connectés en même temps : idéal pour échanger sans attendre des jours une réponse. Mais les applications ne sont pas la seule porte : vos activités habituelles (association, chorale, sport doux, vie de quartier) restent d’excellentes occasions de faire des connaissances.
 
 > L’amour ne demande pas l’âge que vous avez, il demande seulement que vous soyez prêt à l’accueillir.
 

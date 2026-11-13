@@ -69,11 +69,11 @@ A few adjustments help you stay in control:
 - **Arrive a little early**, to settle in and breathe.
 - **Say so if you're nervous.** "I'm a bit stressed, I'm not great at introductions with people I don't know": admitting it often relaxes both of you.
 
-## Duo Nights and speed dating: reassuring formats
+## Crush Nights and speed dating: reassuring formats
 
 Contrary to what you might think, structured formats often suit shy people well:
 
-- During an online **Duo Night**, everyone is connected for the same reason at the same time: nobody has to explain why they're there.
+- During an online **Crush Night**, everyone is connected for the same reason at the same time: nobody has to explain why they're there.
 - In **text-based speed dating**, the exchanges are short and structured, and you write at your own pace.
 
 In these formats, the setting carries the conversation, not your charisma.

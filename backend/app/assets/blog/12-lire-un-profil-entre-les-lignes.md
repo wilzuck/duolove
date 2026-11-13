@@ -93,7 +93,7 @@ Une image séduisante déclenche une cascade : on lui attribue de la douceur, de
 
 ### La liste de critères trop rigide
 
-« Je veux quelqu'un de tel métier, de telle taille, de telle ville, de telle religion, de tel âge. » Une liste claire protège, mais une liste de quinze points écarte aussi des personnes que vous auriez adorées. Distinguez les **non négociables** (deux ou trois, ceux qui touchent à vos valeurs profondes) des **préférences** (le reste, qui peut bouger en rencontrant quelqu'un de réel). La recherche selon des critères dans le menu « Match en direct » est pratique, mais un filtre sert à trier, jamais à décider à votre place.
+« Je veux quelqu'un de tel métier, de telle taille, de telle ville, de telle religion, de tel âge. » Une liste claire protège, mais une liste de quinze points écarte aussi des personnes que vous auriez adorées. Distinguez les **non négociables** (deux ou trois, ceux qui touchent à vos valeurs profondes) des **préférences** (le reste, qui peut bouger en rencontrant quelqu'un de réel). La recherche selon des critères dans le menu « Crush en direct » est pratique, mais un filtre sert à trier, jamais à décider à votre place.
 
 ### Le biais de confirmation
 

@@ -65,7 +65,7 @@ If your Discover page is emptying, that is a signal, not a failure. Go step by s
 3. **Review the secondary criteria**: which ones are truly essential?
 4. **Wait a little**: new members join every day, especially in growing cities.
 
-If, despite all that, the list stays thin, it may simply be that your city has few members for now. In that case, Duo Nights, Daily picks and suggestions from other cities give you another way to meet people.
+If, despite all that, the list stays thin, it may simply be that your city has few members for now. In that case, Crush Nights, Daily picks and suggestions from other cities give you another way to meet people.
 
 ## A concrete example
 

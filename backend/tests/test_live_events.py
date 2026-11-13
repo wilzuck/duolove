@@ -108,8 +108,8 @@ async def test_annulation_retire_la_soiree_et_arrete_les_rappels(app, db):
 async def test_soiree_d_une_ville_visible_seulement_par_les_membres_de_cette_zone(app, db):
     ad = await admin(app, db)
     cot, calavi, parakou = await member(app, db, city="Cotonou"), await member(app, db, city="Abomey-Calavi"), await member(app, db, city="Parakou")
-    local = await make(ad, 60, title="Soirée Duo de Cotonou", city="Cotonou")
-    everyone = await make(ad, 90, title="Soirée Duo pour tous")  # sans ville : proposée à tous
+    local = await make(ad, 60, title="Soirée Crush de Cotonou", city="Cotonou")
+    everyone = await make(ad, 90, title="Soirée Crush pour tous")  # sans ville : proposée à tous
     ids = lambda r: {e["id"] for e in r.json()["events"]}  # noqa: E731
     assert ids(await cot.agent.get("/api/live/events")) == {local["id"], everyone["id"]}
     assert ids(await calavi.agent.get("/api/live/events")) == {local["id"], everyone["id"]}  # agglomération de Cotonou

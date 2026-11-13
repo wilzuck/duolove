@@ -61,7 +61,7 @@ Pour rendre cela concret, voici le rythme d'Yves, 34 ans, qui travaille en journ
 
 - **Du lundi au jeudi**, dix minutes le matin : découvertes du jour, question du jour, deux réponses à des conversations en cours.
 - **Le vendredi soir**, un quart d'heure de plus pour répondre sans se presser et proposer un appel à une personne avec qui l'échange est agréable.
-- **Le week-end**, il laisse l'application de côté, sauf pour une soirée en direct s'il en a envie.
+- **Le week-end**, il laisse l'application de côté, sauf pour une Soirée Crush s'il en a envie.
 
 Au bout d'un mois, il a eu trois vraies conversations, dont une a mené à un café. Il n'a pas passé plus d'une heure par semaine sur l'application, et il n'a jamais eu l'impression d'être « de garde ». Ce n'est pas un modèle à copier à l'identique : c'est la preuve qu'une présence régulière et brève suffit souvent.
 
@@ -72,7 +72,7 @@ Il arrive que les découvertes du jour ne vous inspirent rien pendant plusieurs 
 
 Il y a des périodes où l'on n'a pas l'énergie d'un rituel quotidien : travail intense, fatigue, deuil, déménagement. Dans ces moments, plutôt que de vous forcer, utilisez le mode pause ou réduisez votre rythme à deux ou trois visites par semaine. Une application qui vous ennuie ne vous aidera pas à rencontrer qui que ce soit.
 
-À l'inverse, certains soirs, vous aurez envie de passer plus de temps : une conversation vive, une soirée en direct, une curiosité. Faites-le sans scrupule. Le but n'est pas de s'imposer une règle rigide, mais de **garder la main** sur le temps que vous donnez à l'application.
+À l'inverse, certains soirs, vous aurez envie de passer plus de temps : une conversation vive, une Soirée Crush, une curiosité. Faites-le sans scrupule. Le but n'est pas de s'imposer une règle rigide, mais de **garder la main** sur le temps que vous donnez à l'application.
 
 ## Ce que le rituel change dans la durée
 

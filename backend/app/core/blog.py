@@ -195,6 +195,9 @@ async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
     if not p:
         raise not_found("POST_NOT_FOUND")
     old_cover = p.coverKey
+    # Image partagée avec la version dans l'autre langue (case « Utiliser l'image de la version … ») : la remplacer ici la remplace aussi là-bas.
+    replaced = bool(old_cover and p.translationKey and data.get("coverKey") and data["coverKey"] != old_cover and "translationOf" not in data)
+    shared = (await db.execute(select(BlogPost).where(BlogPost.translationKey == p.translationKey, BlogPost.id != p.id, BlogPost.coverKey == old_cover))).scalars().all() if replaced else []
     created_at, published_at = _utc(data.pop("createdAt", None)), _utc(data.pop("publishedAt", None))
     wanted_featured = data.pop("featured", None)
     if "translationOf" in data:
@@ -212,6 +215,8 @@ async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
         p.publishedAt = published_at
     await _check(db, p)
     await _apply_featured(db, p, wanted_featured)
+    for o in shared:
+        o.coverKey = p.coverKey
     await db.commit()
     if "coverKey" in data and old_cover and old_cover != p.coverKey:
         await delete_cover_files(db, old_cover)

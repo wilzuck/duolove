@@ -2063,8 +2063,8 @@
       "SPEED_REMINDER": "Rappel : votre session de speed dating approche.",
       "DUO_GUARANTEE": "Garantie Duo : pas encore de duo ce mois-ci, alors nous ajoutons {n} jour(s) à votre abonnement. Complétez votre profil et continuez à liker !",
       "SUBSCRIPTION_EXPIRING_DAYS": "Votre abonnement se termine dans {n} jour(s). Prolongez-le : la durée s’ajoute à votre date de fin.",
-      "LIVE_EVENT": "Soirée Duo : « {event} » commence dans une heure. Soyez là !",
-      "LIVE_EVENT_START": "La soirée « {event} » commence : lancez votre recherche !"
+      "LIVE_EVENT": "Soirée Crush : « {event} » commence dans une heure, dans l’onglet Crush. Soyez là !",
+      "LIVE_EVENT_START": "La soirée « {event} » commence : rendez-vous dans l’onglet Crush !"
     },
     "promoEnding": "Votre offre de bienvenue se termine bientôt ({code}) : {offer}. Appliquez-la en un clic.",
     "securityEvents": {
@@ -2284,7 +2284,7 @@
       "payment": "Paiement en ligne",
       "access": "Accès payant",
       "billing": "Facturation",
-      "liveEvents": "Soirées Duo",
+      "liveEvents": "Soirées Crush",
       "countries": "Pays de lancement",
       "services": "Services",
       "errors": "Erreurs système",
@@ -2841,6 +2841,13 @@
       "viewsPublic": "Afficher le nombre de visites aux lecteurs",
       "viewsPublicHint": "Désactivé par défaut. Le nombre de visites reste toujours visible ici, pour l’administration. Côté public, le chiffre est actualisé toutes les 5 minutes.",
       "coverNone": "Aucune image",
+      "coverDrop": "Glissez une image ici ou cliquez pour en choisir une",
+      "coverDropHere": "Déposez l’image pour la remplacer",
+      "coverDropHint": "Pour changer l’image, cliquez dessus ou déposez-en une autre.",
+      "coverBadType": "Format non accepté : JPEG, PNG ou WebP.",
+      "coverUseFr": "Utiliser l’image de la version française",
+      "coverUseEn": "Utiliser l’image de la version anglaise",
+      "coverUseHint": "La même image est utilisée pour les deux versions ; la remplacer dans l’une la remplace dans l’autre. Décrivez-la quand même dans la langue de cet article.",
       "coverUpload": "Choisir une image",
       "coverReplace": "Remplacer l’image",
       "uploading": "Envoi de l’image…",
@@ -2886,7 +2893,23 @@
       "translation": "Traduction liée",
       "translationHint": "La version de cet article dans l’autre langue : le sélecteur de langue y mène directement et les moteurs de recherche savent que c’est le même article.",
       "translationNone": "Aucune",
-      "colTranslation": "Traduction"
+      "colTranslation": "Traduction",
+      "colOnline": "En ligne",
+      "onlineLabel": "Mettre en ligne « {title} »",
+      "publishDialog": {
+        "titlePublish": "Publier l’article",
+        "titleUnpublish": "Retirer l’article du blog",
+        "textBoth": "Cet article existe en français et en anglais. Choisissez les versions concernées.",
+        "textOne": "Complétez ce qui manque pour publier.",
+        "alreadyPublished": "Déjà publiée",
+        "alreadyDraft": "Déjà en brouillon",
+        "missing": "Il faut une image et sa description pour publier.",
+        "ready": "Prête à publier",
+        "confirmPublish": "{n, plural, =0 {Rien à publier} one {Publier cette version} other {Publier les # versions}}",
+        "confirmUnpublish": "{n, plural, =0 {Rien à dépublier} one {Dépublier cette version} other {Dépublier les # versions}}",
+        "donePublished": "{n, plural, one {Article publié.} other {# versions publiées.}}",
+        "doneUnpublished": "{n, plural, one {Article remis en brouillon.} other {# versions remises en brouillon.}}"
+      }
     },
     "eng": {
       "title": "Engagement et matching",
@@ -2981,7 +3004,7 @@
       "guaranteeDays": "Jours ajoutés par la garantie (jours)",
       "guaranteeWindow": "Période sans duo avant la garantie (jours)",
       "guaranteeMinLikes": "Likes minimum envoyés pour y avoir droit",
-      "livePriority": "Priorité des abonnés pendant une soirée Duo (points de classement, 0 = aucune)",
+      "livePriority": "Priorité des abonnés pendant une soirée Crush (points de classement, 0 = aucune)",
       "icebreakersCount": "Idées proposées à la fois",
       "tabIcebreakers": "Brise-glace",
       "ice": {
@@ -3715,7 +3738,7 @@
     "menuSearch": "Aller à un menu…",
     "menuSearchEmpty": "Aucun menu ne correspond.",
     "liveEvents": {
-      "title": "Soirées Duo",
+      "title": "Soirées Crush",
       "subtitle": "Donnez rendez-vous à tout le monde en même temps : les recherches aboutissent quand beaucoup de monde est en ligne.",
       "new": "Nouvelle soirée",
       "create": "Créer la soirée",
@@ -3724,7 +3747,7 @@
       "cancel": "Annuler la soirée",
       "empty": "Aucune soirée pour le moment.",
       "name": "Nom de la soirée",
-      "namePh": "Soirée Duo de Cotonou",
+      "namePh": "Soirée Crush de Cotonou",
       "when": "Quand",
       "rsvps": "Inscrits",
       "start": "Début",
@@ -3779,7 +3802,7 @@
       "saved": "Pays enregistrés.",
       "atLeastOne": "Gardez au moins un pays ouvert.",
       "citiesTitle": "Restreindre l’inscription à certaines villes (facultatif)",
-      "citiesHelp": "Désactivé par défaut. Si vous listez des villes, seules les personnes de ces villes peuvent créer un compte ; les autres rejoignent une liste d’attente. Videz la liste pour désactiver. Les membres déjà inscrits ne sont jamais bloqués. Cela ne concerne pas les soirées Duo : leur ville se choisit à la création de chaque soirée.",
+      "citiesHelp": "Désactivé par défaut. Si vous listez des villes, seules les personnes de ces villes peuvent créer un compte ; les autres rejoignent une liste d’attente. Videz la liste pour désactiver. Les membres déjà inscrits ne sont jamais bloqués. Cela ne concerne pas les soirées Crush : leur ville se choisit à la création de chaque soirée.",
       "citiesEditor": "Une ville par ligne (l’agglomération proche peut être ajoutée : Abomey-Calavi, Anyama…)",
       "citiesCount": "{n, plural, =0 {Toutes les villes} one {# ville} other {# villes}}",
       "citiesAll": "Désactivé : l’inscription est ouverte à toutes les villes des pays ouverts.",
@@ -3882,7 +3905,7 @@
             "Rappel 1 h avant",
             "Soirée en cours"
           ],
-          "name": "Soirées Duo",
+          "name": "Soirées Crush",
           "note": "Pas d’interrupteur : on crée ou on annule chaque soirée."
         },
         "speed_dating": {
@@ -5090,7 +5113,7 @@
     }
   },
   "liveEvents": {
-    "title": "Soirée Duo",
+    "title": "Soirée Crush",
     "live": "En cours",
     "when": "{date} · {start}–{end}",
     "online": "{n} personne(s) en ligne",
@@ -5216,7 +5239,7 @@
         "text": "Lancez une recherche : nous vous mettons en relation avec une personne compatible connectée au même moment. Chaque mise en relation utilise un jeton Crush."
       },
       "more": {
-        "title": "Soirées Duo et speed dating",
+        "title": "Soirées Crush et speed dating",
         "text": "Rejoignez les soirées annoncées : beaucoup de membres en ligne en même temps, donc plus de rencontres."
       }
     },

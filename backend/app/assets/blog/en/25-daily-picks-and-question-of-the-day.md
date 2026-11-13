@@ -62,7 +62,7 @@ To make this concrete, here's the rhythm of Yves, 34, who works days in Lomé:
 
 - **Monday to Thursday**, ten minutes in the morning: Daily picks, Question of the day, two replies to ongoing conversations.
 - **Friday evening**, an extra quarter of an hour to reply without rushing and suggest a call to someone he enjoys chatting with.
-- **At the weekend**, he leaves the app alone, except for a Duo Night if he feels like it.
+- **At the weekend**, he leaves the app alone, except for a Crush Night if he feels like it.
 
 After a month, he'd had three real conversations, one of which led to a coffee. He never spent more than an hour a week on the app, and never felt he was "on call". It isn't a model to copy exactly: it's proof that a regular, brief presence is often enough.
 
@@ -74,7 +74,7 @@ Sometimes your Daily picks don't inspire you for several days. Before concluding
 
 There are periods when you don't have the energy for a daily ritual: intense work, tiredness, bereavement, moving house. At those times, rather than forcing yourself, use Pause mode or cut back to two or three visits a week. An app that bores you won't help you meet anyone.
 
-On the other hand, some evenings you'll want to spend more time: a lively conversation, a Duo Night, simple curiosity. Go ahead without guilt. The aim isn't to impose a rigid rule on yourself, but to **stay in control** of the time you give the app.
+On the other hand, some evenings you'll want to spend more time: a lively conversation, a Crush Night, simple curiosity. Go ahead without guilt. The aim isn't to impose a rigid rule on yourself, but to **stay in control** of the time you give the app.
 
 ## What the ritual changes over time
 

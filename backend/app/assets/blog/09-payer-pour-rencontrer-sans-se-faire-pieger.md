@@ -83,7 +83,7 @@ Vous commencez par un **essai gratuit**, pour regarder de l'intérieur. Ensuite,
 
 Avant l'échéance, vous recevez des **rappels**. Ils sont là pour que la fin ne soit jamais une surprise, ni dans un sens ni dans l'autre. Les profils dont l'identité est confirmée, avec le badge « profil vérifié », peuvent bénéficier d'une **réduction**, selon les conditions affichées sur la page des offres : lisez-les, ce sont elles qui font foi.
 
-À côté de la formule, deux achats à l'unité existent : les **Boosts** de visibilité et les **Super Likes**. Et les **jetons** servent à ouvrir une conversation en Match en direct. Chacun répond à un besoin précis, vous pouvez en prendre un sans les autres, et aucun ne s'abonne tout seul.
+À côté de la formule, deux achats à l'unité existent : les **Boosts** de visibilité et les **Super Likes**. Et les **jetons** servent à ouvrir une conversation dans Crush en direct. Chacun répond à un besoin précis, vous pouvez en prendre un sans les autres, et aucun ne s'abonne tout seul.
 
 Nous ne disons pas que c'est la seule bonne façon de faire. Nous disons que c'est une façon qu'on peut expliquer en dix lignes, sans astérisque, et c'est le critère que nous vous invitons à appliquer à tout le monde, nous compris.
 

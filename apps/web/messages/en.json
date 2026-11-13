@@ -2063,8 +2063,8 @@
       "SPEED_REMINDER": "Reminder: your speed-dating session is about to start.",
       "DUO_GUARANTEE": "Duo Guarantee: no duo this month, so we are adding {n} day(s) to your plan. Keep your profile complete and keep liking!",
       "SUBSCRIPTION_EXPIRING_DAYS": "Your subscription ends in {n} day(s). Extend it: the duration is added to your end date.",
-      "LIVE_EVENT": "Duo Night: “{event}” starts in one hour. Be there!",
-      "LIVE_EVENT_START": "“{event}” is starting: launch your search!"
+      "LIVE_EVENT": "Crush Night: “{event}” starts in one hour, in the Crush tab. Be there!",
+      "LIVE_EVENT_START": "“{event}” is starting: see you in the Crush tab!"
     },
     "promoEnding": "Your welcome offer ends soon ({code}): {offer}. Apply it in one click.",
     "securityEvents": {
@@ -2284,7 +2284,7 @@
       "payment": "Online payment",
       "access": "Paid access",
       "billing": "Billing",
-      "liveEvents": "Duo Nights",
+      "liveEvents": "Crush Nights",
       "countries": "Launch countries",
       "services": "Services",
       "errors": "System errors",
@@ -2841,6 +2841,13 @@
       "viewsPublic": "Show visit counts to readers",
       "viewsPublicHint": "Off by default. The count is always visible here for administrators. On the public side the figure refreshes every 5 minutes.",
       "coverNone": "No image",
+      "coverDrop": "Drag an image here or click to choose one",
+      "coverDropHere": "Drop the image to replace it",
+      "coverDropHint": "To change the image, click it or drop another one.",
+      "coverBadType": "Format not accepted: JPEG, PNG or WebP.",
+      "coverUseFr": "Use the image from the French version",
+      "coverUseEn": "Use the image from the English version",
+      "coverUseHint": "The same image is used for both versions; replacing it in one replaces it in the other. Still describe it in this article’s language.",
       "coverUpload": "Choose an image",
       "coverReplace": "Replace image",
       "uploading": "Uploading image…",
@@ -2886,7 +2893,23 @@
       "translation": "Linked translation",
       "translationHint": "This article’s version in the other language: the language switcher goes straight to it and search engines know it is the same article.",
       "translationNone": "None",
-      "colTranslation": "Translation"
+      "colTranslation": "Translation",
+      "colOnline": "Live",
+      "onlineLabel": "Put “{title}” live",
+      "publishDialog": {
+        "titlePublish": "Publish the article",
+        "titleUnpublish": "Take the article off the blog",
+        "textBoth": "This article exists in French and English. Choose the versions to include.",
+        "textOne": "Fill in what is missing to publish.",
+        "alreadyPublished": "Already published",
+        "alreadyDraft": "Already a draft",
+        "missing": "An image and its description are needed to publish.",
+        "ready": "Ready to publish",
+        "confirmPublish": "{n, plural, =0 {Nothing to publish} one {Publish this version} other {Publish # versions}}",
+        "confirmUnpublish": "{n, plural, =0 {Nothing to unpublish} one {Unpublish this version} other {Unpublish # versions}}",
+        "donePublished": "{n, plural, one {Article published.} other {# versions published.}}",
+        "doneUnpublished": "{n, plural, one {Article moved back to draft.} other {# versions moved back to draft.}}"
+      }
     },
     "eng": {
       "title": "Engagement and matching",
@@ -2981,7 +3004,7 @@
       "guaranteeDays": "Days added by the guarantee (days)",
       "guaranteeWindow": "Period without a duo before the guarantee (days)",
       "guaranteeMinLikes": "Minimum likes sent to qualify",
-      "livePriority": "Subscriber priority during a Duo evening (ranking points, 0 = none)",
+      "livePriority": "Subscriber priority during a Crush Night (ranking points, 0 = none)",
       "icebreakersCount": "Ideas offered at a time",
       "tabIcebreakers": "Icebreakers",
       "ice": {
@@ -3715,7 +3738,7 @@
     "menuSearch": "Go to a menu…",
     "menuSearchEmpty": "No menu matches.",
     "liveEvents": {
-      "title": "Duo Nights",
+      "title": "Crush Nights",
       "subtitle": "Give everyone a time to be online together: searches succeed when many people are connected.",
       "new": "New evening",
       "create": "Create the evening",
@@ -3724,7 +3747,7 @@
       "cancel": "Cancel the evening",
       "empty": "No evening yet.",
       "name": "Evening name",
-      "namePh": "Cotonou Duo Night",
+      "namePh": "Cotonou Crush Night",
       "when": "When",
       "rsvps": "Signed up",
       "start": "Start",
@@ -3779,7 +3802,7 @@
       "saved": "Countries saved.",
       "atLeastOne": "Keep at least one country open.",
       "citiesTitle": "Restrict sign-up to certain cities (optional)",
-      "citiesHelp": "Off by default. If you list cities, only people from those cities can create an account; others join a waiting list. Empty the list to turn it off. Existing members are never blocked. This does not affect Duo Nights: their city is chosen when each evening is created.",
+      "citiesHelp": "Off by default. If you list cities, only people from those cities can create an account; others join a waiting list. Empty the list to turn it off. Existing members are never blocked. This does not affect Crush Nights: their city is chosen when each evening is created.",
       "citiesEditor": "One city per line (nearby suburbs can be added: Abomey-Calavi, Anyama…)",
       "citiesCount": "{n, plural, =0 {All cities} one {# city} other {# cities}}",
       "citiesAll": "Off: sign-up is open to every city of the open countries.",
@@ -3882,7 +3905,7 @@
             "Reminder 1 h before",
             "Evening live"
           ],
-          "name": "Duo Nights",
+          "name": "Crush Nights",
           "note": "No switch: create or cancel each evening."
         },
         "speed_dating": {
@@ -5090,7 +5113,7 @@
     }
   },
   "liveEvents": {
-    "title": "Duo Night",
+    "title": "Crush Night",
     "live": "Happening now",
     "when": "{date} · {start}–{end}",
     "online": "{n} people online",
@@ -5216,7 +5239,7 @@
         "text": "Start a search: we connect you with a compatible person who is online at the same time. Each connection uses a Crush token."
       },
       "more": {
-        "title": "Duo evenings and speed dating",
+        "title": "Crush Nights and speed dating",
         "text": "Join the announced evenings: many members online at once, so more encounters."
       }
     },

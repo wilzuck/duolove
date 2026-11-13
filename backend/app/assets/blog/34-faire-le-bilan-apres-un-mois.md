@@ -34,7 +34,7 @@ Prenez une demi-heure, un carnet, et répondez honnêtement :
 
 1. **Qu'est-ce qui a bien fonctionné ?** Une conversation agréable, une personne rencontrée, un moment de plaisir.
 2. **Qu'est-ce qui m'a pesé ?** Le temps passé, la déception d'un silence, une personne insistante, l'impression de me répéter.
-3. **Qu'est-ce que je n'ai pas encore essayé ?** Un appel, un Like avec un mot, une soirée en direct, un autre jeu de photos.
+3. **Qu'est-ce que je n'ai pas encore essayé ?** Un appel, un Like avec un mot, une Soirée Crush, un autre jeu de photos.
 4. **Qu'est-ce que je veux vraiment pour le mois prochain ?** Rencontrer, discuter, faire une pause, tester autre chose.
 
 Ces réponses vous donneront souvent la décision à prendre avant même que vous les analysiez.

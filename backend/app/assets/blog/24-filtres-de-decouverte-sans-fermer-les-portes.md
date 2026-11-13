@@ -64,7 +64,7 @@ Si votre découverte se vide, c'est un signal, pas un échec. Procédez par éta
 3. **Revoyez les critères secondaires** : lesquels sont vraiment indispensables ?
 4. **Attendez un peu** : de nouveaux membres arrivent chaque jour, notamment dans les villes en croissance.
 
-Si, malgré tout, la liste reste mince, c'est peut-être simplement que votre ville compte peu de membres pour l'instant. Dans ce cas, les soirées en direct, les découvertes du jour et les propositions d'autres villes vous donnent une autre manière de rencontrer.
+Si, malgré tout, la liste reste mince, c'est peut-être simplement que votre ville compte peu de membres pour l'instant. Dans ce cas, les Soirées Crush, les découvertes du jour et les propositions d'autres villes vous donnent une autre manière de rencontrer.
 
 ## Un exemple concret
 

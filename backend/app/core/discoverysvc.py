@@ -131,7 +131,7 @@ async def ranked(db: AsyncSession, user_id: str, *, exclude: set[str] | None = N
             prio = await live_events.priority_ids(db, [c.profile.userId for c, _, _ in scored], me.city)
             for c, _, r in scored:
                 if c.profile.userId in prio:
-                    r.rank += bonus  # soirée Duo en cours : les abonnés payants passent devant, sans toucher à la compatibilité affichée
+                    r.rank += bonus  # soirée Crush en cours : les abonnés payants passent devant, sans toucher à la compatibilité affichée
     scored.sort(key=lambda x: x[2].rank, reverse=True)  # tri stable
     return scored
 

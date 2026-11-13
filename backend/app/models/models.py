@@ -821,7 +821,7 @@ class NewsletterCampaign(Base):
 
 
 class LiveEvent(Base):
-    """Soirée Duo : créneau annoncé par l'administration pour que beaucoup de monde soit en ligne en même temps.
+    """Soirée Crush : créneau annoncé par l'administration pour que beaucoup de monde soit en ligne en même temps.
     Les membres s'inscrivent pour être rappelés (1 h avant, puis au début). `tzOffset` : décalage horaire d'affichage dans les e-mails, en minutes."""
     __tablename__ = 'LiveEvent'
     __table_args__ = (

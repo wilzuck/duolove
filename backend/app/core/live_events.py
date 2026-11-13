@@ -1,4 +1,4 @@
-"""Soirées Duo : créneaux annoncés par l'administration, inscription des membres, rappels (1 h avant, puis au début).
+"""Soirées Crush : créneaux annoncés par l'administration, inscription des membres, rappels (1 h avant, puis au début).
 
 Une soirée ne change pas le fonctionnement du Match : elle donne rendez-vous à tout le monde en même temps pour que les recherches aboutissent.
 Les rappels (notification + e-mail) ne partent qu'aux membres inscrits ; chaque étape n'est envoyée qu'une fois, même avec plusieurs répliques de l'API."""
@@ -134,12 +134,12 @@ async def sweep_loop(maker, every: float = 60.0) -> None:
         except asyncio.CancelledError:
             raise
         except Exception:  # noqa: BLE001
-            log.exception("Balayage des soirées Duo")
+            log.exception("Balayage des soirées Crush")
         await asyncio.sleep(every)
 
 
 async def priority_ids(db: AsyncSession, user_ids: list[str], viewer_city: str | None = None, now: datetime.datetime | None = None) -> set[str]:
-    """Abonnés payants mis en avant dans la découverte PENDANT une soirée Duo en cours (réglage `live.priority_bonus` > 0).
+    """Abonnés payants mis en avant dans la découverte PENDANT une soirée Crush en cours (réglage `live.priority_bonus` > 0).
     Si la soirée est limitée à une ville, seuls les membres de cette ville en profitent."""
     from app.models.models import Entitlement
 
