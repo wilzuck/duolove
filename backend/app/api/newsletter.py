@@ -249,7 +249,7 @@ async def provider_get(_: AuthUser = ADM):
 async def provider_set(body: ProviderIn, a: AuthUser = SUP, db: AsyncSession = Depends(get_db)):
     """Choisit le fournisseur d'envoi (réservé au super-administrateur). Les identifiants restent dans les variables du serveur : rien de secret n'est stocké ici."""
     if body.provider not in mail_config.CHOICES:
-        raise bad_request("INVALID_PROVIDER", "Fournisseur inconnu : auto, brevo ou smtp.")
+        raise bad_request("INVALID_PROVIDER", "Fournisseur inconnu : auto, brevo, zeptomail ou smtp.")
     ok = mail_config.configured()
     if body.provider in ("brevo", "smtp") and not ok[body.provider]:
         raise bad_request("PROVIDER_NOT_CONFIGURED", "Ce fournisseur n'est pas configuré sur le serveur (variable manquante).")

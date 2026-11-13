@@ -18,7 +18,7 @@ import { useUi } from '@/lib/store';
 const KINDS = ['verification', 'password_reset', 'magic_link', 'notification', 'newsletter', 'newsletter_confirm', 'newsletter_test', 'other'] as const;
 interface Row { id: string; to: string; subject: string; kind: string; status: 'SENT' | 'FAILED' | 'SKIPPED'; provider: string; error: string | null; createdAt: string }
 interface Stats {
-  days: number; provider: 'brevo' | 'smtp' | 'dev'; sent: number; failed: number; successRate: number | null; byKind: { kind: string; sent: number; failed: number }[];
+  days: number; provider: 'brevo' | 'zeptomail' | 'smtp' | 'dev'; sent: number; failed: number; successRate: number | null; byKind: { kind: string; sent: number; failed: number }[];
   series: { sent: SeriesPoint[]; failed: SeriesPoint[] }; lastFailure: Row | null;
 }
 interface Blocked { id: string; email: string; reason: 'BOUNCE' | 'COMPLAINT'; detail: string | null; createdAt: string }
@@ -36,7 +36,7 @@ function Banner({ tone, title, children, onClose, closeLabel }: { tone: 'warning
   );
 }
 
-interface ProviderView { choice: 'auto' | 'brevo' | 'smtp'; active: 'brevo' | 'smtp' | 'dev'; configured: { brevo: boolean; smtp: boolean }; essentialOnly?: boolean }
+interface ProviderView { choice: 'auto' | 'brevo' | 'zeptomail' | 'smtp'; active: 'brevo' | 'zeptomail' | 'smtp' | 'dev'; configured: { brevo: boolean; zeptomail: boolean; smtp: boolean }; essentialOnly?: boolean }
 
 /** Choix du fournisseur d'envoi. Les identifiants restent dans les variables du serveur ; ici on ne choisit que celui qui est actif. */
 function ProviderCard() {
@@ -56,6 +56,7 @@ function ProviderCard() {
   const options = [
     { key: 'auto' as const, label: t('admin.em.provider.auto'), ok: true },
     { key: 'brevo' as const, label: t('admin.em.provider.brevo'), ok: v.configured.brevo },
+    { key: 'zeptomail' as const, label: t('admin.em.provider.zeptomail'), ok: !!v.configured.zeptomail },
     { key: 'smtp' as const, label: t('admin.em.provider.smtp'), ok: v.configured.smtp },
   ];
   return (
@@ -64,7 +65,7 @@ function ProviderCard() {
         <h2 className="font-bold">{t('admin.em.provider.title')}</h2>
         <p className="mt-1 text-sm text-muted">{t('admin.em.provider.text')}</p>
       </div>
-      <div role="radiogroup" aria-label={t('admin.em.provider.title')} className="grid gap-2 sm:grid-cols-3">
+      <div role="radiogroup" aria-label={t('admin.em.provider.title')} className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {options.map((o) => (
           <label key={o.key} className={cn('flex cursor-pointer flex-col gap-1 rounded-2xl border p-3 text-sm', value === o.key ? 'border-brand-strong bg-soft' : 'border-line', !o.ok && 'cursor-not-allowed opacity-60')}>
             <span className="flex items-center gap-2 font-semibold"><input type="radio" name="provider" className="accent-brand-strong" checked={value === o.key} disabled={!o.ok} onChange={() => setPick(o.key)} />{o.label}</span>
@@ -72,9 +73,10 @@ function ProviderCard() {
           </label>
         ))}
       </div>
-      <p className="text-sm">{t('admin.em.provider.active', { name: v.active === 'brevo' ? 'Brevo' : v.active === 'smtp' ? t('admin.em.provider.smtpShort') : t('admin.em.devProvider') })}</p>
+      <p className="text-sm">{t('admin.em.provider.active', { name: v.active === 'brevo' ? 'Brevo' : v.active === 'zeptomail' ? 'ZeptoMail' : v.active === 'smtp' ? t('admin.em.provider.smtpShort') : t('admin.em.devProvider') })}</p>
       {v.choice !== 'auto' && v.choice !== v.active && <Banner tone="warning" title={t('admin.em.provider.fallback')} />}
       {value === 'smtp' && <p className="text-xs text-muted">{t('admin.em.provider.sesNote')}</p>}
+      {value === 'zeptomail' && <p className="text-xs text-muted">{t('admin.em.provider.zeptoNote')}</p>}
       <div className="flex flex-wrap items-center gap-2">
         <Button size="sm" loading={save.isPending} disabled={pick === null || pick === v.choice} onClick={() => save.mutate()}>{t('admin.em.provider.save')}</Button>
         <Button size="sm" variant="secondary" loading={test.isPending} onClick={() => test.mutate()}><Send className="size-4" aria-hidden />{t('admin.em.provider.test')}</Button>
@@ -108,7 +110,7 @@ export default function AdminEmails() {
   const list = useAdminList<Row>(['emails', status], `/admin/emails${status === 'ALL' ? '' : `?status=${status}`}`);
   const s = stats.data;
   const nf = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'fr-FR');
-  const providerName = (p: string) => (p === 'brevo' ? 'Brevo' : p === 'ses' ? 'Amazon SES' : p === 'smtp' ? 'SMTP' : t('admin.em.devProvider'));
+  const providerName = (p: string) => (p === 'brevo' ? 'Brevo' : p === 'zeptomail' ? 'ZeptoMail' : p === 'ses' ? 'Amazon SES' : p === 'smtp' ? 'SMTP' : t('admin.em.devProvider'));
   const kindName = (k: string) => t(`admin.em.kinds.${(KINDS as readonly string[]).includes(k) ? k : 'other'}` as never);
   return (
     <div className="space-y-6">
@@ -120,7 +122,7 @@ export default function AdminEmails() {
       {!s ? <Skeleton className="h-32" /> : (
         <>
           <section className="grid gap-3 sm:grid-cols-3">
-            <KpiCard label={t('admin.em.sent')} value={nf.format(s.sent)} icon={<MailCheck className="size-5" />} series={s.series.sent} hint={t('admin.em.providerHint', { name: s.provider === 'brevo' ? 'Brevo' : s.provider === 'smtp' ? 'SMTP' : t('admin.em.devProvider') })} />
+            <KpiCard label={t('admin.em.sent')} value={nf.format(s.sent)} icon={<MailCheck className="size-5" />} series={s.series.sent} hint={t('admin.em.providerHint', { name: s.provider === 'brevo' ? 'Brevo' : s.provider === 'zeptomail' ? 'ZeptoMail' : s.provider === 'smtp' ? 'SMTP' : t('admin.em.devProvider') })} />
             <KpiCard label={t('admin.em.failed')} value={nf.format(s.failed)} icon={<MailWarning className="size-5" />} series={s.series.failed} hint={t('admin.em.failedHint')} />
             <KpiCard label={t('admin.em.rate')} value={s.successRate == null ? t('admin.eng.m.none') : `${nf.format(s.successRate)} %`} icon={<Percent className="size-5" />} hint={t('admin.em.rateHint')} />
           </section>
@@ -153,7 +155,7 @@ export default function AdminEmails() {
               { key: 'to', header: t('admin.em.to'), value: (r) => r.to, filter: 'text', cell: (r) => r.to },
               { key: 'subject', header: t('admin.em.subject'), value: (r) => r.subject, cellClassName: 'max-w-xs truncate', cell: (r) => r.subject },
               { key: 'kind', header: t('admin.em.kind'), value: (r) => r.kind, filter: { options: KINDS.map((k) => ({ value: k, label: kindName(k) })) }, cell: (r) => <Badge tone="neutral">{kindName(r.kind)}</Badge> },
-              { key: 'provider', header: t('admin.em.providerCol'), value: (r) => r.provider, filter: { options: [{ value: 'brevo', label: 'Brevo' }, { value: 'ses', label: 'Amazon SES' }, { value: 'smtp', label: 'SMTP' }, { value: 'dev', label: t('admin.em.devProvider') }] }, cell: (r) => <Badge tone={r.provider === 'brevo' ? 'brand' : 'neutral'}>{providerName(r.provider)}</Badge> },
+              { key: 'provider', header: t('admin.em.providerCol'), value: (r) => r.provider, filter: { options: [{ value: 'brevo', label: 'Brevo' }, { value: 'zeptomail', label: 'ZeptoMail' }, { value: 'ses', label: 'Amazon SES' }, { value: 'smtp', label: 'SMTP' }, { value: 'dev', label: t('admin.em.devProvider') }] }, cell: (r) => <Badge tone={r.provider === 'brevo' ? 'brand' : 'neutral'}>{providerName(r.provider)}</Badge> },
               { key: 'status', header: t('admin.status'), value: (r) => r.status, cell: (r) => r.status === 'SENT' ? <Badge tone="success">{t('admin.em.statuses.SENT')}</Badge> : r.status === 'SKIPPED' ? <span><Badge tone="neutral"><ShieldOff className="size-3" aria-hidden />{t('admin.em.statuses.SKIPPED')}</Badge>{r.error && <span className="mt-1 block max-w-xs break-words text-xs text-muted">{r.error}</span>}</span> : <span><Badge tone="danger"><AlertTriangle className="size-3" aria-hidden />{t('admin.em.statuses.FAILED')}</Badge>{r.error && <span className="mt-1 block max-w-xs break-words text-xs text-muted">{r.error}</span>}</span> },
               { key: 'date', mobileHidden: true, header: t('admin.cols.date'), value: (r) => r.createdAt, cellClassName: 'text-muted', cell: (r) => timeAgo(r.createdAt, locale) },
             ]}

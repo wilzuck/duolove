@@ -3237,8 +3237,8 @@
       "dismiss": "Dismiss",
       "provider": {
         "title": "Sending provider",
-        "text": "Choose which service sends the emails. Credentials stay in the server variables (BREVO_API_KEY, SMTP_URL): nothing secret is stored here.",
-        "auto": "Automatic (Brevo, otherwise SMTP)",
+        "text": "Choose which service sends the e-mails. Credentials stay in the server variables (BREVO_API_KEY, ZEPTOMAIL_TOKEN, SMTP_URL): nothing secret is stored here.",
+        "auto": "Automatic (Brevo, then ZeptoMail, then SMTP)",
         "brevo": "Brevo",
         "smtp": "SMTP (Amazon SES)",
         "smtpShort": "SMTP",
@@ -3252,7 +3252,9 @@
         "test": "Send me a test email",
         "testOk": "Test email sent to {to}.",
         "testFail": "The test send failed: see the log below.",
-        "superOnly": "Only the super administrator can change this."
+        "superOnly": "Only the super administrator can change this.",
+        "zeptomail": "ZeptoMail (Zoho)",
+        "zeptoNote": "ZeptoMail only accepts transactional e-mails: newsletters and group sends go through Brevo (if configured), never through ZeptoMail."
       },
       "devProvider": "none (development)",
       "noProviderTitle": "No email provider configured",

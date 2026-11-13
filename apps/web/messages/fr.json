@@ -3237,8 +3237,8 @@
       "dismiss": "Fermer",
       "provider": {
         "title": "Fournisseur d’envoi",
-        "text": "Choisissez par quel service partent les e-mails. Les identifiants restent dans les variables du serveur (BREVO_API_KEY, SMTP_URL) : rien de secret n’est enregistré ici.",
-        "auto": "Automatique (Brevo, sinon SMTP)",
+        "text": "Choisissez par quel service partent les e-mails. Les identifiants restent dans les variables du serveur (BREVO_API_KEY, ZEPTOMAIL_TOKEN, SMTP_URL) : rien de secret n’est enregistré ici.",
+        "auto": "Automatique (Brevo, sinon ZeptoMail, sinon SMTP)",
         "brevo": "Brevo",
         "smtp": "SMTP (Amazon SES)",
         "smtpShort": "SMTP",
@@ -3252,7 +3252,9 @@
         "test": "M’envoyer un e-mail de test",
         "testOk": "E-mail de test envoyé à {to}.",
         "testFail": "L’envoi de test a échoué : voir le journal ci-dessous.",
-        "superOnly": "Modification réservée au super-administrateur."
+        "superOnly": "Modification réservée au super-administrateur.",
+        "zeptomail": "ZeptoMail (Zoho)",
+        "zeptoNote": "ZeptoMail n’accepte que les e-mails transactionnels : les newsletters et envois groupés partent par Brevo (s’il est configuré), jamais par ZeptoMail."
       },
       "devProvider": "aucun (développement)",
       "noProviderTitle": "Aucun fournisseur d’e-mail configuré",

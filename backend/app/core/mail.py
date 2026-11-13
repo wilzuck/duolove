@@ -39,6 +39,19 @@ async def _send_brevo(to: str, subject: str, text: str, html: str | None = None,
         raise RuntimeError(f"Brevo HTTP {r.status_code}: {r.text[:300]}")
 
 
+async def _send_zeptomail(to: str, subject: str, text: str, html: str | None = None, headers: dict | None = None) -> None:
+    s = get_settings()
+    name, addr = sender()
+    token = (s.zeptomail_token or "").strip()
+    auth = token if token.lower().startswith("zoho-enczapikey") else f"Zoho-enczapikey {token}"
+    body = {"from": {"address": addr, **({"name": name} if name else {})}, "to": [{"email_address": {"address": to}}], "subject": subject,
+            "textbody": text, **({"htmlbody": html} if html else {}), **({"mime_headers": headers} if headers else {})}
+    async with httpx.AsyncClient(timeout=15) as c:
+        r = await c.post(s.zeptomail_api.rstrip("/") + "/v1.1/email", headers={"Authorization": auth, "Accept": "application/json"}, json=body)
+    if r.status_code >= 400:  # le jeton n'est jamais journalisé ; le corps de ZeptoMail dit pourquoi (domaine non vérifié, jeton refusé…)
+        raise RuntimeError(f"ZeptoMail HTTP {r.status_code}: {r.text[:300]}")
+
+
 def log_provider(provider: str) -> str:
     """Nom enregistré dans le journal : « ses » quand le SMTP pointe vers Amazon SES (le serveur finit par amazonaws.com), sinon « brevo », « smtp » ou « dev »."""
     if provider == "smtp":
@@ -93,8 +106,12 @@ async def send(to: str, subject: str, text: str, html: str | None = None, *, kin
         if blocked:  # rebond définitif ou plainte : on n'écrit plus à cette adresse (protège la réputation de l'expéditeur)
             await _record(to, subject, kind, "SKIPPED", await provider_name(), "Adresse bloquée : " + ("rebond définitif" if blocked == "BOUNCE" else "plainte pour spam"), campaign_id)
             return False
-        sent = await _send(to, subject, text, html, headers)
-        await _record(to, subject, kind, "SENT" if sent else "FAILED", await provider_name(), None if sent else "Aucun fournisseur d'e-mail configuré en production", campaign_id)
+        prov = mail_config.for_kind(await provider_name(), kind)
+        if prov == "none":
+            await _record(to, subject, kind, "FAILED", "zeptomail", "ZeptoMail n'accepte pas les envois marketing : configurez Brevo pour les newsletters et envois groupés", campaign_id)
+            return False
+        sent = await _send(to, subject, text, html, headers, prov)
+        await _record(to, subject, kind, "SENT" if sent else "FAILED", prov, None if sent else "Aucun fournisseur d'e-mail configuré en production", campaign_id)
         return sent
     except Exception as e:
         log.exception("Envoi d'e-mail impossible (%s)", subject)
@@ -102,9 +119,12 @@ async def send(to: str, subject: str, text: str, html: str | None = None, *, kin
         return False
 
 
-async def _send(to: str, subject: str, text: str, html: str | None = None, headers: dict | None = None) -> bool:
+async def _send(to: str, subject: str, text: str, html: str | None = None, headers: dict | None = None, prov: str | None = None) -> bool:
     s = get_settings()
-    prov = await provider_name()
+    prov = prov or await provider_name()
+    if prov == "zeptomail":
+        await _send_zeptomail(to, subject, text, html, headers)
+        return True
     if prov == "brevo":
         await _send_brevo(to, subject, text, html, headers)
         return True

@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     smtp_url: str | None = Field(None, alias="SMTP_URL")
     # E-mail par l'API HTTP de Brevo (prioritaire sur SMTP_URL) : fonctionne sur tous les forfaits Railway, sans port SMTP.
     brevo_api_key: str | None = Field(None, alias="BREVO_API_KEY")
+    # E-mail transactionnel par l'API HTTP de ZeptoMail (Zoho). Jeton de l'agent d'envoi (« Send Mail token ») ; marketing interdit chez ZeptoMail.
+    zeptomail_token: str | None = Field(None, alias="ZEPTOMAIL_TOKEN")
+    # Centre de données ZeptoMail : https://api.zeptomail.eu (Europe, par défaut), https://api.zeptomail.com (États-Unis)…
+    zeptomail_api: str = Field("https://api.zeptomail.eu", alias="ZEPTOMAIL_API")
     mail_from: str = Field("Crushduo <no-reply@crushduo.com>", alias="MAIL_FROM")
     # Retours d'Amazon SES (rebonds, plaintes) reçus via Amazon SNS : seul ce sujet SNS est accepté. Sans lui, le point d'entrée /webhooks/ses refuse tout.
     # Pool de connexions à la base : ajuster selon `max_connections` de PostgreSQL (somme de tous les processus < max_connections).

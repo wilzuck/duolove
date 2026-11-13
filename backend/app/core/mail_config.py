@@ -11,7 +11,7 @@ from app.core.config import get_settings
 from app.models.models import SystemSetting
 
 KEY = "email.provider"
-CHOICES = ("auto", "brevo", "smtp")
+CHOICES = ("auto", "brevo", "zeptomail", "smtp")
 TTL = 30.0
 _cache: dict = {"at": 0.0, "choice": None}
 
@@ -22,15 +22,26 @@ def invalidate() -> None:
 
 def configured() -> dict[str, bool]:
     s = get_settings()
-    return {"brevo": bool(s.brevo_api_key), "smtp": bool(s.smtp_url)}
+    return {"brevo": bool(s.brevo_api_key), "zeptomail": bool(s.zeptomail_token), "smtp": bool(s.smtp_url)}
 
 
 def resolve(choice: str) -> str:
-    """Fournisseur réellement utilisé : « brevo », « smtp » ou « dev » (aucun configuré)."""
+    """Fournisseur réellement utilisé : « brevo », « zeptomail », « smtp » ou « dev » (aucun configuré)."""
     ok = configured()
-    if choice in ("brevo", "smtp") and ok[choice]:
+    if choice in ("brevo", "zeptomail", "smtp") and ok[choice]:
         return choice
-    return "brevo" if ok["brevo"] else "smtp" if ok["smtp"] else "dev"
+    return "brevo" if ok["brevo"] else "zeptomail" if ok["zeptomail"] else "smtp" if ok["smtp"] else "dev"
+
+
+# ZeptoMail n'accepte que le transactionnel : newsletters et envois groupés passent par Brevo (ou ne partent pas).
+MARKETING_KINDS = frozenset({"newsletter", "broadcast"})
+
+
+def for_kind(active: str, kind: str) -> str:
+    """Fournisseur à utiliser pour ce type d'e-mail : marketing jamais par ZeptoMail ; « none » s'il n'y a pas d'alternative."""
+    if active == "zeptomail" and kind in MARKETING_KINDS:
+        return "brevo" if configured()["brevo"] else "none"
+    return active
 
 
 async def choice() -> str:

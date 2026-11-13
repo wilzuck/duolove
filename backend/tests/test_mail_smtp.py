@@ -82,7 +82,7 @@ async def test_choix_du_fournisseur_par_l_administration(app, db, monkeypatch):
     sup = await member(app, db)
     await set_role(sup.id, "SUPER_ADMIN")
     view = (await sup.agent.get("/api/admin/emails/provider")).json()
-    assert view["choice"] == "auto" and view["active"] == "brevo" and view["configured"] == {"brevo": True, "smtp": True}
+    assert view["choice"] == "auto" and view["active"] == "brevo" and view["configured"] == {"brevo": True, "zeptomail": False, "smtp": True}
 
     brevo_calls, smtp_calls = [], []
 
@@ -164,3 +164,60 @@ async def test_emails_essentiels_uniquement(app, db, monkeypatch):
     assert (await u.agent.put("/api/admin/emails/essential-only", json={"enabled": True})).status_code == 403
     mail_config.invalidate()
     mail_config.invalidate_essential()
+
+
+@pytest.mark.asyncio
+async def test_zeptomail_api_et_marketing_par_brevo(app, db, monkeypatch):
+    """ZeptoMail (API HTTP, centre européen par défaut) : en-tête « Zoho-enczapikey », format attendu ; choix dans l'admin ;
+    newsletters et envois groupés jamais par ZeptoMail (Brevo si configuré, sinon échec journalisé)."""
+    import json
+
+    import httpx
+
+    from app.core import mail_config
+    from tests.helpers import uid
+    from tests.support_c import member, set_role
+
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(201, json={"data": [{"code": "EM_104"}]})
+
+    real = httpx.AsyncClient
+    monkeypatch.setattr(mail.httpx, "AsyncClient", lambda **kw: real(**{"transport": httpx.MockTransport(handler), **kw}))  # les clients de test gardent leur transport
+    st = get_settings()
+    monkeypatch.setattr(st, "zeptomail_token", "jeton-test")
+    monkeypatch.setattr(st, "brevo_api_key", None)
+    monkeypatch.setattr(st, "smtp_url", None)
+    monkeypatch.setattr(st, "mail_from", "Crushduo <no-reply@duomatch.test>")
+    mail_config.invalidate()
+    mail_config.invalidate_essential()
+    assert mail_config.resolve("auto") == "zeptomail"
+
+    to = f"zepto-{uid()}@duo.test"
+    assert await mail.send(to, "Code", "Corps", "<p>Corps</p>", kind="verification", headers={"List-Unsubscribe": "<https://x>"})
+    req = calls[0]
+    assert str(req.url) == "https://api.zeptomail.eu/v1.1/email" and req.headers["Authorization"] == "Zoho-enczapikey jeton-test"
+    body = json.loads(req.content)
+    assert body["from"] == {"address": "no-reply@duomatch.test", "name": "Crushduo"} and body["to"] == [{"email_address": {"address": to}}]
+    assert body["subject"] == "Code" and body["textbody"] == "Corps" and body["htmlbody"] == "<p>Corps</p>" and body["mime_headers"] == {"List-Unsubscribe": "<https://x>"}
+
+    calls.clear()  # marketing sans Brevo : rien ne part par ZeptoMail
+    assert await mail.send(to, "Newsletter", "x", kind="newsletter") is False and calls == []
+
+    brevo = []
+
+    async def fake_brevo(to, subject, text, html=None, headers=None):
+        brevo.append(subject)
+    monkeypatch.setattr(mail, "_send_brevo", fake_brevo)
+    monkeypatch.setattr(st, "brevo_api_key", "xkeysib-test")
+    sup = await member(app, db)
+    await set_role(sup.id, "SUPER_ADMIN")
+    r = await sup.agent.put("/api/admin/emails/provider", json={"provider": "zeptomail"})
+    assert r.status_code == 200 and r.json()["active"] == "zeptomail" and r.json()["configured"]["zeptomail"] is True
+    calls.clear()
+    assert await mail.send(to, "Envoi groupé", "x", kind="broadcast") and brevo == ["Envoi groupé"] and calls == []
+    assert await mail.send(to, "Lien", "x", kind="magic_link") and len(calls) == 1 and brevo == ["Envoi groupé"]
+    assert (await sup.agent.put("/api/admin/emails/provider", json={"provider": "auto"})).status_code == 200
+    mail_config.invalidate()

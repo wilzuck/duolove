@@ -561,3 +561,9 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 - **Terminé** : sur chaque page de l'administration (sauf la vue d'ensemble), « ← Retour » remplace « Administration » dans la barre du haut, et un second bouton figure en bas de page. Il revient à la page précédente de l'admin ; si l'on arrive directement sur une page, il mène à la page parente (ex. un article → la liste des articles).
 - **Vérifié** : navigateur (vue d'ensemble sans bouton ; E-mails → Retour → vue d'ensemble ; arrivée directe sur un article → Retour → liste des articles).
+
+## E-mails : ZeptoMail (Zoho) comme fournisseur (livré, à configurer)
+
+- **Terminé** : 4e choix dans Admin › E-mails envoyés › Fournisseur d'envoi, par l'API HTTP de ZeptoMail (`ZEPTOMAIL_TOKEN`, centre européen par défaut, `ZEPTOMAIL_API` pour un autre). ZeptoMail n'acceptant que le transactionnel, newsletters et envois groupés passent par Brevo s'il est configuré, sinon ne partent pas (échec journalisé). Ordre automatique : Brevo, puis ZeptoMail, puis SMTP. Journal et statistiques affichent « ZeptoMail ».
+- **Vérifié** : tests `test_zeptomail_api_et_marketing_par_brevo` (format de l'appel, en-tête `Zoho-enczapikey`, choix admin, marketing jamais par ZeptoMail) ; suite complète du serveur verte ; typecheck et lint. **Non vérifié dans le navigateur** ; envoi réel non testé (à faire après ajout du jeton).
+- **À faire (toi)** : vérifier `crushduo.com` dans ZeptoMail (DKIM + CNAME de rebond dans Cloudflare, « DNS only »), relier l'agent, ajouter `ZEPTOMAIL_TOKEN` dans Railway, choisir ZeptoMail dans l'admin et lancer un test. Compte Zoho en cours d'examen : 100 e-mails/jour d'ici là (garder « E-mails essentiels uniquement » activé).
