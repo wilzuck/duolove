@@ -9,6 +9,7 @@ import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { ApiError, api, post } from '@/lib/api';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { ThemeToggle } from '../ThemeToggle';
+import { ServiceUnavailable } from '@/components/ServiceUnavailable';
 
 const RANK = { USER: 0, MODERATOR: 1, ADMIN: 2, SUPER_ADMIN: 3 } as const;
 export type Item = { href: string; key: string; icon: LucideIcon; min: 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN'; badge?: 'reports' | 'moderation' };
@@ -60,7 +61,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const path = usePathname();
   const router = useRouter();
-  const { data: me, error } = useMe();
+  const { data: me, error, refetch, isFetching } = useMe();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const allowed = !!me && RANK[me.role] >= 1;
@@ -82,6 +83,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  if (!me && error && !(error instanceof ApiError && error.status < 500)) return <ServiceUnavailable onRetry={() => void refetch()} retrying={isFetching} />;
   if (!me || !allowed) return <div className="mx-auto max-w-md space-y-4 p-6"><Skeleton className="h-12" /><Skeleton className="h-80" /></div>;
 
   // Page réservée à un rôle supérieur (ex. un modérateur sur /admin/payments) : message clair plutôt qu'un tableau vide.

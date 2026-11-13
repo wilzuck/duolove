@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Button, Skeleton, Textarea } from '@duomatch/ui';
 import { AppShell } from '@/components/app/AppShell';
 import { MatchOverlay } from '@/components/app/MatchOverlay';
+import { ServiceUnavailable } from '@/components/ServiceUnavailable';
 import { useApiError } from '@/hooks/useApiError';
 import { useMe, keys } from '@/hooks/useQueries';
 import { useRealtime } from '@/hooks/useRealtime';
@@ -40,7 +41,7 @@ function Suspended({ moderation }: { moderation: NonNullable<ReturnType<typeof u
 export default function AppLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const path = usePathname();
-  const { data: me, error, isLoading } = useMe();
+  const { data: me, error, isLoading, refetch, isFetching } = useMe();
 
   useEffect(() => {
     if (error instanceof ApiError && error.status === 401) router.replace(`/login?next=${encodeURIComponent(path)}`);
@@ -54,6 +55,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   }, [me, path, router]);
   useRealtime(!!me && me.status === 'ACTIVE');
 
+  // Serveur injoignable ou en erreur (pas une simple session expirée) : message et nouvelle tentative, jamais un chargement sans fin.
+  if (!me && error && !(error instanceof ApiError && error.status < 500)) return <ServiceUnavailable onRetry={() => void refetch()} retrying={isFetching} />;
   if (isLoading || !me || (me.status === 'ACTIVE' && !me.emailVerified)) {
     return <div className="mx-auto max-w-md space-y-4 p-6"><Skeleton className="h-14" /><Skeleton className="h-96" /><Skeleton className="h-14" /></div>;
   }

@@ -5004,6 +5004,8 @@
     "updatingText": "A new version has just been released: the page is reloading.",
     "retry": "Try again",
     "reload": "Reload the page",
-    "home": "Home"
+    "home": "Home",
+    "offlineTitle": "Service temporarily unavailable",
+    "offlineText": "Crushduo is not responding right now (maintenance or an unstable connection). We are retrying automatically; your data is safe."
   }
 }

@@ -123,7 +123,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         <Link href="/messages" className="rounded-full p-2 hover:bg-soft lg:hidden" aria-label={t('common.back')}><ArrowLeft className="size-5" /></Link>
         {conv ? (
           <Link href={`/profile/${conv.user.id}`} className="flex min-w-0 flex-1 items-center gap-3"><Avatar src={conv.user.thumbUrl} name={conv.user.displayName} size={42} /><span className="min-w-0"><span className="flex min-w-0 items-center gap-1 font-bold"><span className="truncate">{conv.user.displayName}</span>{conv.user.verified && <VerifiedBadge size="sm" />}</span><span className="block text-xs text-muted" aria-live="polite">{typing ? t('chat.typing') : (activityText ?? t('chat.viewProfile'))}</span></span></Link>
-        ) : <Skeleton className="h-10 flex-1" />}
+        ) : closed ? <span className="flex-1 font-bold">{t('app.nav.messages')}</span> : <Skeleton className="h-10 flex-1" />}
         {cfg?.calls.enabled && lim?.calls && !closed && conv && <CallButtons conversationId={id} name={conv.user.displayName} />}
         {canDates && conv && <IconButton label={lim?.dates ? t('dates.open') : t('chat.datesLocked')} tone="plain" onClick={() => (lim?.dates ? setDatesOpen(true) : setUpsell('dates'))}><span className="relative"><CalendarHeart className="size-5" />{!lim?.dates && <Lock className="absolute -right-1.5 -bottom-1.5 size-3.5 rounded-full bg-card p-0.5 text-brand-ink" aria-hidden />}</span></IconButton>}
         <div className="relative">
@@ -140,7 +140,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
 
       <div className="flex-1 overflow-y-auto bg-soft/40 px-3 py-4" role="log" aria-live="polite" aria-label={t('chat.history')}>
         {q.isLoading && <div className="space-y-3"><Skeleton className="ml-auto h-12 w-2/3" /><Skeleton className="h-12 w-1/2" /><Skeleton className="ml-auto h-12 w-1/2" /></div>}
-        {closed && <p className="m-auto max-w-sm py-10 text-center text-muted">{t('chat.closed')}</p>}
+        {closed && <div className="m-auto max-w-sm space-y-4 py-10 text-center"><p className="text-muted">{t('chat.closed')}</p><Link href="/messages"><Button variant="outline">{t('app.nav.messages')}</Button></Link></div>}
         {q.hasNextPage && <div className="mb-4 text-center"><Button variant="outline" size="sm" onClick={() => q.fetchNextPage()} loading={q.isFetchingNextPage}>{t('chat.older')}</Button></div>}
         {q.data && messages.length === 0 && <p className="py-10 text-center text-muted">{t('chat.firstMessage', { name: conv?.user.displayName ?? '' })}</p>}
         <ul className="space-y-1.5">
