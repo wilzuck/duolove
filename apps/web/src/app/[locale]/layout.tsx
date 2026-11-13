@@ -11,6 +11,7 @@ import { Providers } from '@/components/Providers';
 import { routing } from '@/i18n/routing';
 import { SITE_URL } from '@/lib/site';
 import '../globals.css';
+import { ThemeSync } from '@/components/ThemeSync';
 
 // Une seule famille, très épurée, pour les titres comme pour le texte (DM Sans, variable : poids 100 à 1000).
 const dmSans = DM_Sans({ subsets: ['latin', 'latin-ext'], variable: '--font-dm-sans', display: 'swap' });
@@ -48,6 +49,7 @@ export default async function RootLayout({ children, params }: { children: React
     <html lang={locale} className={dmSans.variable} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: THEME_INIT }} /></head>
       <body className="min-h-dvh">
+        <ThemeSync />
         <NextIntlClientProvider>
           <Providers>{children}<CookieNotice /><Analytics /><InstallCapture /></Providers>
         </NextIntlClientProvider>

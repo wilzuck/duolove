@@ -167,7 +167,6 @@
     "ctaHelp": "Une question ? Le Centre d’aide",
     "stepsTitle": "Votre parcours en huit étapes",
     "steps": {
-      "priorityVisibility": "Visibilité prioritaire dans la découverte et badge Gold",
       "signup": {
         "title": "Créez votre compte",
         "text": "Avec votre e-mail (ou Google) et un mot de passe, ou simplement un lien magique. Vous confirmez votre adresse et votre majorité : Crushduo est réservé aux adultes de 18 ans et plus."
@@ -349,7 +348,8 @@
       "dates": "Rendez-vous",
       "chatImages": "Envoi de photos dans les messages",
       "readReceipts": "Gestion des accusés de lecture (« vu »)",
-      "dailyPicks": "{n, plural, one {# découverte du jour} other {# découvertes du jour}}"
+      "dailyPicks": "{n, plural, one {# découverte du jour} other {# découvertes du jour}}",
+      "priorityVisibility": "Visibilité prioritaire dans la découverte et badge Gold"
     },
     "boostLabel": "Boost de visibilité",
     "boostDuration": "de mise en avant",

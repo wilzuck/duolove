@@ -167,7 +167,6 @@
     "ctaHelp": "A question? The Help centre",
     "stepsTitle": "Your journey in eight steps",
     "steps": {
-      "priorityVisibility": "Priority visibility in discovery and a Gold badge",
       "signup": {
         "title": "Create your account",
         "text": "With your email (or Google) and a password, or simply a magic link. You confirm your address and that you are an adult: Crushduo is for people aged 18 and over."
@@ -349,7 +348,8 @@
       "dates": "Date planning",
       "chatImages": "Send photos in messages",
       "readReceipts": "Read receipts control (“seen”)",
-      "dailyPicks": "{n, plural, one {# daily pick} other {# daily picks}}"
+      "dailyPicks": "{n, plural, one {# daily pick} other {# daily picks}}",
+      "priorityVisibility": "Priority visibility in discovery and a Gold badge"
     },
     "boostLabel": "Visibility boost",
     "boostDuration": "in the spotlight",
