@@ -38,7 +38,10 @@ export function GuidedTour({ seen }: { seen: string[] }) {
   useEffect(() => {
     const candidate = tourFor(path);
     if (!candidate || seen.includes(candidate.id)) return;
-    const id = window.setTimeout(() => { setTour(candidate); setStep(0); }, 900);
+    const id = window.setTimeout(() => {
+      const steps = candidate.steps.filter((s) => !s.optional || findTarget(s.target));
+      setTour({ ...candidate, steps }); setStep(0);
+    }, 900);
     return () => window.clearTimeout(id);
   }, [path, seen]);
 
@@ -61,7 +64,7 @@ export function GuidedTour({ seen }: { seen: string[] }) {
     return () => { window.cancelAnimationFrame(raf); window.removeEventListener('resize', measure); window.removeEventListener('scroll', measure, true); };
   }, [tour, step, current?.target, measure]);
 
-  useEffect(() => { if (tour) box.current?.focus(); }, [tour, step]);
+  useEffect(() => { if (tour) box.current?.focus({ preventScroll: true }); }, [tour, step]);
 
   const finish = useCallback(() => {
     if (!tour) return;
@@ -88,10 +91,10 @@ export function GuidedTour({ seen }: { seen: string[] }) {
   const mobile = vw > 0 && vw < 640;
   // Ordinateur : bulle sous l'élément (ou au-dessus s'il n'y a pas la place), jamais hors de l'écran. Mobile : panneau en bas, ou en haut si l'élément est en bas.
   let style: React.CSSProperties;
-  if (!rect) style = { top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 'min(92vw, 380px)' };
+  if (!rect) style = { top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 'min(calc(100vw - 24px), 380px)' };
   else if (mobile) style = rect.top + rect.height / 2 > vh * 0.55 ? { top: 12, left: 12, right: 12 } : { bottom: 12, left: 12, right: 12 };
   else {
-    const w = 360; const below = rect.top + rect.height + 12; const fitsBelow = below + 220 < vh;
+    const w = Math.min(380, vw - 24); const below = rect.top + rect.height + 12; const fitsBelow = below + 220 < vh;
     style = { width: w, left: Math.min(Math.max(12, rect.left + rect.width / 2 - w / 2), vw - w - 12), ...(fitsBelow ? { top: below } : { bottom: vh - rect.top + 12 }) };
   }
 
@@ -102,7 +105,7 @@ export function GuidedTour({ seen }: { seen: string[] }) {
         ? <div aria-hidden className="pointer-events-none absolute rounded-2xl ring-2 ring-brand-strong transition-all duration-300 motion-reduce:transition-none" style={{ ...rect, boxShadow: '0 0 0 9999px rgb(15 10 20 / .62)' }} />
         : <div aria-hidden className="absolute inset-0" style={{ background: 'rgb(15 10 20 / .62)' }} />}
       <div ref={box} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="tour-title" aria-describedby="tour-text"
-        className="absolute rounded-3xl bg-card p-5 text-left shadow-pop outline-none motion-safe:animate-[fade-up_.3s_ease-out]" style={{ ...style, paddingBottom: mobile ? 'calc(1.25rem + env(safe-area-inset-bottom))' : undefined }}>
+        className="absolute rounded-3xl bg-card p-5 text-left shadow-pop outline-none focus:outline-none focus-visible:outline-none motion-safe:animate-[fade-up_.3s_ease-out]" style={{ ...style, outline: 'none', paddingBottom: mobile ? 'calc(1.25rem + env(safe-area-inset-bottom))' : undefined }}>
         <div className="mb-2 flex items-center justify-between gap-3">
           <span className="text-xs font-semibold text-muted">{t('tour.progress', { n: step + 1, total: tour.steps.length })}</span>
           <button type="button" onClick={finish} className="rounded-full p-1.5 text-muted hover:bg-soft hover:text-fg" aria-label={t('tour.skip')}><X className="size-4" aria-hidden /></button>
@@ -110,9 +113,9 @@ export function GuidedTour({ seen }: { seen: string[] }) {
         <h2 id="tour-title" className="text-lg font-extrabold">{t(`${base}.title` as never)}</h2>
         <p id="tour-text" className="mt-1.5 text-sm text-fg/85">{t(`${base}.text` as never)}</p>
         <div aria-hidden className="mt-4 flex gap-1.5">{tour.steps.map((s, i) => <span key={s.id} className={`h-1.5 rounded-full transition-all ${i === step ? 'w-6 bg-brand-strong' : 'w-1.5 bg-line'}`} />)}</div>
-        <div className="mt-4 flex items-center justify-between gap-2">
-          <Button variant="ghost" size="sm" onClick={finish}>{t('tour.skip')}</Button>
-          <div className="flex gap-2">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-x-2 gap-y-3">
+          <button type="button" onClick={finish} className="rounded-full px-1 py-1 text-sm font-semibold text-muted underline-offset-4 hover:text-fg hover:underline">{t('tour.skipShort')}</button>
+          <div className="ml-auto flex gap-2">
             {step > 0 && <Button variant="outline" size="sm" onClick={() => setStep(step - 1)}>{t('tour.prev')}</Button>}
             <Button size="sm" onClick={() => (last ? finish() : setStep(step + 1))}>{t(last ? 'tour.done' : 'tour.next')}</Button>
           </div>

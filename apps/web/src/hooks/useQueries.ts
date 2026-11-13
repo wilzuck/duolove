@@ -20,7 +20,7 @@ export const useMyProfile = () => useQuery({ queryKey: keys.profile, queryFn: ()
 /** Statut d'activité des personnes données (matchs uniquement) : actualisé chaque minute, et seulement si la liste n'est pas vide. */
 export const useActivity = (ids: string[]) => {
   const key = [...new Set(ids)].sort().slice(0, 50);
-  return useQuery({ queryKey: ['activity', key], enabled: key.length > 0, staleTime: 30_000, refetchInterval: 60_000, queryFn: async () => (await api<{ items: Record<string, Activity> }>(`/profiles/activity?ids=${key.join(',')}`)).items });
+  return useQuery({ queryKey: ['activity', key], enabled: key.length > 0, staleTime: 60_000, refetchInterval: 120_000, queryFn: async () => (await api<{ items: Record<string, Activity> }>(`/profiles/activity?ids=${key.join(',')}`)).items });
 };
 export const useConversations = (q = '') => useQuery({ queryKey: keys.conversations(q), queryFn: () => api<ConversationItem[]>(`/conversations${q ? `?q=${encodeURIComponent(q)}` : ''}`), refetchOnWindowFocus: true });
 export const useNotifications = () => useQuery({ queryKey: keys.notifications, queryFn: () => api<Paged<NotificationItem>>('/notifications') });
