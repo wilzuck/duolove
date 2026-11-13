@@ -5134,5 +5134,86 @@
       "t11": "La patience est une qualité très séduisante… vous êtes en train de la prouver.",
       "t12": "Cupidon a promis de revenir avec des flèches toutes neuves."
     }
+  },
+  "tour": {
+    "progress": "Étape {n} sur {total}",
+    "skip": "Passer le guide",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "done": "C’est parti !",
+    "replay": "Guides de découverte",
+    "replayText": "Revoir les petites explications de chaque page, comme à votre arrivée.",
+    "replayCta": "Revoir les guides",
+    "replayDone": "C’est noté : chaque page remontrera son guide.",
+    "discover": {
+      "welcome": {
+        "title": "Bienvenue sur Crushduo 👋",
+        "text": "Un petit tour de 30 secondes pour bien démarrer. Vous pouvez le passer à tout moment et le revoir dans les paramètres."
+      },
+      "actions": {
+        "title": "Passer, Super Like ou J’aime",
+        "text": "✕ pour passer, ⭐ pour un Super Like (votre profil passe en priorité), ♥ pour liker. Si c’est réciproque, c’est un duo !"
+      },
+      "filters": {
+        "title": "Vos critères",
+        "text": "Âge, distance, intention… Réglez ici qui vous est proposé."
+      },
+      "daily": {
+        "title": "Découvertes du jour",
+        "text": "Chaque jour, une petite sélection de profils très compatibles, choisis pour vous."
+      },
+      "boosts": {
+        "title": "Vos atouts",
+        "text": "Vos Super Likes, le boost pour être vu en priorité et le mode discret : tout est dans cette barre."
+      },
+      "messages": {
+        "title": "Vos conversations",
+        "text": "Quand un duo se forme, la conversation s’ouvre ici. À vous le premier message !"
+      },
+      "profile": {
+        "title": "Votre profil",
+        "text": "Un profil complet, avec de belles photos, reçoit beaucoup plus de likes. Bonnes rencontres !"
+      }
+    },
+    "likes": {
+      "tabs": {
+        "title": "Qui s’intéresse à vous",
+        "text": "Likes reçus, likes envoyés et visiteurs de votre profil. Avec Premium, voyez qui vous a liké."
+      },
+      "back": {
+        "title": "Un like en retour = un duo",
+        "text": "Likez une personne qui vous a liké : le duo se forme et la conversation s’ouvre aussitôt."
+      }
+    },
+    "match": {
+      "head": {
+        "title": "Crush en direct",
+        "text": "Lancez une recherche : nous vous mettons en relation avec une personne compatible connectée au même moment. Chaque mise en relation utilise un jeton Crush."
+      },
+      "more": {
+        "title": "Soirées Duo et speed dating",
+        "text": "Rejoignez les soirées annoncées : beaucoup de membres en ligne en même temps, donc plus de rencontres."
+      }
+    },
+    "messages": {
+      "head": {
+        "title": "Vos conversations",
+        "text": "Vos duos et vos messages se retrouvent ici. Les nouveaux duos s’affichent en haut."
+      },
+      "safety": {
+        "title": "Restez prudent",
+        "text": "Ne partagez jamais d’argent ni d’informations bancaires. En cas de doute, signalez ou bloquez depuis le menu ⋮ de la conversation."
+      }
+    },
+    "profile": {
+      "view": {
+        "title": "Votre profil, vu par les autres",
+        "text": "Voici ce que voient les autres membres. Vérifiez que tout vous ressemble."
+      },
+      "edit": {
+        "title": "Modifier mon profil",
+        "text": "Photos, présentation, centres d’intérêt, critères : tout se règle ici. Plus votre profil est complet, plus vous recevez de likes."
+      }
+    }
   }
 }

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Response
+from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.inspection import inspect
@@ -48,8 +49,32 @@ async def me(u: AuthUser = Depends(current_user_allow_suspended), db: AsyncSessi
         "entitlement": {"plan": e["plan"], "validUntil": e["validUntil"], "limits": e["limits"], "credits": await credits.balances(db, u.id)},
         "access": await access.status(db, user),
         "unreadNotifications": unread,
+        "toursSeen": list(user.toursSeen or []),
         "moderation": {"reason": moderation.reason, "appealStatus": moderation.appealStatus.value, "id": moderation.id} if suspended and moderation else None,
     }
+
+
+class TourIn(BaseModel):
+    tour: str = Field(pattern=r"^[a-z][a-z0-9-]{1,30}$")
+
+
+@router.post("/me/tours")
+async def tour_seen(body: TourIn, u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    """Guide de découverte terminé ou passé : il ne sera plus montré automatiquement (sur aucun appareil)."""
+    user = await db.get(User, u.id)
+    seen = list(user.toursSeen or [])
+    if body.tour not in seen and len(seen) < 50:
+        user.toursSeen = [*seen, body.tour]
+        await db.commit()
+    return {"toursSeen": list(user.toursSeen or [])}
+
+
+@router.delete("/me/tours")
+async def tours_reset(u: AuthUser = Depends(current_user), db: AsyncSession = Depends(get_db)):
+    """« Revoir les guides » : chaque page remontrera son guide au prochain passage."""
+    await db.execute(update(User).where(User.id == u.id).values(toursSeen=[]))
+    await db.commit()
+    return {"toursSeen": []}
 
 
 @router.post("/me/consents", status_code=200)

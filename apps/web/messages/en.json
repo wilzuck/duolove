@@ -5134,5 +5134,86 @@
       "t11": "Patience is a very attractive quality… and you are proving it right now.",
       "t12": "Cupid promised to come back with brand-new arrows."
     }
+  },
+  "tour": {
+    "progress": "Step {n} of {total}",
+    "skip": "Skip the tour",
+    "prev": "Back",
+    "next": "Next",
+    "done": "Let’s go!",
+    "replay": "Discovery guides",
+    "replayText": "See the short explanations of each page again, as when you arrived.",
+    "replayCta": "Show the guides again",
+    "replayDone": "Done: each page will show its guide again.",
+    "discover": {
+      "welcome": {
+        "title": "Welcome to Crushduo 👋",
+        "text": "A quick 30-second tour to get you started. You can skip it at any time and see it again in Settings."
+      },
+      "actions": {
+        "title": "Pass, Super Like or Like",
+        "text": "✕ to pass, ⭐ for a Super Like (your profile goes first), ♥ to like. If it’s mutual, it’s a duo!"
+      },
+      "filters": {
+        "title": "Your preferences",
+        "text": "Age, distance, intention… Set who is suggested to you here."
+      },
+      "daily": {
+        "title": "Daily picks",
+        "text": "Every day, a small selection of very compatible profiles, chosen for you."
+      },
+      "boosts": {
+        "title": "Your boosters",
+        "text": "Your Super Likes, the boost to be seen first and incognito mode: it’s all in this bar."
+      },
+      "messages": {
+        "title": "Your conversations",
+        "text": "When a duo forms, the conversation opens here. Send the first message!"
+      },
+      "profile": {
+        "title": "Your profile",
+        "text": "A complete profile with nice photos gets many more likes. Enjoy meeting people!"
+      }
+    },
+    "likes": {
+      "tabs": {
+        "title": "Who is interested in you",
+        "text": "Likes received, likes sent and profile visitors. With Premium, see who liked you."
+      },
+      "back": {
+        "title": "Like back = a duo",
+        "text": "Like someone who liked you: the duo forms and the conversation opens right away."
+      }
+    },
+    "match": {
+      "head": {
+        "title": "Live Crush",
+        "text": "Start a search: we connect you with a compatible person who is online at the same time. Each connection uses a Crush token."
+      },
+      "more": {
+        "title": "Duo evenings and speed dating",
+        "text": "Join the announced evenings: many members online at once, so more encounters."
+      }
+    },
+    "messages": {
+      "head": {
+        "title": "Your conversations",
+        "text": "Your duos and messages are here. New duos show at the top."
+      },
+      "safety": {
+        "title": "Stay safe",
+        "text": "Never share money or bank details. If in doubt, report or block from the ⋮ menu of the conversation."
+      }
+    },
+    "profile": {
+      "view": {
+        "title": "Your profile, as others see it",
+        "text": "This is what other members see. Check that it really looks like you."
+      },
+      "edit": {
+        "title": "Edit my profile",
+        "text": "Photos, bio, interests, preferences: everything is set here. The more complete your profile, the more likes you get."
+      }
+    }
   }
 }

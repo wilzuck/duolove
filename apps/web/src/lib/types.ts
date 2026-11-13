@@ -28,6 +28,8 @@ export interface Me {
   /** Accès payant obligatoire : `locked` = bloqué (aucune formule) ; `graceEndsAt` = fin du délai de grâce d'un ancien membre. */
   access?: { required: boolean; locked: boolean; graceEndsAt: string | null };
   unreadNotifications: number;
+  /** Guides de découverte déjà vus (un par page). */
+  toursSeen?: string[];
   moderation: { reason: string; appealStatus: 'NONE' | 'PENDING' | 'ACCEPTED' | 'REJECTED'; id: string } | null;
 }
 export interface MyProfile {

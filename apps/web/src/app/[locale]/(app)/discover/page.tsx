@@ -158,7 +158,7 @@ export default function DiscoverPage() {
         <div className="flex items-center gap-2">
           {remaining != null && me?.entitlement.plan === 'FREE' && <span className="rounded-full bg-soft px-3 py-1.5 text-xs font-semibold text-brand-ink" aria-live="polite">{t('discover.likesLeft', { n: remaining })}</span>}
           <Link href="/daily" aria-label={t('app.nav.daily')} className="rounded-full p-2.5 text-brand-ink hover:bg-soft"><Sparkles className="size-5" /></Link>
-          <Link href="/profile?edit=1#filters" aria-label={t('discover.filters')} className="rounded-full p-2.5 text-muted hover:bg-soft"><SlidersHorizontal className="size-5" /></Link>
+          <Link href="/profile?edit=1#filters" data-tour="discover-filters" aria-label={t('discover.filters')} className="rounded-full p-2.5 text-muted hover:bg-soft"><SlidersHorizontal className="size-5" /></Link>
         </div>
       </div>
 
@@ -193,7 +193,7 @@ export default function DiscoverPage() {
       )}
 
       {top && (
-        <div className={cn('sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-20 mx-auto flex w-fit items-center justify-center gap-4 rounded-full bg-bg/85 px-4 py-2 backdrop-blur lg:bottom-14', detail ? 'order-9' : 'order-2')} role="group" aria-label={t('discover.actions')}>
+        <div data-tour="discover-actions" className={cn('sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-20 mx-auto flex w-fit items-center justify-center gap-4 rounded-full bg-bg/85 px-4 py-2 backdrop-blur lg:bottom-14', detail ? 'order-9' : 'order-2')} role="group" aria-label={t('discover.actions')}>
           <button type="button" onClick={rewind} disabled={!usage.data?.canRewind} aria-label={t('discover.rewind')} className="flex size-11 items-center justify-center rounded-full bg-card text-gold-ink shadow-soft ring-1 ring-line hover:bg-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"><RotateCcw className="size-5" /></button>
           <ActionButton kind="pass" onAct={() => decide('left')} label={t('discover.pass')} className="flex size-16 items-center justify-center rounded-full bg-card text-navy shadow-soft ring-1 ring-line transition hover:scale-105 hover:bg-soft"><X className="size-7" /></ActionButton>
           <ActionButton kind="super" onAct={() => decide('up')} label={t('discover.superLike')} className="flex size-12 items-center justify-center rounded-full bg-card text-violet-700 shadow-soft ring-1 ring-line transition hover:scale-105 hover:bg-soft"><Star className="size-5 fill-current" /></ActionButton>

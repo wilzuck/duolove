@@ -16,11 +16,11 @@ import type { Me } from '@/lib/types';
 const BOOSTS = ['BOOST_30', 'BOOST_120', 'BOOST_1440'] as const;
 
 /** Bouton rond de la barre du haut (ordinateur) avec pastille de solde et petite fenêtre au clic. Un seul style discret : fond rose très pâle, texte rose d'encre. */
-function TopAction({ icon, label, badge, active, violet, children }: { violet?: boolean; icon: ReactNode; label: string; badge?: number | string; active?: boolean; children: (close: () => void) => ReactNode }) {
+function TopAction({ icon, label, badge, active, violet, children, tour }: { tour?: string; violet?: boolean; icon: ReactNode; label: string; badge?: number | string; active?: boolean; children: (close: () => void) => ReactNode }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} data-tour={tour} className="relative">
       <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="dialog" aria-expanded={open} aria-label={label} title={label}
         className={cn('relative flex size-10 items-center justify-center rounded-full transition', violet ? 'bg-violet-100 text-violet-700 hover:bg-violet-200 dark:bg-violet-950/50 dark:text-violet-300 dark:hover:bg-violet-900/60' : 'bg-soft text-brand-ink hover:bg-brand/15', active && 'ring-2 ring-brand-strong')}>
         {icon}
@@ -61,8 +61,8 @@ export function TopBarActions({ me }: { me: Me }) {
   const dur = (m: number) => (m >= 60 ? t('plans.hoursShort', { n: m / 60 }) : t('plans.minutesShort', { n: m }));
 
   return (
-    <div className="mr-2 hidden items-center gap-2 lg:flex" role="group" aria-label={t('topbar.group')}>
-      <TopAction icon={<Star className="size-5" aria-hidden />} label={t('topbar.superLike.title')} badge={superLikes} violet>
+    <div data-tour="topbar-actions" className="mr-2 hidden items-center gap-2 lg:flex" role="group" aria-label={t('topbar.group')}>
+      <TopAction icon={<Star className="size-5" aria-hidden />} label={t('topbar.superLike.title')} badge={superLikes} violet tour="topbar-superlike">
         {(close) => (
           <div>
             <h3 className="font-bold">{t('topbar.superLike.title')}</h3>
@@ -72,7 +72,7 @@ export function TopBarActions({ me }: { me: Me }) {
           </div>
         )}
       </TopAction>
-      <TopAction icon={<Zap className="size-5" aria-hidden />} label={t('topbar.boost.title')} badge={boosts > 0 ? boosts : undefined} active={!!boostedUntil}>
+      <TopAction icon={<Zap className="size-5" aria-hidden />} label={t('topbar.boost.title')} badge={boosts > 0 ? boosts : undefined} active={!!boostedUntil} tour="topbar-boost">
         {(close) => (
           <div>
             <h3 className="font-bold">{t('topbar.boost.title')}</h3>
@@ -89,7 +89,7 @@ export function TopBarActions({ me }: { me: Me }) {
           </div>
         )}
       </TopAction>
-      <TopAction icon={<HatGlasses className="size-5" aria-hidden />} label={t('topbar.private.title')} active={!!profile?.incognito}>
+      <TopAction icon={<HatGlasses className="size-5" aria-hidden />} label={t('topbar.private.title')} active={!!profile?.incognito} tour="topbar-discreet">
         {(close) => (
           <div>
             <h3 className="font-bold">{t('topbar.private.title')}</h3>

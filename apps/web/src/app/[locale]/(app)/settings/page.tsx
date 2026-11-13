@@ -18,6 +18,7 @@ import { api, del, patch, post, put } from '@/lib/api';
 import { formatDate, formatXof, timeAgo } from '@/lib/format';
 import { useUi } from '@/lib/store';
 import type { PaymentItem } from '@/lib/types';
+import { resetTours } from '@/components/app/GuidedTour';
 
 const TABS = ['account', 'notifications', 'privacy', 'security', 'blocked', 'subscription', 'payments'] as const;
 type Tab = (typeof TABS)[number];
@@ -207,6 +208,7 @@ function Content() {
   const params = useSearchParams();
   const tab: Tab = (TABS as readonly string[]).includes(params.get('tab') ?? '') ? (params.get('tab') as Tab) : 'account';
   const { data: me } = useMe();
+  const toast = useUi((s) => s.toast);
   const logout = useMutation({ mutationFn: () => post('/auth/logout'), onSuccess: () => { qc.clear(); router.replace('/'); } });
   return (
     <div className="mx-auto w-full max-w-3xl space-y-5 px-4 py-4">
@@ -220,6 +222,7 @@ function Content() {
             <Row title={t('auth.email')} text={me.email}>{me.emailVerified ? <Badge tone="success">{t('settings.account.verified')}</Badge> : <Badge tone="gold">{t('settings.account.unverified')}</Badge>}</Row>
             <Row title={t('common.language')}><LocaleSwitcher /></Row>
             <Row title={t('settings.account.theme')}><ThemeToggle className="rounded-full border border-line p-2.5 hover:bg-soft" /></Row>
+            <Row title={t('tour.replay')} text={t('tour.replayText')}><Button variant="outline" size="sm" onClick={async () => { await resetTours(); await qc.invalidateQueries({ queryKey: keys.me }); toast('success', t('tour.replayDone')); }}>{t('tour.replayCta')}</Button></Row>
           </Card>
           {me.role !== 'USER' && (
             <Link href="/admin" className="flex items-center gap-3 rounded-3xl border border-line bg-card p-4 font-semibold shadow-soft transition hover:bg-soft">

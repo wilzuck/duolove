@@ -112,7 +112,7 @@ function ProfileView() {
       <SectionTabs />
       <div className="flex items-center justify-between gap-3">
         {p ? <p className="text-sm font-medium text-muted">{t('profile.completenessShort', { n: p.completeness })}</p> : <Skeleton className="h-5 w-32" />}
-        <Link href="/profile?edit=1"><Button><Pencil className="size-4" aria-hidden />{t('profile.editCta')}</Button></Link>
+        <Link href="/profile?edit=1" data-tour="profile-edit"><Button><Pencil className="size-4" aria-hidden />{t('profile.editCta')}</Button></Link>
       </div>
       {(q.isLoading || !me) && <Skeleton className="aspect-[4/5] rounded-[2rem]" />}
       {q.isError && <EmptyState icon={<Eye className="size-8" aria-hidden />} title={t('profileView.unavailable')}><Link href="/profile?edit=1" className="font-semibold text-brand-ink underline">{t('profile.editCta')}</Link></EmptyState>}

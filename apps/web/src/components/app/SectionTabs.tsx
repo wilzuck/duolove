@@ -19,7 +19,7 @@ export function SectionTabs({ className }: { className?: string }) {
   const group = Object.values(TABS).find((tabs) => tabs.some((x) => x.href === path));
   if (!group) return null;
   return (
-    <nav aria-label={t('app.sectionTabs')} className={cn('flex flex-wrap justify-start gap-2', className)}>
+    <nav data-tour="section-tabs" aria-label={t('app.sectionTabs')} className={cn('flex flex-wrap justify-start gap-2', className)}>
       {group.filter((x) => x.href !== '/speed' || speedOn).map((x) => (
         <Link key={x.href} href={x.href} aria-current={path === x.href ? 'page' : undefined}
           className={cn('rounded-full border px-4 py-2 text-sm font-semibold transition', path === x.href ? 'border-brand-strong bg-soft text-brand-ink' : 'border-field-line bg-field text-muted hover:bg-soft hover:text-fg')}>{t(x.key)}</Link>

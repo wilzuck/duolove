@@ -983,6 +983,7 @@ class User(Base):
     failedLogins: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
     lastActiveAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     lastCountry: Mapped[Optional[str]] = mapped_column(Text)
+    toursSeen: Mapped[list[str]] = mapped_column(ARRAY(Text()), nullable=False, server_default=text('ARRAY[]::text[]'), default=list)  # guides de découverte déjà vus
     # Double authentification (TOTP). Secret chiffré (SETTINGS_ENCRYPTION_KEY) ; totpEnabledAt vide tant que l'activation n'est pas confirmée par un premier code valide.
     totpSecretEnc: Mapped[Optional[str]] = mapped_column(Text)
     totpEnabledAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))

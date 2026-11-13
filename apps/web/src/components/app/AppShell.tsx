@@ -14,6 +14,7 @@ import { InstallBanner } from './InstallBanner';
 import { TopBarActions } from './TopBarActions';
 import { PauseBanner } from './PauseBanner';
 import { ThemeToggle } from '../ThemeToggle';
+import { GuidedTour } from './GuidedTour';
 
 const NAV = [
   { href: '/discover', icon: Compass, key: 'app.nav.discover' },
@@ -65,7 +66,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
         <Link href="/discover" className="mb-3 px-2" aria-label={t('nav.home')}><Logo /></Link>
         <nav aria-label={t('nav.main')} className="flex flex-col gap-1">
           {NAV.map(({ href, icon: Icon, key }) => (
-            <Link key={href} href={href} aria-current={active(href) ? 'page' : undefined}
+            <Link key={href} href={href} data-tour={`nav-${href.slice(1)}`} aria-current={active(href) ? 'page' : undefined}
               className={cn('flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition', active(href) ? 'bg-soft text-brand-ink' : 'text-muted hover:bg-soft hover:text-fg')}>
               {href === '/match' ? <CrushNavIcon icon={Icon} /> : <Icon className="size-[18px]" aria-hidden />}{t(key)}
               {href === '/messages' && null}
@@ -102,7 +103,7 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
             {!me.access?.locked && <TopBarActions me={me} />}
             {me.entitlement.plan === 'FREE' && <Link href="/premium" aria-label={t('app.goPremium')} className="rounded-full bg-soft p-2.5 text-brand-ink hover:bg-brand/15 sm:hidden"><Crown className="size-5" /></Link>}
             {me.entitlement.plan === 'FREE' && <Link href="/premium" className="hidden sm:block"><Button size="sm" variant="secondary"><Crown className="size-4" aria-hidden />{t('app.goPremium')}</Button></Link>}
-            <Link href="/notifications" aria-label={t('app.nav.notifications')} className="relative rounded-full p-2.5 text-muted hover:bg-soft hover:text-fg">
+            <Link href="/notifications" data-tour="notifs" aria-label={t('app.nav.notifications')} className="relative rounded-full p-2.5 text-muted hover:bg-soft hover:text-fg">
               <Bell className="size-5" />
               {me.unreadNotifications > 0 && <span className="absolute top-1 right-1 flex min-w-4.5 items-center justify-center rounded-full bg-brand-strong px-1 text-[10px] font-bold text-white" aria-label={t('app.unread', { count: me.unreadNotifications })}>{me.unreadNotifications > 9 ? '9+' : me.unreadNotifications}</span>}
             </Link>
@@ -122,11 +123,12 @@ export function AppShell({ me, banner, children }: { me: Me; banner?: ReactNode;
       {/* Barre d'onglets (mobile) */}
       <nav aria-label={t('nav.main')} className={cn('pb-safe fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-line bg-card/95 backdrop-blur lg:hidden', inChat && 'hidden')}>
         {MOBILE_NAV.map(({ href, icon: Icon, key }) => (
-          <Link key={href} href={href} aria-current={active(href) ? 'page' : undefined} className={cn('flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold', active(href) ? 'text-brand-ink' : 'text-muted')}>
+          <Link key={href} href={href} data-tour={`nav-${href.slice(1)}`} aria-current={active(href) ? 'page' : undefined} className={cn('flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold', active(href) ? 'text-brand-ink' : 'text-muted')}>
             <span className={cn('flex h-8 w-14 items-center justify-center rounded-full transition', active(href) && 'bg-soft')}>{href === '/match' ? <CrushNavIcon icon={Icon} /> : <Icon className="size-5" aria-hidden />}</span>{t(key)}
           </Link>
         ))}
       </nav>
+      {me.status === 'ACTIVE' && me.profile?.onboarded && !me.access?.locked && <GuidedTour seen={me.toursSeen ?? []} />}
     </div>
   );
 }

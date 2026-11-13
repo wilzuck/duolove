@@ -26,7 +26,7 @@ export default function MessagesLayout({ children }: { children: ReactNode }) {
     <div className="mx-auto flex h-[calc(100dvh-3.5rem)] max-w-6xl lg:h-[calc(100dvh-4rem)]">
       <section aria-label={t('app.nav.messages')} className={cn('w-full shrink-0 flex-col border-r border-line lg:flex lg:w-96', open ? 'hidden' : 'flex')}>
         <div className="space-y-3 p-4">
-          <h1 className="text-2xl font-extrabold">{t('chat.title')}</h1>
+          <h1 data-tour="messages-head" className="text-2xl font-extrabold">{t('chat.title')}</h1>
           <div className="relative"><Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted" aria-hidden /><Input aria-label={t('chat.search')} placeholder={t('chat.search')} value={q} onChange={(e) => setQ(e.target.value)} className="h-11 pl-11" type="search" /></div>
         </div>
         <div className="flex-1 overflow-y-auto pb-24 lg:pb-4">
