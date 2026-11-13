@@ -46,7 +46,7 @@ Autour de vous, on aura des avis. « Il faut te remettre en selle. » « Attends
 
 Votre rythme peut être très lent : lire des profils pendant des semaines sans écrire à personne. Ou très rapide : trois conversations dans la soirée et un rendez-vous en vue. Les deux sont légitimes tant qu'ils vous font du bien.
 
-Sur Crushduo, cela peut se traduire de façon concrète. Vous pouvez parcourir les découvertes du jour sans rien envoyer. Vous pouvez répondre à la question du jour juste pour le plaisir de formuler une pensée. Vous pouvez aussi mettre votre compte en pause quand vous sentez que c'est trop, et revenir un mois plus tard. Si vous préférez rester discret au début, le mode privé masque votre statut d'activité, selon votre formule. Rien de tout cela n'est une obligation de progresser.
+Sur Crushduo, cela peut se traduire de façon concrète. Vous pouvez parcourir les découvertes du jour sans rien envoyer. Vous pouvez répondre à la question du jour juste pour le plaisir de formuler une pensée. Vous pouvez aussi mettre votre compte en pause quand vous sentez que c'est trop, et revenir un mois plus tard. Si vous préférez rester en retrait au début, le mode discret masque votre statut d'activité, selon votre formule. Rien de tout cela n'est une obligation de progresser.
 
 ## Ne comparez pas, ou pardonnez-vous de comparer
 

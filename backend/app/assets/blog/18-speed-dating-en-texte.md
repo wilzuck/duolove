@@ -39,7 +39,7 @@ Une première phrase, une seule, qui ne soit pas « salut, ça va ? ». Par exem
 
 ### Minute quatre : régler son environnement
 
-Un endroit sans interruption, le téléphone chargé, les notifications des autres applications coupées. Si vous voulez plus de tranquillité, pensez aux options de confidentialité déjà proposées par l'application, comme le mode privé qui masque le statut d'activité selon votre formule.
+Un endroit sans interruption, le téléphone chargé, les notifications des autres applications coupées. Si vous voulez plus de tranquillité, pensez aux options de confidentialité déjà proposées par l'application, comme le mode discret qui masque le statut d'activité selon votre formule.
 
 ### Minute cinq : fixer une intention
 

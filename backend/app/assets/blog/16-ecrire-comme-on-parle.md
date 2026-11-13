@@ -38,7 +38,7 @@ Quelques principes simples :
 - **Ne cherchez pas à calquer le rythme de l'autre comme un jeu de stratégie.** Attendre exprès pour « paraître occupé » fatigue tout le monde.
 - **Si l'autre met du temps**, évitez les relances en chaîne. Un seul petit mot léger, après un moment, est suffisant : « Je pense à toi, tout va bien de ton côté ? »
 
-Le mode privé, selon la formule, masque votre statut d'activité : cela peut vous soulager si vous n'aimez pas qu'on vous voie « en ligne » sans répondre. C'est un confort pour soi, pas une tactique.
+Le mode discret, selon la formule, masque votre statut d'activité : cela peut vous soulager si vous n'aimez pas qu'on vous voie « en ligne » sans répondre. C'est un confort pour soi, pas une tactique.
 
 ## Ni robot, ni envahisseur
 

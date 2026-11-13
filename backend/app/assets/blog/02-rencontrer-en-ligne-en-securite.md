@@ -1,7 +1,7 @@
 ---
 slug: rencontrer-en-ligne-en-securite
 title: Rencontrer en ligne en confiance : les repères simples qui vous laissent libre d'avancer à votre rythme
-excerpt: Vérifier qu'une personne est réelle, savoir ce qu'on n'envoie jamais, signaler, passer en mode privé, choisir un lieu public et prévenir un proche : des repères concrets, sans peur, pour vos premières rencontres.
+excerpt: Vérifier qu'une personne est réelle, savoir ce qu'on n'envoie jamais, signaler, passer en mode discret, choisir un lieu public et prévenir un proche : des repères concrets, sans peur, pour vos premières rencontres.
 coverAlt: Deux tasses sur une table de terrasse en fin de journée, un téléphone retourné entre elles, lumière dorée de la rue en arrière-plan
 ---
 
@@ -44,9 +44,9 @@ Si quelque chose vous met mal à l'aise, vous avez des outils, et vous n'avez pa
 
 Il se peut aussi que le problème ne soit pas une personne, mais votre énergie : trop de messages, trop de décisions, une semaine chargée. La pause du compte est faite pour cela. Vous mettez les choses en suspens, vous respirez, et vous reprenez quand vous le décidez. Sortir un moment n'est pas renoncer.
 
-## Le mode privé : avancer sans vous exposer
+## Le mode discret : avancer sans vous exposer
 
-Tout le monde n'a pas envie d'être vu de tous dès le premier jour. C'est vrai pour une personne discrète, pour quelqu'un dont la famille ou le travail est dans la même ville, ou simplement pour celui qui veut observer avant de se lancer. Le mode privé, inclus dans certaines formules, va dans ce sens : il masque votre statut d'activité (en ligne, dernière connexion), pour que les autres ne voient pas quand vous êtes là. Il ne cache pas votre profil, mais il vous laisse explorer plus discrètement. C'est un choix tout à fait normal, et il n'y a pas de bonne façon de commencer.
+Tout le monde n'a pas envie d'être vu de tous dès le premier jour. C'est vrai pour une personne discrète, pour quelqu'un dont la famille ou le travail est dans la même ville, ou simplement pour celui qui veut observer avant de se lancer. Le mode discret, inclus dans certaines formules, va dans ce sens : il masque votre statut d'activité (en ligne, dernière connexion), pour que les autres ne voient pas quand vous êtes là. Il ne cache pas votre profil, mais il vous laisse explorer plus discrètement. C'est un choix tout à fait normal, et il n'y a pas de bonne façon de commencer.
 
 ## Le premier rendez-vous : lieu public, heure de jour
 

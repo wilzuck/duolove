@@ -60,7 +60,7 @@ Ce que vous pouvez dire, sans rien exposer :
 
 - ce que vous avez trouvé agréable : les photos validées par la modération, le badge « profil vérifié » qui rassure, les questions de personnalité et les valeurs affichées sur un profil qui donnent une première idée de quelqu'un ;
 - ce que vous avez appris sur vous : ce que vous cherchez, ce que vous ne supportez plus, la façon dont vous écrivez un premier message ;
-- ce que vous avez trouvé pratique : la messagerie avec ses brise-glaces, la possibilité de signaler ou de bloquer quelqu'un, la pause du compte quand on a besoin de souffler, le mode privé qui masque le statut d'activité selon la formule choisie.
+- ce que vous avez trouvé pratique : la messagerie avec ses brise-glaces, la possibilité de signaler ou de bloquer quelqu'un, la pause du compte quand on a besoin de souffler, le mode discret qui masque le statut d'activité selon la formule choisie.
 
 Et ce que vous gardez : le prénom d'une personne rencontrée, le contenu d'une conversation, la raison d'une rupture. Un bon test : si la personne concernée entrait dans la pièce, pourriez-vous continuer à parler sans changer de ton ? Sinon, changez de sujet.
 

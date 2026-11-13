@@ -85,7 +85,7 @@ La règle est claire : **vous n'avez rien à expliquer à quelqu'un qui ne respe
 
 - Le **blocage** coupe la conversation sans discussion. Il n'est pas un acte hostile, c'est un outil, et vous avez le droit de l'utiliser dès que vous vous sentez mal à l'aise, sans attendre une preuve.
 - Le **signalement** permet d'alerter l'équipe de modération pour qu'elle examine la situation. Décrivez ce qui s'est passé, avec des mots simples, et gardez les messages concernés tels quels.
-- Le **mode privé**, de son côté, masque votre statut d'activité, si vous souhaitez vous faire plus discret un temps.
+- Le **mode discret**, de son côté, masque votre statut d'activité, si vous souhaitez vous faire plus réservé un temps.
 
 Si vous vous sentez réellement en danger, parlez-en à une personne de confiance de votre entourage et, selon la gravité, aux autorités compétentes. Cet article ne remplace pas leur aide.
 

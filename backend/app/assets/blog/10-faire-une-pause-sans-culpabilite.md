@@ -46,9 +46,9 @@ Choisissez une plage où l'application a le droit d'exister : trente minutes en 
 
 Ce sont elles qui vous tirent par la manche. Sur Crushduo, vous disposez de **périodes de repos** : vous indiquez des plages pendant lesquelles les notifications ne vous dérangent pas, la nuit, pendant le travail, pendant le repas du dimanche. Il existe aussi un **plafond d'e-mails par jour**, pour que votre boîte ne se remplisse pas à chaque événement. Ce sont de petits réglages qui, ensemble, redonnent du silence.
 
-### Le mode privé, pour se sentir moins exposé
+### Le mode discret, pour se sentir moins exposé
 
-Si ce qui vous pèse, c'est l'impression d'être regardé, le **mode privé**, inclus dans certaines formules, peut alléger les choses : il masque votre statut d'activité, donc personne ne voit quand vous êtes en ligne. Votre profil reste visible, mais vous n'avez plus l'impression d'être épié(e).
+Si ce qui vous pèse, c'est l'impression d'être regardé, le **mode discret**, inclus dans certaines formules, peut alléger les choses : il masque votre statut d'activité, donc personne ne voit quand vous êtes en ligne. Votre profil reste visible, mais vous n'avez plus l'impression d'être épié(e).
 
 ## La pause du compte, quand on veut vraiment souffler
 

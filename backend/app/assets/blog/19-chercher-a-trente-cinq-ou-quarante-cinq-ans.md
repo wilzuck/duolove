@@ -37,7 +37,7 @@ Une distinction utile : séparez ce qui est **non négociable** (une valeur, une
 
 Ce chapitre-là, on le survole d'habitude, alors qu'il pèse lourd. Une tante demande quand vous « vous caserez ». Un collègue plaisante sur les applications. Un enfant adulte s'inquiète, ou, parfois, s'agace. Et vous finissez par chercher en vous-même, avec une petite voix qui répète des remarques qu'on vous a faites.
 
-Quelques gestes simples aident. Vous n'avez pas à tout raconter : parler de vos rencontres seulement quand vous avez envie de partager protège votre élan. Vous pouvez aussi choisir une personne de confiance, une seule, à qui rapporter les rendez-vous avant d'en faire un sujet de famille. Et si vous craignez le jugement, le mode privé, selon votre formule, masque votre statut d'activité : vous restez discret sur les moments où vous êtes en ligne.
+Quelques gestes simples aident. Vous n'avez pas à tout raconter : parler de vos rencontres seulement quand vous avez envie de partager protège votre élan. Vous pouvez aussi choisir une personne de confiance, une seule, à qui rapporter les rendez-vous avant d'en faire un sujet de famille. Et si vous craignez le jugement, le mode discret, selon votre formule, masque votre statut d'activité : vous restez discret sur les moments où vous êtes en ligne.
 
 Quant aux enfants, laissez-les arriver à leur rythme. Rien ne presse tant que la relation n'a pas pris corps, et une relation qui avance doucement a de meilleures chances de tenir quand il faudra présenter les uns aux autres.
 

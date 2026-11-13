@@ -87,7 +87,7 @@ Sur Crushduo, les photos sont validées par la modération avant d'être visible
 
 Le badge « profil vérifié » va un cran plus loin : il indique que la personne a franchi une étape de vérification. Pour qui regarde votre galerie, c'est une petite assurance de plus. Pour vous, c'est une façon simple de dire « je suis bien celui ou celle que vous voyez ».
 
-Si quelque chose vous semble étrange chez un autre profil, vous pouvez le signaler, ou bloquer la personne. Et si vous préférez vous montrer à votre rythme, le mode privé, inclus dans certaines formules, masque votre statut d'activité et vous laisse avancer plus discrètement.
+Si quelque chose vous semble étrange chez un autre profil, vous pouvez le signaler, ou bloquer la personne. Et si vous préférez vous montrer à votre rythme, le mode discret, inclus dans certaines formules, masque votre statut d'activité et vous laisse avancer plus discrètement.
 
 ## Préparer la rencontre : être pareil en vrai
 

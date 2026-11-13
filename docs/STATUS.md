@@ -535,3 +535,7 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 - **Cause** : la grille des tarifs recharge le catalogue toutes les minutes. Un onglet ouvert avant la mise en ligne de Gold (code du site sans icône pour « GOLD ») recevait la formule Gold et tentait d'afficher une icône inexistante → « Minified React error #130 » (une occurrence, 13/11 13:43).
 - **Corrigé** : une formule inconnue de la version chargée reçoit une icône par défaut au lieu de faire planter la page (même protection pour les interrupteurs de Admin › Fonctionnalités). **Vérifié dans le navigateur** : en injectant une formule inconnue dans le catalogue rechargé, la page l'affiche avec l'icône par défaut, sans erreur.
+
+## Blog : « mode privé » remplacé par « mode discret » (livré)
+
+- **Terminé** : l'ancien nom « mode privé » restait dans 9 articles français (02, 03, 06, 10, 14, 16, 17, 18, 19 ; 12 occurrences). Fichiers corrigés et migration `0047` qui remplace seulement l'expression en base (titre, résumé, corps), sans écraser les autres modifications faites dans l'admin ; deux phrases ajustées pour éviter la répétition de « discret ». Vérifié en local : plus aucune occurrence, texte en base identique aux fichiers pour les 45 articles.
