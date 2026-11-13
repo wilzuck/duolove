@@ -114,4 +114,19 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @keyframes nf-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 @keyframes nf-left { 0%, 100% { transform: translate(-2px, 0) rotate(-3deg); } 50% { transform: translate(-5px, 0) rotate(-7deg); } }
 @keyframes nf-right { 0%, 100% { transform: translate(2px, 0) rotate(3deg); } 50% { transform: translate(5px, 0) rotate(7deg); } }
-@media (prefers-reduced-motion: reduce) { .nf-beat, .nf-left, .nf-right { animation: none; } }
+/* Cœur réparé : les moitiés se recollent, petit éclat, gerbe de cœurs. */
+.nf-fixed .nf-left, .nf-fixed .nf-right { animation: none; transform: none; transition: transform .45s cubic-bezier(.34,1.56,.64,1); }
+.nf-fixed .nf-right { opacity: 1; }
+.nf-burst { transform: translate(-50%, -50%); animation: nf-burst .9s ease-out forwards; }
+@keyframes nf-burst { 0% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--a)) translateY(0) scale(.6); } 100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .nf-beat, .nf-left, .nf-right, .nf-burst { animation: none; } }
+
+/* Clé de l'écran de maintenance : petit mouvement de travail (désactivé si l'utilisateur réduit les animations : classe motion-safe). */
+@keyframes fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.mh-wrench { animation: wiggle 2.4s ease-in-out infinite; }
+.mh-eyes { animation: blink 4s ease-in-out infinite; }
+.mh-spark { transform-box: fill-box; transform-origin: center; animation: twinkle 2.4s ease-in-out infinite; }
+@keyframes blink { 0%, 44%, 52%, 100% { transform: scaleY(1); } 48% { transform: scaleY(.1); } }
+@keyframes twinkle { 0%, 100% { opacity: .2; transform: scale(.6) rotate(0deg); } 50% { opacity: 1; transform: scale(1.15) rotate(25deg); } }
+@media (prefers-reduced-motion: reduce) { .mh-wrench, .mh-eyes, .mh-spark { animation: none; } }
+@keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 15% { transform: rotate(-14deg); } 30% { transform: rotate(10deg); } 45% { transform: rotate(-6deg); } 60% { transform: rotate(0deg); } }

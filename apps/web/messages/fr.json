@@ -4065,7 +4065,23 @@
       "cancel": "Annuler",
       "savedOn": "Mode maintenance activé.",
       "savedOff": "Mode maintenance désactivé : le site est rouvert.",
-      "saved": "Message enregistré."
+      "saved": "Message enregistré.",
+      "stateOn": "Site fermé aux membres",
+      "stateOff": "Site ouvert",
+      "stayOpen": "Reste ouvert pendant la maintenance",
+      "closed": "Fermé pendant la maintenance",
+      "open": {
+        "team": "L’équipe (modération et administration), avec un accès complet",
+        "public": "Les pages publiques : accueil, tarifs, blog, aide",
+        "payments": "Les paiements entrants (aucun paiement perdu)",
+        "login": "La connexion et la déconnexion"
+      },
+      "close": {
+        "members": "L’espace membre : découverte, messages, profil…",
+        "signup": "Les nouvelles inscriptions"
+      },
+      "messageTitle": "Message aux membres",
+      "preview": "Voir l’écran des membres"
     }
   },
   "pricingFaq": {
@@ -4842,7 +4858,34 @@
     "title": "Oups, cette page a pris la fuite",
     "text": "Le lien est peut-être cassé, ou la page a été déplacée. Pas de panique : l’amour, lui, n’est jamais très loin.",
     "discover": "Découvrir des profils",
-    "usefulLinks": "Liens utiles"
+    "usefulLinks": "Liens utiles",
+    "lines": {
+      "l1": "Même Cupidon se trompe parfois de cible.",
+      "l2": "Cette page a préféré un autre match… on ne lui en veut pas.",
+      "l3": "On a cherché partout : sous le canapé, derrière les likes, même dans les brouillons.",
+      "l4": "Elle est peut-être partie à un premier rendez-vous sans prévenir.",
+      "l5": "Pas de panique : l’amour, lui, retrouve toujours son chemin.",
+      "l6": "Cette page nous a laissés en « vu »… sans répondre.",
+      "l7": "Elle a sûrement passé son tour. Ça arrive aux meilleures.",
+      "l8": "On dirait qu’elle a pris un taxi-moto sans laisser d’adresse.",
+      "l9": "Erreur 404 : page timide. Elle se cache encore derrière son écran.",
+      "l10": "Elle a dit « on se reparle demain »… on attend toujours.",
+      "l11": "Même avec un Super Like, cette page reste introuvable.",
+      "l12": "Elle est partie chercher le maquis parfait pour un premier rendez-vous.",
+      "l13": "Le GPS de Cupidon recalcule l’itinéraire…",
+      "l14": "Cette page a mis son profil en pause. Respectons son choix.",
+      "l15": "Vous cherchiez une page, vous trouverez peut-être l’amour.",
+      "l16": "Elle est sans doute au mariage d’une cousine, à Cotonou.",
+      "l17": "Même les plus belles histoires ont leurs pages blanches.",
+      "l18": "Cette page a « liké » quelqu’un d’autre. Ce n’est pas vous, c’est elle.",
+      "l19": "On a envoyé un brise-glace : pas encore de réponse.",
+      "l20": "Petit détour, grand amour : on vous ramène au bon endroit."
+    },
+    "hint": "Psst… touchez le cœur pour le réparer.",
+    "fix": "Réparer le cœur",
+    "breakAgain": "Briser à nouveau le cœur",
+    "fixed": "Cœur réparé !",
+    "fixedMsg": "Cœur réparé ! Il ne reste plus qu’à retrouver le bon chemin 💘"
   },
   "featureOff": {
     "title": "Fonctionnalité indisponible",
@@ -5070,9 +5113,26 @@
     "offlineText": "Crushduo ne répond pas pour le moment (maintenance ou connexion instable). Nous réessayons automatiquement ; vos données ne sont pas perdues."
   },
   "maintenance": {
-    "title": "Crushduo est en maintenance",
-    "text": "Nous améliorons le site. Revenez dans quelques instants : vos duos et vos messages vous attendent.",
-    "auto": "La page se rechargera automatiquement dès que le site sera de retour.",
-    "banner": "Maintenance en cours : l’espace membre est temporairement fermé."
+    "title": "Cupidon affûte ses flèches 💘",
+    "text": "On fait briller Crushduo pour vos prochaines rencontres. Revenez dans quelques minutes : vos duos et vos messages vous attendent, bien au chaud.",
+    "auto": "Cette page se recharge toute seule dès que tout est prêt.",
+    "banner": "Maintenance en cours : l’espace membre est temporairement fermé.",
+    "badge": "Maintenance en cours",
+    "readBlog": "Lire le blog en attendant",
+    "meanwhile": "En attendant…",
+    "tips": {
+      "t1": "Pensez à la question qui fera sourire votre prochain duo. Une bonne première phrase vaut mieux que dix « salut ».",
+      "t2": "Choisissez votre plus beau sourire : une photo lumineuse attire bien plus de regards.",
+      "t3": "Buvez un verre d’eau et respirez : Cupidon s’occupe du reste.",
+      "t4": "Imaginez votre premier rendez-vous idéal… vous nous en direz des nouvelles.",
+      "t5": "Petit secret : les profils complets reçoivent beaucoup plus de likes. À vos crayons !",
+      "t6": "Relisez votre présentation : une touche d’humour fait toujours mouche.",
+      "t7": "Préparez trois sujets qui vous passionnent : la conversation coulera toute seule.",
+      "t8": "Un compliment sincère sur un détail vaut mieux qu’un « tu es belle » de plus.",
+      "t9": "Profitez-en pour appeler un ami : l’amour, c’est aussi l’amitié.",
+      "t10": "Pensez au lieu public parfait pour un premier café : calme, lumineux, rassurant.",
+      "t11": "La patience est une qualité très séduisante… vous êtes en train de la prouver.",
+      "t12": "Cupidon a promis de revenir avec des flèches toutes neuves."
+    }
   }
 }

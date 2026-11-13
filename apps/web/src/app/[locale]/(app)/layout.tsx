@@ -56,7 +56,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   }, [me, path, router]);
   useRealtime(!!me && me.status === 'ACTIVE');
 
-  if (!me && error instanceof ApiError && error.code === 'MAINTENANCE') return <MaintenanceScreen onRetry={() => void refetch()} />;
+  if (!me && error instanceof ApiError && error.code === 'MAINTENANCE') return <MaintenanceScreen onRetry={() => void refetch()} retrying={isFetching} />;
   // Serveur injoignable ou en erreur (pas une simple session expirée) : message et nouvelle tentative, jamais un chargement sans fin.
   if (!me && error && !(error instanceof ApiError && error.status < 500)) return <ServiceUnavailable onRetry={() => void refetch()} retrying={isFetching} />;
   if (isLoading || !me || (me.status === 'ACTIVE' && !me.emailVerified)) {

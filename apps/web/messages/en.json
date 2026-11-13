@@ -4065,7 +4065,23 @@
       "cancel": "Cancel",
       "savedOn": "Maintenance mode on.",
       "savedOff": "Maintenance mode off: the site is open again.",
-      "saved": "Message saved."
+      "saved": "Message saved.",
+      "stateOn": "Closed to members",
+      "stateOff": "Site open",
+      "stayOpen": "Stays open during maintenance",
+      "closed": "Closed during maintenance",
+      "open": {
+        "team": "The team (moderation and administration), with full access",
+        "public": "Public pages: home, pricing, blog, help",
+        "payments": "Incoming payments (no payment is lost)",
+        "login": "Signing in and out"
+      },
+      "close": {
+        "members": "The member area: discovery, messages, profile…",
+        "signup": "New sign-ups"
+      },
+      "messageTitle": "Message to members",
+      "preview": "See the members’ screen"
     }
   },
   "pricingFaq": {
@@ -4842,7 +4858,34 @@
     "title": "Oops, this page ran away",
     "text": "The link may be broken, or the page may have moved. Don’t worry: love is never far away.",
     "discover": "Discover profiles",
-    "usefulLinks": "Useful links"
+    "usefulLinks": "Useful links",
+    "lines": {
+      "l1": "Even Cupid misses the target sometimes.",
+      "l2": "This page swiped left on us… no hard feelings.",
+      "l3": "We looked everywhere: under the sofa, behind the likes, even in the drafts.",
+      "l4": "Maybe it left for a first date without telling anyone.",
+      "l5": "Don’t worry: love always finds its way back.",
+      "l6": "This page left us on “seen”… without replying.",
+      "l7": "It must have passed. It happens to the best of us.",
+      "l8": "Looks like it hopped on a moto-taxi without leaving an address.",
+      "l9": "Error 404: shy page. It’s still hiding behind its screen.",
+      "l10": "It said “talk tomorrow”… we’re still waiting.",
+      "l11": "Even with a Super Like, this page can’t be found.",
+      "l12": "It went looking for the perfect spot for a first date.",
+      "l13": "Cupid’s GPS is recalculating the route…",
+      "l14": "This page paused its profile. Let’s respect its choice.",
+      "l15": "You were looking for a page; you might find love instead.",
+      "l16": "It’s probably at a cousin’s wedding in Cotonou.",
+      "l17": "Even the best love stories have blank pages.",
+      "l18": "This page liked someone else. It’s not you, it’s them.",
+      "l19": "We sent an icebreaker: no answer yet.",
+      "l20": "A small detour, a big love: let’s get you back on track."
+    },
+    "hint": "Psst… tap the heart to mend it.",
+    "fix": "Mend the heart",
+    "breakAgain": "Break the heart again",
+    "fixed": "Heart mended!",
+    "fixedMsg": "Heart mended! Now let’s find the right way back 💘"
   },
   "featureOff": {
     "title": "Feature unavailable",
@@ -5070,9 +5113,26 @@
     "offlineText": "Crushduo is not responding right now (maintenance or an unstable connection). We are retrying automatically; your data is safe."
   },
   "maintenance": {
-    "title": "Crushduo is under maintenance",
-    "text": "We are improving the site. Come back in a few moments: your duos and messages are waiting for you.",
-    "auto": "This page will reload automatically as soon as the site is back.",
-    "banner": "Maintenance in progress: the member area is temporarily closed."
+    "title": "Cupid is sharpening his arrows 💘",
+    "text": "We are polishing Crushduo for your next encounters. Come back in a few minutes: your duos and messages are waiting for you, safe and warm.",
+    "auto": "This page reloads by itself as soon as everything is ready.",
+    "banner": "Maintenance in progress: the member area is temporarily closed.",
+    "badge": "Maintenance in progress",
+    "readBlog": "Read the blog meanwhile",
+    "meanwhile": "Meanwhile…",
+    "tips": {
+      "t1": "Think of the question that will make your next duo smile. A good opening line beats ten “hi”s.",
+      "t2": "Pick your brightest smile: a sunny photo gets far more looks.",
+      "t3": "Drink a glass of water and breathe: Cupid takes care of the rest.",
+      "t4": "Picture your ideal first date… and tell us all about it.",
+      "t5": "Little secret: complete profiles get many more likes. Grab your pen!",
+      "t6": "Reread your bio: a touch of humour always lands.",
+      "t7": "Prepare three topics you love: the conversation will flow by itself.",
+      "t8": "A sincere compliment about a detail beats another “you’re beautiful”.",
+      "t9": "Use the time to call a friend: love is also friendship.",
+      "t10": "Think of the perfect public place for a first coffee: calm, bright, reassuring.",
+      "t11": "Patience is a very attractive quality… and you are proving it right now.",
+      "t12": "Cupid promised to come back with brand-new arrows."
+    }
   }
 }

@@ -2,22 +2,10 @@ import { ArrowRight, Compass, Home } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button, Logo } from '@duomatch/ui';
 import { FloatingHearts } from '@/components/marketing/FloatingHearts';
+import { FixableHeart, NotFoundHint, NotFoundLine } from '@/components/marketing/NotFoundFun';
 import { Link } from '@/i18n/navigation';
 
 const LINKS = [['/how-it-works', 'nav.how'], ['/pricing', 'nav.pricing'], ['/blog', 'nav.blog'], ['/help', 'nav.help']] as const;
-
-/** Cœur brisé : deux moitiés légèrement écartées par une fissure en zigzag, dégradé de la charte. */
-function BrokenHeart() {
-  return (
-    <svg viewBox="0 0 120 108" aria-hidden className="nf-beat h-[5.5rem] w-auto drop-shadow-[0_14px_20px_rgb(233_30_99/.28)] sm:h-32 md:h-40">
-      <defs>
-        <linearGradient id="nf-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ff6b81" /><stop offset=".55" stopColor="#d81b60" /><stop offset="1" stopColor="#c2185b" /></linearGradient>
-      </defs>
-      <g className="nf-left"><path d="M60 102C24 76 6 56 6 34 6 18 18 6 33 6c11 0 21 6 27 16l-9 14 12 12-10 14 11 14z" fill="url(#nf-g)" /></g>
-      <g className="nf-right"><path d="M60 102C96 76 114 56 114 34 114 18 102 6 87 6 76 6 66 12 60 22l-9 14 12 12-10 14 11 14z" fill="url(#nf-g)" opacity=".92" /></g>
-    </svg>
-  );
-}
 
 export default function NotFound() {
   const t = useTranslations();
@@ -29,11 +17,12 @@ export default function NotFound() {
         <p className="rounded-full bg-card px-4 py-1.5 text-sm font-semibold text-brand-ink shadow-soft">{t('notFound.badge')}</p>
         <div aria-hidden className="flex items-center justify-center gap-1 font-display text-[6.5rem] leading-none font-extrabold sm:gap-3 sm:text-[9rem] md:text-[12rem]">
           <span className="bg-linear-to-br from-brand-strong to-brand-strong-2 bg-clip-text text-transparent">4</span>
-          <BrokenHeart />
+          <FixableHeart />
           <span className="bg-linear-to-br from-brand-strong to-brand-strong-2 bg-clip-text text-transparent">4</span>
         </div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">{t('notFound.title')}</h1>
-        <p className="max-w-md text-lg text-fg/80 text-balance">{t('notFound.text')}</p>
+        <NotFoundLine />
+        <NotFoundHint />
         <div className="flex flex-col items-stretch gap-3 pt-1 sm:flex-row">
           <Link href="/"><Button size="lg" className="h-14 w-full px-8 text-base sm:w-auto"><Home className="size-5" aria-hidden />{t('common.backHome')}</Button></Link>
           <Link href="/discover"><Button size="lg" variant="outline" className="h-14 w-full border-brand-strong bg-transparent px-8 text-base text-brand-ink hover:bg-soft sm:w-auto"><Compass className="size-5" aria-hidden />{t('notFound.discover')}<ArrowRight className="size-5" aria-hidden /></Button></Link>
