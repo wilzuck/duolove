@@ -12,6 +12,7 @@ import { useMe, keys } from '@/hooks/useQueries';
 import { useRealtime } from '@/hooks/useRealtime';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { ApiError, post } from '@/lib/api';
+import { MaintenanceScreen } from '@/components/MaintenanceScreen';
 
 function Suspended({ moderation }: { moderation: NonNullable<ReturnType<typeof useMe>['data']>['moderation'] }) {
   const t = useTranslations();
@@ -55,6 +56,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   }, [me, path, router]);
   useRealtime(!!me && me.status === 'ACTIVE');
 
+  if (!me && error instanceof ApiError && error.code === 'MAINTENANCE') return <MaintenanceScreen onRetry={() => void refetch()} />;
   // Serveur injoignable ou en erreur (pas une simple session expirée) : message et nouvelle tentative, jamais un chargement sans fin.
   if (!me && error && !(error instanceof ApiError && error.status < 500)) return <ServiceUnavailable onRetry={() => void refetch()} retrying={isFetching} />;
   if (isLoading || !me || (me.status === 'ACTIVE' && !me.emailVerified)) {

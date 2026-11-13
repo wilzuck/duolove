@@ -1663,7 +1663,8 @@
     "INVALID_2FA_CODE": "Code incorrect. Vérifiez l’heure de votre téléphone ou utilisez un code de secours.",
     "TWOFA_ALREADY_ON": "La double authentification est déjà activée.",
     "TWOFA_NOT_ON": "La double authentification n’est pas activée.",
-    "TWOFA_NOT_SETUP": "Commencez par générer une clé de configuration."
+    "TWOFA_NOT_SETUP": "Commencez par générer une clé de configuration.",
+    "MAINTENANCE": "Crushduo est en maintenance. Revenez dans quelques instants."
   },
   "app": {
     "nav": {
@@ -2286,7 +2287,8 @@
       "liveEvents": "Soirées Duo",
       "countries": "Pays de lancement",
       "services": "Services",
-      "errors": "Erreurs système"
+      "errors": "Erreurs système",
+      "maintenance": "Maintenance"
     },
     "orphans": {
       "title": "Images orphelines",
@@ -4046,6 +4048,24 @@
         "reopen": "Erreur rouverte.",
         "delete": "Erreur supprimée."
       }
+    },
+    "maint": {
+      "title": "Mode maintenance",
+      "subtitle": "Ferme temporairement l’espace membre pendant une mise à jour ou un incident. L’équipe (modération et administration) garde l’accès complet ; les pages publiques et les paiements entrants continuent de fonctionner ; les inscriptions sont suspendues.",
+      "switch": "Activer le mode maintenance",
+      "on": "Actif depuis le {date}",
+      "off": "Désactivé : le site fonctionne normalement.",
+      "messageFr": "Message affiché aux membres (français)",
+      "messageEn": "Message affiché aux membres (anglais)",
+      "messageHint": "Facultatif, par exemple : « Retour prévu à 18 h. »",
+      "save": "Enregistrer",
+      "confirmTitle": "Fermer l’espace membre ?",
+      "confirmText": "Les membres connectés verront l’écran de maintenance et ne pourront plus utiliser Crushduo jusqu’à la désactivation. Les inscriptions seront suspendues.",
+      "confirm": "Activer la maintenance",
+      "cancel": "Annuler",
+      "savedOn": "Mode maintenance activé.",
+      "savedOff": "Mode maintenance désactivé : le site est rouvert.",
+      "saved": "Message enregistré."
     }
   },
   "pricingFaq": {
@@ -5048,5 +5068,11 @@
     "home": "Accueil",
     "offlineTitle": "Service momentanément indisponible",
     "offlineText": "Crushduo ne répond pas pour le moment (maintenance ou connexion instable). Nous réessayons automatiquement ; vos données ne sont pas perdues."
+  },
+  "maintenance": {
+    "title": "Crushduo est en maintenance",
+    "text": "Nous améliorons le site. Revenez dans quelques instants : vos duos et vos messages vous attendent.",
+    "auto": "La page se rechargera automatiquement dès que le site sera de retour.",
+    "banner": "Maintenance en cours : l’espace membre est temporairement fermé."
   }
 }

@@ -1663,7 +1663,8 @@
     "INVALID_2FA_CODE": "Incorrect code. Check your phone’s time or use a recovery code.",
     "TWOFA_ALREADY_ON": "Two-step verification is already on.",
     "TWOFA_NOT_ON": "Two-step verification is not on.",
-    "TWOFA_NOT_SETUP": "Start by generating a setup key."
+    "TWOFA_NOT_SETUP": "Start by generating a setup key.",
+    "MAINTENANCE": "Crushduo is under maintenance. Come back in a few moments."
   },
   "app": {
     "nav": {
@@ -2286,7 +2287,8 @@
       "liveEvents": "Duo Nights",
       "countries": "Launch countries",
       "services": "Services",
-      "errors": "System errors"
+      "errors": "System errors",
+      "maintenance": "Maintenance"
     },
     "orphans": {
       "title": "Orphan images",
@@ -4046,6 +4048,24 @@
         "reopen": "Error reopened.",
         "delete": "Error deleted."
       }
+    },
+    "maint": {
+      "title": "Maintenance mode",
+      "subtitle": "Temporarily closes the member area during an update or an incident. The team (moderation and administration) keeps full access; public pages and incoming payments keep working; sign-ups are paused.",
+      "switch": "Turn on maintenance mode",
+      "on": "Active since {date}",
+      "off": "Off: the site works normally.",
+      "messageFr": "Message shown to members (French)",
+      "messageEn": "Message shown to members (English)",
+      "messageHint": "Optional, for example: “Back at 6 pm.”",
+      "save": "Save",
+      "confirmTitle": "Close the member area?",
+      "confirmText": "Signed-in members will see the maintenance screen and cannot use Crushduo until you turn it off. Sign-ups will be paused.",
+      "confirm": "Turn on maintenance",
+      "cancel": "Cancel",
+      "savedOn": "Maintenance mode on.",
+      "savedOff": "Maintenance mode off: the site is open again.",
+      "saved": "Message saved."
     }
   },
   "pricingFaq": {
@@ -5048,5 +5068,11 @@
     "home": "Home",
     "offlineTitle": "Service temporarily unavailable",
     "offlineText": "Crushduo is not responding right now (maintenance or an unstable connection). We are retrying automatically; your data is safe."
+  },
+  "maintenance": {
+    "title": "Crushduo is under maintenance",
+    "text": "We are improving the site. Come back in a few moments: your duos and messages are waiting for you.",
+    "auto": "This page will reload automatically as soon as the site is back.",
+    "banner": "Maintenance in progress: the member area is temporarily closed."
   }
 }

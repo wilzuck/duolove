@@ -59,6 +59,10 @@ async def _authenticate(request: Request, db: AsyncSession, *, allow_suspended: 
     # Compte non confirmé : rien d'autre que confirmer son e-mail (ou se déconnecter / supprimer le compte). Appliqué ici, pour TOUTES les routes protégées.
     if not allow_unverified and get_settings().require_email_verification and not user.emailVerifiedAt:
         raise forbidden("EMAIL_NOT_VERIFIED")
+    # Mode maintenance : les membres sont refusés, l'équipe garde l'accès.
+    from app.core import sitemode
+
+    await sitemode.assert_member_allowed(db, user.role.value, request.url.path)
     # Accès payant (interrupteur d'administration) : un membre sans formule ne garde que son compte, son profil et le paiement.
     from app.core import access
 

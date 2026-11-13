@@ -29,6 +29,9 @@ def ctx_of(req: Request) -> authsvc.ReqCtx:
 
 @router.post("/register", status_code=201, dependencies=[require_flag("registration_open"), limit(10)])
 async def register(body: RegisterIn, req: Request, res: Response, db: AsyncSession = Depends(get_db)):
+    from app.core import sitemode
+
+    await sitemode.assert_signup_open(db)
     user, (token, expires) = await authsvc.register(db, body, ctx_of(req))
     set_session_cookie(res, token, expires)
     return {"id": user.id, "email": user.email, "emailVerified": False}
