@@ -561,6 +561,7 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 
 - **Terminé** : sur chaque page de l'administration (sauf la vue d'ensemble), « ← Retour » remplace « Administration » dans la barre du haut, et un second bouton figure en bas de page. Il revient à la page précédente de l'admin ; si l'on arrive directement sur une page, il mène à la page parente (ex. un article → la liste des articles).
 - **Vérifié** : navigateur (vue d'ensemble sans bouton ; E-mails → Retour → vue d'ensemble ; arrivée directe sur un article → Retour → liste des articles).
+- **Nettoyage** : l'éditeur d'article du blog n'a plus ses propres liens « ← Retour aux articles » (haut et bas), devenus des doublons ; seul le « Retour » commun reste. Aucune autre page de l'admin n'avait de lien retour propre.
 
 ## E-mails : ZeptoMail (Zoho) comme fournisseur (livré, à configurer)
 

@@ -89,8 +89,7 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link href="/admin/blog" className="text-sm font-semibold text-brand-ink">← {t('admin.blog.back')}</Link>
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <div className="flex items-center gap-2">
           <Badge tone={published ? 'success' : 'neutral'}>{t(`admin.blog.${f.status}`)}</Badge>
           {post && <Badge tone="neutral">{t('admin.blog.views')} : {post.views ?? 0}</Badge>}
@@ -175,7 +174,6 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
           <Button loading={remove.isPending} onClick={() => remove.mutate()}>{t('admin.blog.delete')}</Button>
         </div>
       </Dialog>
-      <Link href="/admin/blog" className="inline-block text-sm font-semibold text-brand-ink">← {t('admin.blog.back')}</Link>
     </div>
   );
 }
