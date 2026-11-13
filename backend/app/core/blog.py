@@ -79,8 +79,46 @@ def _card(p: BlogPost) -> dict:
             "coverThumbUrl": thumb_url_of(p.coverKey), "coverAlt": p.coverAlt, "publishedAt": iso(p.publishedAt), "readMinutes": read_minutes(p.body), "featured": bool(p.featured)}
 
 
-def admin_row(p: BlogPost) -> dict:
-    return {**card(p, views=True), "status": p.status, "coverKey": p.coverKey, "createdAt": iso(p.createdAt), "updatedAt": iso(p.updatedAt)}
+def admin_row(p: BlogPost, translation: BlogPost | None = None) -> dict:
+    tr = {"id": translation.id, "locale": translation.locale, "slug": translation.slug, "title": translation.title, "status": translation.status} if translation else None
+    return {**card(p, views=True), "status": p.status, "coverKey": p.coverKey, "createdAt": iso(p.createdAt), "updatedAt": iso(p.updatedAt), "translation": tr}
+
+
+async def translations_of(db: AsyncSession, posts: list[BlogPost], published_only: bool = False) -> dict[str, BlogPost]:
+    """Pour chaque article, sa version liée dans l'autre langue (même translationKey, autre langue). Une seule requête."""
+    keys = {p.translationKey for p in posts if p.translationKey}
+    if not keys:
+        return {}
+    q = select(BlogPost).where(BlogPost.translationKey.in_(keys))
+    if published_only:
+        q = q.where(BlogPost.status == "PUBLISHED")
+    others = (await db.execute(q)).scalars().all()
+    out: dict[str, BlogPost] = {}
+    for p in posts:
+        for o in others:
+            if p.translationKey and o.translationKey == p.translationKey and o.locale != p.locale:
+                out[p.id] = o
+                break
+    return out
+
+
+async def link_translation(db: AsyncSession, p: BlogPost, other_id: str | None) -> None:
+    """Lie l'article à sa version dans l'autre langue (other_id), ou le délie (None). Au plus une version par langue."""
+    if not other_id:
+        p.translationKey = None
+        return
+    o = await db.get(BlogPost, other_id)
+    if not o or o.id == p.id:
+        raise not_found("POST_NOT_FOUND")
+    if o.locale == p.locale:
+        raise bad_request("TRANSLATION_SAME_LOCALE", "La traduction liée doit être dans l'autre langue")
+    key = o.translationKey or secrets.token_hex(12)
+    if o.translationKey:
+        taken = (await db.execute(select(BlogPost.id).where(BlogPost.translationKey == key, BlogPost.locale == p.locale, BlogPost.id != (p.id or "")))).first()
+        if taken:
+            raise AppError(409, "TRANSLATION_TAKEN", "Cet article est déjà lié à une autre traduction dans cette langue")
+    o.translationKey = key
+    p.translationKey = key
 
 
 async def upload_image(data: bytes) -> dict:
@@ -140,6 +178,7 @@ async def create(db: AsyncSession, data: dict, author_id: str) -> BlogPost:
     p = BlogPost(**{k: data[k] for k in ("slug", "locale", "title", "excerpt", "body", "coverKey", "coverAlt", "status")}, authorId=author_id)
     p.id = secrets.token_hex(12)
     p.featured = False
+    await link_translation(db, p, data.get("translationOf"))
     if p.status == "PUBLISHED":
         p.publishedAt = _utc(data.get("publishedAt")) or utcnow()
     if data.get("createdAt"):
@@ -158,6 +197,8 @@ async def update(db: AsyncSession, post_id: str, data: dict) -> BlogPost:
     old_cover = p.coverKey
     created_at, published_at = _utc(data.pop("createdAt", None)), _utc(data.pop("publishedAt", None))
     wanted_featured = data.pop("featured", None)
+    if "translationOf" in data:
+        await link_translation(db, p, data.pop("translationOf"))
     for k, v in data.items():
         setattr(p, k, v)
     if "status" in data:

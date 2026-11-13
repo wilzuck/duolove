@@ -10,7 +10,7 @@ async def test_catalogue_expose_les_offres_avec_prix_par_duree(http):
     assert r.status_code == 200
     body = r.json()
     plans = {p["code"]: p for p in body["plans"]}
-    assert sorted(plans) == ["FREE", "PREMIUM", "VIP"]
+    assert sorted(plans) == ["FREE", "GOLD", "PREMIUM", "VIP"]
     by = lambda code, m: next(p for p in plans[code]["prices"] if p["months"] == m)  # noqa: E731
     assert by("PREMIUM", 1)["totalXof"] == 2500 and by("PREMIUM", 1)["discountPercent"] == 0 and by("PREMIUM", 1)["monthlyEquivalentXof"] == 2500
     p3 = by("PREMIUM", 3)

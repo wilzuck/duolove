@@ -80,9 +80,10 @@ export interface LiveState {
 export interface LiveIncoming extends Card { inviteId: string; expiresAt: string }
 export interface LiveInvitesView { items: LiveIncoming[]; waiting: LiveIncoming[] }
 
-export interface BlogCard { id: string; slug: string; locale: string; title: string; excerpt: string; coverUrl: string | null; coverThumbUrl: string | null; coverAlt: string | null; publishedAt: string | null; readMinutes: number; featured?: boolean; views?: number }
+export interface BlogCard { id: string; slug: string; locale: string; title: string; excerpt: string; coverUrl: string | null; coverThumbUrl: string | null; coverAlt: string | null; publishedAt: string | null; readMinutes: number; featured?: boolean; views?: number; /** Lien (slug) de la version publiée dans chaque autre langue. */ translations?: Partial<Record<string, string>> }
 export interface BlogPostFull extends BlogCard { body: string }
-export interface AdminBlogRow extends BlogCard { status: 'DRAFT' | 'PUBLISHED'; coverKey: string | null; createdAt: string; updatedAt: string }
+export interface AdminBlogTranslation { id: string; locale: string; slug: string; title: string; status: 'DRAFT' | 'PUBLISHED' }
+export interface AdminBlogRow extends BlogCard { status: 'DRAFT' | 'PUBLISHED'; coverKey: string | null; createdAt: string; updatedAt: string; translation?: AdminBlogTranslation | null }
 export interface AdminBlogPost extends AdminBlogRow { body: string }
 
 export type DateStatus = 'PROPOSED' | 'ACCEPTED' | 'DECLINED' | 'RESCHEDULED' | 'CANCELED' | 'COMPLETED';

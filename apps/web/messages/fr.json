@@ -2883,7 +2883,11 @@
       "createdAt": "Date d’ajout",
       "createdAtHint": "Affichée seulement dans l’administration.",
       "publishedAt": "Date de publication",
-      "publishedAtHint": "Date affichée sur le blog. Vide : le moment où vous publiez. Jamais dans le futur."
+      "publishedAtHint": "Date affichée sur le blog. Vide : le moment où vous publiez. Jamais dans le futur.",
+      "translation": "Traduction liée",
+      "translationHint": "La version de cet article dans l’autre langue : le sélecteur de langue y mène directement et les moteurs de recherche savent que c’est le même article.",
+      "translationNone": "Aucune",
+      "colTranslation": "Traduction"
     },
     "eng": {
       "title": "Engagement et matching",
@@ -3328,7 +3332,19 @@
         "speed": "Sessions de speed dating",
         "blog": "Articles du site",
         "flags": "Interrupteurs d’urgence",
-        "storage": "Où sont rangées les photos"
+        "storage": "Où sont rangées les photos",
+        "errors": "Pannes repérées automatiquement, à corriger",
+        "maintenance": "Fermer l’espace membres pendant une intervention",
+        "services": "Comment marche chaque service, et son interrupteur",
+        "broadcasts": "Notifications et e-mails à un groupe de membres",
+        "liveEvents": "Programmer les soirées par ville",
+        "countries": "Pays ouverts aux inscriptions",
+        "social": "Liens des réseaux en bas du site",
+        "backups": "Copie de la base chaque nuit, téléchargeable",
+        "orphans": "Images qui ne servent plus, à supprimer",
+        "payment": "Clés et réglages du paiement en ligne",
+        "access": "Faire payer l’entrée de l’espace membres",
+        "billing": "Informations imprimées sur les factures"
       },
       "flowsTitle": "Les parcours en 4 étapes",
       "f1": {

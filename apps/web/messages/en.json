@@ -2883,7 +2883,11 @@
       "createdAt": "Date added",
       "createdAtHint": "Shown in the admin only.",
       "publishedAt": "Publication date",
-      "publishedAtHint": "Date shown on the blog. Empty: the moment you publish. Never in the future."
+      "publishedAtHint": "Date shown on the blog. Empty: the moment you publish. Never in the future.",
+      "translation": "Linked translation",
+      "translationHint": "This article’s version in the other language: the language switcher goes straight to it and search engines know it is the same article.",
+      "translationNone": "None",
+      "colTranslation": "Translation"
     },
     "eng": {
       "title": "Engagement and matching",
@@ -3328,7 +3332,19 @@
         "speed": "Speed-dating sessions",
         "blog": "Site articles",
         "flags": "Emergency switches",
-        "storage": "Where photos are kept"
+        "storage": "Where photos are kept",
+        "errors": "Failures detected automatically, to fix",
+        "maintenance": "Close the members’ area during an intervention",
+        "services": "How each service works, and its switch",
+        "broadcasts": "Notifications and e-mails to a group of members",
+        "liveEvents": "Schedule the evenings by city",
+        "countries": "Countries open to sign-ups",
+        "social": "Social links at the bottom of the site",
+        "backups": "Nightly database copy, downloadable",
+        "orphans": "Images no longer used, to delete",
+        "payment": "Online payment keys and settings",
+        "access": "Charge for entry to the members’ area",
+        "billing": "Details printed on invoices"
       },
       "flowsTitle": "The workflows in 4 steps",
       "f1": {

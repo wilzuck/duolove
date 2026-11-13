@@ -335,6 +335,7 @@ class BlogPost(Base):
         PrimaryKeyConstraint('id', name='BlogPost_pkey'),
         Index('BlogPost_locale_slug_key', 'locale', 'slug', unique=True),
         Index('BlogPost_locale_status_publishedAt_idx', 'locale', 'status', 'publishedAt'),
+        Index('BlogPost_translationKey_locale_key', 'translationKey', 'locale', unique=True, postgresql_where=text('"translationKey" IS NOT NULL')),
     )
 
     id: Mapped[str] = mapped_column(Text, primary_key=True, default=new_id)
@@ -349,6 +350,8 @@ class BlogPost(Base):
     publishedAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))
     featured: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'), default=False)
     views: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'), default=0)
+    # Clé partagée par les versions d'un même article dans les différentes langues (au plus une par langue) ; NULL = sans traduction liée.
+    translationKey: Mapped[Optional[str]] = mapped_column(Text)
     authorId: Mapped[Optional[str]] = mapped_column(Text)
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)

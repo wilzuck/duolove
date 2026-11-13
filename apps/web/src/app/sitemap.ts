@@ -1,10 +1,10 @@
 import type { MetadataRoute } from 'next';
 import { routing } from '@/i18n/routing';
 import { fetchPosts } from '@/lib/blog';
-import { PUBLIC_PATHS, SITE_URL } from '@/lib/site';
+import { localeUrl, PUBLIC_PATHS, SITE_URL } from '@/lib/site';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const url = (locale: string, path: string) => `${SITE_URL}${locale === routing.defaultLocale ? '' : `/${locale}`}${path}` || SITE_URL;
+  const url = localeUrl;
   const fixed = PUBLIC_PATHS.flatMap((path) =>
     routing.locales.map((locale) => ({
       url: url(locale, path) || SITE_URL,
@@ -15,9 +15,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       alternates: { languages: { ...Object.fromEntries(routing.locales.map((l) => [l, url(l, path) || SITE_URL])), 'x-default': url(routing.defaultLocale, path) || SITE_URL } },
     })),
   );
-  // Articles publiés : une entrée par langue (pas d'alternates : les articles ne sont pas forcément traduits).
-  const posts = (await Promise.all(routing.locales.map(async (locale) => (await fetchPosts(locale)).map((p) => ({
-    url: url(locale, `/blog/${p.slug}`), lastModified: p.publishedAt ? new Date(p.publishedAt) : new Date(), changeFrequency: 'monthly' as const, priority: 0.6,
-  }))))).flat();
+  // Articles publiés : une entrée par langue ; les versions liées dans l'autre langue (traductions publiées) sont déclarées en alternates.
+  const posts = (await Promise.all(routing.locales.map(async (locale) => (await fetchPosts(locale)).map((p) => {
+    const tr = Object.entries(p.translations ?? {}).filter((e): e is [string, string] => !!e[1]);
+    return {
+      url: url(locale, `/blog/${p.slug}`), lastModified: p.publishedAt ? new Date(p.publishedAt) : new Date(), changeFrequency: 'monthly' as const, priority: 0.6,
+      ...(tr.length ? { alternates: { languages: Object.fromEntries([[locale, url(locale, `/blog/${p.slug}`)], ...tr.map(([l, s]) => [l, url(l, `/blog/${s}`)])]) } } : {}),
+    };
+  })))).flat();
   return [...fixed, ...posts];
 }

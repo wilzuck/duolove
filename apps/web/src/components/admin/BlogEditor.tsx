@@ -1,5 +1,5 @@
 'use client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ImagePlus, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -9,9 +9,9 @@ import { RichTextEditor } from '@/components/admin/RichTextEditor';
 import { Markdown } from '@/components/marketing/Markdown';
 import { useApiError } from '@/hooks/useApiError';
 import { Link, useRouter } from '@/i18n/navigation';
-import { del, patch, post, upload } from '@/lib/api';
+import { api, del, patch, post, upload } from '@/lib/api';
 import { useUi } from '@/lib/store';
-import type { AdminBlogPost } from '@/lib/types';
+import type { AdminBlogPost, AdminBlogRow } from '@/lib/types';
 
 interface Uploaded { key: string; url: string; thumbUrl: string }
 const slugify = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
@@ -33,13 +33,17 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
   const [f, setF] = useState(() => ({
     locale: post?.locale ?? 'fr', title: post?.title ?? '', slug: post?.slug ?? '', excerpt: post?.excerpt ?? '', body: post?.body ?? '',
     coverKey: post?.coverKey ?? null as string | null, coverUrl: post?.coverUrl ?? null as string | null, coverAlt: post?.coverAlt ?? '', status: post?.status ?? 'DRAFT' as 'DRAFT' | 'PUBLISHED', featured: post?.featured ?? false,
-    createdAt: toLocal(post?.createdAt), publishedAt: toLocal(post?.publishedAt),
+    createdAt: toLocal(post?.createdAt), publishedAt: toLocal(post?.publishedAt), translationOf: post?.translation?.id ?? '',
   }));
   const initial = { createdAt: toLocal(post?.createdAt), publishedAt: toLocal(post?.publishedAt) };
   const [slugTouched, setSlugTouched] = useState(!!post);
   const [tab, setTab] = useState<'write' | 'preview'>('write');
   const [confirmDelete, setConfirmDelete] = useState(false);
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF((s) => ({ ...s, [k]: v }));
+  // Articles de l'autre langue, pour lier la traduction (la liste admin est déjà en cache la plupart du temps).
+  const all = useQuery({ queryKey: ['admin', 'blog'], queryFn: () => api<{ items: AdminBlogRow[] }>('/admin/blog') });
+  const otherLocale = f.locale === 'fr' ? 'en' : 'fr';
+  const candidates = (all.data?.items ?? []).filter((p) => p.locale === otherLocale && (!p.translation || p.translation.id === post?.id));
 
   const send = useMutation({
     mutationFn: (status: 'DRAFT' | 'PUBLISHED') => {
@@ -48,7 +52,8 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
         ...(f.createdAt && f.createdAt !== initial.createdAt ? { createdAt: new Date(f.createdAt).toISOString() } : {}),
         ...(f.publishedAt && f.publishedAt !== initial.publishedAt ? { publishedAt: new Date(f.publishedAt).toISOString() } : {}),
       };
-      const common = { slug: f.slug, title: f.title, excerpt: f.excerpt, body: f.body, coverKey: f.coverKey, coverAlt: f.coverAlt, status, featured: status === 'PUBLISHED' && f.featured, ...dates };
+      const linkChanged = f.translationOf !== (post?.translation?.id ?? '');
+      const common = { slug: f.slug, title: f.title, excerpt: f.excerpt, body: f.body, coverKey: f.coverKey, coverAlt: f.coverAlt, status, featured: status === 'PUBLISHED' && f.featured, ...dates, ...(linkChanged ? { translationOf: f.translationOf || null } : {}) };
       return post ? patch<AdminBlogPost>(`/admin/blog/${post.id}`, common) : post_<AdminBlogPost>({ ...common, locale: f.locale });
     },
     onSuccess: async (saved, status) => {
@@ -101,6 +106,13 @@ export function BlogEditor({ post }: { post?: AdminBlogPost }) {
           <Field label={t('admin.blog.createdAt')} hint={t('admin.blog.createdAtHint')}>{(p) => <Input {...p} type="datetime-local" max={toLocal(new Date().toISOString())} value={f.createdAt} onChange={(e) => set('createdAt', e.target.value)} />}</Field>
           <Field label={t('admin.blog.publishedAt')} hint={t('admin.blog.publishedAtHint')}>{(p) => <Input {...p} type="datetime-local" max={toLocal(new Date().toISOString())} value={f.publishedAt} onChange={(e) => set('publishedAt', e.target.value)} />}</Field>
           <div className="sm:col-span-2"><Field label={t('admin.blog.fieldTitle')}>{(p) => <Input {...p} required minLength={3} maxLength={140} value={f.title} onChange={(e) => { set('title', e.target.value); if (!slugTouched) set('slug', slugify(e.target.value)); }} />}</Field></div>
+          <div className="sm:col-span-2"><Field label={t('admin.blog.translation')} hint={t('admin.blog.translationHint')}>{(p) => (
+            <Select {...p} value={f.translationOf} onChange={(e) => set('translationOf', e.target.value)}>
+              <option value="">{t('admin.blog.translationNone')}</option>
+              {post?.translation && !candidates.some((c) => c.id === post.translation!.id) && <option value={post.translation.id}>{post.translation.title}</option>}
+              {candidates.map((c) => <option key={c.id} value={c.id}>{c.title}{c.status === 'DRAFT' ? ` (${t('admin.blog.DRAFT')})` : ''}</option>)}
+            </Select>
+          )}</Field></div>
           <div className="sm:col-span-2"><Field label={t('admin.blog.excerpt')}>{(p) => <Textarea {...p} required minLength={10} maxLength={300} className="min-h-20" value={f.excerpt} onChange={(e) => set('excerpt', e.target.value)} />}</Field></div>
         </Card>
 

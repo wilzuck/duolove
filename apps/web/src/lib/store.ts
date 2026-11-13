@@ -16,6 +16,9 @@ interface UiState {
   dismiss: (id: number) => void;
   match: { matchId: string; conversationId: string; user: Pick<Card, 'id' | 'displayName' | 'photos'> | null; kind?: 'CRUSH' } | null;
   showMatch: (m: UiState['match']) => void;
+  /** Adresse de la page courante dans chaque langue (article de blog traduit) : utilisée par le sélecteur de langue. */
+  localeAlternates: Partial<Record<string, string>> | null;
+  setLocaleAlternates: (a: Partial<Record<string, string>> | null) => void;
   typing: Record<string, number>;
   setTyping: (conversationId: string, on: boolean) => void;
 }
@@ -37,6 +40,8 @@ export const useUi = create<UiState>((set, get) => ({
   dismiss: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
   match: null,
   showMatch: (match) => set((s) => (match && s.match?.matchId === match.matchId ? s : { match })),
+  localeAlternates: null,
+  setLocaleAlternates: (localeAlternates) => set({ localeAlternates }),
   typing: {},
   setTyping: (cid, on) => set((s) => {
     const typing = { ...s.typing };

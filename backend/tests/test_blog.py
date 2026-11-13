@@ -182,3 +182,35 @@ async def test_view_counter_and_public_visibility_setting(app, db):
     d = (await admin.post("/api/admin/blog", json=_payload(f"vd-{uid()}"))).json()
     await anon.post(f"/api/blog/{d['slug']}/view", params={"locale": "fr"})
     assert (await admin.get(f"/api/admin/blog/{d['id']}")).json()["views"] == 0
+
+
+async def test_translation_link(app, db):
+    """Lier un article à sa version dans l'autre langue : visible dans l'admin, exposé au public seulement si la traduction est publiée."""
+    admin = await _admin(app, db)
+    anon = new_agent(app)
+    cover = await _cover(admin)
+    pub = {"coverKey": cover["key"], "coverAlt": "Une image", "status": "PUBLISHED"}
+    fr = (await admin.post("/api/admin/blog", json=_payload(f"fr-{uid()}", **pub))).json()
+    en = await admin.post("/api/admin/blog", json=_payload(f"en-{uid()}", locale="en", translationOf=fr["id"]))
+    assert en.status_code == 201 and en.json()["translation"]["id"] == fr["id"]
+    en = en.json()
+    assert (await admin.get(f"/api/admin/blog/{fr['id']}")).json()["translation"]["id"] == en["id"]
+    # Traduction en brouillon : rien n'est annoncé au public.
+    assert (await anon.get(f"/api/blog/{fr['slug']}", params={"locale": "fr"})).json()["translations"] == {}
+    await admin.patch(f"/api/admin/blog/{en['id']}", json=pub)
+    assert (await anon.get(f"/api/blog/{fr['slug']}", params={"locale": "fr"})).json()["translations"] == {"en": en["slug"]}
+    assert (await anon.get(f"/api/blog/{en['slug']}", params={"locale": "en"})).json()["translations"] == {"fr": fr["slug"]}
+    item = next(p for p in (await anon.get("/api/blog", params={"locale": "en"})).json()["items"] if p["slug"] == en["slug"])
+    assert item["translations"] == {"fr": fr["slug"]}
+    # Même langue refusée ; une deuxième version anglaise du même article aussi.
+    fr2 = (await admin.post("/api/admin/blog", json=_payload(f"fr2-{uid()}"))).json()
+    r = await admin.patch(f"/api/admin/blog/{fr2['id']}", json={"translationOf": fr["id"]})
+    assert r.status_code == 400 and r.json()["error"]["code"] == "TRANSLATION_SAME_LOCALE"
+    en2 = await admin.post("/api/admin/blog", json=_payload(f"en2-{uid()}", locale="en", translationOf=fr["id"]))
+    assert en2.status_code == 409 and en2.json()["error"]["code"] == "TRANSLATION_TAKEN"
+    # Délier.
+    r = await admin.patch(f"/api/admin/blog/{en['id']}", json={"translationOf": None})
+    assert r.status_code == 200 and r.json()["translation"] is None
+    assert (await anon.get(f"/api/blog/{fr['slug']}", params={"locale": "fr"})).json()["translations"] == {}
+    for p in (fr, en, fr2):
+        await admin.delete(f"/api/admin/blog/{p['id']}")

@@ -19,7 +19,8 @@ router = APIRouter(prefix="/admin/blog", tags=["admin"])
 @router.get("")
 async def list_all(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     rows = (await db.execute(select(BlogPost).order_by(desc(BlogPost.updatedAt)).limit(200))).scalars().all()
-    return {"items": [blog.admin_row(p) for p in rows]}
+    tr = await blog.translations_of(db, rows)
+    return {"items": [blog.admin_row(p, tr.get(p.id)) for p in rows]}
 
 
 class ViewsSettingIn(BaseModel):
@@ -55,21 +56,21 @@ async def get_one(post_id: str, _: AuthUser = ADM, db: AsyncSession = Depends(ge
     p = await db.get(BlogPost, post_id)
     if not p:
         raise not_found("POST_NOT_FOUND")
-    return {**blog.admin_row(p), "body": p.body}
+    return await _full(db, p)
 
 
 @router.post("", status_code=201)
 async def create(body: PostIn, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     p = await blog.create(db, body.model_dump(), a.id)
     await audit(db, a.id, "blog.create", "BlogPost", p.id, {"slug": p.slug, "locale": p.locale, "status": p.status})
-    return {**blog.admin_row(p), "body": p.body}
+    return await _full(db, p)
 
 
 @router.patch("/{post_id}")
 async def update(post_id: str, body: PostPatch, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
     p = await blog.update(db, post_id, body.model_dump(exclude_unset=True))
     await audit(db, a.id, "blog.update", "BlogPost", p.id, {"slug": p.slug, "status": p.status})
-    return {**blog.admin_row(p), "body": p.body}
+    return await _full(db, p)
 
 
 @router.delete("/{post_id}", status_code=204)
@@ -77,3 +78,8 @@ async def remove(post_id: str, a: AuthUser = ADM, db: AsyncSession = Depends(get
     await blog.delete(db, post_id)
     await audit(db, a.id, "blog.delete", "BlogPost", post_id)
     return Response(status_code=204)
+
+
+async def _full(db: AsyncSession, p: BlogPost) -> dict:
+    tr = await blog.translations_of(db, [p])
+    return {**blog.admin_row(p, tr.get(p.id)), "body": p.body}

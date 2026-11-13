@@ -23,6 +23,7 @@ class PostIn(BaseModel):
     featured: bool | None = None
     createdAt: datetime.datetime | None = None  # date d'ajout (modifiable, jamais dans le futur)
     publishedAt: datetime.datetime | None = None  # date de publication affichée (modifiable, jamais dans le futur)
+    translationOf: str | None = Field(None, max_length=40)  # id de la version de l'article dans l'autre langue
 
     @field_validator("slug")
     @classmethod
@@ -44,6 +45,7 @@ class PostPatch(BaseModel):
     featured: bool | None = None
     createdAt: datetime.datetime | None = None
     publishedAt: datetime.datetime | None = None
+    translationOf: str | None = Field(None, max_length=40)  # null = délier
 
     @field_validator("slug")
     @classmethod
