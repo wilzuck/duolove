@@ -30,7 +30,6 @@ export default async function CookiesPage({ params }: { params: Promise<{ locale
           <p className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-sm font-semibold text-brand-ink shadow-soft"><Cookie className="size-4" aria-hidden />{t('legal.cookies.kicker')}</p>
           <h1 className="mt-6 text-balance text-4xl font-extrabold md:text-5xl">{t('legal.cookies.title')}</h1>
           <p className="mx-auto mt-5 max-w-2xl text-balance text-lg text-muted">{t('legal.cookies.lead')}</p>
-          <p className="mx-auto mt-6 max-w-2xl rounded-2xl bg-gold/15 p-4 text-left text-sm"><strong>{t('legal.draftTitle')}</strong> {t('legal.draftText')}</p>
           <p className="mt-3 text-sm text-muted">{t('legal.cookies.updated')}</p>
         </div>
       </section>

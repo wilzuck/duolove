@@ -27,7 +27,6 @@ export default async function Legal({ params }: { params: Promise<{ locale: stri
   return (
     <article className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="text-4xl font-extrabold">{t(`legal.${d}.title`)}</h1>
-      <p className="mt-4 rounded-2xl bg-gold/15 p-4 text-sm"><strong>{t('legal.draftTitle')}</strong> {t('legal.draftText')}</p>
       <p className="mt-4 text-sm text-muted">{t('legal.updated')}</p>
       {sections.map((s) => (
         <section key={s.h} className="mt-8"><h2 className="text-xl font-bold">{s.h}</h2><p className="mt-2 text-muted">{s.p}</p></section>

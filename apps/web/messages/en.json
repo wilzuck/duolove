@@ -690,8 +690,6 @@
     "ctaButton": "Create my account"
   },
   "legal": {
-    "draftTitle": "Draft version.",
-    "draftText": "This text is a working template to be reviewed and approved by a lawyer before launch.",
     "updated": "Last updated: November 2026",
     "terms": {
       "title": "Terms of use",
@@ -850,11 +848,11 @@
       "sections": [
         {
           "h": "Data we collect",
-          "p": "Email address, date of birth, gender, city, photos, bio, interests, your activity (likes, messages, photos sent in conversations) and, if you choose, lifestyle details: height, children, pets, living situation, country of origin, status, education, smoking, alcohol and religion. Payment data is handled by the payment provider. Your zodiac sign is never entered: it is calculated from your date of birth."
+          "p": "Email address, date of birth, gender, city, photos, bio, occupation, languages, interests, values, answers to profile questions, your interactions (likes, messages, photos sent in conversations) and, if you wish, lifestyle information: height, children, pets, living situation, country of origin, relationship status, education, smoking, drinking and religion. For security, we also record your signed-in devices (browser type and an encrypted fingerprint of the IP address) and the sign-in country. If you turn on notifications, the technical address provided by your browser is kept to send them to you. Payment data is handled by the payment provider. Your zodiac sign is never entered: it is calculated from your date of birth."
         },
         {
           "h": "Purposes",
-          "p": "To provide the service, suggest compatible profiles, keep the community safe and moderated (reports, blocks), send service emails (login code, notifications you turned on), and manage subscriptions and purchases."
+          "p": "Providing the service, suggesting compatible profiles, keeping you safe (alerts when you sign in from a new country, two-step verification) and moderation (reports, blocks), sending service emails and notifications (sign-in code, notifications you turned on, the weekly summary if you accepted it), managing subscriptions and purchases, and producing overall statistics that do not identify you (for example how many times a blog article was read)."
         },
         {
           "h": "Optional and sensitive information",
@@ -874,7 +872,7 @@
         },
         {
           "h": "Conversations, dates and calls",
-          "p": "The team does not browse your conversations: a report relies on the reporter’s description and the reported profile. When a date is proposed, only you choose whether to share it with someone you trust, through a link you can revoke. Audio and video calls, when offered, are never recorded."
+          "p": "The team does not read your conversations: only the messages someone chooses to attach to a report (see above) are available to moderators. A warning may appear automatically under a message that looks like a request for money: it is computed by the app and sends nothing to the team. When a date is proposed, only you decide whether to share it with someone close, through a link you can revoke. Audio and video calls, when offered, are never recorded."
         },
         {
           "h": "Emails",
@@ -882,7 +880,7 @@
         },
         {
           "h": "Providers and transfers",
-          "p": "To run, Crushduo relies on providers that process data on our behalf: hosting (Railway), file storage, email delivery (Brevo, Amazon SES), payment (secure provider, Mobile Money and card) and, if you use it, Google sign-in. Some are located outside your country or the European Union; we only entrust them with what is necessary, and we never sell your data."
+          "p": "To run, Crushduo relies on providers that process data on our behalf: hosting (Railway), file storage and site protection (Cloudflare), email delivery (Brevo, Amazon SES), payment (a secure provider, Mobile Money and card), your browser’s notification service (Google, Apple or Mozilla) if you turn on notifications and, if you use it, sign-in with Google. Some are located outside your country or the European Union; we only share what is necessary, and we never sell your data."
         },
         {
           "h": "Installing the app",
@@ -894,11 +892,11 @@
         },
         {
           "h": "Your rights",
-          "p": "Access, correction, export (Settings → Privacy), account deletion, withdrawal of marketing consent at any time. For any question about your data, write to us from the Contact page."
+          "p": "Access, correction, export (Settings → Privacy), account deletion, withdrawal of marketing consent at any time. The data controller is the publisher of Crushduo, established in Benin. For any question about your data, write to us from the Contact page; you can also contact Benin’s personal data protection authority (APDP) or the authority of your country of residence."
         },
         {
           "h": "Retention",
-          "p": "Data is deleted or anonymised when you delete your account, subject to legal obligations (invoicing, security)."
+          "p": "Data is deleted or anonymised when the account is deleted, subject to legal obligations (invoicing, security). An account whose email address was never confirmed is deleted automatically. Verification selfies are erased after the decision. Database backups are erased automatically after six months at most."
         }
       ]
     },
@@ -906,7 +904,7 @@
       "title": "Cookie policy",
       "kicker": "Cookies and storage",
       "metaDescription": "Crushduo’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising; audience measurement only with your agreement.",
-      "lead": "Let’s talk cookies, without jargon and without hiding anything. Crushduo only uses the bare minimum to sign you in, remember your preferences and, anonymously, count app installations. Only with your agreement do we also measure the audience of our public pages: no advertising, no profile, no selling of data.",
+      "lead": "Let’s talk cookies, without jargon and without hiding anything. Crushduo only uses the bare minimum to sign you in, remember your preferences and, anonymously, count app installations and blog reads. Only with your agreement do we also measure the audience of our public pages: no advertising, no profile, no selling of data.",
       "toc": "Contents",
       "updated": "Last updated: November 2026",
       "listDo": "To remember",
@@ -974,13 +972,6 @@
             "need": "pref"
           },
           {
-            "name": "duomatch.cookiesNotice",
-            "kind": "Browser local storage",
-            "purpose": "Remembers that you have read this notice so it is not shown again.",
-            "duration": "Until you clear it.",
-            "need": "pref"
-          },
-          {
             "name": "duomatch-install-id",
             "kind": "Browser local storage",
             "purpose": "Random identifier used only to count app installations. It is not linked to your account.",
@@ -999,6 +990,20 @@
             "kind": "Browser local storage",
             "purpose": "Remembers that you chose “Later” on the invitation to install the app.",
             "duration": "Until you clear it.",
+            "need": "count"
+          },
+          {
+            "name": "crushduo.planChoiceSeen",
+            "kind": "Browser local storage",
+            "purpose": "Remember that the “Choose your plan” screen has already been shown, so it is not shown again.",
+            "duration": "Until you clear it.",
+            "need": "pref"
+          },
+          {
+            "name": "blog-view:*",
+            "kind": "Browser session storage",
+            "purpose": "Count only one read per article and per tab in the blog read counter. Nothing is linked to your account.",
+            "duration": "Until the tab is closed.",
             "need": "count"
           },
           {
@@ -1283,7 +1288,7 @@
               "kind": "do",
               "items": [
                 "Your location is never shown precisely: only an approximate distance is used.",
-                "Your conversations are private: we do not browse them. A report relies on your description and the reported profile.",
+                "Your conversations are private: we do not read them. If you report someone from a conversation, you choose whether to attach the latest messages; without your consent, nothing is shared.",
                 "You can hide your profile, adjust read receipts and the typing indicator, export your data or delete your account at any time."
               ]
             },

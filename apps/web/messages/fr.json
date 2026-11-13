@@ -690,8 +690,6 @@
     "ctaButton": "Créer mon compte"
   },
   "legal": {
-    "draftTitle": "Version provisoire.",
-    "draftText": "Ce texte est un modèle de travail à faire relire et valider par un juriste avant la mise en production.",
     "updated": "Dernière mise à jour : novembre 2026",
     "terms": {
       "title": "Conditions générales d’utilisation",
@@ -850,11 +848,11 @@
       "sections": [
         {
           "h": "Données collectées",
-          "p": "Adresse e-mail, date de naissance, genre, ville, photos, biographie, centres d’intérêt, vos échanges (likes, messages, photos envoyées dans les conversations) et, si vous le souhaitez, des informations de mode de vie : taille, enfants, animaux, logement, pays d’origine, situation, niveau d’études, tabac, alcool et religion. Les données de paiement sont traitées par le prestataire de paiement. Le signe astrologique n’est jamais saisi : il est calculé à partir de votre date de naissance."
+          "p": "Adresse e-mail, date de naissance, genre, ville, photos, présentation, métier, langues, centres d’intérêt, valeurs, réponses aux questions du profil, vos échanges (likes, messages, photos envoyées dans les conversations) et, si vous le souhaitez, des informations de mode de vie : taille, enfants, animaux, logement, pays d’origine, situation, niveau d’études, tabac, alcool et religion. Pour la sécurité, nous enregistrons aussi vos appareils connectés (type de navigateur et empreinte chiffrée de l’adresse IP) et le pays de connexion. Si vous activez les notifications, l’adresse technique fournie par votre navigateur est conservée pour vous les envoyer. Les données de paiement sont traitées par le prestataire de paiement. Le signe astrologique n’est jamais saisi : il est calculé à partir de votre date de naissance."
         },
         {
           "h": "Finalités",
-          "p": "Fournir le service, proposer des profils compatibles, assurer la sécurité et la modération (signalements, blocages), envoyer les e-mails du service (code de connexion, notifications que vous avez activées), gérer les abonnements et les achats."
+          "p": "Fournir le service, proposer des profils compatibles, assurer la sécurité (alerte en cas de connexion depuis un nouveau pays, double authentification) et la modération (signalements, blocages), envoyer les e-mails et notifications du service (code de connexion, notifications que vous avez activées, résumé hebdomadaire si vous l’avez accepté), gérer les abonnements et les achats, et établir des statistiques globales qui ne vous identifient pas (par exemple le nombre de lectures d’un article du blog)."
         },
         {
           "h": "Informations facultatives et sensibles",
@@ -874,7 +872,7 @@
         },
         {
           "h": "Conversations, rendez-vous et appels",
-          "p": "L’équipe ne parcourt pas vos conversations : un signalement s’appuie sur la description du membre et sur le profil signalé. Quand un rendez-vous est proposé, vous seul(e) choisissez de le partager avec un proche, par un lien que vous pouvez révoquer. Les appels audio et vidéo, lorsqu’ils sont proposés, ne sont jamais enregistrés."
+          "p": "L’équipe ne lit pas vos conversations : seuls les messages qu’une personne choisit de joindre à un signalement (voir ci-dessus) sont accessibles à la modération. Un avertissement peut s’afficher automatiquement sous un message qui ressemble à une demande d’argent : il est calculé par l’application et ne transmet rien à l’équipe. Quand un rendez-vous est proposé, vous seul(e) choisissez de le partager avec un proche, par un lien que vous pouvez révoquer. Les appels audio et vidéo, lorsqu’ils sont proposés, ne sont jamais enregistrés."
         },
         {
           "h": "E-mails",
@@ -882,7 +880,7 @@
         },
         {
           "h": "Prestataires et transferts",
-          "p": "Pour fonctionner, Crushduo s’appuie sur des prestataires qui traitent des données pour notre compte : hébergement (Railway), stockage des fichiers, envoi d’e-mails (Brevo, Amazon SES), paiement (prestataire sécurisé, Mobile Money et carte) et, si vous l’utilisez, connexion avec Google. Certains sont situés hors de votre pays ou de l’Union européenne ; nous ne leur confions que ce qui est nécessaire, et nous ne vendons jamais vos données."
+          "p": "Pour fonctionner, Crushduo s’appuie sur des prestataires qui traitent des données pour notre compte : hébergement (Railway), stockage des fichiers et protection du site (Cloudflare), envoi d’e-mails (Brevo, Amazon SES), paiement (prestataire sécurisé, Mobile Money et carte), service de notifications de votre navigateur (Google, Apple ou Mozilla) si vous activez les notifications et, si vous l’utilisez, connexion avec Google. Certains sont situés hors de votre pays ou de l’Union européenne ; nous ne leur confions que ce qui est nécessaire, et nous ne vendons jamais vos données."
         },
         {
           "h": "Installation de l’application",
@@ -894,11 +892,11 @@
         },
         {
           "h": "Vos droits",
-          "p": "Accès, rectification, export (Paramètres → Confidentialité), suppression du compte, retrait du consentement marketing à tout moment. Pour toute question sur vos données, écrivez-nous depuis la page Contact."
+          "p": "Accès, rectification, export (Paramètres → Confidentialité), suppression du compte, retrait du consentement marketing à tout moment. Le responsable du traitement est l’éditeur de Crushduo, établi au Bénin. Pour toute question sur vos données, écrivez-nous depuis la page Contact ; vous pouvez aussi saisir l’Autorité de protection des données à caractère personnel (APDP) du Bénin ou l’autorité de votre pays de résidence."
         },
         {
           "h": "Conservation",
-          "p": "Les données sont supprimées ou anonymisées à la suppression du compte, sous réserve des obligations légales (facturation, sécurité)."
+          "p": "Les données sont supprimées ou anonymisées à la suppression du compte, sous réserve des obligations légales (facturation, sécurité). Un compte dont l’adresse e-mail n’a jamais été confirmée est supprimé automatiquement. Les selfies de vérification sont effacés après décision. Les sauvegardes de la base sont effacées automatiquement après six mois au plus."
         }
       ]
     },
@@ -906,7 +904,7 @@
       "title": "Politique de cookies",
       "kicker": "Cookies et stockage",
       "metaDescription": "Les cookies et stockages de Crushduo, listés un par un : ce qu'ils font, combien de temps ils durent, et comment les gérer. Aucune publicité ; mesure d'audience seulement avec votre accord.",
-      "lead": "Parlons cookies, sans jargon et sans rien cacher. Crushduo n’utilise que le strict nécessaire pour vous connecter, retenir vos préférences et, de façon anonyme, compter les installations de l’application. Avec votre accord seulement, nous mesurons aussi l’audience de nos pages publiques : pas de publicité, pas de profil, pas de revente de données.",
+      "lead": "Parlons cookies, sans jargon et sans rien cacher. Crushduo n’utilise que le strict nécessaire pour vous connecter, retenir vos préférences et, de façon anonyme, compter les installations de l’application et les lectures du blog. Avec votre accord seulement, nous mesurons aussi l’audience de nos pages publiques : pas de publicité, pas de profil, pas de revente de données.",
       "toc": "Sommaire",
       "updated": "Dernière mise à jour : novembre 2026",
       "listDo": "À retenir",
@@ -974,13 +972,6 @@
             "need": "pref"
           },
           {
-            "name": "duomatch.cookiesNotice",
-            "kind": "Stockage local du navigateur",
-            "purpose": "Retenir que vous avez pris connaissance de cette information, pour ne plus vous l’afficher.",
-            "duration": "Jusqu’à ce que vous l’effaciez.",
-            "need": "pref"
-          },
-          {
             "name": "duomatch-install-id",
             "kind": "Stockage local du navigateur",
             "purpose": "Identifiant aléatoire qui sert uniquement à compter les installations de l’application. Il n’a aucun lien avec votre compte.",
@@ -999,6 +990,20 @@
             "kind": "Stockage local du navigateur",
             "purpose": "Retenir que vous avez choisi « Plus tard » sur l’invitation à installer l’application.",
             "duration": "Jusqu’à ce que vous l’effaciez.",
+            "need": "count"
+          },
+          {
+            "name": "crushduo.planChoiceSeen",
+            "kind": "Stockage local du navigateur",
+            "purpose": "Retenir que l’écran « Choisis ton offre » vous a déjà été montré, pour ne pas l’afficher à nouveau.",
+            "duration": "Jusqu’à ce que vous l’effaciez.",
+            "need": "pref"
+          },
+          {
+            "name": "blog-view:*",
+            "kind": "Stockage de session du navigateur",
+            "purpose": "Compter une seule lecture par article et par onglet dans le compteur de lectures du blog. Rien n’est lié à votre compte.",
+            "duration": "Jusqu’à la fermeture de l’onglet.",
             "need": "count"
           },
           {
@@ -1283,7 +1288,7 @@
               "kind": "do",
               "items": [
                 "Votre position n’est jamais affichée précisément : seule une distance approximative est utilisée.",
-                "Vos conversations sont privées : nous ne les parcourons pas. Un signalement s’appuie sur votre description et sur le profil signalé.",
+                "Vos conversations sont privées : nous ne les lisons pas. Si vous signalez quelqu’un depuis une conversation, vous choisissez de joindre ou non les derniers messages ; sans votre accord, rien n’est transmis.",
                 "Vous pouvez masquer votre profil, régler les accusés de lecture et l’indicateur de saisie, exporter vos données ou supprimer votre compte à tout moment."
               ]
             },
