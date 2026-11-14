@@ -664,3 +664,19 @@ Accueil refait d'après la maquette fournie : hero « Deux cœurs, une belle his
 - **Source des taux** : Banque centrale européenne via Frankfurter (gratuit, sans clé ni mention obligatoire), à la place d'ExchangeRate-API qui exigeait une mention. Les anciens taux enregistrés sont remplacés au premier appel. Une devise sans taux BCE (ex. franc congolais si la RD Congo est ouverte) n'est pas proposée.
 - **Sélecteur** : icône seule avec la liste (libellé « Devise des prix » pour les lecteurs d'écran et en info-bulle).
 - **Vérifié** : 11 tests `test_fx.py`, tests web, typecheck, lint ; appel local de `/api/fx`. **Non vérifié** : affichage dans le navigateur.
+
+## Listes de pays limitées aux pays ouverts (terminé côté code, non vu dans le navigateur)
+- Profil (pays de résidence), critères de rencontre (pays recherché) et recherche Crush (pays recherché) ne proposent plus que les pays ouverts à l'inscription (Administration › Pays), comme l'inscription. Un membre dont le pays a été fermé depuis le garde dans la liste (pas de changement imposé). Le **pays d'origine** reste la liste complète (diaspora). `lib/openCountries.ts`, `useLaunchCountries`.
+- Serveur : changer le pays de son profil vers un pays fermé est refusé (`COUNTRY_NOT_OPEN`) ; garder son pays reste permis. Test `test_profil_seulement_vers_un_pays_ouvert`.
+- **Vérifié** : 7 tests `test_launch_countries.py`, tests web (28), typecheck, lint. **Non vérifié** : affichage dans le navigateur.
+
+## Paiement : carte bancaire directe hors d'Afrique (terminé côté code, non testé avec une vraie carte)
+- La fenêtre KkiaPay s'ouvre sur la **carte bancaire seule** pour un membre dont le pays de profil est hors d'Afrique (France, Belgique, Canada…) ; en Afrique ou pays inconnu : Mobile Money et carte, comme avant. Choix fait par le serveur (`kkiapay.payment_methods`, champ `paymentMethods` du widget), appliqué par `lib/kkiapay.ts`.
+- **À vérifier par l'utilisateur** : la carte doit être activée sur le compte KkiaPay, y compris pour les cartes émises hors d'Afrique ; essai réel avec une carte française après déploiement.
+- **Vérifié** : tests `test_kkiapay.py` (dont `test_carte_seule_pour_un_membre_hors_d_afrique`), `test_monetization.py`, typecheck.
+
+## Découvrir : glisser vers le haut au doigt (terminé côté code, non vu sur téléphone)
+- Le geste « glisser la carte vers le haut » pour ouvrir les infos du profil existait mais ne marchait pas au doigt : framer-motion impose `touch-action: pan-y` à la carte (glissement horizontal), le navigateur gardait le glissement vertical pour faire défiler la page. La pile de cartes est maintenant en `touch-none` (l'action tactile retenue est l'intersection avec les parents). Le bouton « i » et la molette (ordinateur) restent. **Non vérifié** sur un vrai téléphone.
+
+## Suivi des erreurs : scripts injectés écartés (terminé)
+- Signalé en production le 2026-11-14 : « Error invoking postMessage: Java object is gone » sur `/register` dans le navigateur intégré de Facebook (Android). Toute la trace est dans le script injecté par Facebook (`iabjs://`) au moment où l'on quitte la page : pas notre code. `isInjectedScriptError` (`lib/reportError.ts`) écarte les erreurs dont toute la trace est hors http(s) (navigateur Facebook/Instagram, extensions) ; une erreur dont la trace passe par notre code reste remontée. Tests `reportError.test.ts`.
