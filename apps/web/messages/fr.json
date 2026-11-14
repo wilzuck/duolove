@@ -5159,7 +5159,7 @@
     "off": "Désactivée",
     "enable": "Activer la double authentification",
     "step1": "Installez une application d’authentification (Google Authenticator, Microsoft Authenticator, Authy ou FreeOTP).",
-    "step2": "Ajoutez un compte avec cette clé (ou touchez le lien sur votre téléphone) :",
+    "step2": "Ajoutez Crushduo dans l’application, au choix :",
     "step3": "Saisissez le code à 6 chiffres affiché par l’application pour confirmer.",
     "copy": "Copier",
     "copied": "Copié.",
@@ -5175,7 +5175,12 @@
     "recoveryLow": "Générez-en de nouveaux.",
     "newCodes": "Nouveaux codes de secours",
     "disable": "Désactiver",
-    "disabled": "Double authentification désactivée."
+    "disabled": "Double authentification désactivée.",
+    "howLabel": "Méthode d’ajout",
+    "howQr": "QR code",
+    "howKey": "Clé",
+    "qrAlt": "QR code à scanner avec votre application d’authentification",
+    "qrHelp": "Dans l’application, choisissez « Ajouter un compte » puis « Scanner un QR code », et visez ce code."
   },
   "errorPage": {
     "title": "Cette page n’a pas pu s’afficher",

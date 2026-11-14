@@ -1,9 +1,9 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Copy, ShieldCheck, ShieldOff, Smartphone } from 'lucide-react';
+import { Copy, KeyRound, QrCode, ShieldCheck, ShieldOff, Smartphone } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { Alert, Badge, Button, Card, Field, Input } from '@duomatch/ui';
+import { useEffect, useState } from 'react';
+import { Alert, Badge, Button, Card, Field, Input, Tabs } from '@duomatch/ui';
 import { PasswordInput } from '@/components/PasswordInput';
 import { useApiError } from '@/hooks/useApiError';
 import { api, post } from '@/lib/api';
@@ -28,6 +28,14 @@ export function TwoFactorCard() {
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [codes, setCodes] = useState<string[]>([]);
+  const [how, setHow] = useState<'qr' | 'key'>('qr');  // QR code par défaut ; la clé reste à un clic (application sur le même téléphone, appareil photo indisponible)
+  const [qr, setQr] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    setQr(null);
+    if (setup) void import('qrcode').then((m) => m.toDataURL(setup.uri, { margin: 1, width: 384, errorCorrectionLevel: 'M' })).then((u) => { if (alive) setQr(u); }).catch(() => { if (alive) setHow('key'); });
+    return () => { alive = false; };
+  }, [setup]);
   const [error, setError] = useState<string | null>(null);
   const reset = () => { setCode(''); setPassword(''); setError(null); };
   const refresh = () => qc.invalidateQueries({ queryKey: ['2fa'] });
@@ -61,10 +69,22 @@ export function TwoFactorCard() {
           <ol className="list-decimal space-y-2 pl-5 text-sm">
             <li>{t('twoFactor.step1')}</li>
             <li>{t('twoFactor.step2')}
-              <div className="mt-2 flex flex-wrap items-center gap-2 rounded-2xl bg-soft p-3">
-                <code className="font-mono text-base font-semibold tracking-wider break-all">{setup.secret}</code>
-                <Button type="button" variant="outline" size="sm" onClick={() => { void navigator.clipboard?.writeText(setup.secret.replace(/ /g, '')); toast('success', t('twoFactor.copied')); }}><Copy className="size-4" aria-hidden />{t('twoFactor.copy')}</Button>
-                <a href={setup.uri} className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-ink underline"><Smartphone className="size-4" aria-hidden />{t('twoFactor.openApp')}</a>
+              <Tabs className="mt-2" label={t('twoFactor.howLabel')} value={how} onChange={setHow}
+                tabs={[{ key: 'qr', label: <span className="inline-flex items-center gap-1.5"><QrCode className="size-4" aria-hidden />{t('twoFactor.howQr')}</span> }, { key: 'key', label: <span className="inline-flex items-center gap-1.5"><KeyRound className="size-4" aria-hidden />{t('twoFactor.howKey')}</span> }]} />
+              <div role="tabpanel" aria-label={how === 'qr' ? t('twoFactor.howQr') : t('twoFactor.howKey')} className="mt-2 rounded-2xl bg-soft p-3">
+                {how === 'qr' ? (
+                  <div className="flex flex-wrap items-center gap-4">
+                    {/* Dessiné dans le navigateur : la clé secrète n'est jamais envoyée à un service de QR code. Fond blanc imposé, même en thème sombre (lisibilité par l'appareil photo). */}
+                    {qr ? <img src={qr} alt={t('twoFactor.qrAlt')} width={192} height={192} className="size-48 rounded-xl bg-white p-2" /> : <div className="size-48 animate-pulse rounded-xl bg-white/60" aria-hidden />}
+                    <p className="max-w-60 text-sm text-muted">{t('twoFactor.qrHelp')}</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <code className="font-mono text-base font-semibold tracking-wider break-all">{setup.secret}</code>
+                    <Button type="button" variant="outline" size="sm" onClick={() => { void navigator.clipboard?.writeText(setup.secret.replace(/ /g, '')); toast('success', t('twoFactor.copied')); }}><Copy className="size-4" aria-hidden />{t('twoFactor.copy')}</Button>
+                    <a href={setup.uri} className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-ink underline"><Smartphone className="size-4" aria-hidden />{t('twoFactor.openApp')}</a>
+                  </div>
+                )}
               </div>
             </li>
             <li>{t('twoFactor.step3')}</li>

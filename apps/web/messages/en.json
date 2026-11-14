@@ -5159,7 +5159,7 @@
     "off": "Off",
     "enable": "Turn on two-step verification",
     "step1": "Install an authenticator app (Google Authenticator, Microsoft Authenticator, Authy or FreeOTP).",
-    "step2": "Add an account with this key (or tap the link on your phone):",
+    "step2": "Add Crushduo to the app, whichever you prefer:",
     "step3": "Enter the 6-digit code shown by the app to confirm.",
     "copy": "Copy",
     "copied": "Copied.",
@@ -5175,7 +5175,12 @@
     "recoveryLow": "Generate new ones.",
     "newCodes": "New recovery codes",
     "disable": "Turn off",
-    "disabled": "Two-step verification turned off."
+    "disabled": "Two-step verification turned off.",
+    "howLabel": "How to add it",
+    "howQr": "QR code",
+    "howKey": "Key",
+    "qrAlt": "QR code to scan with your authenticator app",
+    "qrHelp": "In the app, choose “Add account”, then “Scan a QR code”, and point it at this code."
   },
   "errorPage": {
     "title": "This page could not be displayed",
