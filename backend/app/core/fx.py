@@ -1,9 +1,10 @@
 """Prix affichés aussi dans la devise du visiteur, À TITRE INDICATIF : le paiement se fait toujours en FCFA (XOF).
 
 - Devise devinée d'après le pays fourni par Cloudflare (en-tête CF-IPCountry, voir `geo`) ; le visiteur peut en choisir une autre.
-- Taux du jour pris chez ExchangeRate-API (offre gratuite, sans clé, attribution affichée sur le site), rafraîchis toutes les 12 h
-  au plus et gardés dans SystemSetting : un redémarrage ou une panne de la source ne vide pas les taux. Aucune donnée du visiteur
-  n'est envoyée à la source (simple requête des taux).
+- Seules les devises des pays OUVERTS à l'inscription (Administration › Pays) sont proposées, FCFA compris.
+- Taux de référence de la Banque centrale européenne, via Frankfurter (gratuit, sans clé ni mention obligatoire), rafraîchis toutes les
+  12 h au plus et gardés dans SystemSetting : un redémarrage ou une panne de la source ne vide pas les taux. Aucune donnée du visiteur
+  n'est envoyée à la source (simple requête des taux). Devise absente des taux BCE (ex. franc congolais) : pas de conversion, FCFA seul.
 - Les monnaies à parité fixe avec l'euro (FCFA d'Afrique de l'Ouest et centrale, euro, franc comorien, escudo cap-verdien) utilisent
   toujours leur parité officielle, plus exacte que la cotation du marché et disponible même sans la source.
 """
@@ -26,7 +27,7 @@ from app.models.models import SystemSetting
 log = logging.getLogger(__name__)
 
 KEY = "fx.rates"
-SOURCE_URL = "https://open.er-api.com/v6/latest/USD"  # base USD : plus de décimales que la base XOF (0,001524 € seulement)
+SOURCE_URL = "https://api.frankfurter.dev/v1/latest?base=EUR"  # taux BCE ; base euro, convertie en FCFA par la parité fixe
 REFRESH = datetime.timedelta(hours=12)
 RETRY = datetime.timedelta(minutes=30)  # après un échec de la source, pas de nouvel essai avant ce délai
 MEMORY_SECONDS = 600
@@ -35,7 +36,7 @@ EUR_XOF = 655.957
 # Unités de chaque devise pour 1 FCFA (XOF), à parité fixe.
 PEGGED: dict[str, float] = {"XOF": 1.0, "XAF": 1.0, "EUR": 1 / EUR_XOF, "KMF": 491.96775 / EUR_XOF, "CVE": 110.265 / EUR_XOF}
 
-# Pays (ISO 3166-1) → devise d'usage (ISO 4217). Pays absent ou devise sans taux : dollar américain.
+# Pays (ISO 3166-1) → devise d'usage (ISO 4217).
 _COUNTRIES = """
 AD:EUR AE:AED AF:AFN AG:XCD AI:XCD AL:ALL AM:AMD AO:AOA AR:ARS AS:USD AT:EUR AU:AUD AW:AWG AX:EUR AZ:AZN BA:BAM BB:BBD BD:BDT BE:EUR
 BF:XOF BG:EUR BH:BHD BI:BIF BJ:XOF BL:EUR BM:BMD BN:BND BO:BOB BQ:USD BR:BRL BS:BSD BT:BTN BW:BWP BY:BYN BZ:BZD CA:CAD CC:AUD CD:CDF
@@ -58,26 +59,26 @@ _lock = asyncio.Lock()
 
 
 def currency_for_country(country: str | None, rates: dict[str, float]) -> str | None:
-    """Devise à proposer par défaut ; None si le pays est inconnu (le site affiche alors seulement le FCFA)."""
-    if not country:
-        return None
-    code = COUNTRY_CURRENCY.get(country.upper(), "USD")
-    return code if code in rates else ("USD" if "USD" in rates else None)
+    """Devise à proposer par défaut ; None si le pays est inconnu ou sa devise non proposée (le site affiche alors le FCFA)."""
+    code = COUNTRY_CURRENCY.get((country or "").upper())
+    return code if code and code in rates else None
+
+
+def for_countries(rates: dict[str, float], countries: list[str]) -> dict[str, float]:
+    """Taux limités aux devises des pays ouverts, FCFA toujours compris."""
+    wanted = {"XOF"} | {COUNTRY_CURRENCY[c] for c in countries if c in COUNTRY_CURRENCY}
+    return {c: r for c, r in rates.items() if c in wanted}
 
 
 def parse(payload: dict) -> dict[str, float]:
-    """Réponse de la source (base USD) → unités de chaque devise pour 1 FCFA. Lève ValueError si la réponse est inutilisable."""
-    if not isinstance(payload, dict) or payload.get("result") != "success" or not isinstance(payload.get("rates"), dict):
+    """Réponse de la source (base EUR) → unités de chaque devise pour 1 FCFA. Lève ValueError si la réponse est inutilisable."""
+    if not isinstance(payload, dict) or payload.get("base") != "EUR" or not isinstance(payload.get("rates"), dict):
         raise ValueError("réponse inattendue")
-    raw = payload["rates"]
-    xof = raw.get("XOF")
-    if not isinstance(xof, (int, float)) or not math.isfinite(xof) or xof <= 0:
-        raise ValueError("taux XOF absent")
     out = {}
-    for code, v in raw.items():
+    for code, v in payload["rates"].items():
         if isinstance(code, str) and len(code) == 3 and code.isalpha() and code.isupper() and isinstance(v, (int, float)) and math.isfinite(v) and v > 0:
-            out[code] = float(v) / float(xof)
-    if len(out) < 20:
+            out[code] = float(v) / EUR_XOF
+    if len(out) < 10:
         raise ValueError("trop peu de devises")
     return {**out, **PEGGED}
 
@@ -116,7 +117,7 @@ def _age(v: dict, field: str, now: datetime.datetime) -> datetime.timedelta | No
 
 async def current(db: AsyncSession, fetch: Callable[[], Awaitable[dict]] | None = None, now: datetime.datetime | None = None,
                   use_memory: bool = True) -> dict:
-    """Taux à afficher : {rates, updatedAt (ISO, heure de la source), source: "exchangerate-api" | "fixed"}."""
+    """Taux à afficher : {rates, updatedAt (jour des taux BCE), source: "ecb" | "fixed"}."""
     if use_memory and _mem["v"] is not None and time.monotonic() - _mem["at"] < MEMORY_SECONDS:
         return _mem["v"]
     async with _lock:
@@ -126,21 +127,23 @@ async def current(db: AsyncSession, fetch: Callable[[], Awaitable[dict]] | None 
         stored = await _stored(db)
         fetched_age = _age(stored, "fetchedAt", now) if stored else None
         failed_age = _age(stored, "failedAt", now) if stored else None
-        fresh = fetched_age is not None and fetched_age < REFRESH
+        fresh = fetched_age is not None and fetched_age < REFRESH and stored.get("source") == "ecb"  # anciens taux d'une autre source : remplacés
         if not fresh and (failed_age is None or failed_age >= RETRY):
             try:
                 payload = await (fetch or fetch_source)()
                 rates = parse(payload)
-                ts = payload.get("time_last_update_unix")
-                updated = datetime.datetime.fromtimestamp(ts, datetime.UTC).replace(tzinfo=None).isoformat() if isinstance(ts, (int, float)) else now.isoformat()
-                stored = {"rates": rates, "updatedAt": updated, "fetchedAt": now.isoformat(), "source": "exchangerate-api"}
+                try:
+                    updated = datetime.date.fromisoformat(payload.get("date") or "").isoformat()
+                except ValueError:
+                    updated = now.date().isoformat()
+                stored = {"rates": rates, "updatedAt": updated, "fetchedAt": now.isoformat(), "source": "ecb"}
                 await _save(db, stored)
             except Exception as e:  # source indisponible : on garde les derniers taux connus, ou la parité fixe
                 log.warning("taux de change indisponibles : %s", e)
                 if stored:
                     stored = {**stored, "failedAt": now.isoformat()}
                     await _save(db, stored)
-        out = {"rates": {**stored["rates"], **PEGGED}, "updatedAt": stored.get("updatedAt"), "source": stored.get("source", "exchangerate-api")} if stored else _fixed()
+        out = {"rates": {**stored["rates"], **PEGGED}, "updatedAt": stored.get("updatedAt"), "source": "ecb" if stored.get("source") == "ecb" else "fixed"} if stored else _fixed()
         _mem.update(at=time.monotonic(), v=out)
         return out
 

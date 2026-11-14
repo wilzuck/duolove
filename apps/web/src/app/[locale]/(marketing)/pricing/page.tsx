@@ -8,8 +8,7 @@ import { Link } from '@/i18n/navigation';
 import { PageToc } from '@/components/marketing/PageToc';
 import { PricingTable } from '@/components/marketing/PricingTable';
 import { fetchCatalog } from '@/lib/catalog';
-import { formatXof } from '@/lib/format';
-import { ApproxPrice } from '@/components/Money';
+import { PaidInXof, Price, PriceMessage } from '@/components/Money';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -78,9 +77,9 @@ export default async function Pricing({ params }: { params: Promise<{ locale: st
                       <span className={cn('font-display text-5xl font-extrabold', p.kind === 'SUPER_LIKE_PACK' ? 'text-violet-700' : 'text-brand-ink')}>{big}</span>
                       <span className="font-semibold">{label}</span>
                       {p.kind === 'BOOST' && <span className="text-sm text-muted">{t('plans.boostDuration')}</span>}
-                      {p.kind !== 'BOOST' && p.quantity > 1 && <span className="text-sm text-muted">{t('plans.perUnit', { price: formatXof(Math.round(p.priceXof / p.quantity), locale) })}</span>}
-                      <span className={cn('mt-3 rounded-full px-4 py-1.5 text-lg font-bold', p.kind === 'SUPER_LIKE_PACK' ? 'bg-violet-100 text-violet-800' : 'bg-soft text-brand-ink')}>{formatXof(p.priceXof, locale)}</span>
-                      <ApproxPrice xof={p.priceXof} className="mt-1" />
+                      {p.kind !== 'BOOST' && p.quantity > 1 && <span className="text-sm text-muted"><PriceMessage k="plans.perUnit" xof={Math.round(p.priceXof / p.quantity)} /></span>}
+                      <span className={cn('mt-3 rounded-full px-4 py-1.5 text-lg font-bold', p.kind === 'SUPER_LIKE_PACK' ? 'bg-violet-100 text-violet-800' : 'bg-soft text-brand-ink')}><Price xof={p.priceXof} /></span>
+                      <PaidInXof xof={p.priceXof} className="mt-1" />
                       <AuthSwitch guest={null} member={<Link href={`/shop#prod-${p.kind}`} className="mt-3 w-full"><Button size="sm" className={cn('w-full', p.kind === 'SUPER_LIKE_PACK' && 'bg-none bg-violet-700 text-white hover:bg-violet-800')}>{t('plans.order')}</Button></Link>} />
                     </li>
                   );

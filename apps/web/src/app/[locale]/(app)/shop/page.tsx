@@ -8,8 +8,8 @@ import { useApiError } from '@/hooks/useApiError';
 import { usePay } from '@/hooks/usePay';
 import { keys, useCatalog, useMe, useMyProfile } from '@/hooks/useQueries';
 import { api, post } from '@/lib/api';
-import { formatDate, formatXof, timeAgo } from '@/lib/format';
-import { ApproxPrice, CurrencyPicker } from '@/components/Money';
+import { formatDate, timeAgo } from '@/lib/format';
+import { CurrencyPicker, PaidInXof, usePrice } from '@/components/Money';
 import { Link } from '@/i18n/navigation';
 import { PromoCard, discounted, type AppliedPromo } from '@/components/app/PromoCard';
 import { useUi } from '@/lib/store';
@@ -23,6 +23,7 @@ const BOOSTS = ['BOOST_30', 'BOOST_120', 'BOOST_1440'] as const;
 export default function ShopPage() {
   const t = useTranslations();
   const locale = useLocale();
+  const price = usePrice();
   const qc = useQueryClient();
   const err = useApiError();
   const toast = useUi((s) => s.toast);
@@ -89,11 +90,11 @@ export default function ShopPage() {
                     <span className={cn('font-display text-5xl font-extrabold', p.kind === 'SUPER_LIKE_PACK' ? 'text-violet-700' : 'text-brand-ink')}>{big}</span>
                     <span className="font-semibold">{what}</span>
                     {p.kind === 'BOOST' && <span className="text-sm text-muted">{t('plans.boostDuration')}</span>}
-                    {p.kind !== 'BOOST' && p.quantity > 1 && <span className="text-sm text-muted">{t('plans.perUnit', { price: formatXof(Math.round((promo ? discounted(p.priceXof, promo.percent) : p.priceXof) / p.quantity), locale) })}</span>}
+                    {p.kind !== 'BOOST' && p.quantity > 1 && <span className="text-sm text-muted">{t('plans.perUnit', { price: price(Math.round((promo ? discounted(p.priceXof, promo.percent) : p.priceXof) / p.quantity)) })}</span>}
                     <span className={cn('mt-3 rounded-full px-4 py-1.5 text-lg font-bold', p.kind === 'SUPER_LIKE_PACK' ? 'bg-violet-100 text-violet-800 dark:bg-violet-950/50 dark:text-violet-200' : 'bg-soft text-brand-ink')}>
-                      {promo ? <><s className="mr-1.5 text-sm font-medium opacity-60">{formatXof(p.priceXof, locale)}</s>{formatXof(discounted(p.priceXof, promo.percent), locale)}</> : formatXof(p.priceXof, locale)}
+                      {promo ? <><s className="mr-1.5 text-sm font-medium opacity-60">{price(p.priceXof)}</s>{price(discounted(p.priceXof, promo.percent))}</> : price(p.priceXof)}
                     </span>
-                    <ApproxPrice xof={promo ? discounted(p.priceXof, promo.percent) : p.priceXof} className="mt-1" />
+                    <PaidInXof xof={promo ? discounted(p.priceXof, promo.percent) : p.priceXof} className="mt-1" />
                     <Button size="sm" className={cn('mt-3 w-full', p.kind === 'SUPER_LIKE_PACK' && 'bg-none bg-violet-700 text-white hover:bg-violet-800')} loading={busy} onClick={() => pay({ key: p.code, body: { type: 'product', code: p.code, promoCode: promo?.code } })}>{t('plans.order')}</Button>
                   </li>
                 );

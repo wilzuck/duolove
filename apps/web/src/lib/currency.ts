@@ -1,11 +1,9 @@
 /** Prix affichés aussi dans une autre devise, à titre indicatif (le paiement se fait toujours en FCFA). Fonctions pures, testées. */
 
 export const BASE_CURRENCY = 'XOF';
-/** Devises proposées en tête de liste : zone FCFA, diaspora (Europe, Amérique du Nord), voisins anglophones et Maghreb. */
-export const COMMON_CURRENCIES = ['XOF', 'XAF', 'EUR', 'USD', 'CAD', 'GBP', 'CHF', 'NGN', 'GHS', 'MAD'] as const;
 export const CURRENCY_STORAGE_KEY = 'crushduo.currency';
 
-export interface FxRates { rates: Record<string, number>; updatedAt: string | null; source: 'exchangerate-api' | 'fixed'; country: string | null; detected: string | null }
+export interface FxRates { rates: Record<string, number>; updatedAt: string | null; source: 'ecb' | 'fixed'; country: string | null; detected: string | null }
 
 const isCode = (v: unknown): v is string => typeof v === 'string' && /^[A-Z]{3}$/.test(v);
 
@@ -46,10 +44,9 @@ export function currencyLabel(code: string, locale: string): string {
   }
 }
 
-/** Liste du sélecteur : devises courantes d'abord, puis toutes les autres par ordre alphabétique du nom. */
+/** Liste du sélecteur (devises des pays ouverts, fournies par le serveur) : FCFA d'abord, puis les autres par ordre alphabétique du nom. */
 export function currencyOptions(rates: Record<string, number>, locale: string): { code: string; label: string }[] {
-  const common = COMMON_CURRENCIES.filter((c) => rates[c]);
-  const rest = Object.keys(rates).filter((c) => isCode(c) && (rates[c] ?? 0) > 0 && !common.includes(c as never)).map((code) => ({ code, label: currencyLabel(code, locale) }))
+  const rest = Object.keys(rates).filter((c) => isCode(c) && c !== BASE_CURRENCY && (rates[c] ?? 0) > 0).map((code) => ({ code, label: currencyLabel(code, locale) }))
     .sort((a, b) => a.label.localeCompare(b.label, intl(locale)));
-  return [...common.map((code) => ({ code, label: currencyLabel(code, locale) })), ...rest];
+  return [...(rates[BASE_CURRENCY] ? [{ code: BASE_CURRENCY, label: currencyLabel(BASE_CURRENCY, locale) }] : []), ...rest];
 }

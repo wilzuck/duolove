@@ -29,10 +29,9 @@ describe('prix dans la devise du visiteur', () => {
     expect(nb(formatMoney(2500, 'XAF', 'fr'))).toMatch(/^2 500 /);
   });
 
-  it('liste : devises courantes en tête, puis les autres', () => {
-    const o = currencyOptions({ ...rates, JPY: 0.26, AED: 0.006 }, 'fr').map((x) => x.code);
-    expect(o.slice(0, 5)).toEqual(['XOF', 'XAF', 'EUR', 'USD', 'NGN']);
-    expect(o).toContain('JPY');
+  it('liste : FCFA en tête, puis les autres devises par nom', () => {
+    const o = currencyOptions({ EUR: 0.0015, CAD: 0.0023, XOF: 1, ZZZ: 0 }, 'fr').map((x) => x.code);
+    expect(o).toEqual(['XOF', 'CAD', 'EUR']); // Dollar canadien < Euro ; taux nul exclu
     expect(currencyLabel('EUR', 'fr')).toBe('Euro (EUR)');
   });
 });

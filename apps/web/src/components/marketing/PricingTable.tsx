@@ -5,8 +5,7 @@ import { useState, type ReactNode } from 'react';
 import type { PlanCode } from '@duomatch/types';
 import { Badge, Card, cn } from '@duomatch/ui';
 import { useCatalog } from '@/hooks/useQueries';
-import { formatXof } from '@/lib/format';
-import { ApproxPrice, CurrencyPicker } from '@/components/Money';
+import { CurrencyPicker, PaidInXof, usePrice } from '@/components/Money';
 import { Button } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Catalog, PlanView } from '@/lib/types';
@@ -55,6 +54,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
   const t = useTranslations();
   const locale = useLocale();
   const { data } = useCatalog(initial);
+  const money = usePrice();
   useScrollToHash(!!data);
   const [months, setMonths] = useState(defaultMonths);
   const [showAll, setShowAll] = useState(!collapseFeatures);
@@ -101,26 +101,26 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
                 // Remise du code : prix barré, prix remisé et total du prochain paiement (même arrondi que le serveur : remise = round(total × % / 100)).
                 <div className="space-y-1">
                   <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
-                    <del className="text-lg font-semibold text-muted decoration-2"><span className="sr-only">{t('plans.regularPrice')} </span>{formatXof(Math.round((price.totalXof + price.savingsXof) / price.months), locale)}</del>
-                    <span className="font-display text-4xl font-extrabold"><span className="sr-only">{t('plans.promoPrice')} </span>{formatXof(Math.round((price.totalXof - Math.round((price.totalXof * promo.percent) / 100)) / Math.max(1, price.months)), locale)}</span>
+                    <del className="text-lg font-semibold text-muted decoration-2"><span className="sr-only">{t('plans.regularPrice')} </span>{money(Math.round((price.totalXof + price.savingsXof) / price.months))}</del>
+                    <span className="font-display text-4xl font-extrabold"><span className="sr-only">{t('plans.promoPrice')} </span>{money(Math.round((price.totalXof - Math.round((price.totalXof * promo.percent) / 100)) / Math.max(1, price.months)))}</span>
                     <span className="text-sm text-muted">{t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')}</span>
                   </p>
-                  <ApproxPrice xof={Math.round((price.totalXof - Math.round((price.totalXof * promo.percent) / 100)) / Math.max(1, price.months))} suffix={t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')} />
-                  <p className="text-sm font-semibold text-success-ink">{t(price.months === 0 ? 'plans.promoTotalWeek' : 'plans.promoTotal', { code: promo.code, percent: promo.percent, total: formatXof(price.totalXof - Math.round((price.totalXof * promo.percent) / 100), locale), n: price.months })}</p>
+                  <PaidInXof xof={price.totalXof - Math.round((price.totalXof * promo.percent) / 100)} />
+                  <p className="text-sm font-semibold text-success-ink">{t(price.months === 0 ? 'plans.promoTotalWeek' : 'plans.promoTotal', { code: promo.code, percent: promo.percent, total: money(price.totalXof - Math.round((price.totalXof * promo.percent) / 100)), n: price.months })}</p>
                 </div>
               ) : (
                 <div className="space-y-1">
                   <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
                     {price.savingsXof > 0 && (
-                      <del className="text-lg font-semibold text-muted decoration-2"><span className="sr-only">{t('plans.regularPrice')} </span>{formatXof(Math.round((price.totalXof + price.savingsXof) / price.months), locale)}</del>
+                      <del className="text-lg font-semibold text-muted decoration-2"><span className="sr-only">{t('plans.regularPrice')} </span>{money(Math.round((price.totalXof + price.savingsXof) / price.months))}</del>
                     )}
-                    <span className="font-display text-4xl font-extrabold"><span className="sr-only">{price.savingsXof > 0 ? `${t('plans.promoPrice')} ` : ''}</span>{formatXof(price.monthlyEquivalentXof, locale)}</span>
+                    <span className="font-display text-4xl font-extrabold"><span className="sr-only">{price.savingsXof > 0 ? `${t('plans.promoPrice')} ` : ''}</span>{money(price.monthlyEquivalentXof)}</span>
                     <span className="text-sm text-muted">{t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')}</span>
                   </p>
-                  <ApproxPrice xof={price.monthlyEquivalentXof} suffix={t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')} />
+                  <PaidInXof xof={price.totalXof} />
                   <p className="text-sm text-muted">
-                    {price.months === 0 ? t('plans.billedWeek') : price.months === 1 ? t('plans.billedMonthly') : t('plans.billedOnce', { total: formatXof(price.totalXof, locale), n: price.months })}
-                    {price.discountPercent > 0 && <span className="ml-2 font-semibold text-success-ink">{t('plans.save', { amount: formatXof(price.savingsXof, locale), pct: price.discountPercent })}</span>}
+                    {price.months === 0 ? t('plans.billedWeek') : price.months === 1 ? t('plans.billedMonthly') : t('plans.billedOnce', { total: money(price.totalXof), n: price.months })}
+                    {price.discountPercent > 0 && <span className="ml-2 font-semibold text-success-ink">{t('plans.save', { amount: money(price.savingsXof), pct: price.discountPercent })}</span>}
                   </p>
                 </div>
               )}
