@@ -5297,5 +5297,13 @@
       }
     },
     "skipShort": "Skip"
+  },
+  "fx": {
+    "label": "Also show prices in",
+    "base": "FCFA only",
+    "about": "about",
+    "note": "You pay in FCFA. Indicative conversion at the {date} rate: your bank or mobile operator applies its own rate.",
+    "noteFixed": "You pay in FCFA. Indicative conversion at the fixed euro parity: your bank or mobile operator applies its own rate.",
+    "source": "Rates by ExchangeRate-API"
   }
 }

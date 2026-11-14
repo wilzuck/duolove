@@ -9,6 +9,7 @@ import { usePay } from '@/hooks/usePay';
 import { keys, useCatalog, useMe, useMyProfile } from '@/hooks/useQueries';
 import { api, post } from '@/lib/api';
 import { formatDate, formatXof, timeAgo } from '@/lib/format';
+import { ApproxPrice, CurrencyPicker } from '@/components/Money';
 import { Link } from '@/i18n/navigation';
 import { PromoCard, discounted, type AppliedPromo } from '@/components/app/PromoCard';
 import { useUi } from '@/lib/store';
@@ -68,6 +69,7 @@ export default function ShopPage() {
       </section>
 
       <PromoCard applied={promo} onApply={setPromo} />
+      <CurrencyPicker />
 
       {groups.map((g) => {
         const items = catalog.products.filter((p) => p.kind === g.kind);
@@ -91,6 +93,7 @@ export default function ShopPage() {
                     <span className={cn('mt-3 rounded-full px-4 py-1.5 text-lg font-bold', p.kind === 'SUPER_LIKE_PACK' ? 'bg-violet-100 text-violet-800 dark:bg-violet-950/50 dark:text-violet-200' : 'bg-soft text-brand-ink')}>
                       {promo ? <><s className="mr-1.5 text-sm font-medium opacity-60">{formatXof(p.priceXof, locale)}</s>{formatXof(discounted(p.priceXof, promo.percent), locale)}</> : formatXof(p.priceXof, locale)}
                     </span>
+                    <ApproxPrice xof={promo ? discounted(p.priceXof, promo.percent) : p.priceXof} className="mt-1" />
                     <Button size="sm" className={cn('mt-3 w-full', p.kind === 'SUPER_LIKE_PACK' && 'bg-none bg-violet-700 text-white hover:bg-violet-800')} loading={busy} onClick={() => pay({ key: p.code, body: { type: 'product', code: p.code, promoCode: promo?.code } })}>{t('plans.order')}</Button>
                   </li>
                 );

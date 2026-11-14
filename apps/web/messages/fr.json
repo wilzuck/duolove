@@ -5297,5 +5297,13 @@
       }
     },
     "skipShort": "Passer"
+  },
+  "fx": {
+    "label": "Voir aussi les prix en",
+    "base": "FCFA seulement",
+    "about": "environ",
+    "note": "Paiement en FCFA. Conversion indicative au taux du {date} : votre banque ou votre opérateur applique son propre taux.",
+    "noteFixed": "Paiement en FCFA. Conversion indicative à la parité fixe avec l’euro : votre banque ou votre opérateur applique son propre taux.",
+    "source": "Taux : ExchangeRate-API"
   }
 }

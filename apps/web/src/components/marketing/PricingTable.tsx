@@ -6,6 +6,7 @@ import type { PlanCode } from '@duomatch/types';
 import { Badge, Card, cn } from '@duomatch/ui';
 import { useCatalog } from '@/hooks/useQueries';
 import { formatXof } from '@/lib/format';
+import { ApproxPrice, CurrencyPicker } from '@/components/Money';
 import { Button } from '@duomatch/ui';
 import { Link } from '@/i18n/navigation';
 import type { Catalog, PlanView } from '@/lib/types';
@@ -74,6 +75,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
           ))}
         </div>
       )}
+      <CurrencyPicker />
       <div className={cn('grid justify-items-center gap-5', plans.length === 2 ? 'mx-auto max-w-[52rem] lg:grid-cols-2' : plans.length === 1 ? '' : plans.length >= 4 ? 'md:grid-cols-2 xl:grid-cols-4' : 'lg:grid-cols-3')}>
         {plans.map((p) => {
           const Icon = ICON[p.code] ?? Sparkles;
@@ -103,6 +105,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
                     <span className="font-display text-4xl font-extrabold"><span className="sr-only">{t('plans.promoPrice')} </span>{formatXof(Math.round((price.totalXof - Math.round((price.totalXof * promo.percent) / 100)) / Math.max(1, price.months)), locale)}</span>
                     <span className="text-sm text-muted">{t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')}</span>
                   </p>
+                  <ApproxPrice xof={Math.round((price.totalXof - Math.round((price.totalXof * promo.percent) / 100)) / Math.max(1, price.months))} suffix={t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')} />
                   <p className="text-sm font-semibold text-success-ink">{t(price.months === 0 ? 'plans.promoTotalWeek' : 'plans.promoTotal', { code: promo.code, percent: promo.percent, total: formatXof(price.totalXof - Math.round((price.totalXof * promo.percent) / 100), locale), n: price.months })}</p>
                 </div>
               ) : (
@@ -114,6 +117,7 @@ export function PricingTable({ initial, current, action, defaultMonths = 1, hide
                     <span className="font-display text-4xl font-extrabold"><span className="sr-only">{price.savingsXof > 0 ? `${t('plans.promoPrice')} ` : ''}</span>{formatXof(price.monthlyEquivalentXof, locale)}</span>
                     <span className="text-sm text-muted">{t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')}</span>
                   </p>
+                  <ApproxPrice xof={price.monthlyEquivalentXof} suffix={t(price.months === 0 ? 'plans.perWeek' : 'plans.perMonth')} />
                   <p className="text-sm text-muted">
                     {price.months === 0 ? t('plans.billedWeek') : price.months === 1 ? t('plans.billedMonthly') : t('plans.billedOnce', { total: formatXof(price.totalXof, locale), n: price.months })}
                     {price.discountPercent > 0 && <span className="ml-2 font-semibold text-success-ink">{t('plans.save', { amount: formatXof(price.savingsXof, locale), pct: price.discountPercent })}</span>}
