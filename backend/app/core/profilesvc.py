@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import credits as credits_svc
-from app.core import entitlements, storage
+from app.core import entitlements, launch, storage
 from app.core.cities import pref_cities, unique_cities
 from app.core.completeness import completeness_level, compute_completeness
 from app.core.constants import INTEREST_SLUGS, age_from_birth_date
@@ -82,6 +82,8 @@ async def recompute(db: AsyncSession, user_id: str) -> None:
 
 async def update_profile(db: AsyncSession, user_id: str, data: dict) -> dict:
     p = await _profile(db, user_id)
+    if data.get("country") and data["country"] != p.country:
+        await launch.assert_open(db, data["country"])  # changer de pays : seulement vers un pays ouvert (garder le sien reste toujours permis)
     interests = data.pop("interests", None)
     if "values" in data:
         vals = data.pop("values")

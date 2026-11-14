@@ -105,3 +105,16 @@ async def test_pays_detecte_par_cloudflare_pour_presélection(app, http):
     for unknown in ("XX", "T1", "", "ZZZ", "1"):  # inconnu, Tor, vide, invalide : aucune présélection
         assert (await http.get("/api/places/country", headers={"CF-IPCountry": unknown})).json() == {"country": None}, unknown
     assert (await http.get("/api/places/country")).json() == {"country": None}  # hors Cloudflare (développement)
+
+
+async def test_profil_seulement_vers_un_pays_ouvert(app, db):
+    ad, u = await admin(app, db), await member(app, db)
+    me = (await u.agent.get("/api/profiles/me")).json()
+    own = me["country"]
+    others = [c for c in ("FR", "BE", "CA") if c != own]
+    assert (await ad.agent.put("/api/admin/launch-countries", json={"countries": [others[0]]})).status_code == 200
+    closed = await u.agent.patch("/api/profiles/me", json={"country": others[1]})
+    assert closed.status_code == 403 and closed.json()["error"]["code"] == "COUNTRY_NOT_OPEN"
+    # Garder son pays, même fermé depuis, reste permis ; passer à un pays ouvert aussi.
+    assert (await u.agent.patch("/api/profiles/me", json={"country": own, "occupation": "Infirmière"})).status_code == 200
+    assert (await u.agent.patch("/api/profiles/me", json={"country": others[0]})).json()["country"] == others[0]

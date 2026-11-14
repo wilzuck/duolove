@@ -7,6 +7,8 @@ import { Button, ChoiceCards, Checkbox, cn, Field, Input, RangeSlider, Select, T
 import { Link } from '@/i18n/navigation';
 import { CUSTOM_VALUE_MAX, isCatalogValue, LIFE_VALUES, MAX_LIFE_VALUES, valueIcon } from '@/lib/lifeValues';
 import type { Limits, MyProfile } from '@/lib/types';
+import { openCountries } from '@/lib/openCountries';
+import { useLaunchCountries } from '@/hooks/useQueries';
 import { CityInput } from '../CityInput';
 import { CityMultiInput } from '../CityMultiInput';
 
@@ -95,6 +97,7 @@ export function LifestyleFields({ value, onChange }: { value: LifeValue; onChang
 export function AboutFields({ value, onChange, withLocation }: { value: AboutValue; onChange: (v: AboutValue) => void; withLocation?: boolean }) {
   const t = useTranslations();
   const locale = useLocale();
+  const launch = useLaunchCountries();
   const set = <K extends keyof AboutValue>(k: K, v: AboutValue[K]) => onChange({ ...value, [k]: v });
   return (
     <div className="space-y-6">
@@ -102,7 +105,7 @@ export function AboutFields({ value, onChange, withLocation }: { value: AboutVal
       <Field label={t('profile.occupation')}>{(p) => <Input {...p} maxLength={80} value={value.occupation} onChange={(e) => set('occupation', e.target.value)} />}</Field>
       {withLocation && (
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={t('auth.country')}>{(p) => <Select {...p} value={value.country} onChange={(e) => set('country', e.target.value)}>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+          <Field label={t('auth.country')}>{(p) => <Select {...p} value={value.country} onChange={(e) => set('country', e.target.value)}>{openCountries(launch.data?.countries, [value.country]).map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
           <Field label={t('auth.city')}>{(p) => <CityInput {...p} country={value.country} value={value.city} onChange={(v) => set('city', v)} />}</Field>
         </div>
       )}
@@ -130,6 +133,7 @@ export const prefDefault = (p: MyProfile): Pref => ({ ...PREF_BASE, ...p.prefere
 
 export function PreferenceFields({ value, onChange, limits }: { value: Pref; onChange: (v: Pref) => void; limits: Limits }) {
   const t = useTranslations();
+  const launch = useLaunchCountries();
   const locale = useLocale();
   const set = <K extends keyof Pref>(k: K, v: Pref[K]) => onChange({ ...value, [k]: v });
   const locked = !limits.advancedFilters;
@@ -143,7 +147,7 @@ export function PreferenceFields({ value, onChange, limits }: { value: Pref; onC
       <RangeSlider label={c('age')} min={18} max={99} value={[value.ageMin, value.ageMax]} minLabel={t('prefs.ageMin')} maxLabel={t('prefs.ageMax')}
         valueText={t('live.ageBetween', { min: value.ageMin, max: value.ageMax })} onChange={([a, b]) => onChange({ ...value, ageMin: a, ageMax: b })} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={c('country')}>{(p) => <Select {...p} value={value.country ?? ''} onChange={(e) => set('country', e.target.value || null)}><option value="">{t('prefs.anyCountry')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
+        <Field label={c('country')}>{(p) => <Select {...p} value={value.country ?? ''} onChange={(e) => set('country', e.target.value || null)}><option value="">{t('prefs.anyCountry')}</option>{openCountries(launch.data?.countries, [value.country]).map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
         <Field label={c('city')} hint={t('prefs.cityHint')}>{(p) => <CityMultiInput {...p} country={value.country} value={value.cities} onChange={(v) => onChange({ ...value, cities: v, city: v[0] ?? null })} />}</Field>
       </div>
       <div className="space-y-2"><p className="text-sm font-medium">{c('intents')}</p><Chips label={c('intents')} options={INTENTS} value={value.intents} onChange={(v) => set('intents', v)} render={(i) => t(`intent.${i}`)} /></div>

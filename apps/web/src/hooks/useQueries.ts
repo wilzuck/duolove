@@ -33,3 +33,6 @@ export const useLiveInvites = () => useQuery({ queryKey: keys.liveInvites, query
 
 /** Réglages publics des fonctions d'engagement (activation, bornes) : pilotés par l'administration. */
 export const useEngagementConfig = () => useQuery({ queryKey: ['engagement', 'config'], queryFn: () => api<EngagementConfig>('/engagement/config'), staleTime: 60_000 });
+
+/** Pays ouverts à l'inscription (Administration › Pays), partagés avec la page d'inscription. */
+export const useLaunchCountries = () => useQuery({ queryKey: ['launch-countries'], staleTime: 60_000, queryFn: () => api<{ countries: string[]; cities?: string[] }>('/launch-countries') });

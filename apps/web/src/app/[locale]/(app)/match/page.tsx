@@ -7,7 +7,8 @@ import { COUNTRIES, countryFlag, LIVING, SEEKING, type LiveCriteria } from '@duo
 import { Avatar, Badge, Button, Card, EmptyState, Field, RadioChips, RangeSlider, Select, Skeleton, Switch } from '@duomatch/ui';
 import { countryName } from '@/components/app/ProfileCard';
 import { useApiError } from '@/hooks/useApiError';
-import { keys, useLive, useLiveInvites } from '@/hooks/useQueries';
+import { keys, useLaunchCountries, useLive, useLiveInvites } from '@/hooks/useQueries';
+import { openCountries } from '@/lib/openCountries';
 import { Link, useRouter } from '@/i18n/navigation';
 import { del, post, put } from '@/lib/api';
 import { formatDate, formatHeight, formatTime } from '@/lib/format';
@@ -48,7 +49,10 @@ function CriteriaForm({ value, onChange }: { value: Draft; onChange: (d: Draft) 
   const tri = (label: string, k: 'hasChildren' | 'likesPets') => (
     <RadioChips legend={label} value={value[k]} onChange={(v) => set(k, v)} options={[{ value: 'ANY', label: t('live.any') }, { value: 'YES', label: t('life.yes') }, { value: 'NO', label: t('life.no') }]} />
   );
-  const countries = COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>);
+  const launch = useLaunchCountries();
+  const option = (c: (typeof COUNTRIES)[number]) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>;
+  const countries = openCountries(launch.data?.countries, [value.country]).map(option); // pays recherché : seulement les pays ouverts
+  const origins = COUNTRIES.map(option); // pays d'origine : tous (diaspora)
   const hLo = value.heightMin ? Number(value.heightMin) : H_MIN;
   const hHi = value.heightMax ? Number(value.heightMax) : H_MAX;
   const heightText = hLo <= H_MIN && hHi >= H_MAX ? t('live.any') : hLo <= H_MIN ? t('live.heightUpTo', { max: formatHeight(hHi, locale) }) : hHi >= H_MAX ? t('live.heightFrom', { min: formatHeight(hLo, locale) }) : t('live.heightBetween', { min: formatHeight(hLo, locale), max: formatHeight(hHi, locale) });
@@ -62,7 +66,7 @@ function CriteriaForm({ value, onChange }: { value: Draft; onChange: (d: Draft) 
         valueText={heightText} onChange={([a, b]) => onChange({ ...value, heightMin: a <= H_MIN ? '' : String(a), heightMax: b >= H_MAX ? '' : String(b) })} />
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={c('country')}>{(p) => <Select {...p} value={value.country} onChange={(e) => set('country', e.target.value)}><option value="">{t('prefs.anyCountry')}</option>{countries}</Select>}</Field>
-        <Field label={c('origin')}>{(p) => <Select {...p} value={value.originCountry} onChange={(e) => set('originCountry', e.target.value)}><option value="">{t('live.any')}</option>{countries}</Select>}</Field>
+        <Field label={c('origin')}>{(p) => <Select {...p} value={value.originCountry} onChange={(e) => set('originCountry', e.target.value)}><option value="">{t('live.any')}</option>{origins}</Select>}</Field>
       </div>
       <Field label={t(`prefs.crit.${value.seeking}.city`)} hint={t('prefs.cityHint')}>{(p) => <CityMultiInput {...p} country={value.country || null} value={value.cities} onChange={(v) => set('cities', v)} />}</Field>
       {tri(c('children'), 'hasChildren')}
