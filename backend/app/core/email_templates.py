@@ -65,6 +65,28 @@ def note(html_text: str) -> str:
     return f'<p style="margin:22px 0 0;font-family:{FONT};font-size:14px;line-height:1.6;color:{MUTED};">{html_text}</p>'
 
 
+def profile_grid(people: list[dict], cta_label: str, cta_url: str) -> str:
+    """Grille de profils (deux par ligne, lisible sur téléphone) : petite photo, prénom et âge, ville, bouton vers Découvrir.
+    `people` : [{name, age, city, photo, verified}] ; tout est échappé ici."""
+    cells = []
+    for x in people:
+        badge = f' <span style="color:{BRAND_INK};" title="Profil vérifié">&#10004;</span>' if x.get("verified") else ""
+        cells.append(
+            f'<td width="50%" valign="top" style="padding:8px;">'
+            f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid {LINE};border-radius:16px;background:#ffffff;"><tr><td align="center" style="padding:12px;">'
+            f'<a href="{esc(cta_url)}" style="text-decoration:none;"><img src="{esc(x["photo"])}" width="120" height="150" alt="{esc(x["name"])}" '
+            f'style="display:block;width:120px;height:150px;object-fit:cover;border-radius:12px;border:0;background:{SOFT};"></a>'
+            f'<p style="margin:10px 0 0;font-family:{FONT};font-size:16px;font-weight:700;color:{FG};">{esc(x["name"])}, {int(x["age"])}{badge}</p>'
+            f'<p style="margin:2px 0 0;font-family:{FONT};font-size:14px;color:{MUTED};">{esc(x["city"])}</p>'
+            f'<a href="{esc(cta_url)}" style="display:inline-block;margin:10px 0 0;padding:8px 16px;font-family:{FONT};font-size:14px;font-weight:700;color:#ffffff;'
+            f'background:{BTN_TO};border-radius:999px;text-decoration:none;">{esc(cta_label)}</a>'
+            f'</td></tr></table></td>')
+    if len(cells) % 2:
+        cells.append('<td width="50%" style="padding:8px;"></td>')
+    rows = "".join(f"<tr>{cells[i]}{cells[i + 1]}</tr>" for i in range(0, len(cells), 2))
+    return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0 0;">{rows}</table>'
+
+
 def _trust(base: str) -> str:
     """Bandeau de réassurance des e-mails de sécurité : sans fond, trois mentions séparées par un filet, icône rose d'encre devant chacune."""
     def cell(icon: str, label: str, sep: bool) -> str:

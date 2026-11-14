@@ -61,6 +61,7 @@ function NotificationsTab() {
     <Card className="divide-y divide-line px-5">
       {NOTIF.map(([k, kind]) => <Row key={k} title={t(`settings.notif.${kind}`)} text={t(k.startsWith('email') ? 'settings.notif.byEmail' : 'settings.notif.inApp')}><Switch checked={!!q.data[k]} onChange={(v) => m.mutate({ [k]: v })} label={`${t(`settings.notif.${kind}`)} — ${t(k.startsWith('email') ? 'settings.notif.byEmail' : 'settings.notif.inApp')}`} /></Row>)}
       <Row title={t('settings.notif.weekly')} text={t('settings.notif.weeklyText')}><Switch checked={q.data.emailWeekly !== false} onChange={(v) => m.mutate({ emailWeekly: v })} label={t('settings.notif.weekly')} /></Row>
+      <Row title={t('settings.notif.newProfiles')} text={t('settings.notif.newProfilesText')}><Switch checked={q.data.emailNewProfiles !== false} onChange={(v) => m.mutate({ emailNewProfiles: v })} label={t('settings.notif.newProfiles')} /></Row>
       <Row title={t('settings.notif.newsletter')} text={t('settings.notif.newsletterText')}><Switch checked={!!nl.data?.subscribed} disabled={!nl.data || setNl.isPending} onChange={(v) => setNl.mutate(v)} label={t('settings.notif.newsletter')} /></Row>
       <PushRow />
     </Card>

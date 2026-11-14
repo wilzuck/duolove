@@ -2128,7 +2128,9 @@
       "pushTestFailed": "The test could not be sent.",
       "pushError": "Couldn’t turn on notifications on this device.",
       "weekly": "Weekly summary",
-      "weeklyText": "One e-mail on Sunday evening: people who viewed your profile, pending likes, new duos and unread messages. Sent only if you accepted to receive our offers, and only when there is news."
+      "weeklyText": "One e-mail on Sunday evening: people who viewed your profile, pending likes, new duos and unread messages. Sent only if you accepted to receive our offers, and only when there is news.",
+      "newProfiles": "New profiles for you",
+      "newProfilesText": "An email with a few people who joined recently and match what you are looking for. Sent only if you agreed to receive our offers, and only when there is someone new."
     },
     "privacy": {
       "visible": "Visible profile",
@@ -3303,7 +3305,8 @@
         "newsletter": "Newsletter",
         "newsletter_confirm": "Newsletter confirmation",
         "newsletter_test": "Newsletter test",
-        "other": "Other"
+        "other": "Other",
+        "new_profiles": "New profiles"
       },
       "blockedTitle": "Blocked addresses",
       "blockedText": "When Amazon SES reports a non-existent address (hard bounce) or a spam complaint, Crushduo stops emailing it to protect the sender reputation. A complaint still lets security emails (code, password) through when the person asks for them.",
@@ -3323,6 +3326,28 @@
         "active": "On: non-essential e-mails are no longer sent.",
         "on": "Essential e-mails only: on",
         "off": "All e-mails are sent again"
+      },
+      "np": {
+        "title": "“New profiles for you” email",
+        "text": "Sends each member {min} to {max} people who joined since their last email, matching their criteria (gender sought, age, country), with a photo and visible in Discover. No email when there are not enough new people.",
+        "enable": "Turn on automatic sending",
+        "active": "On: the email is sent automatically at the frequency below.",
+        "inactive": "Off: no email is sent until you turn it on.",
+        "stats": "{subscribed} members opted in (offers accepted and box ticked) · {sent} sent in the last 30 days",
+        "frequency": "Frequency",
+        "daily": "Every day",
+        "everyDays": "Every X days",
+        "everyMonths": "Every X months",
+        "daysLabel": "Number of days",
+        "monthsLabel": "Number of months",
+        "range": "Between {min} and {max}",
+        "dailyWarnTitle": "One email a day is a lot",
+        "dailyWarn": "Daily sending increases unsubscribes and spam reports, which hurts sender reputation (including for sign-in codes). Once a week is better.",
+        "rules": "Sent between 5 pm and 11 pm UTC, never on Sunday (weekly summary day), always through Brevo (never ZeptoMail). Only to members who accepted offers, kept the box ticked in their settings and signed in within the last 60 days. Paused by “Essential emails only”.",
+        "save": "Save frequency",
+        "cancel": "Cancel",
+        "savedOn": "“New profiles” email turned on",
+        "savedOff": "“New profiles” email turned off"
       }
     },
     "guide": {

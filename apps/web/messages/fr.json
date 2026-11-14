@@ -2128,7 +2128,9 @@
       "pushTestFailed": "L’essai n’a pas pu être envoyé.",
       "pushError": "Impossible d’activer les notifications sur cet appareil.",
       "weekly": "Résumé de la semaine",
-      "weeklyText": "Un e-mail le dimanche soir : personnes qui ont vu votre profil, likes en attente, nouveaux duos et messages non lus. Envoyé seulement si vous avez accepté de recevoir nos offres, et seulement s’il y a du nouveau."
+      "weeklyText": "Un e-mail le dimanche soir : personnes qui ont vu votre profil, likes en attente, nouveaux duos et messages non lus. Envoyé seulement si vous avez accepté de recevoir nos offres, et seulement s’il y a du nouveau.",
+      "newProfiles": "Nouveaux profils pour vous",
+      "newProfilesText": "Un e-mail avec quelques personnes arrivées récemment qui correspondent à ce que vous cherchez. Envoyé seulement si vous avez accepté de recevoir nos offres, et seulement s’il y a du nouveau."
     },
     "privacy": {
       "visible": "Profil visible",
@@ -3303,7 +3305,8 @@
         "newsletter": "Newsletter",
         "newsletter_confirm": "Confirmation newsletter",
         "newsletter_test": "Test newsletter",
-        "other": "Autre"
+        "other": "Autre",
+        "new_profiles": "Nouveaux profils"
       },
       "blockedTitle": "Adresses bloquées",
       "blockedText": "Quand Amazon SES signale une adresse inexistante (rebond définitif) ou un signalement comme spam, Crushduo cesse de lui écrire pour protéger la réputation de l’expéditeur. Une plainte laisse passer les e-mails de sécurité (code, mot de passe) que la personne demande elle-même.",
@@ -3323,6 +3326,28 @@
         "active": "Activé : les e-mails non essentiels ne partent plus.",
         "on": "E-mails essentiels uniquement : activé",
         "off": "Tous les e-mails sont de nouveau envoyés"
+      },
+      "np": {
+        "title": "E-mail « De nouveaux profils pour vous »",
+        "text": "Envoie à chaque membre {min} à {max} personnes arrivées depuis son dernier e-mail, selon ses critères (genre recherché, âge, pays), avec photo, visibles dans Découvrir. Aucun e-mail s’il n’y a pas assez de nouvelles personnes.",
+        "enable": "Activer l’envoi automatique",
+        "active": "Activé : l’envoi part automatiquement selon la fréquence ci-dessous.",
+        "inactive": "Désactivé : aucun e-mail ne part tant que vous ne l’activez pas.",
+        "stats": "{subscribed} membres inscrits (offres acceptées et case cochée) · {sent} envoyés sur 30 jours",
+        "frequency": "Fréquence",
+        "daily": "Tous les jours",
+        "everyDays": "Tous les X jours",
+        "everyMonths": "Tous les X mois",
+        "daysLabel": "Nombre de jours",
+        "monthsLabel": "Nombre de mois",
+        "range": "Entre {min} et {max}",
+        "dailyWarnTitle": "Un e-mail par jour, c’est beaucoup",
+        "dailyWarn": "Un envoi quotidien fait monter les désabonnements et les signalements comme indésirable, ce qui dégrade la réputation d’envoi (y compris pour les codes de connexion). Préférez une fois par semaine.",
+        "rules": "Envoi entre 17 h et 23 h UTC, jamais le dimanche (jour du résumé hebdomadaire), toujours par Brevo (jamais ZeptoMail). Seulement aux membres qui ont accepté les offres, gardé la case dans leurs réglages et se sont connectés dans les 60 derniers jours. Suspendu par « E-mails essentiels uniquement ».",
+        "save": "Enregistrer la fréquence",
+        "cancel": "Annuler",
+        "savedOn": "E-mail « nouveaux profils » activé",
+        "savedOff": "E-mail « nouveaux profils » désactivé"
       }
     },
     "guide": {

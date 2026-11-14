@@ -1262,6 +1262,9 @@ class NotificationPreference(Base):
     pushEnabled: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('false'))
     emailWeekly: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))  # résumé hebdomadaire (envoyé seulement aux membres qui ont aussi accepté les offres)
     lastDigestAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))  # dernier résumé envoyé : un seul par semaine
+    emailNewProfiles: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text('true'))  # « De nouveaux profils pour vous » (seulement si le membre a aussi accepté les offres)
+    lastNewProfilesAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))  # dernière échéance réservée (envoi ou rien de nouveau)
+    newProfilesSentAt: Mapped[Optional[datetime.datetime]] = mapped_column(TIMESTAMP(precision=3))  # dernier e-mail réellement envoyé
     quietStart: Mapped[Optional[int]] = mapped_column(Integer)
     quietEnd: Mapped[Optional[int]] = mapped_column(Integer)
     tzOffsetMinutes: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))

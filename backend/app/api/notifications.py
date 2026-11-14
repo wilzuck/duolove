@@ -13,7 +13,7 @@ from app.models.models import Notification, NotificationPreference
 from app.schemas.profiles import NotifPrefsIn
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
-_PREF_COLS = ["inAppLikes", "inAppMatches", "inAppMessages", "emailLikes", "emailMatches", "emailMessages", "pushEnabled", "emailWeekly"]
+_PREF_COLS = ["inAppLikes", "inAppMatches", "inAppMessages", "emailLikes", "emailMatches", "emailMessages", "pushEnabled", "emailWeekly", "emailNewProfiles"]
 
 
 def _int(v: str | None, default: int) -> int:

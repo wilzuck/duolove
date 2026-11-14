@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
-from app.core import access, backups, digest, errortrack, guarantee, live_events, promo, storage, broadcastsvc, callsvc, dailyqsvc, speedsvc, datesvc, icebreakers, maintenance, jsonfmt, mail, payments, plan_config, promptsvc, realtime
+from app.core import access, backups, digest, newprofiles, errortrack, guarantee, live_events, promo, storage, broadcastsvc, callsvc, dailyqsvc, speedsvc, datesvc, icebreakers, maintenance, jsonfmt, mail, payments, plan_config, promptsvc, realtime
 from app.core.config import get_settings
 from app.core.errors import install_error_handlers
 from app.core.ratelimit import global_limit
@@ -73,13 +73,14 @@ async def lifespan(_: FastAPI):
     migrate_task = None if get_settings().node_env == "test" else asyncio.create_task(storage.auto_migrate_loop())
     backup_task = None if get_settings().node_env == "test" else asyncio.create_task(backups.first_backup_loop())
     digest_task = None if get_settings().node_env == "test" else asyncio.create_task(digest.sweep_loop(session_maker()))
+    new_profiles_task = None if get_settings().node_env == "test" else asyncio.create_task(newprofiles.sweep_loop(session_maker()))
     promo_task = None if get_settings().node_env == "test" else asyncio.create_task(promo.sweep_loop(session_maker()))
     live_events_task = None if get_settings().node_env == "test" else asyncio.create_task(live_events.sweep_loop(session_maker()))
     guarantee_task = None if get_settings().node_env == "test" else asyncio.create_task(guarantee.sweep_loop(session_maker()))
     errortrack.install_log_capture()
     errors_task = None if get_settings().node_env == "test" else asyncio.create_task(errortrack.flush_loop(session_maker()))
     yield
-    for tk in (digest_task, promo_task, live_events_task, guarantee_task, errors_task, task, dates_task, purge_task, calls_task, speed_task, broadcast_task, migrate_task, backup_task, threshold_task):
+    for tk in (digest_task, new_profiles_task, promo_task, live_events_task, guarantee_task, errors_task, task, dates_task, purge_task, calls_task, speed_task, broadcast_task, migrate_task, backup_task, threshold_task):
         if tk:
             tk.cancel()
     await dispose()

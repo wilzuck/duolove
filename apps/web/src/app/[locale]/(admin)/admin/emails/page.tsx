@@ -1,9 +1,9 @@
 'use client';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, MailCheck, MailWarning, Percent, Send, ShieldOff, Unlock, X } from 'lucide-react';
+import { AlertTriangle, MailCheck, MailWarning, Percent, Send, ShieldOff, Unlock, UserPlus, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Badge, Button, Card, DataTableView, Skeleton, Switch, cn } from '@duomatch/ui';
+import { Badge, Button, Card, DataTableView, Field, Input, Skeleton, Switch, cn } from '@duomatch/ui';
 import { KpiCard, type SeriesPoint } from '@/components/admin/DashboardParts';
 import { PeriodPicker, periodQuery, type Period } from '@/components/admin/PeriodPicker';
 import { PageHeader, StatusTabs } from '@/components/admin/PageParts';
@@ -15,7 +15,7 @@ import { api, del, post, put } from '@/lib/api';
 import { timeAgo } from '@/lib/format';
 import { useUi } from '@/lib/store';
 
-const KINDS = ['verification', 'password_reset', 'magic_link', 'notification', 'newsletter', 'newsletter_confirm', 'newsletter_test', 'other'] as const;
+const KINDS = ['verification', 'password_reset', 'magic_link', 'notification', 'new_profiles', 'newsletter', 'newsletter_confirm', 'newsletter_test', 'other'] as const;
 interface Row { id: string; to: string; subject: string; kind: string; status: 'SENT' | 'FAILED' | 'SKIPPED'; provider: string; error: string | null; createdAt: string }
 interface Stats {
   days: number; provider: 'brevo' | 'zeptomail' | 'smtp' | 'dev'; sent: number; failed: number; successRate: number | null; byKind: { kind: string; sent: number; failed: number }[];
@@ -94,6 +94,73 @@ function ProviderCard() {
   );
 }
 
+type NpUnit = 'day' | 'days' | 'months';
+interface NpSetting { enabled: boolean; unit: NpUnit; every: number }
+interface NpView { frequency: NpSetting; default: NpSetting; limits: Record<'days' | 'months', { min: number; max: number }>; subscribed: number; sent30d: number; minProfiles: number; maxProfiles: number }
+
+/** E-mail automatique « De nouveaux profils pour vous » : désactivé par défaut, fréquence globale (une semaine par défaut). */
+function NewProfilesCard() {
+  const t = useTranslations();
+  const locale = useLocale();
+  const err = useApiError();
+  const toast = useUi((u) => u.toast);
+  const qc = useQueryClient();
+  const view = useQuery({ queryKey: ['admin', 'emails', 'new-profiles'], queryFn: () => api<NpView>('/admin/emails/new-profiles') });
+  const [draft, setDraft] = useState<NpSetting | null>(null);
+  const save = useMutation({
+    mutationFn: (b: NpSetting) => put<NpView>('/admin/emails/new-profiles', b),
+    onSuccess: (r) => { setDraft(null); qc.setQueryData(['admin', 'emails', 'new-profiles'], r); toast('success', t(r.frequency.enabled ? 'admin.em.np.savedOn' : 'admin.em.np.savedOff')); },
+    onError: (e) => toast('error', err(e)),
+  });
+  const v = view.data;
+  if (!v) return <Skeleton className="h-40" />;
+  const cur = draft ?? v.frequency;
+  const lim = cur.unit === 'day' ? null : v.limits[cur.unit];
+  const valid = !lim || (Number.isInteger(cur.every) && cur.every >= lim.min && cur.every <= lim.max);
+  const dirty = !!draft && (draft.unit !== v.frequency.unit || draft.every !== v.frequency.every);
+  const setUnit = (unit: NpUnit) => setDraft({ ...cur, unit, every: unit === 'day' ? 1 : unit === 'months' ? Math.min(Math.max(cur.every, 1), 12) : Math.min(Math.max(cur.every, 2), 30) });
+  const nf = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'fr-FR');
+  const units: { key: NpUnit; label: string }[] = [
+    { key: 'day', label: t('admin.em.np.daily') }, { key: 'days', label: t('admin.em.np.everyDays') }, { key: 'months', label: t('admin.em.np.everyMonths') },
+  ];
+  return (
+    <Card className="space-y-4 p-5">
+      <div className={cn('flex items-start justify-between gap-4 rounded-2xl border p-4', v.frequency.enabled ? 'border-brand-strong bg-soft' : 'border-line')}>
+        <div>
+          <h2 className="flex items-center gap-2 font-bold"><UserPlus className="size-5" aria-hidden />{t('admin.em.np.title')}</h2>
+          <p className="mt-1 text-sm text-muted">{t('admin.em.np.text', { min: v.minProfiles, max: v.maxProfiles })}</p>
+          <p className="mt-2 text-sm font-semibold">{v.frequency.enabled ? t('admin.em.np.active') : t('admin.em.np.inactive')}</p>
+          <p className="mt-1 text-xs text-muted">{t('admin.em.np.stats', { subscribed: nf.format(v.subscribed), sent: nf.format(v.sent30d) })}</p>
+        </div>
+        <Switch checked={v.frequency.enabled} disabled={save.isPending || !valid} onChange={(on) => save.mutate({ ...cur, enabled: on })} label={t('admin.em.np.enable')} />
+      </div>
+      <div>
+        <h3 className="font-semibold">{t('admin.em.np.frequency')}</h3>
+        <div role="radiogroup" aria-label={t('admin.em.np.frequency')} className="mt-2 grid gap-2 sm:grid-cols-3">
+          {units.map((o) => (
+            <label key={o.key} className={cn('flex cursor-pointer items-center gap-2 rounded-2xl border p-3 text-sm font-semibold', cur.unit === o.key ? 'border-brand-strong bg-soft' : 'border-line')}>
+              <input type="radio" name="np-unit" className="accent-brand-strong" checked={cur.unit === o.key} onChange={() => setUnit(o.key)} />{o.label}
+            </label>
+          ))}
+        </div>
+        {lim && (
+          <div className="mt-3 max-w-xs">
+            <Field label={t(cur.unit === 'days' ? 'admin.em.np.daysLabel' : 'admin.em.np.monthsLabel')} hint={`${lim.min} – ${lim.max}`} error={valid ? undefined : t('admin.em.np.range', { min: lim.min, max: lim.max })}>
+              {(p) => <Input {...p} type="number" min={lim.min} max={lim.max} value={Number.isNaN(cur.every) ? '' : cur.every} onChange={(e) => setDraft({ ...cur, every: e.target.value === '' ? Number.NaN : Number(e.target.value) })} />}
+            </Field>
+          </div>
+        )}
+      </div>
+      {cur.unit === 'day' && <Banner tone="warning" title={t('admin.em.np.dailyWarnTitle')}>{t('admin.em.np.dailyWarn')}</Banner>}
+      <p className="text-xs text-muted">{t('admin.em.np.rules')}</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button size="sm" loading={save.isPending} disabled={!dirty || !valid} onClick={() => save.mutate(cur)}>{t('admin.em.np.save')}</Button>
+        {dirty && <Button size="sm" variant="secondary" onClick={() => setDraft(null)}>{t('admin.em.np.cancel')}</Button>}
+      </div>
+    </Card>
+  );
+}
+
 export default function AdminEmails() {
   const t = useTranslations();
   const locale = useLocale();
@@ -118,6 +185,7 @@ export default function AdminEmails() {
         <PeriodPicker presets={PERIODS} label={(p) => t(`admin.dash.p${p}`)} value={period} onChange={setPeriod} />
       </PageHeader>
       <ProviderCard />
+      <NewProfilesCard />
       {s?.provider === 'dev' && <Banner tone="warning" title={t('admin.em.noProviderTitle')}>{t('admin.em.noProvider')}</Banner>}
       {!s ? <Skeleton className="h-32" /> : (
         <>

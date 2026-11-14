@@ -8,7 +8,7 @@ from urllib.parse import unquote, urlsplit
 import httpx
 
 from app.core.config import get_settings
-from app.core.email_templates import button, code_box, esc as esc_, note, p, render_email
+from app.core.email_templates import button, code_box, esc as esc_, note, p, profile_grid, render_email
 from app.core.ids import utcnow
 
 log = logging.getLogger("mail")
@@ -291,6 +291,37 @@ async def send_weekly_digest(to: str, name: str, user_id: str, c: dict, premium:
     text = (f"Bonjour {name},\n\nVotre semaine sur Crushduo :\n" + "\n".join(f"- {x}" for x in lines) + (f"\n\nProchaine soirée : {event['title']}" if event else "")
             + f"\n\n{base}/discover\n\nNe plus recevoir ce résumé : {unsub}")
     return await send(to, subject, text, html, kind="notification", headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"})
+
+
+def frequency_text(freq: dict) -> str:
+    """« chaque jour », « tous les 7 jours », « chaque mois », « tous les 3 mois »."""
+    n = int(freq.get("every") or 1)
+    if freq.get("unit") == "months":
+        return "chaque mois" if n == 1 else f"tous les {n} mois"
+    return "chaque jour" if freq.get("unit") == "day" or n == 1 else ("chaque semaine" if n == 7 else f"tous les {n} jours")
+
+
+async def send_new_profiles(to: str, name: str, user_id: str, people: list[dict], freq: dict) -> bool:
+    """« De nouveaux profils pour vous » (facultatif, désabonnement en un clic) : 3 à 6 personnes arrivées depuis le dernier envoi.
+    Type « new_profiles » : jamais par ZeptoMail (rangé avec les envois groupés) et non essentiel."""
+    from app.core.notifications import unsub_token
+    base = get_settings().app_url.rstrip("/")
+    unsub = f"{base}/notifications-unsubscribe?token={unsub_token(user_id)}"
+    discover = base + "/discover"
+    n = len(people)
+    subject = f"{n} nouveaux profils pour vous sur Crushduo"
+    first = ", ".join(x["name"] for x in people[:3])
+    blocks = [p(f"Bonjour {esc_(name)}, {n} personnes qui correspondent à ce que vous cherchez viennent d'arriver sur Crushduo."),
+              profile_grid(people, "Voir dans Découvrir", discover),
+              p("Un like suffit pour vous faire remarquer : si c'est réciproque, c'est un duo."),
+              button("Ouvrir Découvrir", discover),
+              note(f"Vous recevez cet e-mail {frequency_text(freq)} parce que vous avez accepté nos offres et gardé la case « Nouveaux profils » dans Paramètres › Notifications. "
+                   f'<a href="{esc_(unsub)}" style="color:#C2185B;font-weight:700;text-decoration:underline;">Ne plus recevoir ces e-mails</a>')]
+    html = render_email("De nouveaux profils pour vous", blocks, preheader=f"{first}… découvrez qui vient d'arriver")
+    text = (f"Bonjour {name},\n\n{n} personnes qui correspondent à ce que vous cherchez viennent d'arriver sur Crushduo :\n"
+            + "\n".join(f"- {x['name']}, {x['age']} ans, {x['city']}" for x in people)
+            + f"\n\nLes découvrir : {discover}\n\nNe plus recevoir ces e-mails : {unsub}")
+    return await send(to, subject, text, html, kind="new_profiles", headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"})
 
 
 def notification_html(title: str, body: str, unsub_url: str | None = None) -> str:

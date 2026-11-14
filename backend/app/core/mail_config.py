@@ -34,7 +34,7 @@ def resolve(choice: str) -> str:
 
 
 # ZeptoMail n'accepte que le transactionnel : newsletters et envois groupés passent par Brevo (ou ne partent pas).
-MARKETING_KINDS = frozenset({"newsletter", "broadcast"})
+MARKETING_KINDS = frozenset({"newsletter", "broadcast", "new_profiles"})
 
 
 def for_kind(active: str, kind: str) -> str:

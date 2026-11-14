@@ -12,13 +12,13 @@ from sqlalchemy import delete, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.admin import ADM, DAY, SUP, after_cursor, audit, iso, page, paged, resolve_period
-from app.core import mail, mail_config, newslettersvc
+from app.core import mail, mail_config, newprofiles, newslettersvc
 from app.core.auth import AuthUser, current_user
 from app.core.errors import bad_request, not_found
 from app.core.ids import utcnow
 from app.core.ratelimit import limit
 from app.db.session import get_db
-from app.models.models import EmailLog, EmailSuppression, NewsletterCampaign, NewsletterSubscriber, SystemSetting
+from app.models.models import EmailLog, EmailSuppression, NewsletterCampaign, NewsletterSubscriber, NotificationPreference, SystemSetting, User
 
 router = APIRouter(tags=["newsletter"])
 Trim = lambda lo, hi: Annotated[str, StringConstraints(strip_whitespace=True, min_length=lo, max_length=hi)]  # noqa: E731
@@ -281,6 +281,38 @@ async def essential_only_set(body: EssentialIn, a: AuthUser = ADM, db: AsyncSess
     mail_config.invalidate_essential()
     await audit(db, a.id, "email.essential_only", "SystemSetting", mail_config.ESSENTIAL_KEY, {"enabled": body.enabled})
     return await _provider_view()
+
+
+# ── Administration : e-mail automatique « De nouveaux profils pour vous » ───────────────────────────────────────────────
+
+class NewProfilesIn(BaseModel):
+    enabled: bool = False
+    unit: str
+    every: int | None = None
+
+
+async def _new_profiles_view(db: AsyncSession) -> dict:
+    since = utcnow() - 30 * DAY
+    subscribed = (await db.execute(select(func.count()).select_from(NotificationPreference).join(User, User.id == NotificationPreference.userId)
+                                   .where(User.status == "ACTIVE", User.marketingConsent.is_(True), NotificationPreference.emailNewProfiles.is_(True)))).scalar_one()
+    sent = (await db.execute(select(func.count()).select_from(EmailLog).where(EmailLog.kind == "new_profiles", EmailLog.status == "SENT", EmailLog.createdAt >= since))).scalar_one()
+    return {"frequency": await newprofiles.frequency(db), "default": newprofiles.DEFAULT, "limits": {k: {"min": v[0], "max": v[1]} for k, v in newprofiles.LIMITS.items()},
+            "subscribed": subscribed, "sent30d": sent, "minProfiles": newprofiles.MIN_PROFILES, "maxProfiles": newprofiles.MAX_PROFILES}
+
+
+@router.get("/admin/emails/new-profiles")
+async def new_profiles_get(_: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    return await _new_profiles_view(db)
+
+
+@router.put("/admin/emails/new-profiles")
+async def new_profiles_set(body: NewProfilesIn, a: AuthUser = ADM, db: AsyncSession = Depends(get_db)):
+    """E-mail « nouveaux profils » : activation (désactivé par défaut : rien ne part sans elle) et fréquence (une semaine par défaut) :
+    tous les jours, tous les X jours (2–30) ou tous les X mois (1–12)."""
+    before = await newprofiles.frequency(db)
+    after = await newprofiles.set_frequency(db, body.model_dump())
+    await audit(db, a.id, "email.new_profiles", "SystemSetting", newprofiles.KEY, {"before": before, "after": after})
+    return await _new_profiles_view(db)
 
 
 @router.post("/admin/emails/provider/test", dependencies=[limit(10, 3600)])
