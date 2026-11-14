@@ -956,6 +956,27 @@ class DailyQuestionAnswer(Base):
     createdAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, server_default=text('CURRENT_TIMESTAMP'), default=utcnow)
 
 
+class AudienceDaily(Base):
+    """Mesure d'audience : totaux d'un jour pour une dimension (site, page, source, pays, appareil, langue). Aucune donnée individuelle."""
+    __tablename__ = 'AudienceDaily'
+    __table_args__ = (PrimaryKeyConstraint('day', 'dim', 'key', name='AudienceDaily_pkey'),)
+
+    day: Mapped[datetime.date] = mapped_column(Date, primary_key=True)
+    dim: Mapped[str] = mapped_column(Text, primary_key=True)
+    key: Mapped[str] = mapped_column(Text, primary_key=True)
+    views: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+    visitors: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text('0'))
+
+
+class AudienceSeen(Base):
+    """Empreintes du jour (sel quotidien jeté) pour compter un visiteur une seule fois par jour et par page ; effacées le lendemain."""
+    __tablename__ = 'AudienceSeen'
+    __table_args__ = (PrimaryKeyConstraint('day', 'hash', name='AudienceSeen_pkey'),)
+
+    day: Mapped[datetime.date] = mapped_column(Date, primary_key=True)
+    hash: Mapped[str] = mapped_column(Text, primary_key=True)
+
+
 class SystemSetting(Base):
     __tablename__ = 'SystemSetting'
     __table_args__ = (

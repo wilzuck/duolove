@@ -888,7 +888,7 @@
         },
         {
           "h": "Mesure d’audience",
-          "p": "Avec votre accord seulement, nous mesurons l’audience de nos pages publiques avec Google Tag Manager (Google Ireland Ltd, avec transfert possible hors Union européenne). Nous n’envoyons aucune donnée de profil, de message ni de photo, et la personnalisation publicitaire est refusée. Vous pouvez retirer votre accord à tout moment avec « Gérer les cookies », en bas de page."
+          "p": "Avec votre accord seulement, nous mesurons l’audience de nos pages publiques avec Google Tag Manager (Google Ireland Ltd, avec transfert possible hors Union européenne). Nous n’envoyons aucune donnée de profil, de message ni de photo, et la personnalisation publicitaire est refusée. Vous pouvez retirer votre accord à tout moment avec « Gérer les cookies », en bas de page. Sans cookie et sans votre accord, ce qui est permis pour une mesure strictement anonyme, nous comptons aussi nous-mêmes les visites de ces pages publiques : page vue, site de provenance, pays, type d’appareil et langue. Seuls des totaux par jour sont conservés (400 jours au plus) ; votre adresse IP n’est jamais enregistrée et ne sert, le jour même, qu’à ne pas compter deux fois la même visite. L’espace membre n’est jamais mesuré."
         },
         {
           "h": "Vos droits",
@@ -904,7 +904,7 @@
       "title": "Politique de cookies",
       "kicker": "Cookies et stockage",
       "metaDescription": "Les cookies et stockages de Crushduo, listés un par un : ce qu'ils font, combien de temps ils durent, et comment les gérer. Aucune publicité ; mesure d'audience seulement avec votre accord.",
-      "lead": "Parlons cookies, sans jargon et sans rien cacher. Crushduo n’utilise que le strict nécessaire pour vous connecter, retenir vos préférences et, de façon anonyme, compter les installations de l’application et les lectures du blog. Avec votre accord seulement, nous mesurons aussi l’audience de nos pages publiques : pas de publicité, pas de profil, pas de revente de données.",
+      "lead": "Parlons cookies, sans jargon et sans rien cacher. Crushduo n’utilise que le strict nécessaire pour vous connecter, retenir vos préférences et, de façon anonyme, compter les installations de l’application, les lectures du blog et les visites des pages publiques (totaux par jour, sans cookie). Avec votre accord seulement, nous mesurons aussi l’audience de nos pages publiques avec Google : pas de publicité, pas de profil, pas de revente de données.",
       "toc": "Sommaire",
       "updated": "Dernière mise à jour : novembre 2026",
       "listDo": "À retenir",
@@ -1082,7 +1082,7 @@
               "kind": "dont",
               "items": [
                 "Cookies publicitaires ou de ciblage.",
-                "Outils de mesure d’audience sans votre accord, ou dans l’espace membre (découverte, messages, profil).",
+                "Outils de mesure d’audience de tiers (Google) sans votre accord, ou toute mesure d’audience dans l’espace membre (découverte, messages, profil).",
                 "Pixels et boutons de réseaux sociaux qui vous suivent.",
                 "Revente ou partage de vos données de navigation."
               ]
@@ -2280,6 +2280,7 @@
       "storage": "Stockage des fichiers",
       "orphans": "Images orphelines",
       "stats": "Statistiques",
+      "audience": "Audience",
       "newsletter": "Newsletter",
       "emails": "E-mails envoyés",
       "guide": "Guide",
@@ -3187,7 +3188,8 @@
       "moderation": "Les selfies à vérifier, les recours des membres sanctionnés et les photos publiées.",
       "stats": "L’évolution dans le temps : membres, likes, duos, Crush, abonnements et revenus, comparés à la période précédente.",
       "newsletter": "Rédigez et envoyez une newsletter aux abonnés, avec un test avant l’envoi et le suivi de la diffusion.",
-      "emails": "Chaque e-mail envoyé par la plateforme (confirmation, mot de passe, notifications, newsletter) avec son état : envoyé ou en échec, et pourquoi."
+      "emails": "Chaque e-mail envoyé par la plateforme (confirmation, mot de passe, notifications, newsletter) avec son état : envoyé ou en échec, et pourquoi.",
+      "audience": "Visites des pages publiques : visiteurs, pages vues, pages les plus vues, provenance, pays et appareils. Mesure maison, sans cookie."
     },
     "strip": {
       "total": "Membres",
@@ -3403,7 +3405,8 @@
         "orphans": "Images qui ne servent plus, à supprimer",
         "payment": "Clés et réglages du paiement en ligne",
         "access": "Faire payer l’entrée de l’espace membres",
-        "billing": "Informations imprimées sur les factures"
+        "billing": "Informations imprimées sur les factures",
+        "audience": "Visites du site, pages les plus vues, provenance"
       },
       "flowsTitle": "Les parcours en 4 étapes",
       "f1": {
@@ -4158,7 +4161,36 @@
       "messageTitle": "Message aux membres",
       "preview": "Voir l’écran des membres"
     },
-    "back": "Retour"
+    "back": "Retour",
+    "aud": {
+      "kpis": "Indicateurs d’audience",
+      "views": "Pages vues",
+      "visitors": "Visiteurs",
+      "unknown": "Inconnu",
+      "direct": "Accès direct ou inconnu",
+      "device": {
+        "mobile": "Téléphone",
+        "desktop": "Ordinateur",
+        "tablet": "Tablette"
+      },
+      "k": {
+        "visitors": "Visiteurs",
+        "visitorsHint": "Visiteurs uniques de chaque jour, additionnés : une personne revenue 3 jours compte 3 fois.",
+        "views": "Pages vues",
+        "perVisitor": "Pages par visiteur",
+        "perVisitorHint": "Pages vues divisées par les visiteurs de la période."
+      },
+      "chart": "Visites par jour",
+      "chartSub": "Pages publiques seulement (accueil, tarifs, blog, aide, inscription, connexion…), robots exclus.",
+      "pages": "Pages les plus vues",
+      "sources": "Provenance",
+      "sourcesHint": "À l’arrivée sur le site : site précédent, ou valeur utm_source des liens de campagne.",
+      "countries": "Pays",
+      "devices": "Appareils",
+      "langs": "Langue du site",
+      "empty": "Aucune visite sur la période.",
+      "privacy": "Mesure sans cookie ni bandeau : l’adresse IP n’est jamais enregistrée, seuls des totaux par jour sont conservés (400 jours). L’espace membre n’est pas mesuré. Google Analytics, lui, ne voit que les visiteurs qui ont accepté les cookies : ses chiffres sont donc plus bas."
+    }
   },
   "pricingFaq": {
     "renew": {

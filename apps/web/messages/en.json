@@ -888,7 +888,7 @@
         },
         {
           "h": "Audience measurement",
-          "p": "Only with your agreement, we measure the audience of our public pages with Google Tag Manager (Google Ireland Ltd, with possible transfer outside the European Union). We send no profile, message or photo data, and ad personalisation is refused. You can withdraw your agreement at any time with “Manage cookies” at the bottom of the page."
+          "p": "Only with your agreement, we measure the audience of our public pages with Google Tag Manager (Google Ireland Ltd, with possible transfer outside the European Union). We send no profile, message or photo data, and ad personalisation is refused. You can withdraw your agreement at any time with “Manage cookies” at the bottom of the page. Without cookies and without your agreement, which is allowed for strictly anonymous measurement, we also count visits to these public pages ourselves: page viewed, referring site, country, device type and language. Only daily totals are kept (400 days at most); your IP address is never stored and is only used, on the same day, to avoid counting the same visit twice. The member area is never measured."
         },
         {
           "h": "Your rights",
@@ -904,7 +904,7 @@
       "title": "Cookie policy",
       "kicker": "Cookies and storage",
       "metaDescription": "Crushduo’s cookies and storage, listed one by one: what they do, how long they last, and how to manage them. No advertising; audience measurement only with your agreement.",
-      "lead": "Let’s talk cookies, without jargon and without hiding anything. Crushduo only uses the bare minimum to sign you in, remember your preferences and, anonymously, count app installations and blog reads. Only with your agreement do we also measure the audience of our public pages: no advertising, no profile, no selling of data.",
+      "lead": "Let’s talk cookies, without jargon and without hiding anything. Crushduo only uses the bare minimum to sign you in, remember your preferences and, anonymously, count app installations, blog reads and visits to our public pages (daily totals, no cookie). Only with your agreement do we also measure the audience of our public pages with Google: no advertising, no profile, no selling of data.",
       "toc": "Contents",
       "updated": "Last updated: November 2026",
       "listDo": "To remember",
@@ -1082,7 +1082,7 @@
               "kind": "dont",
               "items": [
                 "Advertising or targeting cookies.",
-                "Audience-measurement tools without your agreement, or inside the member area (discover, messages, profile).",
+                "Third-party audience-measurement tools (Google) without your agreement, or any audience measurement inside the member area (discover, messages, profile).",
                 "Social-network pixels and buttons that follow you.",
                 "Selling or sharing of your browsing data."
               ]
@@ -2280,6 +2280,7 @@
       "storage": "File storage",
       "orphans": "Orphan images",
       "stats": "Statistics",
+      "audience": "Audience",
       "newsletter": "Newsletter",
       "emails": "Sent emails",
       "guide": "Guide",
@@ -3187,7 +3188,8 @@
       "moderation": "Selfies to verify, appeals from sanctioned members and published photos.",
       "stats": "Evolution over time: members, likes, duos, Crush, subscriptions and revenue, compared with the previous period.",
       "newsletter": "Write and send a newsletter to subscribers, with a test before sending and delivery tracking.",
-      "emails": "Every email the platform sends (confirmation, password, notifications, newsletter) with its state: sent or failed, and why."
+      "emails": "Every email the platform sends (confirmation, password, notifications, newsletter) with its state: sent or failed, and why.",
+      "audience": "Public page visits: visitors, page views, most viewed pages, sources, countries and devices. In-house, cookieless measurement."
     },
     "strip": {
       "total": "Members",
@@ -3403,7 +3405,8 @@
         "orphans": "Images no longer used, to delete",
         "payment": "Online payment keys and settings",
         "access": "Charge for entry to the members’ area",
-        "billing": "Details printed on invoices"
+        "billing": "Details printed on invoices",
+        "audience": "Site visits, most viewed pages, sources"
       },
       "flowsTitle": "The workflows in 4 steps",
       "f1": {
@@ -4158,7 +4161,36 @@
       "messageTitle": "Message to members",
       "preview": "See the members’ screen"
     },
-    "back": "Back"
+    "back": "Back",
+    "aud": {
+      "kpis": "Audience indicators",
+      "views": "Page views",
+      "visitors": "Visitors",
+      "unknown": "Unknown",
+      "direct": "Direct or unknown",
+      "device": {
+        "mobile": "Phone",
+        "desktop": "Computer",
+        "tablet": "Tablet"
+      },
+      "k": {
+        "visitors": "Visitors",
+        "visitorsHint": "Unique visitors of each day, added up: someone who came back on 3 days counts 3 times.",
+        "views": "Page views",
+        "perVisitor": "Pages per visitor",
+        "perVisitorHint": "Page views divided by the period’s visitors."
+      },
+      "chart": "Visits per day",
+      "chartSub": "Public pages only (home, pricing, blog, help, sign-up, sign-in…), bots excluded.",
+      "pages": "Most viewed pages",
+      "sources": "Sources",
+      "sourcesHint": "On arrival: previous site, or the utm_source value of campaign links.",
+      "countries": "Countries",
+      "devices": "Devices",
+      "langs": "Site language",
+      "empty": "No visits in this period.",
+      "privacy": "Cookieless, no banner: IP addresses are never stored, only daily totals are kept (400 days). The member area is not measured. Google Analytics only sees visitors who accepted cookies, so its numbers are lower."
+    }
   },
   "pricingFaq": {
     "renew": {

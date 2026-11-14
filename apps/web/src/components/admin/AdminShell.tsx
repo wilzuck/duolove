@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, BookOpen, Bug, Construction, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, ImageOff, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LayoutGrid, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, Eye, BookOpen, Bug, Construction, FileText, LockKeyhole, MailCheck, Megaphone, CalendarClock, ChartLine, Globe2, Search, BadgeCheck, CloudUpload, DatabaseBackup, Send, Share2, CreditCard, HeartHandshake, Hourglass, ImageOff, Newspaper, Flag, Gift, History, Inbox, LayoutDashboard, LayoutGrid, LogOut, Menu, ShieldCheck, Tag, ToggleRight, Users, Wallet, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Alert, Avatar, cn, IconButton, Logo, Skeleton } from '@duomatch/ui';
@@ -20,6 +20,7 @@ export const SECTIONS: { id: string; items: Item[] }[] = [
     { href: '/admin', key: 'overview', icon: LayoutDashboard, min: 'ADMIN' },
     { href: '/admin/moderation', key: 'moderation', icon: ShieldCheck, min: 'MODERATOR', badge: 'moderation' },
     { href: '/admin/stats', key: 'stats', icon: ChartLine, min: 'ADMIN' },
+    { href: '/admin/audience', key: 'audience', icon: Eye, min: 'ADMIN' },
     { href: '/admin/audit-log', key: 'audit', icon: History, min: 'ADMIN' },
     { href: '/admin/errors', key: 'errors', icon: Bug, min: 'ADMIN', badge: 'errors' },
     { href: '/admin/maintenance', key: 'maintenance', icon: Construction, min: 'ADMIN' },

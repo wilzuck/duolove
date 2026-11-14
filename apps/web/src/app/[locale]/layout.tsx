@@ -13,6 +13,7 @@ import { SITE_URL } from '@/lib/site';
 import '../globals.css';
 import { ThemeSync } from '@/components/ThemeSync';
 import { ErrorReporter } from '@/components/ErrorReporter';
+import { AudienceBeacon } from '@/components/AudienceBeacon';
 import { MaintenanceBanner } from '@/components/MaintenanceBanner';
 
 // Une seule famille, très épurée, pour les titres comme pour le texte (DM Sans, variable : poids 100 à 1000).
@@ -54,7 +55,7 @@ export default async function RootLayout({ children, params }: { children: React
         <ThemeSync />
         <ErrorReporter />
         <NextIntlClientProvider>
-          <Providers><MaintenanceBanner />{children}<CookieNotice /><Analytics /><InstallCapture /></Providers>
+          <Providers><MaintenanceBanner />{children}<CookieNotice /><Analytics /><AudienceBeacon /><InstallCapture /></Providers>
         </NextIntlClientProvider>
       </body>
     </html>
