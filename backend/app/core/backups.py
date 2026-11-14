@@ -98,6 +98,64 @@ def run(client, bucket: str, base_prefix: str, database_url: str, now: datetime.
     return {"key": key, "bytes": size, "sha256": digest, "kept": len(keys) - len(drop), "deleted": len(drop)}
 
 
+# ───────── Copie des photos (fichiers des membres) vers le bucket de sauvegarde ─────────
+PHOTOS_PREFIX = "backups/photos/"
+DELETED_PREFIX = "backups/photos-deleted/"  # marque <AAAAMMJJ>/<clé> : date à laquelle la photo a disparu de la source
+PHOTO_GRACE_DAYS = 30  # une photo supprimée par son membre reste 30 jours dans la sauvegarde (erreur, suppression accidentelle), puis est effacée
+_SKIP = ("backups/", "healthcheck/")
+
+
+def _root(base_prefix: str) -> str:
+    return f"{base_prefix.strip('/')}/" if base_prefix.strip("/") else ""
+
+
+def _sizes(client, bucket: str, prefix: str) -> dict[str, int]:
+    out, token = {}, None
+    while True:
+        r = client.list_objects_v2(Bucket=bucket, Prefix=prefix, **({"ContinuationToken": token} if token else {}))
+        out.update({o["Key"][len(prefix):]: o.get("Size", 0) for o in r.get("Contents", [])})
+        token = r.get("NextContinuationToken")
+        if not r.get("IsTruncated"):
+            return out
+
+
+def copy_photos(client, src_bucket: str, dst_bucket: str, base_prefix: str, now: datetime.datetime | None = None) -> dict:
+    """Copie incrémentale des fichiers des membres (photos, miniatures, pièces jointes) vers `<préfixe>/backups/photos/` du bucket de sauvegarde.
+    Copie côté serveur (rien ne transite par l'API), seulement les fichiers absents ou de taille différente. Une photo supprimée de la source
+    est gardée PHOTO_GRACE_DAYS jours puis effacée de la sauvegarde (une photo retirée par son membre ne doit pas survivre indéfiniment)."""
+    now = now or datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+    root = _root(base_prefix)
+    src = {k: s for k, s in _sizes(client, src_bucket, root).items() if not k.startswith(_SKIP)}
+    dst_root, marks_root = root + PHOTOS_PREFIX, root + DELETED_PREFIX
+    dst = _sizes(client, dst_bucket, dst_root)
+    copied = 0
+    for k, size in src.items():
+        if dst.get(k) != size:
+            client.copy_object(Bucket=dst_bucket, Key=dst_root + k, CopySource={"Bucket": src_bucket, "Key": root + k})
+            copied += 1
+    marks: dict[str, tuple[str, datetime.datetime]] = {}  # clé → (clé de la marque, date de disparition)
+    for mk in _sizes(client, dst_bucket, marks_root):
+        day, _, k = mk.partition("/")
+        try:
+            marks[k] = (marks_root + mk, datetime.datetime.strptime(day, "%Y%m%d"))
+        except ValueError:
+            continue
+    drop: list[str] = []
+    orphans = [k for k in dst if k not in src]
+    marked = purged = 0
+    for k in orphans:
+        if k not in marks:
+            client.put_object(Bucket=dst_bucket, Key=f"{marks_root}{now:%Y%m%d}/{k}", Body=b"")
+            marked += 1
+        elif now - marks[k][1] >= datetime.timedelta(days=PHOTO_GRACE_DAYS):
+            drop += [dst_root + k, marks[k][0]]
+            purged += 1
+    drop += [mk for k, (mk, _) in marks.items() if k in src]  # revenue dans la source : la marque ne sert plus
+    for i in range(0, len(drop), 1000):
+        client.delete_objects(Bucket=dst_bucket, Delete={"Objects": [{"Key": x} for x in drop[i:i + 1000]]})
+    return {"files": len(src), "copied": copied, "pendingDeletion": len(orphans) - purged, "newlyDeleted": marked, "purged": purged}
+
+
 def prefix_for(base_prefix: str) -> str:
     return f"{base_prefix.strip('/')}/{PREFIX}" if base_prefix.strip("/") else PREFIX
 
@@ -169,7 +227,7 @@ async def notify_failure(error: str) -> None:
         async with session_maker()() as db:
             to = list((await db.execute(select(User.email).where(User.role.in_(["ADMIN", "SUPER_ADMIN"]), User.status == "ACTIVE"))).scalars())
         for addr in to:
-            await mail.send(addr, "Crushduo : la sauvegarde de la base a échoué", f"La sauvegarde de la base de données a échoué.\n\nErreur : {error[:500]}\n\nOuvrez l'administration > Sauvegardes pour relancer une sauvegarde et vérifier l'état.")
+            await mail.send(addr, "Crushduo : une sauvegarde a échoué", f"Une sauvegarde (base de données ou photos) a échoué.\n\nErreur : {error[:500]}\n\nOuvrez l'administration > Sauvegardes pour relancer une sauvegarde et vérifier l'état.")
     except Exception:  # noqa: BLE001
         pass
 
@@ -196,12 +254,18 @@ async def run_and_record(trigger: str, database_url: str, dump_fn=None) -> dict:
         client, cfg = await client_and_cfg()
         r = await asyncio.to_thread(run, client, cfg.backups_bucket, cfg.prefix, database_url, None, dump_fn or dump)
         last = {"ok": True, "at": now.isoformat(), "trigger": trigger, "key": r["key"], "bytes": r["bytes"]}
+        try:  # les photos ensuite : un échec ici n'annule pas la sauvegarde de la base, mais il est enregistré et signalé
+            last["photos"] = await asyncio.to_thread(copy_photos, client, cfg.bucket, cfg.backups_bucket, cfg.prefix, now)
+        except Exception as e:  # noqa: BLE001
+            last["photos"] = {"error": (str(e) or type(e).__name__)[:300]}
     except Exception as e:  # noqa: BLE001 — tout échec est enregistré et notifié
         msg = (e.stderr.strip() if isinstance(e, subprocess.CalledProcessError) and e.stderr else str(e)) or type(e).__name__
         last = {"ok": False, "at": now.isoformat(), "trigger": trigger, "error": msg[:500]}
     await set_status({"last": last, **({"lastOk": last} if last["ok"] else ({"lastOk": prev["lastOk"]} if prev.get("lastOk") else {}))})
     if not last["ok"]:
-        await notify_failure(last["error"])  # après l'enregistrement : l'état s'affiche sans attendre l'envoi des e-mails
+        await notify_failure(last["error"])
+    elif "error" in last.get("photos", {}):
+        await notify_failure("copie des photos : " + last["photos"]["error"])  # après l'enregistrement : l'état s'affiche sans attendre l'envoi des e-mails
     return last
 
 

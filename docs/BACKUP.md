@@ -6,6 +6,7 @@
 ## Principe
 - Une fois par nuit (02:00 UTC), `pg_dump` au format *custom* (compressé), contrôlé par `pg_restore --list`, envoyé sur R2 sous `<préfixe>/backups/db/duomatch-AAAAMMJJ-HHMMSS.dump`, puis taille vérifiée côté R2 (somme SHA-256 en métadonnée).
 - **Jamais sur le disque du serveur** : si le stockage objet n'est pas configuré, le script refuse de s'exécuter.
+- **Photos des membres** (même exécution, juste après la base) : copie incrémentale, côté serveur, de tous les fichiers du stockage (photos, miniatures) vers `<préfixe>/backups/photos/` du bucket de sauvegarde ; seuls les fichiers nouveaux ou modifiés sont copiés. Une photo supprimée par son membre reste **30 jours** dans la sauvegarde (marque `backups/photos-deleted/AAAAMMJJ/…`), puis est effacée. Un échec de cette copie n'annule pas la sauvegarde de la base : il est enregistré (`last.photos.error`), le script sort en erreur et les administrateurs reçoivent un e-mail.
 - **Rotation** : 7 sauvegardes quotidiennes, 4 hebdomadaires (dimanches), 6 mensuelles, et jamais moins de 3. Seuls les fichiers `duomatch-*.dump` de ce dossier sont supprimés.
 - Échec = code de sortie non nul : Railway marque l'exécution en échec (activer les notifications d'échec de déploiement dans Railway).
 - **Le bucket doit rester privé** : une sauvegarde contient toutes les données personnelles (comptes, messages).
@@ -27,6 +28,7 @@ pg_restore --no-owner --dbname restauration ./sauvegardes/duomatch-AAAAMMJJ-HHMM
 Contrôle : comparer quelques comptes de lignes (`User`, `Message`, `Payment`) avec la production. **Faire un essai de restauration tous les trimestres** : une sauvegarde jamais restaurée n'est pas une garantie.
 
 ## Limites connues
-- Les **fichiers** (photos, pièces jointes) sont déjà sur R2 mais n'ont pas de sauvegarde distincte : activer la gestion des versions du bucket dans Cloudflare pour se protéger d'une suppression par erreur.
+- Les **photos** ont une seconde copie dans le bucket de sauvegarde (voir Principe) ; elle n'est faite qu'une fois par nuit : une photo envoyée puis supprimée dans la même journée n'y figure pas. Restaurer une photo : copier `<préfixe>/backups/photos/<clé>` vers `<préfixe>/<clé>` dans le bucket des photos.
+- Si le bucket des photos et celui des sauvegardes sont le même, la seconde copie est dans le même bucket : une suppression du bucket emporterait les deux. Garder `S3_BACKUP_BUCKET` distinct (c'est le cas en production : `crushduo-backup`).
 - Pas de chiffrement côté client des sauvegardes (R2 chiffre au repos). Les clés R2 donnent accès aux sauvegardes : ne les partager qu'avec les personnes de confiance.
 - Pas de sauvegarde en continu : la perte maximale est de 24 h. Pour moins, voir les sauvegardes automatiques de Railway ou la réplication.
