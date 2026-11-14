@@ -162,7 +162,10 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      <div className={cn('relative order-1 mx-auto w-full', !feed.isLoading && deck.length === 0 ? 'min-h-[16rem]' : 'aspect-[3/4] max-h-[62dvh] lg:max-w-[max(26rem,min(100%,calc(62dvh*3/4)))]')}>
+      {/* touch-none sur la pile : framer-motion impose « touch-action: pan-y » à la carte (glisser en x), le navigateur gardait alors le glissement
+          vertical pour faire défiler la page et « glisser vers le haut pour voir les infos » ne marchait pas au doigt. L'action tactile retenue est
+          l'intersection avec les parents : « none » ici rend le geste à la carte. */}
+      <div className={cn('relative order-1 mx-auto w-full touch-none', !feed.isLoading && deck.length === 0 ? 'min-h-[16rem]' : 'aspect-[3/4] max-h-[62dvh] lg:max-w-[max(26rem,min(100%,calc(62dvh*3/4)))]')}>
         {feed.isLoading && <Skeleton className="size-full rounded-[2rem]" />}
         {!feed.isLoading && deck.length === 0 && feed.data?.paused && (
           <EmptyState icon={<PauseCircle className="size-8" />} title={t('rhythm.pausedEmptyTitle')}>
