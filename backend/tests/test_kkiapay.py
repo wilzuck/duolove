@@ -229,3 +229,24 @@ def delete_notifications(user_id):
     from app.models.models import Notification
 
     return delete(Notification).where(Notification.userId == user_id, Notification.type == "SUBSCRIPTION_EXPIRING")
+
+
+def test_moyens_de_paiement_selon_le_pays():
+    assert kkiapay.payment_methods("BJ") == ["momo", "card"] and kkiapay.payment_methods("cm") == ["momo", "card"]
+    assert kkiapay.payment_methods("FR") == ["card"] and kkiapay.payment_methods("CA") == ["card"] and kkiapay.payment_methods("BE") == ["card"]
+    assert kkiapay.payment_methods(None) == ["momo", "card"]
+
+
+async def test_carte_seule_pour_un_membre_hors_d_afrique(app, db, fake):
+    from sqlalchemy import update
+
+    from app.models.models import Profile
+    a = await member(app, db)
+    await db.execute(update(Profile).where(Profile.userId == a.id).values(country="BJ"))
+    await db.commit()
+    w = (await a.agent.post("/api/subscriptions/checkout", json={"plan": "PREMIUM"})).json()["widget"]
+    assert w["paymentMethods"] == ["momo", "card"]
+    await db.execute(update(Profile).where(Profile.userId == a.id).values(country="FR"))
+    await db.commit()
+    w = (await a.agent.post("/api/subscriptions/checkout", json={"plan": "PREMIUM"})).json()["widget"]
+    assert w["paymentMethods"] == ["card"]

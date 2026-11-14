@@ -1,4 +1,4 @@
-export interface KkiapayWidgetConfig { publicKey: string; sandbox: boolean; amount: number; reference: string; name: string; email?: string | null; reason?: string; data?: string }
+export interface KkiapayWidgetConfig { publicKey: string; sandbox: boolean; amount: number; reference: string; name: string; email?: string | null; reason?: string; data?: string; /** Choisis par le serveur d'après le pays du profil : carte seule hors d'Afrique. */ paymentMethods?: ('momo' | 'card')[] }
 
 /** Le membre a fermé la fenêtre de paiement sans payer ni échouer. */
 export const CANCELLED = 'cancelled';
@@ -66,7 +66,7 @@ export async function payWithKkiapay(c: KkiapayWidgetConfig, onOpened?: () => vo
       else if (seen) { clearInterval(poll); cancel(); }
     }, 400);
     stop = setTimeout(() => clearInterval(poll), 30 * 60_000);
-    k.openKkiapayWidget?.({ amount: c.amount, key: c.publicKey, sandbox: c.sandbox, partnerId: c.reference, paymentMethods: ['momo', 'card'], name: c.name, ...(c.email ? { email: c.email } : {}), reason: c.reason ?? c.name, data: c.data, position: 'center' });
+    k.openKkiapayWidget?.({ amount: c.amount, key: c.publicKey, sandbox: c.sandbox, partnerId: c.reference, paymentMethods: c.paymentMethods?.length ? c.paymentMethods : ['momo', 'card'], name: c.name, ...(c.email ? { email: c.email } : {}), reason: c.reason ?? c.name, data: c.data, position: 'center' });
     onOpened?.();
   }).finally(() => {
     clearInterval(poll);

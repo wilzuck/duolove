@@ -67,6 +67,16 @@ async def verify_transaction(cfg: Effective, transaction_id: str) -> KkiapayTran
                               str(j["source"]).lower() if j.get("source") else None)
 
 
+# Pays d'Afrique (ISO 3166-1) : Mobile Money et carte. Ailleurs (France, Belgique, Canada…), le Mobile Money africain est rarement disponible :
+# la fenêtre de paiement s'ouvre directement sur la carte bancaire. Pays inconnu : les deux.
+AFRICA = frozenset("DZ AO BJ BW BF BI CV CM CF TD KM CG CD CI DJ EG GQ ER SZ ET GA GM GH GN GW KE LS LR LY MG MW ML MR MU YT MA MZ NA NE NG RE RW SH ST SN SC "
+                   "SL SO ZA SS SD TZ TG TN UG EH ZM ZW".split())
+
+
+def payment_methods(country: str | None) -> list[str]:
+    return ["card"] if country and country.upper() not in AFRICA else ["momo", "card"]
+
+
 class KkiapayProvider:
     name = "kkiapay"
 
@@ -80,4 +90,5 @@ class KkiapayProvider:
         site = get_settings().site_name
         reason = f"{site} · {plan.replace('_', ' ').title()}" if plan else site
         return {"providerRef": ref, "widget": {"publicKey": self.cfg.public_key, "sandbox": self.cfg.sandbox, "amount": amount_xof, "reference": ref, "name": (customer or {}).get("name") or site, "email": (customer or {}).get("email"), "reason": reason,
-                                               "data": json.dumps({"app": "crushduo", "paymentId": payment_id}, separators=(",", ":"))}}
+                                               "data": json.dumps({"app": "crushduo", "paymentId": payment_id}, separators=(",", ":")),
+                                               "paymentMethods": payment_methods((customer or {}).get("country"))}}

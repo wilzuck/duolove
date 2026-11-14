@@ -66,12 +66,14 @@ def provider(cfg: payment_config.Effective):
 
 
 async def _customer(db: AsyncSession, user_id: str) -> dict:
-    """Nom et e-mail du membre connecté, pour préremplir la fenêtre de paiement (le membre peut les modifier chez le prestataire)."""
+    """Nom et e-mail du membre connecté, pour préremplir la fenêtre de paiement (le membre peut les modifier chez le prestataire), et pays du profil
+    (moyens de paiement proposés : carte seule hors d'Afrique)."""
     from app.models.models import Profile, User
 
     email = (await db.execute(select(User.email).where(User.id == user_id))).scalar_one_or_none()
-    name = (await db.execute(select(Profile.displayName).where(Profile.userId == user_id))).scalar_one_or_none()
-    return {"name": (name or "").strip()[:80] or None, "email": email if email and not email.endswith(".invalid") else None}
+    prof = (await db.execute(select(Profile.displayName, Profile.country).where(Profile.userId == user_id))).one_or_none()
+    name, country = (prof.displayName, prof.country) if prof else (None, None)
+    return {"name": (name or "").strip()[:80] or None, "email": email if email and not email.endswith(".invalid") else None, "country": country}
 
 
 async def checkout_provider():
