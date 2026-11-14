@@ -2,6 +2,7 @@
 import datetime
 from dataclasses import dataclass
 
+from app.core.cities import fold, unique_cities
 from app.core.constants import age_from_birth_date
 
 
@@ -27,6 +28,8 @@ def matches_criteria(c: dict, t, now: datetime.datetime | None = None) -> bool:
     if age < c["ageMin"] or age > c["ageMax"]:
         return False
     if c.get("country") and t.country != c["country"]:
+        return False
+    if c.get("cities") and fold(getattr(t, "city", None) or "") not in {fold(x) for x in c["cities"]}:
         return False
     if not _tri_ok(c["hasChildren"], t.hasChildren) or not _tri_ok(c["likesPets"], t.likesPets):
         return False
@@ -72,6 +75,7 @@ class LiveCriteria(BaseModel):
     ageMin: int
     ageMax: int
     country: str | None = None
+    cities: list[str] | None = None  # vide ou absent = toutes les villes
     hasChildren: _Tri = "ANY"
     likesPets: _Tri = "ANY"
     living: Literal["ANY", "ALONE", "FAMILY", "ROOMMATES"] = "ANY"
@@ -92,6 +96,18 @@ class LiveCriteria(BaseModel):
     def _country(cls, v):
         if v is not None and v not in COUNTRY_CODES:
             raise ValueError("invalid_country")
+        return v
+
+    @field_validator("cities")
+    @classmethod
+    def _cities(cls, v):
+        if v is None:
+            return None
+        v = unique_cities(v)
+        if len(v) > 10:
+            raise ValueError("too_many")
+        if any(len(c) < 2 or len(c) > 80 for c in v):
+            raise ValueError("invalid_city")
         return v
 
     @field_validator("heightMin", "heightMax")

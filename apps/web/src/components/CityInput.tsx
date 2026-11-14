@@ -12,8 +12,12 @@ import { api } from '@/lib/api';
  * conforme (WCAG 1.3.5) qui désactive le remplissage ; Chrome l'ignore parfois sur les champs d'adresse, d'où aussi un `name` neutre, propre à chaque champ,
  * et des attributs `data-*` qui écartent les gestionnaires de mots de passe.
  */
-export function CityInput({ value, onChange, country, id, className, ...aria }: {
+export function CityInput({ value, onChange, onPick, onEnter, country, id, className, ...aria }: {
   value: string; onChange: (v: string) => void; country: string | null | undefined; id?: string; className?: string;
+  /** Suggestion choisie (clic ou Entrée) : sans ce rappel, elle remplace simplement la saisie. */
+  onPick?: (v: string) => void;
+  /** Entrée sans suggestion sélectionnée (ex. ajouter la saisie à une liste). */
+  onEnter?: () => void;
   'aria-invalid'?: boolean; 'aria-describedby'?: string; autoComplete?: string; required?: boolean;
 }) {
   const listId = useId();
@@ -35,7 +39,7 @@ export function CityInput({ value, onChange, country, id, className, ...aria }: 
     document.addEventListener('mousedown', out);
     return () => document.removeEventListener('mousedown', out);
   }, []);
-  const pick = (c: string) => { onChange(c); setOpen(false); setActive(-1); };
+  const pick = (c: string) => { if (onPick) onPick(c); else onChange(c); setOpen(false); setActive(-1); };
   const show = open && items.length > 0;
 
   return (
@@ -45,6 +49,7 @@ export function CityInput({ value, onChange, country, id, className, ...aria }: 
         onChange={(e) => { onChange(e.target.value); setOpen(true); setActive(-1); }}
         onFocus={() => setOpen(true)}
         onKeyDown={(e) => {
+          if (e.key === 'Enter' && onEnter && !(show && active >= 0)) { e.preventDefault(); onEnter(); setOpen(false); return; }
           if (!show) return;
           if (e.key === 'ArrowDown') { e.preventDefault(); setActive((i) => (i + 1) % items.length); }
           else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((i) => (i <= 0 ? items.length - 1 : i - 1)); }

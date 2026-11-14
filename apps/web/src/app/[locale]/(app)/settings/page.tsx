@@ -2,7 +2,8 @@
 import { usePush } from '@/hooks/usePush';
 import { TwoFactorCard } from '@/components/app/TwoFactorCard';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, FileDown, LogOut, MapPin, Monitor, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
+import { Download, FileDown, LogOut, MapPin, Monitor, Receipt, RotateCcw, ShieldCheck, Trash2 } from 'lucide-react';
+import { usePay } from '@/hooks/usePay';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
@@ -188,6 +189,12 @@ function PaymentsTab() {
   const locale = useLocale();
   const status = useSearchParams().get('status');
   const q = useQuery({ queryKey: keys.payments, queryFn: () => api<PaymentItem[]>('/payments') });
+  const { pay, pending } = usePay();
+  // « Relancer » : seulement sur le paiement le plus récent, s'il n'a pas abouti ; même formule ou même produit, montant recalculé par le serveur.
+  const retryBody = (p: PaymentItem) => p.kind === 'PRODUCT' ? (p.productCode ? { type: 'product' as const, code: p.productCode } : null)
+    : p.plan && p.plan !== 'FREE' ? { type: 'subscription' as const, plan: p.plan, months: p.months } : null;
+  const last = q.data?.[0];
+  const retry = last && (last.status === 'FAILED' || last.status === 'PENDING') ? retryBody(last) : null;
   return (
     <div className="space-y-4">
       {status === 'success' && <p role="status" className="rounded-2xl bg-success/15 p-4 text-sm font-medium">{t('settings.pay.success')}</p>}
@@ -195,7 +202,7 @@ function PaymentsTab() {
       {!q.data ? <Skeleton className="h-40" /> : q.data.length === 0 ? <EmptyState icon={<Receipt className="size-8" aria-hidden />} title={t('settings.pay.empty')} /> : (
         <Card className="divide-y divide-line px-5">{q.data.map((p) => (
           <div key={p.id} className="flex items-center justify-between gap-3 py-4"><div><p className="font-semibold">{p.kind === 'PRODUCT' ? p.product : p.plan ? `${t(`plans.${p.plan}.name`)} · ${p.months === 0 ? t('plans.week') : t('plans.months', { n: p.months })}` : '—'} · {formatXof(p.amountXof, locale)}</p><p className="text-xs text-muted">{formatDate(p.createdAt, locale)} · {p.provider}</p></div>
-            <div className="flex items-center gap-2"><Badge tone={p.status === 'SUCCEEDED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'neutral'}>{t(`settings.pay.status.${p.status}`)}</Badge>{p.invoiceNumber && <a href={`/api/payments/${p.id}/invoice.pdf`} download className={buttonVariants({ variant: 'outline', size: 'sm' })} aria-label={t('settings.pay.invoiceDownload', { n: p.invoiceNumber })}><FileDown className="size-4" aria-hidden />{t('settings.pay.invoice')}</a>}</div></div>
+            <div className="flex flex-wrap items-center justify-end gap-2"><Badge tone={p.status === 'SUCCEEDED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'neutral'}>{t(`settings.pay.status.${p.status}`)}</Badge>{retry && p.id === last?.id && <Button size="sm" onClick={() => pay({ key: `retry-${p.id}`, body: retry })} loading={pending}><RotateCcw className="size-4" aria-hidden />{t('settings.pay.retry')}</Button>}{p.invoiceNumber && <a href={`/api/payments/${p.id}/invoice.pdf`} download className={buttonVariants({ variant: 'outline', size: 'sm' })} aria-label={t('settings.pay.invoiceDownload', { n: p.invoiceNumber })}><FileDown className="size-4" aria-hidden />{t('settings.pay.invoice')}</a>}</div></div>
         ))}</Card>
       )}
     </div>

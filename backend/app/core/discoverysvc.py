@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased
 
 from app.core import appsettings, entitlements, rhythm
+from app.core.cities import pref_cities
 from app.core.constants import age_from_birth_date
 from app.core.errors import forbidden
 from app.core.ids import utcnow
@@ -61,8 +62,8 @@ def _query(user_id: str, me: Profile, pref: Preference, limits: dict):
     ]
     if pref.country:
         conds.append(Profile.country == pref.country)
-    if pref.city:
-        conds.append(func.lower(Profile.city) == pref.city.lower())
+    if cities := pref_cities(pref):
+        conds.append(func.lower(Profile.city).in_([c.lower() for c in cities]))
     if pref.intents:
         conds.append(Profile.intent.in_([_v(i) for i in pref.intents]))
     if limits["advancedFilters"]:

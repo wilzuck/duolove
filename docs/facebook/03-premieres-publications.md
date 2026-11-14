@@ -70,7 +70,7 @@ Pas de magie, pas d'algorithme qui devine : une personne.
 
 Le badge prouve que la personne ressemble à ses photos. Il ne dit rien de ses intentions : restez prudent·e, comme partout.
 
-Pour en savoir plus : https://crushduo.com/blog/badge-verifie-selfie-ce-quil-prouve?utm_source=facebook&utm_medium=social&utm_campaign=verifie
+Pour en savoir plus : https://crushduo.com/help?utm_source=facebook&utm_medium=social&utm_campaign=verifie#h-safety
 
 #ProfilVérifié #RencontreSérieuse
 ```
@@ -91,7 +91,7 @@ Les arnaques sentimentales suivent souvent le même scénario : beaucoup d'atten
 🛡️ Sur Crushduo, signalez en un geste depuis le profil ou la conversation : c'est confidentiel et examiné par un modérateur. Vous pouvez joindre les messages concernés.
 📍 Votre position précise n'est jamais affichée aux autres membres.
 
-Notre guide pour reconnaître une arnaque : https://crushduo.com/blog/reconnaitre-une-arnaque-sentimentale?utm_source=facebook&utm_medium=social&utm_campaign=securite
+Nos conseils de sécurité : https://crushduo.com/help?utm_source=facebook&utm_medium=social&utm_campaign=securite#h-safety
 
 Partagez ce message à quelqu'un qui fait des rencontres en ligne 🙏
 
@@ -140,7 +140,7 @@ Le premier message n'a pas besoin d'être brillant. Il a besoin d'être précis.
 
 Lisez son profil, choisissez un détail qui vous parle, posez une question ouverte. Et si l'inspiration manque, la messagerie de Crushduo propose des idées pour commencer, fondées sur ce que vous avez en commun.
 
-Le guide complet : https://crushduo.com/blog/premier-message-qui-obtient-une-reponse?utm_source=facebook&utm_medium=social&utm_campaign=conseil_message
+Pour repérer le bon détail dans un profil : https://crushduo.com/blog/lire-un-profil-entre-les-lignes?utm_source=facebook&utm_medium=social&utm_campaign=conseil_message
 
 💬 Le meilleur premier message que vous ayez reçu ? (sans nom ni capture, merci 🙏)
 
@@ -164,7 +164,7 @@ Le guide complet : https://crushduo.com/blog/premier-message-qui-obtient-une-rep
 
 Le reste, c'est du plaisir : écouter, rire, prendre son temps.
 
-Des idées de lieux et d'activités : https://crushduo.com/blog/idees-de-premier-rendez-vous?utm_source=facebook&utm_medium=social&utm_campaign=conseil_rdv
+Proposer un rendez-vous et prévenir un proche depuis Crushduo : https://crushduo.com/help?utm_source=facebook&utm_medium=social&utm_campaign=conseil_rdv#h-chat
 
 #Crushduo #PremierRendezVous #ConseilRencontre #Sécurité #RencontreSérieuse
 ```
@@ -233,4 +233,4 @@ Dernier moment pour compléter votre profil et toucher « Me prévenir » dans l
 - Pas de témoignage ni de « couple formé sur Crushduo » tant qu'il n'y en a pas d'authentique, avec accord écrit.
 - **Hashtags à chaque publication** : 3 à 6, toujours `#Crushduo` (ou `#SoiréeCrush` en tête pour une soirée), plus le thème et `#RencontreSérieuse` ; les noms de villes pour les annonces.
 - Pas de promesse de résultat ; ton chaleureux, direct, respectueux, jamais suggestif.
-- Les articles du blog (45) fournissent une publication « conseil » par semaine : reprendre le titre, deux ou trois idées, et le lien.
+- Les articles du blog fournissent une publication « conseil » par semaine : reprendre le titre, deux ou trois idées, et le lien. **Ne citer qu'un article déjà en ligne** : ouvrir le lien avant de publier (le 2026-11-14, 5 articles étaient publiés dans chaque langue).

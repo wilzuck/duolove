@@ -7,15 +7,17 @@ import type { Card } from '@/lib/types';
 
 /**
  * Photos d'un profil, toutes visibles sans défiler ni faire glisser :
- * - `mosaic` (téléphone, colonne étroite) : une grande photo, puis une rangée de trois vignettes (« + de N » sur la dernière s'il en reste) ; un clic ouvre la photo en grand ;
- * - `stage` (ordinateur) : une grande photo et la rangée de vignettes dessous (un clic change la photo).
- * Un clic sur une photo l'ouvre en grand (visionneuse : flèches, ← →, Échap).
+ * - une grande photo (la principale), puis les autres en vignettes dessous, sans jamais répéter la grande ;
+ * - `mosaic` (téléphone, colonne étroite) : trois vignettes au plus ; `stage` (ordinateur) : six au plus ; « + N » sur la dernière s'il en reste.
+ * Un clic sur n'importe quelle photo, grande ou vignette, l'ouvre en grand (visionneuse : flèches, ← →, Échap).
  */
 export function ProfileGallery({ card, variant, className }: { card: Card; variant: 'mosaic' | 'stage'; className?: string }) {
   const t = useTranslations();
   const photos = card.photos;
-  const [current, setCurrent] = useState(0);
   const [viewer, setViewer] = useState<number | null>(null);
+  // Sous la grande photo : les AUTRES photos (3 sur téléphone, 6 sur ordinateur) ; « + N » sur la dernière s'il en reste.
+  const rest = photos.slice(1, (variant === 'stage' ? 6 : 3) + 1);
+  const hidden = photos.length - 1 - rest.length;
   const alt = (n: number) => `${card.displayName} (${n + 1}/${photos.length})`;
   const img = 'size-full object-cover transition hover:opacity-95';
 
@@ -26,44 +28,25 @@ export function ProfileGallery({ card, variant, className }: { card: Card; varia
 
   return (
     <div className={className}>
-      {variant === 'stage' ? (
-        <div className="space-y-3">
-          <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-soft shadow-soft">{open(Math.min(current, photos.length - 1))}</div>
-          {photos.length > 1 && (
-            <ul className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(photos.length, 6)}, minmax(0, 1fr))` }} aria-label={t('gallery.thumbs')}>
-              {photos.slice(0, 6).map((p, n) => (
-                <li key={p.id} className="relative aspect-square min-w-0">
-                  <button type="button" onClick={() => (n === 5 && photos.length > 6 ? setViewer(5) : setCurrent(n))} aria-label={t('gallery.show', { n: n + 1 })} aria-current={n === current}
-                    className={cn('relative block size-full overflow-hidden rounded-2xl ring-2 ring-inset transition', n === current ? 'ring-brand-strong' : 'ring-transparent hover:ring-line')}>
-                    <img src={p.thumbUrl} alt="" draggable={false} className="size-full object-cover" />
-                    {n === 5 && photos.length > 6 && <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-bold text-white">+{photos.length - 6}</span>}
+      <div className={variant === 'stage' ? 'space-y-3' : 'space-y-2'}>
+        <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-soft shadow-soft">{open(0)}</div>
+        {rest.length > 0 && (
+          <ul className={cn('grid gap-2', variant === 'mosaic' && 'grid-cols-3')} style={variant === 'stage' ? { gridTemplateColumns: `repeat(${Math.max(rest.length, 2)}, minmax(0, 1fr))` } : undefined} aria-label={t('gallery.thumbs')}>
+            {rest.map((p, k) => {
+              const n = k + 1;  // la grande photo (n = 0) n'est jamais répétée dans la rangée
+              const more = k === rest.length - 1 && hidden > 0;
+              return (
+                <li key={p.id} className={cn('relative overflow-hidden rounded-2xl bg-soft', variant === 'stage' ? 'aspect-square min-w-0' : 'aspect-[3/4]')}>
+                  <button type="button" onClick={() => setViewer(n)} aria-label={more ? t('gallery.moreOpen', { n: hidden }) : t('gallery.open', { n: n + 1 })} className="block size-full">
+                    <img src={p.thumbUrl} alt="" draggable={false} className="size-full object-cover transition hover:opacity-95" />
+                    {more && <span aria-hidden className="absolute inset-0 flex items-center justify-center bg-black/55 text-base font-bold text-white">{t('gallery.more', { n: hidden })}</span>}
                   </button>
                 </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-2">
-          <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-soft shadow-soft">{open(0)}</div>
-          {photos.length > 1 && (
-            <ul className="grid grid-cols-3 gap-2" aria-label={t('gallery.thumbs')}>
-              {photos.slice(1, 4).map((p, k) => {
-                const n = k + 1;
-                const more = n === 3 && photos.length > 4;
-                return (
-                  <li key={p.id} className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-soft">
-                    <button type="button" onClick={() => setViewer(n)} aria-label={more ? t('gallery.moreOpen', { n: photos.length - 4 }) : t('gallery.open', { n: n + 1 })} className="block size-full">
-                      <img src={p.thumbUrl} alt="" draggable={false} className="size-full object-cover" />
-                      {more && <span aria-hidden className="absolute inset-0 flex items-center justify-center bg-black/55 text-base font-bold text-white">{t('gallery.more', { n: photos.length - 4 })}</span>}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-      )}
+              );
+            })}
+          </ul>
+        )}
+      </div>
       {viewer != null && <PhotoViewer photos={photos} name={card.displayName} start={viewer} onClose={() => setViewer(null)} />}
     </div>
   );

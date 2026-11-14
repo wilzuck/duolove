@@ -12,6 +12,9 @@ let reopened = false;
 const read = (): Consent => (reopened ? 'unset' : stored());
 const notify = () => listeners.forEach((l) => l());
 
+/** Vrai seulement si le visiteur a accepté la mesure d'audience (choix enregistré dans ce navigateur). */
+export const analyticsGranted = (): boolean => stored() === 'granted';
+
 /** `unset` côté serveur : aucun bandeau ni script n'est rendu avant l'hydratation. */
 export const useConsent = (): Consent => useSyncExternalStore(subscribe, read, () => 'unset');
 

@@ -12,6 +12,7 @@ from app.core.errors import AppError, bad_request, conflict, forbidden, not_foun
 from app.core.gift import gift_tokens_if_eligible
 from app.core.ids import new_id, utcnow
 from app.core.jsonfmt import iso
+from app.core.cities import pref_cities
 from app.core.live_criteria import accepts_seeker, matches_criteria, parse_criteria
 from app.core.profile_card import load_cards, to_card
 from app.models.models import (
@@ -99,7 +100,7 @@ async def state(db: AsyncSession, user_id: str) -> dict:
         "gift": {"tokens": LIVE.PROFILE_GIFT_TOKENS, "completeness": me.completeness, "emailVerified": bool(me.emailVerifiedAt)},
         "rules": {"tokensPerChat": LIVE.TOKENS_PER_CHAT, "maxChoices": LIVE.MAX_CHOICES, "cooldownMinutes": LIVE.COOLDOWN_MINUTES, "searchHours": LIVE.SEARCH_HOURS},
         "defaults": {"seeking": pref.seeking.value if pref else "EVERYONE", "ageMin": pref.ageMin if pref else 18,
-                     "ageMax": pref.ageMax if pref else 60, "country": pref.country if pref else None},
+                     "ageMax": pref.ageMax if pref else 60, "country": pref.country if pref else None, "cities": pref_cities(pref)},
         "nextLaunchAt": iso(last_created + LIVE.COOLDOWN_MINUTES * MIN) if last_created else None,
         "incomingCount": incoming_count,
         "search": {"id": search.id, "criteria": search.criteria, "createdAt": iso(search.createdAt), "expiresAt": iso(search.expiresAt),

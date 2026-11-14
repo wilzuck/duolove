@@ -15,6 +15,7 @@ import { useApiError } from '@/hooks/useApiError';
 import { Link, useRouter } from '@/i18n/navigation';
 import { ApiError, api, post } from '@/lib/api';
 import { useUi } from '@/lib/store';
+import { trackSignUp } from '@/lib/analytics';
 import { useLocale } from 'next-intl';
 
 type Form = { displayName: string; email: string; password: string; birthDate: string; gender: string; country: string; city: string; acceptTerms: boolean; marketing: boolean; referralCode: string };
@@ -57,7 +58,7 @@ function RegisterForm() {
   const maxBirth = new Date(); maxBirth.setFullYear(maxBirth.getFullYear() - MIN_AGE);
 
   const done = async (sentTo?: string) => {
-    await qc.invalidateQueries();
+    await Promise.all([qc.invalidateQueries(), trackSignUp(sentTo ? 'email' : 'google')]);  // mesure seulement avec l'accord du visiteur, avant de quitter la page mesurée
     if (sentTo) toast('success', t('auth.registered', { email: sentTo }));
     router.replace(sentTo ? '/confirm-email' : '/onboarding'); // e-mail à confirmer d'abord ; un compte Google arrive déjà confirmé
   };

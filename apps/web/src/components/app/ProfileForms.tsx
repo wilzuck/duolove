@@ -8,6 +8,7 @@ import { Link } from '@/i18n/navigation';
 import { CUSTOM_VALUE_MAX, isCatalogValue, LIFE_VALUES, MAX_LIFE_VALUES, valueIcon } from '@/lib/lifeValues';
 import type { Limits, MyProfile } from '@/lib/types';
 import { CityInput } from '../CityInput';
+import { CityMultiInput } from '../CityMultiInput';
 
 export const LANGS = ['fr', 'en', 'fon', 'yo', 'ee', 'wo', 'ha', 'sw', 'ar', 'pt'] as const;
 
@@ -122,9 +123,10 @@ export function InterestPicker({ value, onChange }: { value: string[]; onChange:
 }
 
 type Pref = NonNullable<MyProfile['preference']>;
-const PREF_BASE: Omit<Pref, 'country' | 'city'> = { seeking: 'EVERYONE', ageMin: 18, ageMax: 60, intents: [], languages: [], interests: [], verifiedOnly: false, activeRecently: false, maxDistanceKm: null };
+const PREF_BASE: Omit<Pref, 'country' | 'city' | 'cities'> = { seeking: 'EVERYONE', ageMin: 18, ageMax: 60, intents: [], languages: [], interests: [], verifiedOnly: false, activeRecently: false, maxDistanceKm: null };
 /** Par défaut : même pays que le profil, toutes villes. La préférence créée à l'inscription est vide, on la complète à l'onboarding. */
-export const prefDefault = (p: MyProfile): Pref => ({ ...PREF_BASE, ...p.preference, country: p.preference?.country ?? (p.onboarded ? null : p.country), city: p.preference?.city ?? null });
+export const prefDefault = (p: MyProfile): Pref => ({ ...PREF_BASE, ...p.preference, country: p.preference?.country ?? (p.onboarded ? null : p.country), city: p.preference?.city ?? null,
+  cities: p.preference?.cities?.length ? p.preference.cities : p.preference?.city ? [p.preference.city] : [] });
 
 export function PreferenceFields({ value, onChange, limits }: { value: Pref; onChange: (v: Pref) => void; limits: Limits }) {
   const t = useTranslations();
@@ -142,7 +144,7 @@ export function PreferenceFields({ value, onChange, limits }: { value: Pref; onC
         valueText={t('live.ageBetween', { min: value.ageMin, max: value.ageMax })} onChange={([a, b]) => onChange({ ...value, ageMin: a, ageMax: b })} />
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={c('country')}>{(p) => <Select {...p} value={value.country ?? ''} onChange={(e) => set('country', e.target.value || null)}><option value="">{t('prefs.anyCountry')}</option>{COUNTRIES.map((c) => <option key={c.code} value={c.code}>{countryFlag(c.code)} {locale === 'en' ? c.en : c.fr}</option>)}</Select>}</Field>
-        <Field label={c('city')} hint={t('prefs.cityHint')}>{(p) => <CityInput {...p} country={value.country} value={value.city ?? ''} onChange={(v) => set('city', v || null)} />}</Field>
+        <Field label={c('city')} hint={t('prefs.cityHint')}>{(p) => <CityMultiInput {...p} country={value.country} value={value.cities} onChange={(v) => onChange({ ...value, cities: v, city: v[0] ?? null })} />}</Field>
       </div>
       <div className="space-y-2"><p className="text-sm font-medium">{c('intents')}</p><Chips label={c('intents')} options={INTENTS} value={value.intents} onChange={(v) => set('intents', v)} render={(i) => t(`intent.${i}`)} /></div>
 

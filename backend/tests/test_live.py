@@ -11,7 +11,7 @@ from sqlalchemy import func, select, update
 from app.core import credits, realtime
 from app.core.constants import LIVE
 from app.core.ids import utcnow
-from app.core.live_criteria import accepts_seeker, matches_criteria
+from app.core.live_criteria import accepts_seeker, matches_criteria, parse_criteria
 from app.core.live_service import on_presence
 from app.db.session import session_maker
 from app.models.models import Block, CreditTransaction, Entitlement, LiveInvite, LiveSearch, Match, Profile, User
@@ -113,6 +113,19 @@ def test_criteria_pure():
     assert not matches_criteria(crit(heightMin=150), SimpleNamespace(**{**vars(base), "heightCm": None}), now)
     assert not matches_criteria(crit(originCountry="SN"), base, now)
     assert not matches_criteria(crit(intents=["MARRIAGE"]), base, now)
+    # Plusieurs villes : la personne doit vivre dans l'une d'elles (sans accents ni casse) ; liste vide = toutes les villes.
+    lome = SimpleNamespace(**{**vars(base), "city": "Lomé"})
+    assert matches_criteria(crit(cities=["Kara", "lome"]), lome, now)
+    assert not matches_criteria(crit(cities=["Kara", "Sokodé"]), lome, now)
+    assert matches_criteria(crit(cities=[]), lome, now)
+    assert not matches_criteria(crit(cities=["Lomé"]), SimpleNamespace(**{**vars(base), "city": None}), now)
+
+
+def test_criteria_cities_validation():
+    ok, errs = parse_criteria({"seeking": "MEN", "ageMin": 18, "ageMax": 60, "cities": [" Lomé ", "LOME", "Kara"]})
+    assert errs == [] and ok["cities"] == ["Lomé", "Kara"]  # doublons sans accents ni casse retirés
+    assert parse_criteria({"seeking": "MEN", "ageMin": 18, "ageMax": 60, "cities": [f"Ville {i}" for i in range(11)]})[0] is None
+    assert parse_criteria({"seeking": "MEN", "ageMin": 18, "ageMax": 60, "cities": ["X"]})[0] is None
 
 
 def test_reciprocity():

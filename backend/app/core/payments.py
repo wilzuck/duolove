@@ -354,7 +354,7 @@ async def history(db: AsyncSession, user_id: str) -> list[dict]:
         if p.subscriptionId:
             plan = (await db.execute(select(SubscriptionPlan.code).join(Subscription, Subscription.planId == SubscriptionPlan.id).where(Subscription.id == p.subscriptionId))).scalar_one_or_none()
         out.append({
-            "id": p.id, "kind": ev(p.kind), "months": p.months, "product": prod.name if prod else None,
+            "id": p.id, "kind": ev(p.kind), "months": p.months, "product": prod.name if prod else None, "productCode": prod.code if prod else None,
             "amountXof": p.amountXof, "currency": p.currency, "status": ev(p.status), "provider": p.provider, "plan": ev(plan) if plan else None,
             "createdAt": p.createdAt, "paidAt": p.paidAt, "invoiceNumber": inv,
         })

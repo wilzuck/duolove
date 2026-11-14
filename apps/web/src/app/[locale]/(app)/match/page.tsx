@@ -16,16 +16,17 @@ import type { Card as ProfileCardT, LiveState } from '@/lib/types';
 import { VerifiedBadge } from '@/components/app/VerifiedBadge';
 import { SectionTabs } from '@/components/app/SectionTabs';
 import { LiveEventsBanner } from '@/components/app/LiveEventsBanner';
+import { CityMultiInput } from '@/components/CityMultiInput';
 
-type Draft = { seeking: LiveCriteria['seeking']; ageMin: number; ageMax: number; country: string; hasChildren: LiveCriteria['hasChildren']; likesPets: LiveCriteria['likesPets']; living: LiveCriteria['living']; heightMin: string; heightMax: string; originCountry: string };
+type Draft = { seeking: LiveCriteria['seeking']; ageMin: number; ageMax: number; country: string; cities: string[]; hasChildren: LiveCriteria['hasChildren']; likesPets: LiveCriteria['likesPets']; living: LiveCriteria['living']; heightMin: string; heightMax: string; originCountry: string };
 
 const draftFrom = (d: LiveState['defaults'], c?: LiveCriteria): Draft => ({
-  seeking: c?.seeking ?? d.seeking, ageMin: c?.ageMin ?? d.ageMin, ageMax: c?.ageMax ?? d.ageMax, country: c?.country ?? d.country ?? '',
+  seeking: c?.seeking ?? d.seeking, ageMin: c?.ageMin ?? d.ageMin, ageMax: c?.ageMax ?? d.ageMax, country: c?.country ?? d.country ?? '', cities: c?.cities ?? d.cities ?? [],
   hasChildren: c?.hasChildren ?? 'ANY', likesPets: c?.likesPets ?? 'ANY', living: c?.living ?? 'ANY',
   heightMin: c?.heightMin ? String(c.heightMin) : '', heightMax: c?.heightMax ? String(c.heightMax) : '', originCountry: c?.originCountry ?? '',
 });
 const toCriteria = (d: Draft): LiveCriteria => ({
-  seeking: d.seeking, ageMin: d.ageMin, ageMax: d.ageMax, country: d.country || null, hasChildren: d.hasChildren, likesPets: d.likesPets, living: d.living,
+  seeking: d.seeking, ageMin: d.ageMin, ageMax: d.ageMax, country: d.country || null, cities: d.cities, hasChildren: d.hasChildren, likesPets: d.likesPets, living: d.living,
   heightMin: d.heightMin ? Number(d.heightMin) : null, heightMax: d.heightMax ? Number(d.heightMax) : null, originCountry: d.originCountry || null,
 });
 
@@ -63,6 +64,7 @@ function CriteriaForm({ value, onChange }: { value: Draft; onChange: (d: Draft) 
         <Field label={c('country')}>{(p) => <Select {...p} value={value.country} onChange={(e) => set('country', e.target.value)}><option value="">{t('prefs.anyCountry')}</option>{countries}</Select>}</Field>
         <Field label={c('origin')}>{(p) => <Select {...p} value={value.originCountry} onChange={(e) => set('originCountry', e.target.value)}><option value="">{t('live.any')}</option>{countries}</Select>}</Field>
       </div>
+      <Field label={t(`prefs.crit.${value.seeking}.city`)} hint={t('prefs.cityHint')}>{(p) => <CityMultiInput {...p} country={value.country || null} value={value.cities} onChange={(v) => set('cities', v)} />}</Field>
       {tri(c('children'), 'hasChildren')}
       {tri(c('pets'), 'likesPets')}
       <RadioChips legend={c('living')} value={value.living} onChange={(v) => set('living', v)} options={[{ value: 'ANY', label: t('live.any') }, ...LIVING.map((l) => ({ value: l, label: c(`livingOpt.${l}`) }))]} />

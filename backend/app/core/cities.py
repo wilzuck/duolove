@@ -44,6 +44,25 @@ def same_area(a: str | None, b: str | None) -> bool:
     return False
 
 
+def unique_cities(names) -> list[str]:
+    """Villes saisies par le membre : espaces retirés, vides écartés, doublons (sans accents ni casse) supprimés, ordre conservé."""
+    seen: set[str] = set()
+    out: list[str] = []
+    for n in names or []:
+        n = " ".join((n or "").split())
+        if n and fold(n) not in seen:
+            seen.add(fold(n))
+            out.append(n)
+    return out
+
+
+def pref_cities(pref) -> list[str]:
+    """Villes recherchées d'une préférence : la liste `cities`, sinon l'ancienne ville unique (préférences enregistrées avant la migration 0053)."""
+    if pref is None:
+        return []
+    return unique_cities(getattr(pref, "cities", None) or [getattr(pref, "city", None) or ""])
+
+
 def fold(s: str) -> str:
     """Minuscules sans accents ni tirets : « Lomé », « lome » et « LOMÉ » se valent ; « saint etienne » trouve « Saint-Étienne »."""
     s = unicodedata.normalize("NFD", s.strip().lower())

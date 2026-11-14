@@ -1928,7 +1928,7 @@
     "country": "Pays",
     "anyCountry": "Tous les pays",
     "city": "Ville",
-    "cityHint": "Laissez vide pour toutes les villes.",
+    "cityHint": "Ajoutez une ou plusieurs villes (Entrée pour valider). Laissez vide pour toutes les villes.",
     "intents": "Intentions recherchées",
     "advanced": "Filtres avancés",
     "distance": "Distance maximale (km)",
@@ -1944,7 +1944,7 @@
       "MEN": {
         "age": "Quel âge a-t-il ?",
         "country": "Où vit-il ?",
-        "city": "Dans quelle ville vit-il ?",
+        "city": "Dans quelles villes vit-il ?",
         "intents": "Que recherche-t-il ?",
         "distance": "À quelle distance vit-il ? (km)",
         "languages": "Quelles langues parle-t-il ?",
@@ -1953,7 +1953,7 @@
       "WOMEN": {
         "age": "Quel âge a-t-elle ?",
         "country": "Où vit-elle ?",
-        "city": "Dans quelle ville vit-elle ?",
+        "city": "Dans quelles villes vit-elle ?",
         "intents": "Que recherche-t-elle ?",
         "distance": "À quelle distance vit-elle ? (km)",
         "languages": "Quelles langues parle-t-elle ?",
@@ -1962,13 +1962,15 @@
       "EVERYONE": {
         "age": "Quelle tranche d’âge ?",
         "country": "Où vit la personne ?",
-        "city": "Dans quelle ville ?",
+        "city": "Dans quelles villes ?",
         "intents": "Que recherche la personne ?",
         "distance": "Distance maximale (km)",
         "languages": "Quelles langues parle la personne ?",
         "interests": "Quels centres d’intérêt ?"
       }
-    }
+    },
+    "citiesChosen": "Villes choisies",
+    "cityRemove": "Retirer {city}"
   },
   "photos": {
     "add": "Ajouter une photo",
@@ -2207,7 +2209,8 @@
         "FAILED": "Échoué",
         "REFUNDED": "Remboursé"
       },
-      "invoiceDownload": "Télécharger la facture {n} (PDF)"
+      "invoiceDownload": "Télécharger la facture {n} (PDF)",
+      "retry": "Relancer le paiement"
     }
   },
   "admin": {

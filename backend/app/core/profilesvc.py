@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import credits as credits_svc
 from app.core import entitlements, storage
+from app.core.cities import pref_cities, unique_cities
 from app.core.completeness import completeness_level, compute_completeness
 from app.core.constants import INTEREST_SLUGS, age_from_birth_date
 from app.core.errors import bad_request, forbidden, not_found
@@ -56,7 +57,7 @@ async def get_mine(db: AsyncSession, user_id: str) -> dict:
         "onboarded": bool(p.onboardedAt), "interests": list(slugs),
         "photos": [{"id": x.id, "url": photo_url(x.key), "thumbUrl": photo_url(thumb_key(x.key)), "isPrimary": x.isPrimary, "position": x.position} for x in photos],
         "preference": None if not pref else {
-            "seeking": _v(pref.seeking), "ageMin": pref.ageMin, "ageMax": pref.ageMax, "country": pref.country, "city": pref.city,
+            "seeking": _v(pref.seeking), "ageMin": pref.ageMin, "ageMax": pref.ageMax, "country": pref.country, "city": pref.city, "cities": pref_cities(pref),
             "intents": [_v(i) for i in (pref.intents or [])], "languages": pref.languages or [], "interests": pref.interests or [],
             "verifiedOnly": pref.verifiedOnly, "activeRecently": pref.activeRecently, "maxDistanceKm": pref.maxDistanceKm,
         },
@@ -142,7 +143,8 @@ async def save_preference(db: AsyncSession, user_id: str, inp) -> dict:
     # Les filtres avancés ne sont enregistrés que si la formule les inclut (contrôle serveur).
     if premium and not e["limits"]["advancedFilters"]:
         raise forbidden("PLAN_REQUIRED", "Filtres avancés réservés à Premium")
-    data = dict(seeking=inp.seeking, ageMin=inp.ageMin, ageMax=inp.ageMax, country=inp.country, city=inp.city, intents=inp.intents or [],
+    cities = unique_cities(inp.cities if inp.cities is not None else [inp.city or ""])
+    data = dict(seeking=inp.seeking, ageMin=inp.ageMin, ageMax=inp.ageMax, country=inp.country, city=cities[0] if cities else None, cities=cities, intents=inp.intents or [],
                 languages=inp.languages or [], interests=inp.interests or [], verifiedOnly=inp.verifiedOnly or False,
                 activeRecently=inp.activeRecently or False, maxDistanceKm=inp.maxDistanceKm)
     stmt = insert(Preference).values(id=new_id(), userId=user_id, updatedAt=utcnow(), **data)

@@ -39,7 +39,7 @@ export interface MyProfile {
   completenessLevel: 'INCOMPLETE' | 'IN_PROGRESS' | 'COMPLETE'; onboarded: boolean;
   hasChildren: boolean | null; likesPets: boolean | null; living: Living | null; heightCm: number | null; originCountry: string | null;
   maritalStatus: string | null; education: string | null; smoking: string | null; alcohol: string | null; religion: string | null; showReligion: boolean; values: string[]; zodiac: string | null; liveOptIn: boolean; interests: string[]; photos: Photo[];
-  preference: { seeking: Seeking; ageMin: number; ageMax: number; country: string | null; city: string | null; intents: Intent[]; languages: string[]; interests: string[]; verifiedOnly: boolean; activeRecently: boolean; maxDistanceKm: number | null } | null;
+  preference: { seeking: Seeking; ageMin: number; ageMax: number; country: string | null; city: string | null; cities: string[]; intents: Intent[]; languages: string[]; interests: string[]; verifiedOnly: boolean; activeRecently: boolean; maxDistanceKm: number | null } | null;
 }
 export interface ConversationItem {
   id: string; matchId: string; createdAt: string; unread: number;
@@ -64,7 +64,7 @@ export interface SubscriptionState {
   plan: PlanCode; validUntil: string | null; limits: Limits; credits: Record<CreditType, number>;
   subscription: { id: string; plan: PlanCode; status: string; cancelAtPeriodEnd: boolean; currentPeriodEnd: string | null } | null;
 }
-export interface PaymentItem { id: string; kind: 'SUBSCRIPTION' | 'PRODUCT'; months: number; product: string | null; amountXof: number; currency: string; status: string; provider: string; plan: PlanCode | null; createdAt: string; paidAt: string | null; invoiceNumber: string | null }
+export interface PaymentItem { id: string; kind: 'SUBSCRIPTION' | 'PRODUCT'; months: number; product: string | null; productCode: string | null; amountXof: number; currency: string; status: string; provider: string; plan: PlanCode | null; createdAt: string; paidAt: string | null; invoiceNumber: string | null }
 
 export interface LiveAccepted extends Card { inviteId: string; status: 'ACCEPTED' | 'CHOSEN'; conversationId: string | null; liked: boolean; expiresAt: string }
 export interface LiveState {
@@ -72,7 +72,7 @@ export interface LiveState {
   tokens: number; optIn: boolean;
   gift: { tokens: number; completeness: number; emailVerified: boolean };
   rules: { tokensPerChat: number; maxChoices: number; cooldownMinutes: number; searchHours: number };
-  defaults: { seeking: Seeking; ageMin: number; ageMax: number; country: string | null };
+  defaults: { seeking: Seeking; ageMin: number; ageMax: number; country: string | null; cities?: string[] };
   nextLaunchAt: string | null; incomingCount: number;
   search: { id: string; criteria: LiveCriteria; createdAt: string; expiresAt: string; pending: number; chosen: number; choicesLeft: number } | null;
   accepted: LiveAccepted[];

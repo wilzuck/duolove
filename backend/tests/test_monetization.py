@@ -47,6 +47,7 @@ async def test_abonnement_3_mois_credite_boosts_et_jetons_inclus(app, db):
     assert bal["MATCH_TOKEN"] == 45  # 15 jetons Match inclus × 3 mois
     pay = (await a.agent.get("/api/payments")).json()[0]
     assert (pay["amountXof"], pay["months"], pay["status"]) == (13500, 3, "SUCCEEDED")  # 5000×3 −10 %
+    assert (pay["plan"], pay["productCode"]) == ("VIP", None)  # de quoi relancer le même paiement depuis l'historique
 
 
 async def test_admin_modifie_prix_paiements_existants_inchanges_et_audit(app, http, db):

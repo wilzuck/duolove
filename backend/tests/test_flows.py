@@ -128,6 +128,13 @@ async def test_onboarding_photo_preferences(http, app, db):
     assert (await a.put("/api/profiles/me/preferences", json={"seeking": "MEN", "ageMin": 25, "ageMax": 20})).status_code == 400
     pref = await a.put("/api/profiles/me/preferences", json={"seeking": "MEN", "ageMin": 20, "ageMax": 40, "city": CITY})
     assert pref.json()["preference"]["seeking"] == "MEN"
+    assert pref.json()["preference"]["cities"] == [CITY]  # ancien champ « city » : devient une liste d'une ville
+    many = await a.put("/api/profiles/me/preferences", json={"seeking": "MEN", "ageMin": 20, "ageMax": 40, "cities": [" Lomé ", "LOME", "Kara", ""]})
+    assert many.status_code == 400  # ville vide refusée
+    many = await a.put("/api/profiles/me/preferences", json={"seeking": "MEN", "ageMin": 20, "ageMax": 40, "cities": [" Lomé ", "LOME", "Kara"]})
+    assert many.json()["preference"]["cities"] == ["Lomé", "Kara"] and many.json()["preference"]["city"] == "Lomé"
+    assert (await a.put("/api/profiles/me/preferences", json={"seeking": "MEN", "ageMin": 20, "ageMax": 40, "cities": [f"V{i}x" for i in range(11)]})).status_code == 400
+    assert (await a.put("/api/profiles/me/preferences", json={"seeking": "MEN", "ageMin": 20, "ageMax": 40, "cities": []})).json()["preference"]["cities"] == []
     # filtres avancés = Premium : refusés côté serveur
     assert (await a.put("/api/profiles/me/preferences", json={"seeking": "MEN", "ageMin": 20, "ageMax": 40, "verifiedOnly": True})).json()["error"]["code"] == "PLAN_REQUIRED"
 
@@ -179,6 +186,24 @@ async def test_mutual_preferences_blocks_suspension_incognito(app, db):
     assert incognito["id"] in [i["id"] for i in (await a.get("/api/discovery?limit=30")).json()["items"]]
     await a.aclose()
     await b.aclose()
+
+
+async def test_discovery_several_cities(app, db):
+    c1, c2, c3 = f"Uno-{uid()}", f"Duo-{uid()}", f"Tre-{uid()}"
+    viewer = await seed_member(db, gender="WOMAN", seeking="MEN", city=c1, age=30)
+    in_c1 = await seed_member(db, gender="MAN", seeking="WOMEN", city=c1)
+    in_c2 = await seed_member(db, gender="MAN", seeking="WOMEN", city=c2.upper())  # casse différente : même ville
+    in_c3 = await seed_member(db, gender="MAN", seeking="WOMEN", city=c3)
+    await db.commit()
+    a = await login(app, viewer["email"])
+    seen = lambda r: {i["id"] for i in r.json()["items"]}  # noqa: E731
+    only_c1 = seen(await a.get("/api/discovery?limit=50"))  # préférence enregistrée avant la migration : une seule ville
+    assert in_c1["id"] in only_c1 and in_c2["id"] not in only_c1
+    r = await a.put("/api/profiles/me/preferences", json={"seeking": "MEN", "ageMin": 18, "ageMax": 99, "cities": [c1, c2]})
+    assert r.status_code == 200
+    both = seen(await a.get("/api/discovery?limit=50"))
+    assert in_c1["id"] in both and in_c2["id"] in both and in_c3["id"] not in both
+    await a.aclose()
 
 
 # ───────── likes, matchs et messagerie ─────────

@@ -40,7 +40,8 @@ class PreferenceIn(Body):
     ageMin: Annotated[int, Field(ge=MIN_AGE, le=99)]
     ageMax: Annotated[int, Field(ge=MIN_AGE, le=99)]
     country: CountryT | None = None
-    city: Annotated[Trimmed, Field(max_length=80)] | None = None
+    city: Annotated[Trimmed, Field(max_length=80)] | None = None  # ancien champ (une seule ville) : utilisé seulement si `cities` est absent
+    cities: Annotated[list[Annotated[Trimmed, Field(min_length=2, max_length=80)]], Field(max_length=10)] | None = None  # vide = toutes les villes
     intents: Annotated[list[IntentT], Field(max_length=5)] | None = None
     languages: Annotated[list[Lang], Field(max_length=8)] | None = None
     interests: Annotated[list[InterestT], Field(max_length=10)] | None = None

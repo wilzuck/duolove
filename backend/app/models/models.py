@@ -1309,6 +1309,7 @@ class Preference(Base):
     updatedAt: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(precision=3), nullable=False, default=utcnow, onupdate=utcnow)
     country: Mapped[Optional[str]] = mapped_column(Text)
     city: Mapped[Optional[str]] = mapped_column(Text)
+    cities: Mapped[list[str]] = mapped_column(ARRAY(Text()), nullable=False, server_default=text('ARRAY[]::text[]'), default=list)
     intents: Mapped[Optional[list[Intent]]] = mapped_column(ARRAY(Enum(Intent, values_callable=lambda cls: [member.value for member in cls], name='Intent')))
     maxDistanceKm: Mapped[Optional[int]] = mapped_column(Integer)
     languages: Mapped[Optional[list[str]]] = mapped_column(ARRAY(Text()), server_default=text('ARRAY[]::text[]'))

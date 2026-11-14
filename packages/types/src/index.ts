@@ -214,6 +214,7 @@ export const liveCriteriaSchema = z
     ageMin: z.number().int().min(MIN_AGE).max(99),
     ageMax: z.number().int().min(MIN_AGE).max(99),
     country: z.enum(COUNTRY_CODES).nullable().optional(),
+    cities: z.array(z.string().trim().min(2).max(80)).max(10).optional(), // vide = toutes les villes
     hasChildren: z.enum(TRI).default('ANY'),
     likesPets: z.enum(TRI).default('ANY'),
     living: z.enum(['ANY', ...LIVING]).default('ANY'),
@@ -260,7 +261,8 @@ export const preferenceSchema = z
     ageMin: z.number().int().min(MIN_AGE).max(99),
     ageMax: z.number().int().min(MIN_AGE).max(99),
     country: z.enum(COUNTRY_CODES).nullable().optional(),
-    city: z.string().trim().max(80).nullable().optional(),
+    city: z.string().trim().max(80).nullable().optional(), // ancien champ : une seule ville (utilisé si `cities` est absent)
+    cities: z.array(z.string().trim().min(2).max(80)).max(10).optional(), // vide = toutes les villes
     intents: z.array(z.enum(INTENTS)).max(5).optional(),
     // Filtres Premium (contrôlés côté serveur)
     languages: z.array(z.string().min(2).max(5)).max(8).optional(),

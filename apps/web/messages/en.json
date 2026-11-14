@@ -1928,7 +1928,7 @@
     "country": "Country",
     "anyCountry": "Any country",
     "city": "City",
-    "cityHint": "Leave empty for all cities.",
+    "cityHint": "Add one or more cities (press Enter to add). Leave empty for all cities.",
     "intents": "Intentions sought",
     "advanced": "Advanced filters",
     "distance": "Maximum distance (km)",
@@ -1944,7 +1944,7 @@
       "MEN": {
         "age": "How old is he?",
         "country": "Where does he live?",
-        "city": "Which city does he live in?",
+        "city": "Which cities does he live in?",
         "intents": "What is he looking for?",
         "distance": "How far away does he live? (km)",
         "languages": "Which languages does he speak?",
@@ -1953,7 +1953,7 @@
       "WOMEN": {
         "age": "How old is she?",
         "country": "Where does she live?",
-        "city": "Which city does she live in?",
+        "city": "Which cities does she live in?",
         "intents": "What is she looking for?",
         "distance": "How far away does she live? (km)",
         "languages": "Which languages does she speak?",
@@ -1962,13 +1962,15 @@
       "EVERYONE": {
         "age": "Which age range?",
         "country": "Where do they live?",
-        "city": "Which city?",
+        "city": "Which cities?",
         "intents": "What are they looking for?",
         "distance": "Maximum distance (km)",
         "languages": "Which languages do they speak?",
         "interests": "Which interests?"
       }
-    }
+    },
+    "citiesChosen": "Selected cities",
+    "cityRemove": "Remove {city}"
   },
   "photos": {
     "add": "Add a photo",
@@ -2207,7 +2209,8 @@
         "FAILED": "Failed",
         "REFUNDED": "Refunded"
       },
-      "invoiceDownload": "Download invoice {n} (PDF)"
+      "invoiceDownload": "Download invoice {n} (PDF)",
+      "retry": "Retry payment"
     }
   },
   "admin": {

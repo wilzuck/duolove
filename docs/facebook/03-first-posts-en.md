@@ -74,7 +74,7 @@ No magic, no algorithm guessing: a person.
 
 The badge proves the person looks like their photos. It says nothing about their intentions: stay careful, as you would anywhere.
 
-Learn more: https://crushduo.com/en/blog/verified-badge-selfie-what-it-proves?utm_source=facebook&utm_medium=social&utm_campaign=verified_en
+Learn more: https://crushduo.com/en/help?utm_source=facebook&utm_medium=social&utm_campaign=verified_en#h-safety
 
 #VerifiedProfile #SeriousDating
 ```
@@ -95,7 +95,7 @@ Romance scams often follow the same script: a lot of attention very fast, then a
 🛡️ On Crushduo, report in one tap from the profile or the conversation: it’s confidential and reviewed by a moderator. You can attach the messages concerned.
 📍 Your exact location is never shown to other members.
 
-Our guide to spotting a romance scam: https://crushduo.com/en/blog/spotting-a-romance-scam?utm_source=facebook&utm_medium=social&utm_campaign=safety_en
+Our safety tips: https://crushduo.com/en/help?utm_source=facebook&utm_medium=social&utm_campaign=safety_en#h-safety
 
 Share this with someone who dates online 🙏
 
@@ -144,7 +144,7 @@ A first message doesn’t need to be brilliant. It needs to be specific.
 
 Read their profile, pick one detail that speaks to you, ask an open question. And if you’re stuck, Crushduo’s messaging suggests conversation starters based on what you have in common.
 
-The full guide: https://crushduo.com/en/blog/first-message-that-gets-a-reply?utm_source=facebook&utm_medium=social&utm_campaign=tip_message_en
+To spot the right detail in a profile: https://crushduo.com/en/blog/reading-a-profile-between-the-lines?utm_source=facebook&utm_medium=social&utm_campaign=tip_message_en
 
 💬 What’s the best first message you’ve ever received? (no names or screenshots, please 🙏)
 
@@ -168,7 +168,7 @@ The full guide: https://crushduo.com/en/blog/first-message-that-gets-a-reply?utm
 
 The rest is the fun part: listen, laugh, take your time.
 
-Ideas for places and activities: https://crushduo.com/en/blog/first-date-ideas?utm_source=facebook&utm_medium=social&utm_campaign=tip_date_en
+Suggest a date and let someone close know, right from Crushduo: https://crushduo.com/en/help?utm_source=facebook&utm_medium=social&utm_campaign=tip_date_en#h-chat
 
 #Crushduo #FirstDate #DatingTips #Safety #SeriousDating
 ```
@@ -234,4 +234,4 @@ Last chance to finish your profile and tap “Remind me” in the Crush tab.
 - Only present what works today: do **not** announce audio/video calls (still simulated), automatic fake-profile detection (moderation is human), or testimonials.
 - **Hashtags on every post**: 3 to 6, always `#Crushduo` (or `#CrushNight` first for an event), plus the topic and `#SeriousDating`.
 - No promise of results; warm, direct, respectful tone, never suggestive.
-- English blog articles exist for all 45 topics: one “tip” post per week can link to them (`https://crushduo.com/en/blog/<slug>`), once the English version is published on the site.
+- English blog articles are written for all 45 topics; on 2026-11-14, 5 were published. Only link to an article (`https://crushduo.com/en/blog/<slug>`) after opening it online; otherwise link to `/en/help`.
