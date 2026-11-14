@@ -117,7 +117,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     return !!needle && RANK[me.role] >= RANK[i.min] && (fold(t(`admin.nav.${i.key}`)).includes(needle) || fold(t(`admin.sections.${i.sec}`)).includes(needle));
   });
   const nav = (
-    <nav aria-label={t('admin.menu')} className="scroll-dark flex flex-1 flex-col gap-5 overflow-y-auto py-2 pr-1">
+    <nav aria-label={t('admin.menu')} className="scroll-dark -ml-1 flex flex-1 flex-col gap-5 overflow-y-auto py-2 pr-1 pl-1">
       {SECTIONS.map((s) => {
         const needle = fold(q);
         const items = s.items.filter((i) => RANK[me.role] >= RANK[i.min] && (!needle || fold(t(`admin.nav.${i.key}`)).includes(needle) || fold(t(`admin.sections.${s.id}`)).includes(needle)));
