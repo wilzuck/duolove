@@ -2,6 +2,10 @@
  *  type, message, page (sans paramètres) et trace. Au plus 10 envois par page chargée, sans doublon. */
 const sent = new Set<string>();
 
+/** « Script error. » sans objet d'erreur : erreur levée par un script d'un autre domaine (Google, KKiaPay, GTM…). Le navigateur en masque
+ *  le message, le fichier et la trace : rien d'exploitable, et ce n'est pas notre code. On ne la remonte pas. */
+export const isOpaqueScriptError = (ev: { message?: string; error?: unknown }) => !ev.error && /^script error\.?$/i.test((ev.message ?? '').trim());
+
 export function reportError(error: unknown, extra?: { digest?: string }) {
   if (typeof window === 'undefined' || sent.size >= 10) return;
   const e = error as { name?: string; message?: string; stack?: string } | null;
